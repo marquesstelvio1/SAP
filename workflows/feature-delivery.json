@@ -1,0 +1,24 @@
+{
+  "name": "feature-delivery",
+  "input": [
+    ".ai/tasks/**/*.md",
+    "docs/rules/**/*.md",
+    "docs/standards/*.md"
+  ],
+  "output": [
+    ".ai/reports/tests/*.md",
+    ".ai/reports/docs/*.md",
+    ".ai/reports/pr-drafts/*.md"
+  ],
+  "agents": [
+    "agent-planner",
+    "agent-frontend",
+    "agent-backend",
+    "agent-auth",
+    "agent-mobile",
+    "agent-infra",
+    "agent-qa",
+    "agent-git-manager"
+  ]
+}
+

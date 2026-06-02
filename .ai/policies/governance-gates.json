@@ -1,0 +1,52 @@
+{
+  "gates": [
+    {
+      "name": "scope",
+      "requiredFor": [
+        "all"
+      ],
+      "owner": "agent-planner"
+    },
+    {
+      "name": "contract",
+      "requiredFor": [
+        "backend",
+        "mobile",
+        "frontend"
+      ],
+      "owner": "agent-architect"
+    },
+    {
+      "name": "auth-security",
+      "requiredFor": [
+        "auth",
+        "backend",
+        "infra"
+      ],
+      "owner": "agent-auth"
+    },
+    {
+      "name": "test",
+      "requiredFor": [
+        "all"
+      ],
+      "owner": "agent-qa"
+    },
+    {
+      "name": "docs-changelog",
+      "requiredFor": [
+        "all"
+      ],
+      "owner": "agent-git-manager"
+    },
+    {
+      "name": "release",
+      "requiredFor": [
+        "critical",
+        "high"
+      ],
+      "owner": "agent-architect"
+    }
+  ]
+}
+

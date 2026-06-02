@@ -1,0 +1,36 @@
+{
+  "name": "saptm",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.12.1",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "scripts": {
+    "dev": "dotenvx run -- turbo run dev --parallel",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "biome check package.json pnpm-workspace.yaml components.json turbo.json biome.json tsconfig.base.json playwright.config.ts scripts/validate-foundation.mjs apps packages",
+    "format": "biome format --write package.json pnpm-workspace.yaml components.json turbo.json biome.json tsconfig.base.json playwright.config.ts scripts/validate-foundation.mjs apps packages",
+    "validate:foundation": "node scripts/validate-foundation.mjs",
+    "test": "turbo run test",
+    "test:e2e": "playwright test --pass-with-no-tests",
+    "changeset": "changeset",
+    "db:generate": "pnpm --filter @saptm/database db:generate",
+    "db:validate": "pnpm --filter @saptm/database db:validate",
+    "db:migrate:dev": "pnpm --filter @saptm/database db:migrate:dev",
+    "db:studio": "pnpm --filter @saptm/database db:studio"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@changesets/cli": "catalog:",
+    "@dotenvx/dotenvx": "catalog:",
+    "@playwright/test": "catalog:",
+    "tsup": "catalog:",
+    "turbo": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  }
+}

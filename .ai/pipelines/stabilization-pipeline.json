@@ -1,0 +1,12 @@
+{
+  "name": "stabilization-pipeline",
+  "steps": [
+    "collect-telemetry",
+    "detect-regression",
+    "create-diagnostic",
+    "generate-fix-task",
+    "review-governance",
+    "publish-report"
+  ]
+}
+

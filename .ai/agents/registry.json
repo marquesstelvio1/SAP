@@ -1,0 +1,118 @@
+{
+  "agents": [
+    {
+      "id": "agent-architect",
+      "domain": "architecture",
+      "prompt": ".ai/prompts/architect.md",
+      "doc": "docs/agents/architect.md",
+      "canApprove": [
+        "scope",
+        "contract",
+        "release"
+      ]
+    },
+    {
+      "id": "agent-planner",
+      "domain": "planning",
+      "prompt": ".ai/prompts/planner.md",
+      "doc": "docs/agents/planner.md",
+      "canApprove": [
+        "scope"
+      ]
+    },
+    {
+      "id": "agent-frontend",
+      "domain": "frontend",
+      "prompt": ".ai/prompts/domains/frontend.md",
+      "doc": "docs/agents/frontend.md",
+      "canApprove": []
+    },
+    {
+      "id": "agent-backend",
+      "domain": "backend",
+      "prompt": ".ai/prompts/domains/backend.md",
+      "doc": "docs/agents/backend.md",
+      "canApprove": []
+    },
+    {
+      "id": "agent-auth",
+      "domain": "auth",
+      "prompt": ".ai/prompts/domains/auth.md",
+      "doc": "docs/agents/auth.md",
+      "canApprove": [
+        "auth-security"
+      ]
+    },
+    {
+      "id": "agent-mobile",
+      "domain": "mobile",
+      "prompt": ".ai/prompts/domains/mobile.md",
+      "doc": "docs/agents/mobile.md",
+      "canApprove": []
+    },
+    {
+      "id": "agent-infra",
+      "domain": "infra",
+      "prompt": ".ai/prompts/domains/infra.md",
+      "doc": "docs/agents/infra.md",
+      "canApprove": []
+    },
+    {
+      "id": "agent-qa",
+      "domain": "qa",
+      "prompt": ".ai/prompts/domains/qa.md",
+      "doc": "docs/agents/qa.md",
+      "canApprove": [
+        "test"
+      ]
+    },
+    {
+      "id": "agent-observability",
+      "domain": "observability",
+      "prompt": ".ai/prompts/domains/observability.md",
+      "doc": "docs/agents/observability.md",
+      "canApprove": []
+    },
+    {
+      "id": "agent-performance",
+      "domain": "performance",
+      "prompt": ".ai/prompts/domains/performance.md",
+      "doc": "docs/agents/performance.md",
+      "canApprove": []
+    },
+    {
+      "id": "agent-design-system",
+      "domain": "design-system",
+      "prompt": ".ai/prompts/domains/design-system.md",
+      "doc": "docs/agents/design-system.md",
+      "canApprove": []
+    },
+    {
+      "id": "agent-git-manager",
+      "domain": "delivery",
+      "prompt": ".ai/prompts/execution.md",
+      "doc": "docs/agents/git-manager.md",
+      "canApprove": [
+        "docs-changelog"
+      ]
+    },
+    {
+      "id": "agent-saptm-devops",
+      "domain": "devops",
+      "prompt": ".ai/agents/devops.md",
+      "doc": "docs/agents/saptm-agent-responsibilities.md",
+      "canApprove": [
+        "release"
+      ]
+    },
+    {
+      "id": "agent-saptm-security",
+      "domain": "security",
+      "prompt": ".ai/skills/security.md",
+      "doc": "docs/security/auth-security-strategy.md",
+      "canApprove": [
+        "auth-security"
+      ]
+    }
+  ]
+}

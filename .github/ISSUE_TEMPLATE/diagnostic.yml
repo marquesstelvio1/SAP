@@ -1,0 +1,46 @@
+name: Diagnostic Finding
+description: Report a structured diagnostic finding
+title: "[Diagnostic] "
+labels:
+  - diagnostic
+body:
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Domain
+      options:
+        - frontend
+        - backend
+        - auth
+        - mobile
+        - infra
+        - qa
+        - observability
+        - performance
+        - design-system
+    validations:
+      required: true
+  - type: textarea
+    id: current_state
+    attributes:
+      label: Current state
+    validations:
+      required: true
+  - type: textarea
+    id: risk
+    attributes:
+      label: Risk and impact
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+

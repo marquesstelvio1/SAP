@@ -1,0 +1,11 @@
+{
+  "name": "diagnostic-pipeline",
+  "steps": [
+    "collect-context",
+    "score-findings",
+    "group-by-domain",
+    "create-roadmap-candidates",
+    "generate-task-bundles"
+  ]
+}
+

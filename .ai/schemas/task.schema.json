@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Task Bundle",
+  "type": "object",
+  "required": [
+    "id",
+    "domain",
+    "title",
+    "priority",
+    "ownerAgent",
+    "acceptanceCriteria",
+    "tests",
+    "docs",
+    "rollback"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "domain": {
+      "enum": [
+        "frontend",
+        "backend",
+        "auth",
+        "mobile",
+        "infra",
+        "qa",
+        "observability",
+        "performance",
+        "design-system"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "priority": {
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "ownerAgent": {
+      "type": "string"
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "docs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rollback": {
+      "type": "string"
+    }
+  }
+}
+

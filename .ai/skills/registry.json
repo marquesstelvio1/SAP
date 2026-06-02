@@ -1,0 +1,59 @@
+{
+  "skills": [
+    {
+      "id": "skill-frontend-ui",
+      "domain": "frontend",
+      "doc": "docs/skills/domains/frontend.md"
+    },
+    {
+      "id": "skill-backend-api",
+      "domain": "backend",
+      "doc": "docs/skills/domains/backend.md"
+    },
+    {
+      "id": "skill-auth-guardrails",
+      "domain": "auth",
+      "doc": "docs/skills/domains/auth.md"
+    },
+    {
+      "id": "skill-mobile-experience",
+      "domain": "mobile",
+      "doc": "docs/skills/domains/mobile.md"
+    },
+    {
+      "id": "skill-devops-platform",
+      "domain": "infra",
+      "doc": "docs/skills/domains/infra.md"
+    },
+    {
+      "id": "skill-saptm-devops",
+      "domain": "devops",
+      "doc": ".ai/skills/devops.md"
+    },
+    {
+      "id": "skill-saptm-security",
+      "domain": "security",
+      "doc": ".ai/skills/security.md"
+    },
+    {
+      "id": "skill-quality-engineering",
+      "domain": "qa",
+      "doc": "docs/skills/domains/qa.md"
+    },
+    {
+      "id": "skill-observability-ops",
+      "domain": "observability",
+      "doc": "docs/skills/domains/observability.md"
+    },
+    {
+      "id": "skill-performance-optimization",
+      "domain": "performance",
+      "doc": "docs/skills/domains/performance.md"
+    },
+    {
+      "id": "skill-design-system-governance",
+      "domain": "design-system",
+      "doc": "docs/skills/domains/design-system.md"
+    }
+  ]
+}

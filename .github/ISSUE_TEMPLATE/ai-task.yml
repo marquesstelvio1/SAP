@@ -1,0 +1,46 @@
+name: AI Task
+description: Create an AI-ready engineering task
+title: "[AI Task] "
+labels:
+  - ai-generated
+body:
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Domain
+      options:
+        - frontend
+        - backend
+        - auth
+        - mobile
+        - infra
+        - qa
+        - observability
+        - performance
+        - design-system
+    validations:
+      required: true
+  - type: input
+    id: feature
+    attributes:
+      label: Feature or task title
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+    validations:
+      required: true
+

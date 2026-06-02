@@ -1,0 +1,18 @@
+﻿{
+  "projectKey": "FIN",
+  "issueType": "Task",
+  "summary": "ai-bootstrap",
+  "description": "AI-generated task bundle for ai-bootstrap",
+  "labels": [
+    "ai-generated",
+    "frontend"
+  ],
+  "fields": {
+    "domain": "frontend",
+    "ownerAgent": "agent-frontend",
+    "riskLevel": "high",
+    "rollbackStrategy": "Revert branch and redeploy previous known-good state"
+  }
+}
+
+

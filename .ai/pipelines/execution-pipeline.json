@@ -1,0 +1,13 @@
+{
+  "name": "execution-pipeline",
+  "steps": [
+    "validate-task-scope",
+    "select-agent-and-skill",
+    "generate-test-plan",
+    "implement",
+    "draft-commit-and-pr",
+    "update-documentation",
+    "record-execution-report"
+  ]
+}
+

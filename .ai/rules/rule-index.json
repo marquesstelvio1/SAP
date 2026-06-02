@@ -1,0 +1,42 @@
+{
+  "global": [
+    "docs/rules/global.md",
+    "docs/standards/coding-standards.md",
+    "docs/standards/commit-standards.md",
+    "docs/standards/branch-standards.md",
+    ".ai/rules/architecture.md",
+    ".ai/rules/security.md",
+    ".ai/rules/testing.md",
+    ".ai/rules/ui.md",
+    ".ai/rules/observability.md"
+  ],
+  "domains": {
+    "frontend": [
+      "docs/rules/domains/frontend.md"
+    ],
+    "backend": [
+      "docs/rules/domains/backend.md"
+    ],
+    "auth": [
+      "docs/rules/domains/auth.md"
+    ],
+    "mobile": [
+      "docs/rules/domains/mobile.md"
+    ],
+    "infra": [
+      "docs/rules/domains/infra.md"
+    ],
+    "qa": [
+      "docs/rules/domains/qa.md"
+    ],
+    "observability": [
+      "docs/rules/domains/observability.md"
+    ],
+    "performance": [
+      "docs/rules/domains/performance.md"
+    ],
+    "design-system": [
+      "docs/rules/domains/design-system.md"
+    ]
+  }
+}

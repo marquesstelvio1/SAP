@@ -1,0 +1,35 @@
+{
+  "automations": [
+    {
+      "name": "task-generation",
+      "trigger": "accepted-diagnostic-or-roadmap-item",
+      "output": ".ai/tasks/<domain>/<task-id>.md",
+      "ownerAgent": "agent-planner"
+    },
+    {
+      "name": "pr-generation",
+      "trigger": "task-ready-for-review",
+      "output": ".ai/reports/pr-drafts/<task-id>-pr.md",
+      "ownerAgent": "agent-git-manager"
+    },
+    {
+      "name": "changelog-generation",
+      "trigger": "release-candidate",
+      "output": "CHANGELOG.md",
+      "ownerAgent": "agent-git-manager"
+    },
+    {
+      "name": "documentation-generation",
+      "trigger": "task-completed",
+      "output": ".ai/reports/docs/<task-id>-docs.md",
+      "ownerAgent": "agent-architect"
+    },
+    {
+      "name": "test-generation",
+      "trigger": "task-approved-for-execution",
+      "output": ".ai/reports/tests/<task-id>-test-plan.md",
+      "ownerAgent": "agent-qa"
+    }
+  ]
+}
+

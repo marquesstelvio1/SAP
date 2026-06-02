@@ -1,0 +1,18 @@
+﻿{
+  "projectKey": "FIN",
+  "issueType": "Task",
+  "summary": "contract-versioning-policy",
+  "description": "AI-generated task bundle for contract-versioning-policy",
+  "labels": [
+    "ai-generated",
+    "backend"
+  ],
+  "fields": {
+    "domain": "backend",
+    "ownerAgent": "agent-backend",
+    "riskLevel": "high",
+    "rollbackStrategy": "Revert branch and redeploy previous known-good state"
+  }
+}
+
+

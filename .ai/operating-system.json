@@ -1,0 +1,163 @@
+{
+  "name": "saptm-ai-engineering-os",
+  "version": "1.0.0",
+  "mode": "guardrailed-enterprise",
+  "product": {
+    "name": "SAPTM Enterprise Logistics Platform",
+    "domain": "rail-port-logistics",
+    "foundationIndex": "docs/enterprise/foundation-index.md"
+  },
+  "startupOrder": [
+    "diagnostic",
+    "rules",
+    "standards",
+    "governance",
+    "execution"
+  ],
+  "domains": {
+    "frontend": {
+      "ownerAgent": "agent-frontend",
+      "skills": [
+        "skill-frontend-ui"
+      ],
+      "requiredOutputs": [
+        "task",
+        "tests",
+        "documentation",
+        "pr"
+      ]
+    },
+    "backend": {
+      "ownerAgent": "agent-backend",
+      "skills": [
+        "skill-backend-api"
+      ],
+      "requiredOutputs": [
+        "task",
+        "tests",
+        "documentation",
+        "pr"
+      ]
+    },
+    "auth": {
+      "ownerAgent": "agent-auth",
+      "skills": [
+        "skill-auth-guardrails"
+      ],
+      "requiredOutputs": [
+        "task",
+        "tests",
+        "documentation",
+        "pr",
+        "approval"
+      ]
+    },
+    "mobile": {
+      "ownerAgent": "agent-mobile",
+      "skills": [
+        "skill-mobile-experience"
+      ],
+      "requiredOutputs": [
+        "task",
+        "tests",
+        "documentation",
+        "pr"
+      ]
+    },
+    "infra": {
+      "ownerAgent": "agent-infra",
+      "skills": [
+        "skill-devops-platform"
+      ],
+      "requiredOutputs": [
+        "task",
+        "tests",
+        "documentation",
+        "pr",
+        "approval"
+      ]
+    },
+    "qa": {
+      "ownerAgent": "agent-qa",
+      "skills": [
+        "skill-quality-engineering"
+      ],
+      "requiredOutputs": [
+        "tests",
+        "regression-plan",
+        "report"
+      ]
+    },
+    "observability": {
+      "ownerAgent": "agent-observability",
+      "skills": [
+        "skill-observability-ops"
+      ],
+      "requiredOutputs": [
+        "diagnostic",
+        "dashboards",
+        "alerts",
+        "report"
+      ]
+    },
+    "performance": {
+      "ownerAgent": "agent-performance",
+      "skills": [
+        "skill-performance-optimization"
+      ],
+      "requiredOutputs": [
+        "benchmark",
+        "tests",
+        "documentation",
+        "report"
+      ]
+    },
+    "design-system": {
+      "ownerAgent": "agent-design-system",
+      "skills": [
+        "skill-design-system-governance"
+      ],
+      "requiredOutputs": [
+        "task",
+        "tests",
+        "documentation",
+        "pr"
+      ]
+    }
+  },
+  "workflows": [
+    "diagnostic-to-backlog",
+    "feature-delivery",
+    "release-governance"
+  ],
+  "governanceGates": [
+    "scope",
+    "contract",
+    "auth-security",
+    "test",
+    "docs-changelog",
+    "release"
+  ],
+  "automations": [
+    "task-generation",
+    "pr-generation",
+    "changelog-generation",
+    "documentation-generation",
+    "test-generation"
+  ],
+  "contracts": [
+    ".ai/schemas/task.schema.json",
+    ".ai/schemas/diagnostic.schema.json",
+    ".ai/schemas/execution-report.schema.json"
+  ],
+  "policies": [
+    ".ai/policies/risk-matrix.json",
+    ".ai/policies/governance-gates.json"
+  ],
+  "registries": [
+    ".ai/agents/registry.json",
+    ".ai/skills/registry.json",
+    ".ai/rules/rule-index.json",
+    ".ai/routing.json"
+  ]
+}

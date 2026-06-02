@@ -1,0 +1,12 @@
+{
+  "name": "@saptm/tsconfig",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./base": "./base.json",
+    "./next": "./next.json",
+    "./nest": "./nest.json",
+    "./package": "./package.json"
+  }
+}

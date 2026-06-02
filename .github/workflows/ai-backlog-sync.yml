@@ -1,0 +1,59 @@
+name: AI Backlog Sync
+
+on:
+  schedule:
+    - cron: "0 8 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: Target domain
+        required: true
+        default: frontend
+      feature:
+        description: Task title
+        required: true
+      priority:
+        description: Priority
+        required: false
+        default: high
+      task_id:
+        description: Optional task id
+        required: false
+
+jobs:
+  generate-task-bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate task, tests, and integration payloads
+        shell: pwsh
+        run: |
+          $domain = '${{ github.event.inputs.domain }}'
+          if ([string]::IsNullOrWhiteSpace($domain)) {
+            $domain = 'frontend'
+          }
+          $feature = '${{ github.event.inputs.feature }}'
+          if ([string]::IsNullOrWhiteSpace($feature)) {
+            $feature = 'scheduled-backlog-refresh'
+          }
+          $priority = '${{ github.event.inputs.priority }}'
+          if ([string]::IsNullOrWhiteSpace($priority)) {
+            $priority = 'high'
+          }
+          $taskId = '${{ github.event.inputs.task_id }}'
+
+          $created = & ./scripts/New-AITaskBundle.ps1 -Domain $domain -Feature $feature -Priority $priority -TaskId $taskId
+          if ([string]::IsNullOrWhiteSpace($taskId)) {
+            $taskFile = $created | Where-Object { $_ -like "*.md" } | Select-Object -First 1
+            $taskId = [System.IO.Path]::GetFileNameWithoutExtension($taskFile)
+          }
+          & ./scripts/New-AITestPlan.ps1 -Domain $domain -TaskId $taskId
+          & ./scripts/New-AIDocumentationPack.ps1 -Domain $domain -TaskId $taskId -Summary "Backlog sync documentation pack for $feature"
+      - name: Upload backlog artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-backlog-artifacts
+          path: |
+            .ai/tasks
+            .ai/reports
+

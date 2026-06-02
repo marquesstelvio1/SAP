@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Execution Report",
+  "type": "object",
+  "required": [
+    "workflow",
+    "domain",
+    "taskId",
+    "outputs",
+    "risks",
+    "followUp"
+  ],
+  "properties": {
+    "workflow": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "taskId": {
+      "type": "string"
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "followUp": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
+

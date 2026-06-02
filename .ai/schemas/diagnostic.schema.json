@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Diagnostic",
+  "type": "object",
+  "required": [
+    "id",
+    "domain",
+    "title",
+    "severity",
+    "impact",
+    "evidence",
+    "recommendedAction"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "domain": {
+      "enum": [
+        "frontend",
+        "backend",
+        "auth",
+        "mobile",
+        "infra",
+        "qa",
+        "observability",
+        "performance",
+        "design-system"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "impact": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "string"
+    },
+    "recommendedAction": {
+      "type": "string"
+    }
+  }
+}
+

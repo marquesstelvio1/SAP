@@ -1,0 +1,17 @@
+{
+  "projectKey": "FIN",
+  "issueType": "Task",
+  "summary": "{{TASK_TITLE}}",
+  "description": "{{TASK_DESCRIPTION}}",
+  "labels": [
+    "ai-generated",
+    "{{DOMAIN}}"
+  ],
+  "fields": {
+    "domain": "{{DOMAIN}}",
+    "ownerAgent": "{{OWNER_AGENT}}",
+    "riskLevel": "{{RISK_LEVEL}}",
+    "rollbackStrategy": "{{ROLLBACK}}"
+  }
+}
+

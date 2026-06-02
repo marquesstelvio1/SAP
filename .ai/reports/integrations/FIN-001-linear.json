@@ -1,0 +1,16 @@
+﻿{
+  "team": "Engineering",
+  "title": "ai-bootstrap",
+  "description": "AI-generated task bundle for ai-bootstrap",
+  "labels": [
+    "ai-generated",
+    "frontend"
+  ],
+  "priority": "high",
+  "metadata": {
+    "ownerAgent": "agent-frontend",
+    "riskLevel": "high",
+    "linkedPr": ""
+  }
+}
+

@@ -1,0 +1,15 @@
+{
+  "team": "Engineering",
+  "title": "{{TASK_TITLE}}",
+  "description": "{{TASK_DESCRIPTION}}",
+  "labels": [
+    "ai-generated",
+    "{{DOMAIN}}"
+  ],
+  "priority": "{{PRIORITY}}",
+  "metadata": {
+    "ownerAgent": "{{OWNER_AGENT}}",
+    "riskLevel": "{{RISK_LEVEL}}",
+    "linkedPr": "{{PR_LINK}}"
+  }
+}
