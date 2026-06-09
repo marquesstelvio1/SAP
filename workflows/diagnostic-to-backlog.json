@@ -1,16 +1,6 @@
 {
   "name": "diagnostic-to-backlog",
-  "input": [
-    "docs/diagnostics/*.md",
-    ".ai/context/*.md"
-  ],
-  "output": [
-    "docs/roadmaps/*.md",
-    ".ai/tasks/**/*.md"
-  ],
-  "agents": [
-    "agent-architect",
-    "agent-planner"
-  ]
+  "input": ["docs/diagnostics/*.md", ".ai/context/*.md"],
+  "output": ["docs/roadmaps/*.md", ".ai/tasks/**/*.md"],
+  "agents": ["agent-architect", "agent-planner"]
 }
-

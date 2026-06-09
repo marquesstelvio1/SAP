@@ -34,12 +34,7 @@
       "type": "string"
     },
     "priority": {
-      "enum": [
-        "critical",
-        "high",
-        "medium",
-        "low"
-      ]
+      "enum": ["critical", "high", "medium", "low"]
     },
     "ownerAgent": {
       "type": "string"
@@ -67,4 +62,3 @@
     }
   }
 }
-

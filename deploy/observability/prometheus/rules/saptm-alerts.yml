@@ -1,0 +1,52 @@
+groups:
+  - name: saptm-runtime
+    rules:
+      - alert: SAPTMApiTargetDown
+        expr: up{job="saptm-api"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          runbook: docs/runbooks/incident-to-diagnostic-runbook.md
+        annotations:
+          summary: SAPTM API metrics target is down.
+          description: Prometheus cannot scrape the API metrics endpoint for more than 2 minutes.
+
+      - alert: SAPTMApiHighErrorRate
+        expr: |
+          (
+            sum(rate(http_server_duration_ms_count{http_status_class=~"5.."}[5m]))
+            /
+            clamp_min(sum(rate(http_server_duration_ms_count[5m])), 1)
+          ) > 0.05
+        for: 10m
+        labels:
+          severity: warning
+          runbook: docs/runbooks/observability-runbook.md
+        annotations:
+          summary: SAPTM API 5xx error rate is above 5%.
+          description: API server errors exceeded the release SLO threshold for 10 minutes.
+
+      - alert: SAPTMApiHighLatencyP95
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le, http_route) (rate(http_server_duration_ms_bucket[5m]))
+          ) > 1000
+        for: 10m
+        labels:
+          severity: warning
+          runbook: docs/runbooks/observability-runbook.md
+        annotations:
+          summary: SAPTM API p95 latency is above 1 second.
+          description: At least one API route is slower than the baseline latency threshold.
+
+      - alert: SAPTMAuthorizationDenialSpike
+        expr: |
+          sum(rate(authorization_decisions_total{authorization_allowed="false"}[10m])) > 5
+        for: 10m
+        labels:
+          severity: warning
+          runbook: docs/runbooks/incident-to-diagnostic-runbook.md
+        annotations:
+          summary: SAPTM authorization denials increased.
+          description: Authorization denials may indicate abuse, broken roles, or a failed rollout.

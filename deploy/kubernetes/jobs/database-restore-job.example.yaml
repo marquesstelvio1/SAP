@@ -1,0 +1,79 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: saptm-database-restore-manual
+  labels:
+    app.kubernetes.io/name: saptm
+    app.kubernetes.io/component: database-restore
+    app.kubernetes.io/part-of: saptm-platform
+  annotations:
+    saptm.io/apply-mode: manual-only
+    saptm.io/warning: "Patch RESTORE_BACKUP_FILE and set spec.suspend=false only during approved restore."
+spec:
+  suspend: true
+  backoffLimit: 0
+  activeDeadlineSeconds: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: database-restore
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 70
+        runAsGroup: 70
+        fsGroup: 70
+      containers:
+        - name: pg-restore
+          image: postgres:17-alpine
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: saptm-runtime-secrets
+                  key: DATABASE_URL
+            - name: RESTORE_BACKUP_FILE
+              value: ""
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              if [ -z "$RESTORE_BACKUP_FILE" ]; then
+                echo "RESTORE_BACKUP_FILE is required."
+                exit 1
+              fi
+
+              pg_restore \
+                --clean \
+                --if-exists \
+                --no-owner \
+                --no-privileges \
+                --dbname "$DATABASE_URL" \
+                "/backups/$RESTORE_BACKUP_FILE"
+          volumeMounts:
+            - name: backups
+              mountPath: /backups
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "2000m"
+              memory: "2048Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: backups
+          persistentVolumeClaim:
+            claimName: saptm-database-backups
+        - name: tmp
+          emptyDir: {}

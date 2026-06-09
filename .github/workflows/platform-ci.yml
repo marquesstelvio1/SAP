@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   foundation:
     name: Foundation validation
@@ -26,6 +29,12 @@ jobs:
     name: Workspace checks
     runs-on: ubuntu-latest
     if: ${{ hashFiles('pnpm-lock.yaml') != '' }}
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/saptm
+      BETTER_AUTH_SECRET: ci-better-auth-secret-for-build-validation-only
+      BETTER_AUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,6 +43,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Enable Corepack
         run: corepack enable
@@ -41,10 +52,86 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Validate foundation gate
+        run: pnpm validate:foundation
+
+      - name: Validate environment gate
+        run: pnpm validate:env
+
+      - name: Validate migration gate
+        run: pnpm validate:migrations
+
+      - name: Validate container gate
+        run: pnpm validate:containers
+
+      - name: Validate deployment gate
+        run: pnpm validate:deploy
+
+      - name: Validate production inputs gate
+        run: pnpm validate:production-inputs
+
+      - name: Validate production handoff gate
+        run: pnpm validate:production-handoff
+
+      - name: Validate observability gate
+        run: pnpm validate:observability
+
+      - name: Validate alert routing gate
+        run: pnpm validate:alert-routing
+
+      - name: Validate DR gate
+        run: pnpm validate:dr
+
+      - name: Validate TLS gate
+        run: pnpm validate:tls
+
+      - name: Validate security runtime gate
+        run: pnpm validate:security-runtime
+
+      - name: Validate secrets and network gate
+        run: pnpm validate:secrets-network
+
+      - name: Validate supply chain gate
+        run: pnpm validate:supply-chain
+
+      - name: Validate resilience gate
+        run: pnpm validate:resilience
+
+      - name: Validate resource governance gate
+        run: pnpm validate:resource-governance
+
+      - name: Validate cluster gate
+        run: pnpm validate:cluster
+
+      - name: Validate cluster baseline inputs gate
+        run: pnpm validate:cluster-baseline-inputs
+
+      - name: Validate local readiness gate
+        run: pnpm validate:local-readiness
+
+      - name: Validate tracking foundation gate
+        run: pnpm validate:tracking-foundation
+
+      - name: Validate cargo foundation gate
+        run: pnpm validate:cargo-foundation
+
+      - name: Validate capacity foundation gate
+        run: pnpm validate:capacity-foundation
+
+      - name: Validate capacity advisory gate
+        run: pnpm validate:capacity-advisory
+
+      - name: Validate tariff foundation gate
+        run: pnpm validate:tariff-foundation
+
+      - name: Validate release evidence gate
+        run: pnpm validate:evidence
+
+      - name: Validate Prisma schema
+        run: pnpm db:validate
+
       - name: Generate Prisma Client
         run: pnpm db:generate
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/saptm
 
       - name: Lint
         run: pnpm lint
@@ -55,5 +142,18 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: E2E smoke tests
+        run: pnpm test:e2e
+
       - name: Build
         run: pnpm build
+
+      - name: Generate release evidence
+        run: pnpm evidence:release
+
+      - name: Upload release evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: saptm-release-evidence-${{ github.sha }}
+          path: reports/release-evidence
+          if-no-files-found: error

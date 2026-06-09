@@ -16,6 +16,9 @@ User permissions are resolved from database membership, role, and permission rec
 
 Client-provided tenant, role, permission, or organization headers are not authoritative.
 
+The initial database permission catalog is seeded through `docs/database/rbac-bootstrap.md`.
+Runtime permission names remain exported by `@saptm/auth`.
+
 ## Default Organization Rule
 
 The API may select a default active organization only when the user has exactly one active membership.

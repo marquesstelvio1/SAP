@@ -8,7 +8,8 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
     "typecheck": "tsc --noEmit",
-    "lint": "biome check ."
+    "lint": "biome check .",
+    "test": "node --test tests/rpc-foundation.test.mjs tests/admin-rpc.test.mjs tests/audit-rpc.test.mjs tests/reports-rpc.test.mjs tests/notifications-rpc.test.mjs tests/integrations-rpc.test.mjs tests/cargo-rpc.test.mjs tests/cargo-service-business-rules.test.mjs tests/tracking-rpc.test.mjs tests/capacity-rpc.test.mjs tests/capacity-service-business-rules.test.mjs tests/evidence-services-business-rules.test.mjs tests/tariff-rpc.test.mjs tests/planning-rpc.test.mjs"
   },
   "dependencies": {
     "@nestjs/common": "catalog:",

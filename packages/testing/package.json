@@ -16,10 +16,14 @@
     "lint": "biome check ."
   },
   "dependencies": {
-    "@playwright/test": "catalog:"
+    "@playwright/test": "catalog:",
+    "@saptm/auth": "workspace:*",
+    "@saptm/observability": "workspace:*",
+    "@saptm/rpc": "workspace:*"
   },
   "devDependencies": {
     "@saptm/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
     "typescript": "catalog:"
   }
 }

@@ -11,13 +11,18 @@
     }
   },
   "scripts": {
-    "build": "tsup ././src/index.ts --format esm --dts --sourcemap --clean --target es2022",
+    "build": "tsc -p tsconfig.json && node ../../scripts/patch-esm-dist-extensions.mjs dist/index.js audit rbac-bootstrap",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "biome check .",
     "db:validate": "prisma validate --schema prisma/schema.prisma",
     "db:generate": "prisma generate --schema prisma/schema.prisma",
     "db:migrate:dev": "prisma migrate dev --schema prisma/schema.prisma",
-    "db:studio": "prisma studio --schema prisma/schema.prisma"
+    "db:migrate:deploy": "prisma migrate deploy --schema prisma/schema.prisma",
+    "db:migrate:status": "prisma migrate status --schema prisma/schema.prisma",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio --schema prisma/schema.prisma",
+    "validate:migrations": "node ../../scripts/validate-migrations.mjs",
+    "worker:outbox": "node scripts/process-outbox.mjs"
   },
   "dependencies": {
     "@prisma/client": "catalog:",
@@ -28,6 +33,7 @@
     "@saptm/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "prisma": "catalog:",
+    "tsx": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:"
   }

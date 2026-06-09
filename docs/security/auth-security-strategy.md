@@ -15,6 +15,7 @@ This separation is mandatory because logistics permissions depend on tenant, fac
 | Server placement | Shared config in `@saptm/auth`; browser auth route exposed by `apps/web` |
 | Session transport | Secure HTTP-only cookies managed by Better Auth |
 | Session validation | Full session validation for protected API operations |
+| MFA | Better Auth two-factor plugin with TOTP, trusted devices, encrypted backup codes, and local enrollment UI |
 | Cookie-only checks | Allowed only for optimistic Next.js redirects, never as final authorization |
 | Session cache | Disabled or short-lived for sensitive operations; revocation risk must be documented |
 | Type sharing | Better Auth inferred session types exported from `@saptm/auth` |
@@ -110,6 +111,8 @@ Legend:
 - Session duration must balance enterprise convenience with operational risk.
 - Sensitive mutations must re-check session validity server-side.
 - Password change or suspected compromise must revoke other sessions.
+- MFA enrollment uses Better Auth TOTP secrets and backup codes; login challenges route through the
+  temporary two-factor cookie before a full session is issued.
 - Session metadata should include tenant selection and active organization only when safe to cache.
 - Server authorization must not trust client-selected tenant without membership verification.
 
@@ -178,3 +181,6 @@ Audit record minimum fields:
 - No integration without service account scope.
 - No export without data classification and retention policy.
 - No AI action without explainability and approval boundary.
+- No HTTP runtime without the baseline security headers defined in `docs/security/http-security-headers.md`.
+- No production runtime without the network isolation baseline defined in `docs/security/network-policy.md`.
+- No production rollout without admission controls defined in `docs/security/admission-control.md`.

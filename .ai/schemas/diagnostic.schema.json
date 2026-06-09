@@ -2,15 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "AI Diagnostic",
   "type": "object",
-  "required": [
-    "id",
-    "domain",
-    "title",
-    "severity",
-    "impact",
-    "evidence",
-    "recommendedAction"
-  ],
+  "required": ["id", "domain", "title", "severity", "impact", "evidence", "recommendedAction"],
   "properties": {
     "id": {
       "type": "string"
@@ -32,12 +24,7 @@
       "type": "string"
     },
     "severity": {
-      "enum": [
-        "critical",
-        "high",
-        "medium",
-        "low"
-      ]
+      "enum": ["critical", "high", "medium", "low"]
     },
     "impact": {
       "type": "string"
@@ -50,4 +37,3 @@
     }
   }
 }
-

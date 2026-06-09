@@ -1,0 +1,154 @@
+name: Environment Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Deployment environment
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      api_image_tag:
+        description: Immutable API image tag, for example sha-abc123
+        required: true
+        type: string
+      web_image_tag:
+        description: Immutable Web image tag, for example sha-abc123
+        required: true
+        type: string
+      run_migrations:
+        description: Run Prisma migrations before deployment
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      API_IMAGE_TAG: ${{ inputs.api_image_tag }}
+      WEB_IMAGE_TAG: ${{ inputs.web_image_tag }}
+      DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      GHCR_IMAGE_NAMESPACE: ${{ vars.GHCR_IMAGE_NAMESPACE }}
+      SAPTM_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+      SAPTM_WEB_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate immutable image tags
+        shell: bash
+        run: |
+          case "$API_IMAGE_TAG" in sha-*) ;; *) echo "API image tag must start with sha-"; exit 1 ;; esac
+          case "$WEB_IMAGE_TAG" in sha-*) ;; *) echo "Web image tag must start with sha-"; exit 1 ;; esac
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Enable Corepack
+        if: ${{ inputs.run_migrations }}
+        run: corepack enable
+
+      - name: Install dependencies
+        if: ${{ inputs.run_migrations }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy database migrations
+        if: ${{ inputs.run_migrations }}
+        run: pnpm db:migrate:deploy
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        shell: bash
+        env:
+          KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG_B64 }}
+        run: |
+          if [ -z "$KUBE_CONFIG_B64" ]; then
+            echo "KUBE_CONFIG_B64 secret is required."
+            exit 1
+          fi
+          echo "$KUBE_CONFIG_B64" | base64 -d > "$RUNNER_TEMP/kubeconfig"
+          chmod 600 "$RUNNER_TEMP/kubeconfig"
+          echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
+
+      - name: Resolve deployment variables
+        id: deploy
+        shell: bash
+        run: |
+          image_namespace="${GHCR_IMAGE_NAMESPACE:-${GITHUB_REPOSITORY,,}}"
+          namespace="saptm-${DEPLOY_ENVIRONMENT}"
+          echo "image_namespace=$image_namespace" >> "$GITHUB_OUTPUT"
+          echo "namespace=$namespace" >> "$GITHUB_OUTPUT"
+
+      - name: Run cluster preflight
+        env:
+          SAPTM_PREFLIGHT_SCOPE: app
+        run: node scripts/cluster-preflight.mjs
+
+      - name: Render environment Kubernetes overlay
+        run: node scripts/render-kubernetes-environment.mjs
+
+      - name: Ensure namespace
+        shell: bash
+        run: |
+          kubectl create namespace "${{ steps.deploy.outputs.namespace }}" \
+            --dry-run=client \
+            -o yaml | kubectl apply -f -
+
+      - name: Verify required runtime secret
+        shell: bash
+        run: |
+          kubectl get secret saptm-runtime-secrets \
+            -n "${{ steps.deploy.outputs.namespace }}"
+
+      - name: Apply Kubernetes overlay
+        run: kubectl apply -k deploy/kubernetes/overlays/${{ inputs.environment }}
+
+      - name: Set immutable images
+        shell: bash
+        run: |
+          kubectl set image deployment/saptm-api \
+            api=ghcr.io/${{ steps.deploy.outputs.image_namespace }}/api:${API_IMAGE_TAG} \
+            -n "${{ steps.deploy.outputs.namespace }}"
+          kubectl set image deployment/saptm-web \
+            web=ghcr.io/${{ steps.deploy.outputs.image_namespace }}/web:${WEB_IMAGE_TAG} \
+            -n "${{ steps.deploy.outputs.namespace }}"
+
+      - name: Wait for rollout
+        shell: bash
+        run: |
+          kubectl rollout status deployment/saptm-api \
+            -n "${{ steps.deploy.outputs.namespace }}" \
+            --timeout=180s
+          kubectl rollout status deployment/saptm-web \
+            -n "${{ steps.deploy.outputs.namespace }}" \
+            --timeout=180s
+
+      - name: Smoke runtime endpoints
+        run: node scripts/smoke-runtime.mjs
+
+      - name: Capture rollout state on failure
+        if: failure()
+        shell: bash
+        run: |
+          kubectl rollout history deployment/saptm-api -n "${{ steps.deploy.outputs.namespace }}" || true
+          kubectl rollout history deployment/saptm-web -n "${{ steps.deploy.outputs.namespace }}" || true
+          kubectl get pods -n "${{ steps.deploy.outputs.namespace }}" -o wide || true

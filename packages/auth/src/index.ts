@@ -24,6 +24,21 @@ export {
   enrichTraceContextWithAuth,
   hasPlatformPermission,
 } from "./context.js";
+export {
+  type AcceptPlatformInvitationInput,
+  type AcceptPlatformInvitationOutput,
+  acceptPlatformInvitation,
+  acceptPlatformInvitationFromEnv,
+  assertInvitationPasswordPolicy,
+  type CreatePlatformInvitationTokenInput,
+  type CreatePlatformInvitationTokenOutput,
+  createInvitationAcceptUrl,
+  createInvitationTokenHash,
+  createPlatformInvitationToken,
+  deletePlatformInvitationToken,
+  type InvitationDeliveryChannel,
+  type PlatformInvitationDelivery,
+} from "./invitations.js";
 export { type PlatformPermission, platformPermissions } from "./permissions.js";
 export {
   type AuthorizationDecision,
@@ -41,3 +56,11 @@ export {
   type ResolveAuthContextFromSessionInput,
   resolveAuthContextFromBetterAuthSession,
 } from "./session.js";
+export {
+  getUserSessionSecuritySummaryFromEnv,
+  type RevokeOtherUserSessionsInput,
+  type RevokeOtherUserSessionsOutput,
+  revokeOtherUserSessions,
+  revokeOtherUserSessionsFromEnv,
+  type UserSessionSecuritySummary,
+} from "./session-governance.js";

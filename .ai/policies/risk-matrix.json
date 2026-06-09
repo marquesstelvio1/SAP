@@ -3,39 +3,22 @@
     "critical": {
       "approvalRequired": true,
       "releaseBlocker": true,
-      "examples": [
-        "auth bypass",
-        "payment data loss",
-        "production outage"
-      ]
+      "examples": ["auth bypass", "payment data loss", "production outage"]
     },
     "high": {
       "approvalRequired": true,
       "releaseBlocker": false,
-      "examples": [
-        "contract change",
-        "critical journey regression",
-        "missing rollback"
-      ]
+      "examples": ["contract change", "critical journey regression", "missing rollback"]
     },
     "medium": {
       "approvalRequired": false,
       "releaseBlocker": false,
-      "examples": [
-        "localized UX issue",
-        "non-critical refactor risk",
-        "documentation drift"
-      ]
+      "examples": ["localized UX issue", "non-critical refactor risk", "documentation drift"]
     },
     "low": {
       "approvalRequired": false,
       "releaseBlocker": false,
-      "examples": [
-        "copy update",
-        "non-functional docs update",
-        "minor cleanup"
-      ]
+      "examples": ["copy update", "non-functional docs update", "minor cleanup"]
     }
   }
 }
-

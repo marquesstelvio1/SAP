@@ -1,0 +1,72 @@
+name: Observability Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment approval scope.
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-observability:
+    name: Deploy observability stack
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Write kubeconfig
+        env:
+          KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG_B64 }}
+        run: |
+          if [ -z "$KUBE_CONFIG_B64" ]; then
+            echo "KUBE_CONFIG_B64 secret is required."
+            exit 1
+          fi
+          mkdir -p "$HOME/.kube"
+          echo "$KUBE_CONFIG_B64" | base64 --decode > "$HOME/.kube/config"
+          chmod 600 "$HOME/.kube/config"
+
+      - name: Run cluster preflight
+        env:
+          SAPTM_PREFLIGHT_SCOPE: observability
+        run: node scripts/cluster-preflight.mjs
+
+      - name: Ensure observability namespace
+        run: kubectl apply -f deploy/kubernetes/observability/namespace.yaml
+
+      - name: Verify required observability secret
+        run: kubectl get secret saptm-observability-secrets -n saptm-observability
+
+      - name: Verify required Alertmanager config
+        run: |
+          kubectl get secret saptm-alertmanager-config -n saptm-observability
+          kubectl get secret saptm-alertmanager-config \
+            -n saptm-observability \
+            -o jsonpath='{.data.alertmanager\.yml}'
+
+      - name: Apply observability stack
+        run: kubectl apply -k deploy/kubernetes/observability
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/saptm-otel-collector -n saptm-observability --timeout=180s
+          kubectl rollout status deployment/saptm-alertmanager -n saptm-observability --timeout=180s
+          kubectl rollout status deployment/saptm-prometheus -n saptm-observability --timeout=180s
+          kubectl rollout status deployment/saptm-grafana -n saptm-observability --timeout=180s

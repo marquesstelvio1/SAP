@@ -1,19 +1,6 @@
 {
   "name": "release-governance",
-  "input": [
-    ".ai/reports/**/*.md",
-    "CHANGELOG.md",
-    "docs/governance/*.md"
-  ],
-  "output": [
-    ".ai/executions/*.md",
-    ".ai/reports/integrations/*.md"
-  ],
-  "agents": [
-    "agent-observability",
-    "agent-performance",
-    "agent-git-manager",
-    "agent-architect"
-  ]
+  "input": [".ai/reports/**/*.md", "CHANGELOG.md", "docs/governance/*.md"],
+  "output": [".ai/executions/*.md", ".ai/reports/integrations/*.md"],
+  "agents": ["agent-observability", "agent-performance", "agent-git-manager", "agent-architect"]
 }
-

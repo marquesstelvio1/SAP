@@ -3,10 +3,7 @@
   "issueType": "Task",
   "summary": "ai-bootstrap",
   "description": "AI-generated task bundle for ai-bootstrap",
-  "labels": [
-    "ai-generated",
-    "frontend"
-  ],
+  "labels": ["ai-generated", "frontend"],
   "fields": {
     "domain": "frontend",
     "ownerAgent": "agent-frontend",
@@ -14,5 +11,3 @@
     "rollbackStrategy": "Revert branch and redeploy previous known-good state"
   }
 }
-
-

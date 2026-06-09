@@ -19,7 +19,7 @@ No product pages, CRUDs, or business features are authorized before the foundati
 | 7 | Database Strategy | `docs/database/database-strategy.md` |
 | 8 | RPC Strategy | `docs/rpc/rpc-strategy.md` |
 | 9 | Design System Strategy | `docs/design-system/design-system-strategy.md` |
-| 10 | DevOps Strategy | `docs/devops/devops-strategy.md` |
+| 10 | DevOps Strategy | `docs/devops/devops-strategy.md`, `docs/devops/production-inputs.md`, `docs/devops/external-secrets-strategy.md`, `docs/devops/supply-chain-security.md`, `docs/devops/runtime-resilience.md`, `docs/devops/resource-governance.md`, `docs/devops/cluster-readiness.md` |
 | 11 | Security Strategy | `docs/security/auth-security-strategy.md` |
 | 12 | Testing Strategy | `docs/testing/testing-strategy.md` |
 | 13 | Observability Strategy | `docs/observability/observability-strategy.md` |
@@ -29,7 +29,7 @@ No product pages, CRUDs, or business features are authorized before the foundati
 | 17 | Agent Responsibilities | `docs/agents/saptm-agent-responsibilities.md` |
 | 18 | Rules | `.ai/rules/` |
 | 19 | Skills | `.ai/skills/` |
-| 20 | Governance Framework | `docs/governance/saptm-governance-framework.md` |
+| 20 | Governance Framework | `docs/governance/saptm-governance-framework.md`, `docs/governance/release-evidence.md` |
 
 ## Required Execution Order
 
@@ -47,10 +47,10 @@ No product pages, CRUDs, or business features are authorized before the foundati
 ## Foundation Gates
 
 - Architecture gate: bounded contexts, contracts, and ADRs exist.
-- Security gate: RBAC, ABAC, session, audit, and permission matrix exist.
-- Data gate: tenancy, migration, and data retention strategy exist.
+- Security gate: RBAC, ABAC, session, audit, permission matrix, TLS, HTTP security headers, external secret materialization, NetworkPolicy, and admission controls exist.
+- Data gate: tenancy, migration, backup, restore, and data retention strategy exist.
 - Contract gate: oRPC contract versioning and error model exist.
 - Design gate: tokens and shadcn/ui composition rules exist.
-- Observability gate: logs, traces, metrics, and alert taxonomy exist.
-- Delivery gate: backlog, roadmap, sprint plan, and agent responsibilities exist.
-
+- Observability gate: logs, traces, metrics endpoint, health probes, dashboards, runtime stack, and alert taxonomy exist.
+- Alert routing gate: Alertmanager production config is secret-managed and validated before rollout.
+- Delivery gate: backlog, roadmap, sprint plan, local readiness, runtime readiness, runtime resilience, resource governance, cluster readiness, cluster baseline inputs, production inputs, TLS, smoke checks, rollback, deployment packaging, release evidence, container registry governance, supply chain security, environment promotion, external secret preflight, network isolation, and agent responsibilities exist.

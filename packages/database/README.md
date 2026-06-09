@@ -4,9 +4,12 @@ Database package for Prisma schema, migrations, generated client access, and per
 
 Current status:
 
-- Package boundary only.
-- No Prisma schema yet.
+- Prisma schema implemented for foundation tables.
+- Baseline migration implemented.
+- Prisma client factory implemented.
+- Audit trail helpers implemented.
+- RBAC bootstrap seed implemented.
 - No domain persistence implemented.
 
 Implementation must follow `docs/database/database-strategy.md`.
-
+Migration rollout must follow `docs/database/migration-runbook.md`.

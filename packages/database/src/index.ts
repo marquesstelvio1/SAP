@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { createRequire } from "node:module";
 
 export {
   type AuditJsonValue,
@@ -22,6 +22,19 @@ export {
   prismaMutationOperations,
   telemetryActorTypeToDatabaseActorType,
 } from "./audit";
+export {
+  type RbacBootstrapClient,
+  type RbacBootstrapPermissionKey,
+  type RbacBootstrapRoleTemplate,
+  rbacBootstrapPermissions,
+  rbacBootstrapRoleTemplates,
+  type SeedRbacBootstrapInput,
+  type SeedRbacBootstrapResult,
+  seedRbacBootstrap,
+} from "./rbac-bootstrap";
+
+const require = createRequire(import.meta.url);
+const { PrismaClient } = require("@prisma/client") as typeof import("@prisma/client");
 
 export const databaseProvider = "postgresql" as const;
 
@@ -35,6 +48,11 @@ export const auditActions = [
   "integration.api_key.created",
   "integration.api_key.rotated",
   "integration.event.received",
+  "tracking.shipment.created",
+  "tracking.event.recorded",
+  "tracking.exception.managed",
+  "tracking.exception.resolved",
+  "tracking.exception.updated",
   "audit.record.created",
 ] as const;
 
@@ -45,7 +63,7 @@ export const outboxEventStatuses = ["pending", "processing", "published", "faile
 export type OutboxEventStatus = (typeof outboxEventStatuses)[number];
 
 type PrismaGlobal = typeof globalThis & {
-  __saptmPrismaClient?: PrismaClient;
+  __saptmPrismaClient?: InstanceType<typeof PrismaClient>;
 };
 
 type RuntimeGlobal = typeof globalThis & {

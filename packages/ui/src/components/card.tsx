@@ -22,11 +22,11 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+function CardTitle({ className, ...props }: React.ComponentProps<"h3">) {
   return (
-    <div
+    <h3
       data-slot="card-title"
-      className={cn("font-semibold leading-none tracking-[var(--tracking-heading)]", className)}
+      className={cn("m-0 font-semibold leading-none tracking-[var(--tracking-heading)]", className)}
       {...props}
     />
   );

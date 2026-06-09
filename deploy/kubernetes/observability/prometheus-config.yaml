@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: saptm-prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+
+    rule_files:
+      - /etc/prometheus/rules/*.yml
+
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets:
+                - saptm-alertmanager:9093
+
+    scrape_configs:
+      - job_name: saptm-api-kubernetes
+        metrics_path: /metrics
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          - source_labels:
+              - __meta_kubernetes_service_label_app_kubernetes_io_component
+            action: keep
+            regex: api
+          - source_labels:
+              - __meta_kubernetes_endpoint_port_name
+            action: keep
+            regex: http
+          - source_labels:
+              - __meta_kubernetes_namespace
+            target_label: namespace
+          - source_labels:
+              - __meta_kubernetes_service_name
+            target_label: service
+
+      - job_name: saptm-otel-collector
+        static_configs:
+          - targets:
+              - saptm-otel-collector:8888
+              - saptm-otel-collector:9464
+
+      - job_name: saptm-prometheus
+        static_configs:
+          - targets:
+              - localhost:9090
+  saptm-alerts.yml: |
+    groups:
+      - name: saptm-runtime
+        rules:
+          - alert: SAPTMApiTargetDown
+            expr: up{job="saptm-api-kubernetes"} == 0
+            for: 2m
+            labels:
+              severity: critical
+              runbook: docs/runbooks/incident-to-diagnostic-runbook.md
+            annotations:
+              summary: SAPTM API metrics target is down.
+              description: Prometheus cannot scrape the API metrics endpoint for more than 2 minutes.
+
+          - alert: SAPTMApiHighErrorRate
+            expr: |
+              (
+                sum(rate(http_server_duration_ms_count{http_status_class=~"5.."}[5m]))
+                /
+                clamp_min(sum(rate(http_server_duration_ms_count[5m])), 1)
+              ) > 0.05
+            for: 10m
+            labels:
+              severity: warning
+              runbook: docs/runbooks/observability-runbook.md
+            annotations:
+              summary: SAPTM API 5xx error rate is above 5%.
+              description: API server errors exceeded the release SLO threshold for 10 minutes.
+
+          - alert: SAPTMApiHighLatencyP95
+            expr: |
+              histogram_quantile(
+                0.95,
+                sum by (le, http_route) (rate(http_server_duration_ms_bucket[5m]))
+              ) > 1000
+            for: 10m
+            labels:
+              severity: warning
+              runbook: docs/runbooks/observability-runbook.md
+            annotations:
+              summary: SAPTM API p95 latency is above 1 second.
+              description: At least one API route is slower than the baseline latency threshold.
+
+          - alert: SAPTMAuthorizationDenialSpike
+            expr: |
+              sum(rate(authorization_decisions_total{authorization_allowed="false"}[10m])) > 5
+            for: 10m
+            labels:
+              severity: warning
+              runbook: docs/runbooks/incident-to-diagnostic-runbook.md
+            annotations:
+              summary: SAPTM authorization denials increased.
+              description: Authorization denials may indicate abuse, broken roles, or a failed rollout.

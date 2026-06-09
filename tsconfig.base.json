@@ -17,6 +17,8 @@
     "baseUrl": ".",
     "paths": {
       "@saptm/auth": ["packages/auth/src/index.ts"],
+      "@saptm/auth/client": ["packages/auth/src/client.ts"],
+      "@saptm/auth/server": ["packages/auth/src/server.ts"],
       "@saptm/config": ["packages/config/src/index.ts"],
       "@saptm/database": ["packages/database/src/index.ts"],
       "@saptm/observability": ["packages/observability/src/index.ts"],

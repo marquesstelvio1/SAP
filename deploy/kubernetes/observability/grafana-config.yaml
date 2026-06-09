@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: saptm-grafana-config
+data:
+  datasources.yml: |
+    apiVersion: 1
+
+    datasources:
+      - name: SAPTM Prometheus
+        uid: saptm-prometheus
+        type: prometheus
+        access: proxy
+        url: http://saptm-prometheus:9090
+        isDefault: true
+        editable: false
+  dashboards.yml: |
+    apiVersion: 1
+
+    providers:
+      - name: SAPTM Runtime
+        orgId: 1
+        folder: SAPTM
+        type: file
+        disableDeletion: true
+        editable: false
+        options:
+          path: /var/lib/grafana/dashboards
+  saptm-runtime.json: |
+    {
+      "editable": false,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "saptm-prometheus"
+          },
+          "id": 1,
+          "targets": [
+            {
+              "expr": "sum(rate(http_server_duration_ms_count[5m])) by (http_route)",
+              "legendFormat": "{{http_route}}",
+              "refId": "A"
+            }
+          ],
+          "title": "API Request Rate",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "saptm-prometheus"
+          },
+          "id": 2,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, sum by (le, http_route) (rate(http_server_duration_ms_bucket[5m])))",
+              "legendFormat": "{{http_route}}",
+              "refId": "A"
+            }
+          ],
+          "title": "API p95 Latency",
+          "type": "timeseries"
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "tags": [
+        "saptm",
+        "foundation"
+      ],
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "title": "SAPTM Runtime",
+      "uid": "saptm-runtime",
+      "version": 1
+    }

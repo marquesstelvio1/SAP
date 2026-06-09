@@ -1,0 +1,94 @@
+name: Environment Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Deployment environment
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      component:
+        description: Component to roll back
+        required: true
+        type: choice
+        options:
+          - both
+          - api
+          - web
+      target_revision:
+        description: Optional Kubernetes rollout revision. Empty rolls back to previous revision.
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rollback-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  rollback:
+    name: Rollback ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
+      COMPONENT: ${{ inputs.component }}
+      TARGET_REVISION: ${{ inputs.target_revision }}
+    steps:
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        shell: bash
+        env:
+          KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG_B64 }}
+        run: |
+          if [ -z "$KUBE_CONFIG_B64" ]; then
+            echo "KUBE_CONFIG_B64 secret is required."
+            exit 1
+          fi
+          echo "$KUBE_CONFIG_B64" | base64 -d > "$RUNNER_TEMP/kubeconfig"
+          chmod 600 "$RUNNER_TEMP/kubeconfig"
+          echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
+
+      - name: Roll back deployment
+        shell: bash
+        run: |
+          namespace="saptm-${DEPLOY_ENVIRONMENT}"
+
+          rollback_deployment() {
+            local name="$1"
+            if [ -n "$TARGET_REVISION" ]; then
+              kubectl rollout undo "deployment/$name" \
+                -n "$namespace" \
+                --to-revision="$TARGET_REVISION"
+            else
+              kubectl rollout undo "deployment/$name" \
+                -n "$namespace"
+            fi
+
+            kubectl rollout status "deployment/$name" \
+              -n "$namespace" \
+              --timeout=180s
+          }
+
+          if [ "$COMPONENT" = "both" ] || [ "$COMPONENT" = "api" ]; then
+            rollback_deployment saptm-api
+          fi
+
+          if [ "$COMPONENT" = "both" ] || [ "$COMPONENT" = "web" ]; then
+            rollback_deployment saptm-web
+          fi
+
+      - name: Show rollout history
+        if: always()
+        shell: bash
+        run: |
+          namespace="saptm-${DEPLOY_ENVIRONMENT}"
+          kubectl rollout history deployment/saptm-api -n "$namespace" || true
+          kubectl rollout history deployment/saptm-web -n "$namespace" || true

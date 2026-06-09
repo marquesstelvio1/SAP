@@ -35,13 +35,48 @@ Every endpoint must define:
 
 `@saptm/rpc` exposes `RpcOperationMetadata` so every operation declares:
 
+- Operation kind.
 - Auth mode.
 - Required permissions.
+- Permission evaluation mode.
+- Optional organization scope.
 - Audit classification.
 - Idempotency mode.
 - Observability criticality, span name, metric name, and required telemetry signals.
 
 Trace headers are serialized and parsed through `serializeRpcTraceHeaders` and `parseRpcTraceHeaders`, both backed by `@saptm/observability`.
+
+RPC contracts must be created through `defineRpcContract`. This applies metadata validation before input/output schemas are attached.
+
+## Authorization Boundary
+
+`apps/api` exposes `RpcContextService` as the mandatory boundary for future oRPC handlers.
+
+- Handlers pass the request and `RpcOperationMetadata` to `authorizeRequest`.
+- The service rejects auth resolution errors with `401`.
+- Protected operations without auth context fail with `401`.
+- RBAC or ABAC denial fails with `403`.
+- Allowed protected calls emit `rpc.authorization.evaluate` audit records.
+- Public calls are allowed only when metadata has no permissions or tenant scope.
+
+Full rules are defined in `docs/rpc/rpc-authorization.md`.
+
+## Foundation Transport
+
+The first executable oRPC transport is intentionally non-business:
+
+| Operation | Path | Auth | Purpose |
+| --- | --- | --- | --- |
+| `system.health` | `/rpc/system/health` | public | Prove oRPC routing, output validation, metadata, and API middleware wiring before product contracts |
+
+Rules:
+
+- Foundation transport may expose only system/runtime operations.
+- Business contracts must not be added until foundation gates are accepted.
+- `@saptm/rpc` owns the public metadata and output schema.
+- `apps/api` owns the executable oRPC router and handler implementation.
+- Future protected handlers must pass operation metadata through `RpcContextService`.
+- Contract tests must cover every exposed oRPC operation before release.
 
 ## API Layers
 
@@ -94,6 +129,11 @@ flowchart LR
 ## Acceptance Criteria
 
 - `@saptm/rpc` exists before frontend and backend business implementation.
+- `@saptm/rpc` exposes metadata, authorization, error, trace, and contract helpers.
+- `@saptm/rpc` exposes public `system.health` metadata and output schema.
+- `apps/api` exposes RPC context authorization before domain modules are implemented.
+- `apps/api` mounts the oRPC HTTP middleware at `/rpc`.
+- `apps/api` exposes `foundationRpcRouter` with public `system.health`.
 - First feature consumes contracts from `@saptm/rpc`.
 - API errors are typed and observable.
 - Contract tests exist for each exposed operation.

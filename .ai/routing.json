@@ -3,80 +3,47 @@
     "frontend": {
       "primaryAgent": "agent-frontend",
       "requiredSkill": "skill-frontend-ui",
-      "supportAgents": [
-        "agent-design-system",
-        "agent-qa",
-        "agent-performance"
-      ]
+      "supportAgents": ["agent-design-system", "agent-qa", "agent-performance"]
     },
     "backend": {
       "primaryAgent": "agent-backend",
       "requiredSkill": "skill-backend-api",
-      "supportAgents": [
-        "agent-architect",
-        "agent-qa",
-        "agent-observability"
-      ]
+      "supportAgents": ["agent-architect", "agent-qa", "agent-observability"]
     },
     "auth": {
       "primaryAgent": "agent-auth",
       "requiredSkill": "skill-auth-guardrails",
-      "supportAgents": [
-        "agent-architect",
-        "agent-qa",
-        "agent-observability"
-      ]
+      "supportAgents": ["agent-architect", "agent-qa", "agent-observability"]
     },
     "mobile": {
       "primaryAgent": "agent-mobile",
       "requiredSkill": "skill-mobile-experience",
-      "supportAgents": [
-        "agent-backend",
-        "agent-qa",
-        "agent-performance"
-      ]
+      "supportAgents": ["agent-backend", "agent-qa", "agent-performance"]
     },
     "infra": {
       "primaryAgent": "agent-infra",
       "requiredSkill": "skill-devops-platform",
-      "supportAgents": [
-        "agent-observability",
-        "agent-qa",
-        "agent-architect"
-      ]
+      "supportAgents": ["agent-observability", "agent-qa", "agent-architect"]
     },
     "qa": {
       "primaryAgent": "agent-qa",
       "requiredSkill": "skill-quality-engineering",
-      "supportAgents": [
-        "agent-architect"
-      ]
+      "supportAgents": ["agent-architect"]
     },
     "observability": {
       "primaryAgent": "agent-observability",
       "requiredSkill": "skill-observability-ops",
-      "supportAgents": [
-        "agent-infra",
-        "agent-qa"
-      ]
+      "supportAgents": ["agent-infra", "agent-qa"]
     },
     "performance": {
       "primaryAgent": "agent-performance",
       "requiredSkill": "skill-performance-optimization",
-      "supportAgents": [
-        "agent-frontend",
-        "agent-backend",
-        "agent-qa"
-      ]
+      "supportAgents": ["agent-frontend", "agent-backend", "agent-qa"]
     },
     "design-system": {
       "primaryAgent": "agent-design-system",
       "requiredSkill": "skill-design-system-governance",
-      "supportAgents": [
-        "agent-frontend",
-        "agent-qa"
-      ]
+      "supportAgents": ["agent-frontend", "agent-qa"]
     }
   }
 }
-

@@ -60,6 +60,19 @@ Row-level security can be introduced later for defense in depth, but application
 
 Audit helpers are explicit by design. Global implicit Prisma middleware must not record arbitrary payloads because critical operations require redaction, severity, subject classification, actor context, tenant context, and failure behavior decisions.
 
+## RBAC Bootstrap
+
+`@saptm/database` exposes a local-safe RBAC bootstrap seed for the platform permission catalog.
+
+- `pnpm db:seed` upserts permission keys only.
+- `SAPTM_BOOTSTRAP_ORGANIZATION_ID=<id> pnpm db:seed` also applies tenant role templates.
+- The seed does not create users, organizations, memberships, or product data.
+- Runtime permission names remain governed by `@saptm/auth`.
+- `pnpm auth:seed-local-admin` is a separate local-only onboarding seed for authenticated testing.
+- The local admin seed refuses `NODE_ENV=production`, creates a verified Better Auth user, creates a local organization, applies RBAC templates, and assigns `tenant.admin`.
+
+Full seed rules are defined in `docs/database/rbac-bootstrap.md`.
+
 ## Migration Strategy
 
 - All schema changes are committed through Prisma migrations.
@@ -67,6 +80,19 @@ Audit helpers are explicit by design. Global implicit Prisma middleware must not
 - Breaking schema changes require expand-migrate-contract sequencing.
 - Production migrations require dry-run and backup plan.
 - Seed data must be limited to reference data and local development fixtures.
+
+The current baseline migration is `packages/database/prisma/migrations/20260602160000_initial_foundation/migration.sql`.
+Operational migration rules are defined in `docs/database/migration-runbook.md`.
+
+## Backup and Restore Strategy
+
+- Kubernetes deploys `saptm-database-backup` as a logical `pg_dump` CronJob per environment.
+- Backup retention is controlled by `DATABASE_BACKUP_RETENTION_DAYS`.
+- Restore uses `deploy/kubernetes/jobs/database-restore-job.example.yaml`, which is suspended by default.
+- Production migrations require evidence of the latest successful backup.
+- Offsite backup replication is mandatory before business data goes live.
+
+Operational backup and restore rules are defined in `docs/database/backup-restore-runbook.md`.
 
 ## Indexing Strategy
 
@@ -98,3 +124,4 @@ Initial index families:
 - Audit classification exists before critical mutations.
 - Integration tables support idempotency and replay.
 - Database strategy is referenced by each bounded-context implementation task.
+- Backup and restore runbook exists before production data is created.

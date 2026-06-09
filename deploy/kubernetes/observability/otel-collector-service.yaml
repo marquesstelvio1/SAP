@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: saptm-otel-collector
+  labels:
+    app.kubernetes.io/component: otel-collector
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/component: otel-collector
+  ports:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: otlp-grpc
+    - name: otlp-http
+      port: 4318
+      targetPort: otlp-http
+    - name: metrics
+      port: 8888
+      targetPort: metrics
+    - name: prometheus
+      port: 9464
+      targetPort: prometheus
+    - name: health
+      port: 13133
+      targetPort: health

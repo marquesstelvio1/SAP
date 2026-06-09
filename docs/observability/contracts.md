@@ -34,6 +34,10 @@ Telemetry attributes are redacted by key before records are emitted. Default red
 
 Applications may export records to OpenTelemetry, logs, metrics stores, SIEM, or audit storage. Exporters must not change the shared contract shape.
 
+`@saptm/observability` includes an in-memory Prometheus registry for runtime foundations. It is only
+responsible for formatting stable platform metrics; durable storage, alert evaluation, dashboards,
+and vendor export remain deployment responsibilities.
+
 ## Adoption Order
 
 1. API request context middleware.

@@ -5,20 +5,14 @@
       "domain": "architecture",
       "prompt": ".ai/prompts/architect.md",
       "doc": "docs/agents/architect.md",
-      "canApprove": [
-        "scope",
-        "contract",
-        "release"
-      ]
+      "canApprove": ["scope", "contract", "release"]
     },
     {
       "id": "agent-planner",
       "domain": "planning",
       "prompt": ".ai/prompts/planner.md",
       "doc": "docs/agents/planner.md",
-      "canApprove": [
-        "scope"
-      ]
+      "canApprove": ["scope"]
     },
     {
       "id": "agent-frontend",
@@ -39,9 +33,7 @@
       "domain": "auth",
       "prompt": ".ai/prompts/domains/auth.md",
       "doc": "docs/agents/auth.md",
-      "canApprove": [
-        "auth-security"
-      ]
+      "canApprove": ["auth-security"]
     },
     {
       "id": "agent-mobile",
@@ -62,9 +54,7 @@
       "domain": "qa",
       "prompt": ".ai/prompts/domains/qa.md",
       "doc": "docs/agents/qa.md",
-      "canApprove": [
-        "test"
-      ]
+      "canApprove": ["test"]
     },
     {
       "id": "agent-observability",
@@ -92,27 +82,21 @@
       "domain": "delivery",
       "prompt": ".ai/prompts/execution.md",
       "doc": "docs/agents/git-manager.md",
-      "canApprove": [
-        "docs-changelog"
-      ]
+      "canApprove": ["docs-changelog"]
     },
     {
       "id": "agent-saptm-devops",
       "domain": "devops",
       "prompt": ".ai/agents/devops.md",
       "doc": "docs/agents/saptm-agent-responsibilities.md",
-      "canApprove": [
-        "release"
-      ]
+      "canApprove": ["release"]
     },
     {
       "id": "agent-saptm-security",
       "domain": "security",
       "prompt": ".ai/skills/security.md",
       "doc": "docs/security/auth-security-strategy.md",
-      "canApprove": [
-        "auth-security"
-      ]
+      "canApprove": ["auth-security"]
     }
   ]
 }
