@@ -27,6 +27,7 @@ export {
 } from "./field.js";
 export { Input } from "./input.js";
 export { Label } from "./label.js";
+export { SelectNative } from "./select-native.js";
 export { Separator } from "./separator.js";
 export {
   Sheet,
@@ -52,3 +53,4 @@ export {
   TableHeader,
   TableRow,
 } from "./table.js";
+export { Textarea } from "./textarea.js";

@@ -1,8 +1,4 @@
-import type {
-  AuthorizationMode,
-  AuthActorType,
-  PlatformPermission,
-} from "@saptm/auth";
+import type { AuthActorType, AuthorizationMode, PlatformPermission } from "@saptm/auth";
 import type { TelemetrySignal } from "@saptm/observability";
 import { telemetrySignals } from "@saptm/observability";
 

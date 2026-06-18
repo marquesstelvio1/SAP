@@ -1,0 +1,79 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: saptm-deployment-security
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - apps
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - deployments
+  validations:
+    - expression: >-
+        !object.metadata.namespace.startsWith('saptm-') ||
+        object.spec.template.spec.containers.all(container,
+          container.image.matches('^.+:sha-[A-Za-z0-9._-]+$|^.+@sha256:[A-Fa-f0-9]{64}$'))
+      message: SAPTM deployments must use immutable sha-* tags or image digests.
+    - expression: >-
+        !object.metadata.namespace.startsWith('saptm-') ||
+        (has(object.spec.template.spec.securityContext) &&
+        object.spec.template.spec.securityContext.runAsNonRoot == true)
+      message: SAPTM deployments must run as non-root workloads.
+    - expression: >-
+        !object.metadata.namespace.startsWith('saptm-') ||
+        object.spec.template.spec.containers.all(container,
+          has(container.securityContext) &&
+          container.securityContext.allowPrivilegeEscalation == false &&
+          container.securityContext.readOnlyRootFilesystem == true &&
+          has(container.securityContext.capabilities) &&
+          container.securityContext.capabilities.drop.exists(capability, capability == 'ALL'))
+      message: SAPTM containers must disable privilege escalation, use read-only root filesystems, and drop all Linux capabilities.
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: saptm-deployment-security
+spec:
+  policyName: saptm-deployment-security
+  validationActions:
+    - Deny
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: saptm-service-exposure
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - services
+  validations:
+    - expression: >-
+        !object.metadata.namespace.startsWith('saptm-') ||
+        !has(object.spec.type) ||
+        object.spec.type != 'LoadBalancer'
+      message: SAPTM services must not expose workloads directly through LoadBalancer services.
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: saptm-service-exposure
+spec:
+  policyName: saptm-service-exposure
+  validationActions:
+    - Deny

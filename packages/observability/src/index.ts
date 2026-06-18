@@ -21,6 +21,9 @@ export type TelemetryPrimitive = string | number | boolean | null;
 export type TelemetryAttributeValue = TelemetryPrimitive | TelemetryPrimitive[];
 export type TelemetryAttributes = Record<string, TelemetryAttributeValue>;
 export type TraceHeaderMap = Record<string, string>;
+
+export * from "./prometheus.js";
+
 type NullableTraceContext = {
   [Key in keyof TraceContext]?: TraceContext[Key] | undefined;
 };

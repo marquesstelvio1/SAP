@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - runtime-config.yaml
+  - resource-quota.yaml
+  - limit-range.yaml
+  - database-backup-pvc.yaml
+  - database-backup-cronjob.yaml
+  - api-deployment.yaml
+  - api-service.yaml
+  - api-network-policy.yaml
+  - api-hpa.yaml
+  - api-pdb.yaml
+  - web-deployment.yaml
+  - web-service.yaml
+  - web-network-policy.yaml
+  - web-hpa.yaml
+  - web-pdb.yaml
+  - ingress.yaml
+commonLabels:
+  app.kubernetes.io/name: saptm
+  app.kubernetes.io/part-of: saptm-platform

@@ -1,8 +1,4 @@
-import type {
-  AuthContext,
-  AuthorizationDecision,
-  AuthorizationRequirement,
-} from "@saptm/auth";
+import type { AuthContext, AuthorizationDecision, AuthorizationRequirement } from "@saptm/auth";
 import { evaluateAuthorization } from "@saptm/auth";
 
 import type { RpcOperationMetadata } from "./metadata.js";

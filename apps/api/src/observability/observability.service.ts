@@ -4,6 +4,7 @@ import {
   createAuditRecord,
   createConsoleLogger,
   createMetricRecord,
+  createPrometheusRegistry,
   createSpanRecord,
   createTraceContext,
   type LogLevel,
@@ -47,6 +48,7 @@ export class ObservabilityService {
   private readonly serviceName = readServiceName();
   private readonly environment = readRuntimeEnvironment();
   private readonly minimumLevel = readLogLevel();
+  private readonly metrics = createPrometheusRegistry();
 
   createHttpTraceContext(request: RequestWithObservability): TraceContext {
     const headers = normalizeHeaders(request.headers);
@@ -103,6 +105,12 @@ export class ObservabilityService {
       "http.route": route,
       "http.status_code": statusCode,
     };
+    const metricAttributes = {
+      "http.method": method,
+      "http.route": route,
+      "http.status_class": `${Math.trunc(statusCode / 100)}xx`,
+      "http.status_code": statusCode,
+    };
     const logger =
       input.request.logger ?? this.createRequestLogger(input.traceContext, input.request);
     const durationMs = endedAt.getTime() - input.startedAt.getTime();
@@ -137,8 +145,10 @@ export class ObservabilityService {
       kind: "histogram",
       value: durationMs,
       unit: "ms",
-      attributes,
+      attributes: metricAttributes,
     });
+
+    this.metrics.record(metric);
 
     if (input.error === undefined) {
       logger.info("HTTP request completed.", {
@@ -198,6 +208,22 @@ export class ObservabilityService {
       },
     });
     const logger = input.request.logger ?? this.createRequestLogger(traceContext, input.request);
+    const metric = createMetricRecord({
+      serviceName: this.serviceName,
+      environment: this.environment,
+      context: traceContext,
+      name: "authorization.decisions",
+      kind: "counter",
+      value: 1,
+      attributes: {
+        "authorization.allowed": input.decision.allowed,
+        "authorization.permission_mode": input.requirement.permissionMode ?? "all",
+        "auth.actor_type": input.authContext.actorType,
+        "audit.resource_type": audit.resourceType,
+      },
+    });
+
+    this.metrics.record(metric);
 
     if (input.decision.allowed) {
       logger.info("Authorization decision recorded.", {
@@ -260,6 +286,26 @@ export class ObservabilityService {
       },
     });
     const logger = input.request.logger ?? this.createRequestLogger(traceContext, input.request);
+    const metric = createMetricRecord({
+      serviceName: this.serviceName,
+      environment: this.environment,
+      context: traceContext,
+      name: "rpc.authorization.decisions",
+      kind: "counter",
+      value: 1,
+      attributes: {
+        "authorization.allowed": input.decision.allowed,
+        "authorization.permission_mode": input.requirement.permissionMode ?? "all",
+        "auth.actor_type": input.authContext.actorType,
+        "rpc.audit": input.metadata.audit,
+        "rpc.auth": input.metadata.auth,
+        "rpc.kind": input.metadata.kind,
+        "rpc.operation": input.metadata.name,
+        "rpc.version": input.metadata.version,
+      },
+    });
+
+    this.metrics.record(metric);
 
     if (input.decision.allowed) {
       logger.info("RPC authorization decision recorded.", {
@@ -282,6 +328,30 @@ export class ObservabilityService {
         "audit.reason": audit.reason ?? input.decision.reason,
       },
     });
+  }
+
+  renderPrometheusMetrics(): string {
+    const traceContext = createTraceContext({
+      operationName: "observability.metrics.scrape",
+      sourceSystem: "apps/api",
+      resourceType: "metrics.scrape",
+      resourceId: "prometheus",
+    });
+
+    this.metrics.record(
+      createMetricRecord({
+        serviceName: this.serviceName,
+        environment: this.environment,
+        context: traceContext,
+        name: "process.uptime_seconds",
+        kind: "gauge",
+        value: process.uptime(),
+        unit: "s",
+        attributes: {},
+      }),
+    );
+
+    return this.metrics.render();
   }
 }
 

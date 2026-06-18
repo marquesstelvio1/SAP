@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: saptm-runtime-config
+data:
+  API_CORS_ORIGINS: "https://staging.saptm.example.com"
+  BETTER_AUTH_URL: "https://staging.saptm.example.com"
+  NEXT_PUBLIC_APP_URL: "https://staging.saptm.example.com"
+  NEXT_PUBLIC_API_URL: "https://api.staging.saptm.example.com"
+  DATABASE_BACKUP_RETENTION_DAYS: "7"
+  LOG_LEVEL: "info"

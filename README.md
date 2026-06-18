@@ -2,12 +2,12 @@
 
 Foundation-first enterprise SaaS platform for rail, port, logistics, cargo tracking, operational analytics, automation, and AI-assisted logistics decisions.
 
-The current repository state is intentionally foundation-only:
+The current repository state is foundation-first with the first controlled business module active:
 
-- No product pages.
-- No CRUDs.
-- No business features.
-- Architecture, governance, monorepo design, security, observability, roadmap, and tooling must be accepted before feature implementation.
+- No generic CRUDs.
+- Operational Tracking exists as the first governed business feature.
+- Tracking writes are command-based, idempotent, permissioned, audited, and outbox-backed.
+- Architecture, governance, monorepo design, security, observability, roadmap, and tooling remain mandatory gates before feature expansion.
 
 Start with `docs/enterprise/foundation-index.md`.
 
@@ -43,6 +43,19 @@ The operating model is:
 6. Review governance gates in `docs/governance/`.
 
 ## Core Commands
+
+Seed local admin for authenticated testing:
+
+```powershell
+$env:DATABASE_URL="postgresql://postgres:postgres@localhost:25432/saptm"; pnpm auth:seed-local-admin
+```
+
+Default local credentials:
+
+- Email: `admin@saptm.local`
+- Password: `LocalAdmin!2026`
+
+Override with `SAPTM_LOCAL_ADMIN_EMAIL`, `SAPTM_LOCAL_ADMIN_PASSWORD`, `SAPTM_LOCAL_ORGANIZATION_NAME`, and `SAPTM_LOCAL_ORGANIZATION_SLUG`.
 
 Validate the operating system:
 

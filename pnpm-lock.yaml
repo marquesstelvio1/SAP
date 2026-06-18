@@ -266,9 +266,15 @@ importers:
       '@saptm/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.19
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(typescript@5.9.3)
+      tsx:
+        specifier: 'catalog:'
+        version: 4.22.4
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -316,6 +322,9 @@ importers:
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(typescript@5.9.3)
+      tsx:
+        specifier: 'catalog:'
+        version: 4.22.4
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -343,6 +352,9 @@ importers:
       '@orpc/server':
         specifier: 'catalog:'
         version: 1.14.4
+      '@saptm/auth':
+        specifier: workspace:*
+        version: link:../auth
       '@saptm/observability':
         specifier: workspace:*
         version: link:../observability
@@ -368,10 +380,22 @@ importers:
       '@playwright/test':
         specifier: 'catalog:'
         version: 1.60.0
+      '@saptm/auth':
+        specifier: workspace:*
+        version: link:../auth
+      '@saptm/observability':
+        specifier: workspace:*
+        version: link:../observability
+      '@saptm/rpc':
+        specifier: workspace:*
+        version: link:../rpc
     devDependencies:
       '@saptm/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.19
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -405,10 +429,10 @@ importers:
         specifier: 'catalog:'
         version: 1.4.3(@types/react-dom@19.2.3(@types/react@19.2.16))(@types/react@19.2.16)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react:
-        specifier: 'catalog:'
+        specifier: '>=19 <20'
         version: 19.2.7
       react-dom:
-        specifier: 'catalog:'
+        specifier: '>=19 <20'
         version: 19.2.7(react@19.2.7)
       tailwind-merge:
         specifier: 'catalog:'

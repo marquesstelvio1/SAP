@@ -1,0 +1,114 @@
+export type IntegrationServiceAccountCreateFormState = {
+  status: "idle" | "success" | "error";
+  message: string;
+  serviceAccountId?: string;
+  apiKeyPrefix?: string;
+  plaintextApiKey?: string | null;
+  replayed?: boolean;
+};
+
+export const initialIntegrationServiceAccountCreateFormState: IntegrationServiceAccountCreateFormState =
+  {
+    status: "idle",
+    message: "Crie service accounts com escopo minimo, API key hash-only, audit e outbox.",
+  };
+
+export type IntegrationEventRecordFormState = {
+  status: "idle" | "success" | "error";
+  message: string;
+  eventId?: string;
+  idempotencyKey?: string;
+  replayed?: boolean;
+};
+
+export const initialIntegrationEventRecordFormState: IntegrationEventRecordFormState = {
+  status: "idle",
+  message: "Registe eventos externos por sourceSystem + externalId sem duplicar processamento.",
+};
+
+export type IntegrationPortTosMovementFormState = {
+  status: "idle" | "success" | "error";
+  message: string;
+  integrationEventId?: string;
+  trackingEventId?: string;
+  idempotencyKey?: string;
+  replayed?: boolean;
+};
+
+export const initialIntegrationPortTosMovementFormState: IntegrationPortTosMovementFormState = {
+  status: "idle",
+  message: "Processe movimentos Port TOS locais em eventos de tracking com audit e outbox.",
+};
+
+export type IntegrationRailTmsMovementFormState = {
+  status: "idle" | "success" | "error";
+  message: string;
+  integrationEventId?: string;
+  trackingEventId?: string;
+  idempotencyKey?: string;
+  replayed?: boolean;
+};
+
+export const initialIntegrationRailTmsMovementFormState: IntegrationRailTmsMovementFormState = {
+  status: "idle",
+  message: "Processe movimentos Rail TMS locais em eventos de tracking com audit e outbox.",
+};
+
+export type IntegrationCarrierTmsMovementFormState = {
+  status: "idle" | "success" | "error";
+  message: string;
+  integrationEventId?: string;
+  trackingEventId?: string;
+  idempotencyKey?: string;
+  replayed?: boolean;
+};
+
+export const initialIntegrationCarrierTmsMovementFormState: IntegrationCarrierTmsMovementFormState =
+  {
+    status: "idle",
+    message: "Processe movimentos Carrier TMS locais em eventos de tracking com audit e outbox.",
+  };
+
+export type IntegrationTelematicsGpsPositionFormState = {
+  status: "idle" | "success" | "error";
+  message: string;
+  integrationEventId?: string;
+  trackingEventId?: string;
+  idempotencyKey?: string;
+  replayed?: boolean;
+};
+
+export const initialIntegrationTelematicsGpsPositionFormState: IntegrationTelematicsGpsPositionFormState =
+  {
+    status: "idle",
+    message: "Processe posicoes Telematics/GPS locais em eventos de tracking com audit e outbox.",
+  };
+
+export type IntegrationCustomsErpStatusFormState = {
+  status: "idle" | "success" | "error";
+  message: string;
+  integrationEventId?: string;
+  trackingEventId?: string;
+  idempotencyKey?: string;
+  replayed?: boolean;
+};
+
+export const initialIntegrationCustomsErpStatusFormState: IntegrationCustomsErpStatusFormState = {
+  status: "idle",
+  message: "Processe estados Customs/ERP locais em eventos de tracking com audit e outbox.",
+};
+
+export type IntegrationWarehouseWmsActivityFormState = {
+  status: "idle" | "success" | "error";
+  message: string;
+  integrationEventId?: string;
+  trackingEventId?: string;
+  idempotencyKey?: string;
+  replayed?: boolean;
+};
+
+export const initialIntegrationWarehouseWmsActivityFormState: IntegrationWarehouseWmsActivityFormState =
+  {
+    status: "idle",
+    message: "Processe atividades Warehouse/WMS locais em eventos de tracking com audit e outbox.",
+  };

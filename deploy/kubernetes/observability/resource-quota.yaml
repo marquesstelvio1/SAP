@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: saptm-observability-quota
+  labels:
+    app.kubernetes.io/component: resource-governance
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 4Gi
+    limits.cpu: "6"
+    limits.memory: 8Gi
+    pods: "12"
+    services: "8"
+    secrets: "12"
+    configmaps: "20"
+    persistentvolumeclaims: "6"
+    requests.storage: 80Gi
+    count/deployments.apps: "8"

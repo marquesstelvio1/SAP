@@ -2,14 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "AI Execution Report",
   "type": "object",
-  "required": [
-    "workflow",
-    "domain",
-    "taskId",
-    "outputs",
-    "risks",
-    "followUp"
-  ],
+  "required": ["workflow", "domain", "taskId", "outputs", "risks", "followUp"],
   "properties": {
     "workflow": {
       "type": "string"
@@ -40,4 +33,3 @@
     }
   }
 }
-

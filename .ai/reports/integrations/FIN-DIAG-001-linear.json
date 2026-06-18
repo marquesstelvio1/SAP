@@ -2,10 +2,7 @@
   "team": "Engineering",
   "title": "contract-versioning-policy",
   "description": "AI-generated task bundle for contract-versioning-policy",
-  "labels": [
-    "ai-generated",
-    "backend"
-  ],
+  "labels": ["ai-generated", "backend"],
   "priority": "high",
   "metadata": {
     "ownerAgent": "agent-backend",
@@ -13,4 +10,3 @@
     "linkedPr": ""
   }
 }
-

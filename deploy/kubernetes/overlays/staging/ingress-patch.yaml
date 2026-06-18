@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: saptm
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+spec:
+  tls:
+    - hosts:
+        - staging.saptm.example.com
+        - api.staging.saptm.example.com
+      secretName: saptm-staging-tls
+  rules:
+    - host: staging.saptm.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: saptm-web
+                port:
+                  name: http
+    - host: api.staging.saptm.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: saptm-api
+                port:
+                  name: http

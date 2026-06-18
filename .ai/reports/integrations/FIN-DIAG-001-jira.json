@@ -3,10 +3,7 @@
   "issueType": "Task",
   "summary": "contract-versioning-policy",
   "description": "AI-generated task bundle for contract-versioning-policy",
-  "labels": [
-    "ai-generated",
-    "backend"
-  ],
+  "labels": ["ai-generated", "backend"],
   "fields": {
     "domain": "backend",
     "ownerAgent": "agent-backend",
@@ -14,5 +11,3 @@
     "rollbackStrategy": "Revert branch and redeploy previous known-good state"
   }
 }
-
-

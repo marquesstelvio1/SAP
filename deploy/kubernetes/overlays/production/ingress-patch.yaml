@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: saptm
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+spec:
+  tls:
+    - hosts:
+        - app.saptm.example.com
+        - api.saptm.example.com
+      secretName: saptm-production-tls
+  rules:
+    - host: app.saptm.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: saptm-web
+                port:
+                  name: http
+    - host: api.saptm.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: saptm-api
+                port:
+                  name: http

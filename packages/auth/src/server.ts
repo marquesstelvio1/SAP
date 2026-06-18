@@ -3,6 +3,14 @@ import { databaseProvider, getPrismaClient } from "@saptm/database";
 import type { Auth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { type BetterAuthOptions, betterAuth } from "better-auth/minimal";
+import { twoFactor } from "better-auth/plugins/two-factor";
+
+export {
+  type ResolvedUserAuthorization,
+  resolveDefaultUserAuthorization,
+  type UserAuthorizationClient,
+  uniquePlatformPermissions,
+} from "./user-authorization.js";
 
 export type PrismaAuthClient = Parameters<typeof prismaAdapter>[0];
 export type SaptmAuth = Auth<BetterAuthOptions>;
@@ -41,6 +49,22 @@ export function createSaptmAuthOptions({
         maxAge: 60,
       },
     },
+    plugins: [
+      twoFactor({
+        issuer: "SAPTM",
+        totpOptions: {
+          digits: 6,
+          period: 30,
+        },
+        backupCodeOptions: {
+          amount: 10,
+          length: 10,
+          storeBackupCodes: "encrypted",
+        },
+        twoFactorCookieMaxAge: 60 * 10,
+        trustDeviceMaxAge: 60 * 60 * 24 * 30,
+      }),
+    ],
   };
 }
 

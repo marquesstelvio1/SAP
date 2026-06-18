@@ -44,6 +44,7 @@ No critical feature is complete without tests for authorization, validation, aud
 
 ## E2E Priority
 
+0. Foundation runtime health without product pages.
 1. Login and tenant selection.
 2. Role-gated navigation.
 3. Facility-scoped operations.
@@ -53,6 +54,8 @@ No critical feature is complete without tests for authorization, validation, aud
 7. Report export governance.
 
 E2E tests begin only after design system and first business feature are authorized.
+The only allowed pre-feature E2E test is runtime health because it validates deployability without
+creating screens, CRUDs, or business workflows.
 
 ## Test Data Strategy
 
@@ -62,10 +65,26 @@ E2E tests begin only after design system and first business feature are authoriz
 - Integration tests use isolated schemas or disposable databases.
 - Time-dependent tests use controlled clocks.
 
+## Shared Testing Helpers
+
+`@saptm/testing` provides foundation-only helpers for future tests:
+
+- Auth context fixtures for user, service account, and platform actors.
+- Trace context fixtures for deterministic telemetry context setup.
+- Permission set helpers tied to `@saptm/auth`.
+- Authorization assertion helpers independent of a specific test runner.
+- RPC metadata and authorization helpers tied to `@saptm/rpc`.
+- Foundation oRPC transport tests for `system.health`.
+
+No rail, port, cargo, logistics, analytics, or automation fixture may be added before the
+corresponding bounded context is approved.
+
 ## Acceptance Criteria
 
 - Testing package exists before first feature tests.
+- Shared auth, authorization, trace, and RPC testing helpers compile before first feature tests.
+- Foundation RPC contract tests run through `pnpm test`.
+- Runtime health E2E exists and `test:e2e` must not pass with an empty suite.
 - First feature includes unit, contract, integration, and E2E coverage where applicable.
 - Security denial tests exist for every critical mutation.
 - CI runs tests by category.
-

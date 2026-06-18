@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: saptm-observability
+  labels:
+    saptm.io/observability: "true"
+    app.kubernetes.io/part-of: saptm

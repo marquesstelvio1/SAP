@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: saptm-namespace-quota
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 4Gi
+    limits.cpu: "8"
+    limits.memory: 10Gi
+    pods: "10"
+    services: "8"
+    secrets: "16"
+    configmaps: "16"
+    persistentvolumeclaims: "4"
+    requests.storage: 40Gi
+    count/deployments.apps: "6"
+    count/cronjobs.batch: "3"
+    count/ingresses.networking.k8s.io: "3"

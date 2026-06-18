@@ -4,8 +4,11 @@ Shared testing package for fixtures, factories, contract helpers, and future e2e
 
 Current status:
 
-- Package boundary only.
-- No fixtures or domain helpers yet.
+- Auth context fixtures implemented.
+- Trace context fixtures implemented.
+- Permission set helpers implemented.
+- Authorization assertion helpers implemented.
+- RPC metadata and authorization helpers implemented.
+- No domain/business fixtures yet.
 
 Implementation must follow `docs/testing/testing-strategy.md`.
-

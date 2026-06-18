@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: SAPTM Runtime
+    orgId: 1
+    folder: SAPTM
+    type: file
+    disableDeletion: true
+    editable: false
+    options:
+      path: /var/lib/grafana/dashboards

@@ -1,0 +1,72 @@
+name: Cluster Baseline
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Approval environment for the target cluster.
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cluster-baseline-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  apply-cluster-baseline:
+    name: Apply cluster baseline
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      SAPTM_ACME_EMAIL: ${{ vars.SAPTM_ACME_EMAIL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        shell: bash
+        env:
+          KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG_B64 }}
+        run: |
+          if [ -z "$KUBE_CONFIG_B64" ]; then
+            echo "KUBE_CONFIG_B64 secret is required."
+            exit 1
+          fi
+          echo "$KUBE_CONFIG_B64" | base64 -d > "$RUNNER_TEMP/kubeconfig"
+          chmod 600 "$RUNNER_TEMP/kubeconfig"
+          echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
+
+      - name: Run cluster preflight
+        env:
+          SAPTM_PREFLIGHT_SCOPE: cluster
+        run: node scripts/cluster-preflight.mjs
+
+      - name: Render cluster baseline
+        run: node scripts/render-cluster-baseline.mjs
+
+      - name: Apply cert-manager issuers
+        run: |
+          kubectl apply -f deploy/kubernetes/cluster/cert-manager-staging-issuer.yaml
+          kubectl apply -f deploy/kubernetes/cluster/cert-manager-production-issuer.yaml
+
+      - name: Apply admission policies
+        run: kubectl apply -f deploy/kubernetes/cluster/admission-policies.yaml
+
+      - name: Verify admission policies
+        run: |
+          kubectl get validatingadmissionpolicy saptm-deployment-security
+          kubectl get validatingadmissionpolicy saptm-service-exposure
