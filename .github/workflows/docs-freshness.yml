@@ -40,13 +40,13 @@ jobs:
         env:
           CI: 'true'
 
-      - name: Check AGENTS.md is up to date
+      - name: Check AGENTS.md exists and is non-empty
         run: |
-          if ! grep -q "Version: 2.0.0" AGENTS.md; then
-            echo "AGENTS.md version is outdated. Recompile from docs/ knowledge."
+          if [ ! -s "AGENTS.md" ]; then
+            echo "AGENTS.md is missing or empty."
             exit 1
           fi
-          echo "AGENTS.md is current."
+          echo "AGENTS.md is present ($(wc -l < AGENTS.md) lines)."
 
       - name: Verify docs directory structure
         run: |

@@ -75,12 +75,9 @@ for (const file of requiredFiles) {
   testRequiredPath(file);
 }
 
-const diagnosticEntrypoint = readdirSync(repoRoot).find(
-  (f) => f === "diagnóstico.md" || f === "diagnostico.md",
-);
-
-if (!diagnosticEntrypoint) {
-  addFailure("Missing required diagnostic entrypoint: diagnostico.md or accented equivalent");
+const diagnosticsRoot = join(process.cwd(), "docs", "diagnostics");
+if (!existsSync(diagnosticsRoot)) {
+  addFailure("Missing required diagnostics directory: docs/diagnostics/");
 }
 
 const jsonFiles = [
