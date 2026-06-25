@@ -55,6 +55,11 @@ test("admin overview RPC authorizes request and delegates by organization", asyn
           users: [],
           roles: [],
           permissions: [],
+          pagination: {
+            totalCount: 0,
+            limit: input.limit ?? 10,
+            offset: input.offset ?? 0,
+          },
           securityModel: {
             authProvider: "better-auth",
             authorizationModel: "tenant-scoped-rbac",

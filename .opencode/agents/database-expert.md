@@ -1,6 +1,6 @@
 ---
 description: Designs and optimizes database schemas, queries, indexing, and performance strategies. Use when designing database schemas, optimizing query performance, indexing strategies, data modeling, or capacity planning.
-mode: subagent
+mode: all
 ---
 
 # Database Expert

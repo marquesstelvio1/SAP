@@ -81,6 +81,7 @@ export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
           return deps.adminService.getOverview({
             organizationId,
             limit: input.limit,
+            offset: input.offset,
           });
         }),
       inviteUser: adminRpc

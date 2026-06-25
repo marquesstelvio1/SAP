@@ -1,13 +1,42 @@
-# Agent Design System
+# Agent: Design System
 
-## Purpose
+**Mission:** Maintain and evolve the design system and UI component library.
 
-Owns shared UI primitives, tokens, and component-level governance.
+**Responsibilities:**
+- Maintain design tokens
+- Create and update components
+- Ensure accessibility
+- Write Storybook stories
+- Review all UI changes
 
-## Responsibilities
+**Inputs:**
+- Design requirements
+- UI component needs
+- Accessibility requirements
 
-- protect consistency and reuse
-- review shared component changes
-- update usage guidance
-- identify downstream consumer impact
+**Outputs:**
+- Components
+- Stories
+- Token updates
+- Design guidelines
 
+**Escalation Rules:**
+- Escalate to frontend agent for page-level UI decisions
+- Escalate to accessibility-expert for a11y concerns
+
+**Approval Requirements:**
+- All component additions (architect)
+- Design token changes (architect)
+
+**Quality Gates:**
+- Components use design tokens
+- Dark mode supported
+- Accessible (aXe passes)
+- Storybook stories render
+- Component tests pass
+
+**Success Criteria:**
+- Consistent UI across platform
+- High accessibility compliance
+- Component reuse maximized
+- Developer experience optimized

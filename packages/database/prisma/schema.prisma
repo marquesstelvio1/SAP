@@ -1,10 +1,10 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum OrganizationStatus {
@@ -263,29 +263,32 @@ enum CargoComplianceEvidenceStatus {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
-  twoFactorEnabled Boolean @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id               String   @id
+  name             String
+  email            String   @unique
+  emailVerified    Boolean  @default(false)
+  twoFactorEnabled Boolean  @default(false)
+  image            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  sessions      Session[]
-  accounts      Account[]
-  twoFactors    TwoFactor[]
-  memberships   Membership[]
+  lockedUntil     DateTime?
+  loginAttempts   LoginAttempt[]
+  sessions        Session[]
+  accounts        Account[]
+  twoFactors      TwoFactor[]
+  memberships     Membership[]
+  teamMemberships TeamMember[]
 }
 
 model TwoFactor {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   secret      String
   backupCodes String
   userId      String
-  verified    Boolean  @default(false)
+  verified    Boolean @default(false)
 
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([secret])
   @@index([userId])
@@ -301,9 +304,10 @@ model Session {
   userAgent String?
   userId    String
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([expiresAt])
 }
 
 model Account {
@@ -321,7 +325,7 @@ model Account {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -337,38 +341,88 @@ model Verification {
   @@index([identifier])
 }
 
-model Organization {
-  id          String             @id @default(cuid())
-  name        String
-  slug        String             @unique
-  status      OrganizationStatus @default(active)
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  userId    String
+  email     String
+  ipAddress String?
+  userAgent String?
+  success   Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  memberships Membership[]
-  roles       Role[]
-  auditRecords AuditRecord[]
-  outboxEvents OutboxEvent[]
-  notifications Notification[]
-  serviceAccounts ServiceAccount[]
-  integrationEvents IntegrationEvent[]
-  cargoRecords Cargo[]
-  cargoOperationalHandoffs CargoOperationalHandoff[]
-  cargoClaimSettlements CargoClaimSettlement[]
-  cargoComplianceEvidences CargoComplianceEvidence[]
-  cargoDeliveryExceptions CargoDeliveryException[]
-  capacityResources CapacityResource[]
-  capacitySlots CapacitySlot[]
-  capacityReservations CapacitySlotReservation[]
-  capacityAdvisoryDecisions CapacityAdvisoryDecision[]
-  transportOrders TransportOrder[]
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([email, createdAt])
+  @@index([ipAddress, createdAt])
+}
+
+model Organization {
+  id        String             @id @default(cuid())
+  name      String
+  slug      String             @unique
+  status    OrganizationStatus @default(active)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  memberships                     Membership[]
+  roles                           Role[]
+  auditRecords                    AuditRecord[]
+  outboxEvents                    OutboxEvent[]
+  notifications                   Notification[]
+  serviceAccounts                 ServiceAccount[]
+  integrationEvents               IntegrationEvent[]
+  cargoRecords                    Cargo[]
+  cargoOperationalHandoffs        CargoOperationalHandoff[]
+  cargoClaimSettlements           CargoClaimSettlement[]
+  cargoComplianceEvidences        CargoComplianceEvidence[]
+  cargoDeliveryExceptions         CargoDeliveryException[]
+  capacityResources               CapacityResource[]
+  capacitySlots                   CapacitySlot[]
+  capacityReservations            CapacitySlotReservation[]
+  capacityAdvisoryDecisions       CapacityAdvisoryDecision[]
+  transportOrders                 TransportOrder[]
   transportOrderScheduleRevisions TransportOrderScheduleRevision[]
-  transportOrderDispatches TransportOrderDispatch[]
-  tariffRateCards TariffRateCard[]
-  tariffRateRules TariffRateRule[]
-  tariffQuotes TariffQuote[]
-  trackingShipments TrackingShipment[]
-  trackingEvents TrackingEvent[]
+  transportOrderDispatches        TransportOrderDispatch[]
+  tariffRateCards                 TariffRateCard[]
+  tariffRateRules                 TariffRateRule[]
+  tariffQuotes                    TariffQuote[]
+  trackingShipments               TrackingShipment[]
+  trackingEvents                  TrackingEvent[]
+  teams                           Team[]
+  subscription                    Subscription?
+  invoices                        Invoice[]
+  usageRecords                    UsageRecord[]
+  webhookEndpoints                WebhookEndpoint[]
+}
+
+model Team {
+  id           String       @id @default(cuid())
+  name         String
+  description  String?
+  slug         String
+  orgId        String
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  members      TeamMember[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@unique([orgId, slug])
+  @@index([orgId])
+  @@map("teams")
+}
+
+model TeamMember {
+  id     String @id @default(cuid())
+  teamId String
+  userId String
+  role   String @default("member") // "admin" | "member" | "viewer"
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([userId])
+  @@map("team_members")
 }
 
 model Membership {
@@ -379,60 +433,66 @@ model Membership {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
-  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  roles          MembershipRole[]
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roles        MembershipRole[]
 
   @@unique([organizationId, userId])
+  @@index([organizationId])
   @@index([userId])
 }
 
 model Role {
-  id             String           @id @default(cuid())
+  id             String   @id @default(cuid())
   organizationId String?
   key            String
   name           String
   description    String?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  organization   Organization?    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  permissions    RolePermission[]
-  memberships    MembershipRole[]
+  organization Organization?    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  permissions  RolePermission[]
+  memberships  MembershipRole[]
 
   @@unique([organizationId, key])
+  @@index([organizationId])
 }
 
 model Permission {
-  id          String           @id @default(cuid())
-  key         String           @unique
+  id          String   @id @default(cuid())
+  key         String   @unique
   description String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  roles       RolePermission[]
+  roles RolePermission[]
 }
 
 model RolePermission {
   roleId       String
   permissionId String
-  createdAt    DateTime   @default(now())
+  createdAt    DateTime @default(now())
 
-  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   @@id([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
 }
 
 model MembershipRole {
   membershipId String
   roleId       String
-  createdAt    DateTime   @default(now())
+  createdAt    DateTime @default(now())
 
-  membership   Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
-  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  membership Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@id([membershipId, roleId])
+  @@index([membershipId])
+  @@index([roleId])
 }
 
 model AuditRecord {
@@ -452,7 +512,8 @@ model AuditRecord {
   correlationId  String
   createdAt      DateTime      @default(now())
 
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
   @@index([organizationId, subjectType, subjectId, createdAt])
   @@index([actorType, actorId, createdAt])
   @@index([correlationId])
@@ -470,42 +531,44 @@ model ServiceAccount {
   createdAt               DateTime  @default(now())
   updatedAt               DateTime  @updatedAt
 
-  apiKeys                   ApiKey[]
-  integrationEvents         IntegrationEvent[]
-  organization              Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  apiKeys           ApiKey[]
+  integrationEvents IntegrationEvent[]
+  organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  @@index([organizationId, active])
   @@unique([organizationId, name])
   @@unique([organizationId, provisionIdempotencyKey])
+  @@index([organizationId, active])
 }
 
 model ApiKey {
-  id               String         @id @default(cuid())
+  id               String    @id @default(cuid())
   serviceAccountId String
-  keyHash          String         @unique
+  keyHash          String    @unique
   prefix           String
   expiresAt        DateTime?
   lastUsedAt       DateTime?
   revokedAt        DateTime?
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
-  serviceAccount   ServiceAccount @relation(fields: [serviceAccountId], references: [id], onDelete: Cascade)
+  serviceAccount ServiceAccount @relation(fields: [serviceAccountId], references: [id], onDelete: Cascade)
 
   @@index([serviceAccountId])
+  @@index([expiresAt])
+  @@index([revokedAt])
 }
 
 model IntegrationEvent {
-  id               String   @id @default(cuid())
+  id               String          @id @default(cuid())
   organizationId   String
   serviceAccountId String?
   sourceSystem     String
   externalId       String
   eventType        String
   payload          Json
-  receivedAt       DateTime @default(now())
+  receivedAt       DateTime        @default(now())
   processedAt      DateTime?
-  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   serviceAccount   ServiceAccount? @relation(fields: [serviceAccountId], references: [id], onDelete: SetNull)
 
   @@unique([organizationId, sourceSystem, externalId])
@@ -526,8 +589,8 @@ model OutboxEvent {
   createdAt      DateTime          @default(now())
   publishedAt    DateTime?
 
-  organization   Organization?     @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-  notification   Notification?
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  notification Notification?
 
   @@index([status, availableAt])
   @@index([organizationId, eventType, createdAt])
@@ -549,8 +612,8 @@ model Notification {
   readAt              DateTime?
   archivedAt          DateTime?
 
-  organization        Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  sourceOutboxEvent   OutboxEvent?       @relation(fields: [sourceOutboxEventId], references: [id], onDelete: SetNull)
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  sourceOutboxEvent OutboxEvent? @relation(fields: [sourceOutboxEventId], references: [id], onDelete: SetNull)
 
   @@index([organizationId, status, createdAt])
   @@index([organizationId, eventType, createdAt])
@@ -558,70 +621,70 @@ model Notification {
 }
 
 model Cargo {
-  id                         String               @id @default(cuid())
-  organizationId             String
-  cargoReference             String
-  externalReference          String?
-  cargoDescription           String
-  cargoType                  CargoType
-  status                     CargoStatus          @default(registered)
-  customsStatus              CargoCustomsStatus   @default(pending)
-  customsReference           String?
-  conditionStatus            CargoConditionStatus @default(sound)
-  grossWeightKg              Decimal              @db.Decimal(12, 3)
-  packageCount               Int
-  volumeM3                   Decimal?             @db.Decimal(12, 3)
-  hazardous                  Boolean              @default(false)
-  unNumber                   String?
-  hazardClass                String?
-  requiresInspection         Boolean              @default(false)
-  shipperName                String
-  consigneeName              String
-  originName                 String
-  destinationName            String
-  custodyOwnerName           String
-  priority                   Int                  @default(3)
-  expectedReadyAt            DateTime?
-  sourceSystem               String               @default("saptm")
-  registrationIdempotencyKey String?
-  releaseIdempotencyKey      String?
-  releaseReference           String?
-  releaseReason              String?
+  id                          String               @id @default(cuid())
+  organizationId              String
+  cargoReference              String
+  externalReference           String?
+  cargoDescription            String
+  cargoType                   CargoType
+  status                      CargoStatus          @default(registered)
+  customsStatus               CargoCustomsStatus   @default(pending)
+  customsReference            String?
+  conditionStatus             CargoConditionStatus @default(sound)
+  grossWeightKg               Decimal              @db.Decimal(12, 3)
+  packageCount                Int
+  volumeM3                    Decimal?             @db.Decimal(12, 3)
+  hazardous                   Boolean              @default(false)
+  unNumber                    String?
+  hazardClass                 String?
+  requiresInspection          Boolean              @default(false)
+  shipperName                 String
+  consigneeName               String
+  originName                  String
+  destinationName             String
+  custodyOwnerName            String
+  priority                    Int                  @default(3)
+  expectedReadyAt             DateTime?
+  sourceSystem                String               @default("saptm")
+  registrationIdempotencyKey  String?
+  releaseIdempotencyKey       String?
+  releaseReference            String?
+  releaseReason               String?
   transportPlanIdempotencyKey String?
-  departureIdempotencyKey    String?
-  arrivalIdempotencyKey      String?
-  deliveryIdempotencyKey     String?
-  transportPlanningReference String?
-  transportOwnerTeam         String?
-  departureReference         String?
-  departureLocationName      String?
-  departureOperatorName      String?
-  carrierReference           String?
-  arrivalReference           String?
-  arrivalLocationName        String?
-  arrivalOperatorName        String?
-  deliveryReference          String?
-  receivedByName             String?
-  deliveryNotes              String?
-  trackingShipmentId         String?
-  registeredAt               DateTime             @default(now())
-  releasedAt                 DateTime?
-  transportPlannedAt         DateTime?
-  departedAt                 DateTime?
-  arrivedAt                  DateTime?
-  deliveredAt                DateTime?
-  createdAt                  DateTime             @default(now())
-  updatedAt                  DateTime             @updatedAt
+  departureIdempotencyKey     String?
+  arrivalIdempotencyKey       String?
+  deliveryIdempotencyKey      String?
+  transportPlanningReference  String?
+  transportOwnerTeam          String?
+  departureReference          String?
+  departureLocationName       String?
+  departureOperatorName       String?
+  carrierReference            String?
+  arrivalReference            String?
+  arrivalLocationName         String?
+  arrivalOperatorName         String?
+  deliveryReference           String?
+  receivedByName              String?
+  deliveryNotes               String?
+  trackingShipmentId          String?
+  registeredAt                DateTime             @default(now())
+  releasedAt                  DateTime?
+  transportPlannedAt          DateTime?
+  departedAt                  DateTime?
+  arrivedAt                   DateTime?
+  deliveredAt                 DateTime?
+  createdAt                   DateTime             @default(now())
+  updatedAt                   DateTime             @updatedAt
 
-  organization               Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  trackingShipment           TrackingShipment?    @relation(fields: [trackingShipmentId], references: [id], onDelete: SetNull)
-  complianceEvidences        CargoComplianceEvidence[]
-  operationalHandoffs        CargoOperationalHandoff[]
-  deliveryExceptions         CargoDeliveryException[]
-  claimSettlements           CargoClaimSettlement[]
-  capacityReservations       CapacitySlotReservation[]
-  transportOrders            TransportOrder[]
-  tariffQuotes               TariffQuote[]
+  organization         Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  trackingShipment     TrackingShipment?         @relation(fields: [trackingShipmentId], references: [id], onDelete: SetNull)
+  complianceEvidences  CargoComplianceEvidence[]
+  operationalHandoffs  CargoOperationalHandoff[]
+  deliveryExceptions   CargoDeliveryException[]
+  claimSettlements     CargoClaimSettlement[]
+  capacityReservations CapacitySlotReservation[]
+  transportOrders      TransportOrder[]
+  tariffQuotes         TariffQuote[]
 
   @@unique([organizationId, cargoReference])
   @@unique([organizationId, registrationIdempotencyKey])
@@ -642,32 +705,32 @@ model Cargo {
 }
 
 model CargoDeliveryException {
-  id                    String                                @id @default(cuid())
-  organizationId        String
-  cargoId               String
-  trackingShipmentId    String?
-  exceptionType         CargoDeliveryExceptionType
+  id                      String                                @id @default(cuid())
+  organizationId          String
+  cargoId                 String
+  trackingShipmentId      String?
+  exceptionType           CargoDeliveryExceptionType
   deliveryConditionStatus CargoConditionStatus
-  status                CargoDeliveryExceptionStatus          @default(open)
-  reportedByName        String
-  exceptionSummary      String
-  evidenceReference     String
-  claimReference        String?
-  occurredAt            DateTime
-  resolverName          String?
-  resolutionCode        CargoDeliveryExceptionResolutionCode?
-  resolutionReference   String?
-  resolutionSummary     String?
-  resolvedAt            DateTime?
-  sourceSystem          String                                @default("saptm")
-  recordIdempotencyKey  String?
-  resolveIdempotencyKey String?
-  createdAt             DateTime                              @default(now())
-  updatedAt             DateTime                              @updatedAt
+  status                  CargoDeliveryExceptionStatus          @default(open)
+  reportedByName          String
+  exceptionSummary        String
+  evidenceReference       String
+  claimReference          String?
+  occurredAt              DateTime
+  resolverName            String?
+  resolutionCode          CargoDeliveryExceptionResolutionCode?
+  resolutionReference     String?
+  resolutionSummary       String?
+  resolvedAt              DateTime?
+  sourceSystem            String                                @default("saptm")
+  recordIdempotencyKey    String?
+  resolveIdempotencyKey   String?
+  createdAt               DateTime                              @default(now())
+  updatedAt               DateTime                              @updatedAt
 
-  organization          Organization                          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo                 Cargo                                 @relation(fields: [cargoId], references: [id], onDelete: Cascade)
-  claimSettlement       CargoClaimSettlement?
+  organization    Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  cargo           Cargo                 @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  claimSettlement CargoClaimSettlement?
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, resolveIdempotencyKey])
@@ -677,28 +740,28 @@ model CargoDeliveryException {
 }
 
 model CargoClaimSettlement {
-  id                    String                     @id @default(cuid())
-  organizationId        String
-  cargoId               String
-  deliveryExceptionId   String                     @unique
-  claimReference        String
-  settlementReference   String
-  settlementType        CargoClaimSettlementType
-  settlementStatus      CargoClaimSettlementStatus @default(settled)
-  currencyCode          String
-  settlementAmount      Decimal                    @db.Decimal(14, 2)
-  settledByName         String
-  counterpartyName      String
-  settlementSummary     String
-  settledAt             DateTime
-  sourceSystem          String                     @default("saptm")
-  recordIdempotencyKey  String?
-  createdAt             DateTime                   @default(now())
-  updatedAt             DateTime                   @updatedAt
+  id                   String                     @id @default(cuid())
+  organizationId       String
+  cargoId              String
+  deliveryExceptionId  String                     @unique
+  claimReference       String
+  settlementReference  String
+  settlementType       CargoClaimSettlementType
+  settlementStatus     CargoClaimSettlementStatus @default(settled)
+  currencyCode         String
+  settlementAmount     Decimal                    @db.Decimal(14, 2)
+  settledByName        String
+  counterpartyName     String
+  settlementSummary    String
+  settledAt            DateTime
+  sourceSystem         String                     @default("saptm")
+  recordIdempotencyKey String?
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
 
-  organization          Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo                 Cargo                      @relation(fields: [cargoId], references: [id], onDelete: Cascade)
-  deliveryException     CargoDeliveryException     @relation(fields: [deliveryExceptionId], references: [id], onDelete: Cascade)
+  organization      Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  cargo             Cargo                  @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  deliveryException CargoDeliveryException @relation(fields: [deliveryExceptionId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, settlementReference])
@@ -720,8 +783,8 @@ model CapacityResource {
   createdAt             DateTime             @default(now())
   updatedAt             DateTime             @updatedAt
 
-  organization          Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  slots                 CapacitySlot[]
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  slots        CapacitySlot[]
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, resourceCode])
@@ -729,24 +792,24 @@ model CapacityResource {
 }
 
 model CapacitySlot {
-  id                   String                    @id @default(cuid())
+  id                   String             @id @default(cuid())
   organizationId       String
   resourceId           String
   slotReference        String
   windowStartAt        DateTime
   windowEndAt          DateTime
   capacityUnits        Int
-  reservedUnits        Int                       @default(0)
-  status               CapacitySlotStatus        @default(open)
-  sourceSystem         String                    @default("saptm")
+  reservedUnits        Int                @default(0)
+  status               CapacitySlotStatus @default(open)
+  sourceSystem         String             @default("saptm")
   recordIdempotencyKey String?
-  createdAt            DateTime                  @default(now())
-  updatedAt            DateTime                  @updatedAt
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
 
-  organization         Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  resource             CapacityResource          @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-  reservations         CapacitySlotReservation[]
-  advisoryDecisions    CapacityAdvisoryDecision[]
+  organization      Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  resource          CapacityResource           @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  reservations      CapacitySlotReservation[]
+  advisoryDecisions CapacityAdvisoryDecision[]
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, slotReference])
@@ -775,11 +838,11 @@ model CapacitySlotReservation {
   createdAt             DateTime                   @default(now())
   updatedAt             DateTime                   @updatedAt
 
-  organization          Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo                 Cargo                      @relation(fields: [cargoId], references: [id], onDelete: Cascade)
-  slot                  CapacitySlot               @relation(fields: [slotId], references: [id], onDelete: Cascade)
-  advisoryDecisions     CapacityAdvisoryDecision[]
-  transportOrders        TransportOrder[]
+  organization      Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  cargo             Cargo                      @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  slot              CapacitySlot               @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  advisoryDecisions CapacityAdvisoryDecision[]
+  transportOrders   TransportOrder[]
 
   @@unique([organizationId, reserveIdempotencyKey])
   @@unique([organizationId, cancelIdempotencyKey])
@@ -808,9 +871,9 @@ model CapacityAdvisoryDecision {
   createdAt              DateTime                           @default(now())
   updatedAt              DateTime                           @updatedAt
 
-  organization           Organization                       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  slot                   CapacitySlot?                      @relation(fields: [slotId], references: [id], onDelete: SetNull)
-  reservation            CapacitySlotReservation?           @relation(fields: [reservationId], references: [id], onDelete: SetNull)
+  organization Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  slot         CapacitySlot?            @relation(fields: [slotId], references: [id], onDelete: SetNull)
+  reservation  CapacitySlotReservation? @relation(fields: [reservationId], references: [id], onDelete: SetNull)
 
   @@unique([organizationId, decisionIdempotencyKey])
   @@unique([organizationId, recommendationId])
@@ -821,39 +884,39 @@ model CapacityAdvisoryDecision {
 }
 
 model TransportOrder {
-  id                      String                    @id @default(cuid())
-  organizationId          String
-  cargoId                 String
-  trackingShipmentId      String?
-  capacityReservationId   String?
-  orderReference          String
-  status                  TransportOrderStatus      @default(confirmed)
-  mode                    TransportOrderMode
-  carrierName             String
-  routeSummary            String
-  originName              String
-  destinationName         String
-  plannedDepartureAt      DateTime
-  plannedArrivalAt        DateTime
-  responsiblePlannerName  String
-  confirmationReference   String
-  sourceSystem            String                    @default("saptm")
-  confirmIdempotencyKey   String?
-  confirmedAt             DateTime
-  cancellationReference   String?
-  cancelledByName         String?
-  cancellationReason      String?
-  cancelIdempotencyKey    String?
-  cancelledAt             DateTime?
-  createdAt               DateTime                  @default(now())
-  updatedAt               DateTime                  @updatedAt
+  id                     String               @id @default(cuid())
+  organizationId         String
+  cargoId                String
+  trackingShipmentId     String?
+  capacityReservationId  String?
+  orderReference         String
+  status                 TransportOrderStatus @default(confirmed)
+  mode                   TransportOrderMode
+  carrierName            String
+  routeSummary           String
+  originName             String
+  destinationName        String
+  plannedDepartureAt     DateTime
+  plannedArrivalAt       DateTime
+  responsiblePlannerName String
+  confirmationReference  String
+  sourceSystem           String               @default("saptm")
+  confirmIdempotencyKey  String?
+  confirmedAt            DateTime
+  cancellationReference  String?
+  cancelledByName        String?
+  cancellationReason     String?
+  cancelIdempotencyKey   String?
+  cancelledAt            DateTime?
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
 
-  organization            Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo                   Cargo                     @relation(fields: [cargoId], references: [id], onDelete: Cascade)
-  trackingShipment        TrackingShipment?         @relation(fields: [trackingShipmentId], references: [id], onDelete: SetNull)
-  capacityReservation     CapacitySlotReservation?  @relation(fields: [capacityReservationId], references: [id], onDelete: SetNull)
-  scheduleRevisions       TransportOrderScheduleRevision[]
-  dispatches              TransportOrderDispatch[]
+  organization        Organization                     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  cargo               Cargo                            @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  trackingShipment    TrackingShipment?                @relation(fields: [trackingShipmentId], references: [id], onDelete: SetNull)
+  capacityReservation CapacitySlotReservation?         @relation(fields: [capacityReservationId], references: [id], onDelete: SetNull)
+  scheduleRevisions   TransportOrderScheduleRevision[]
+  dispatches          TransportOrderDispatch[]
 
   @@unique([organizationId, confirmIdempotencyKey])
   @@unique([organizationId, cancelIdempotencyKey])
@@ -867,20 +930,20 @@ model TransportOrder {
 }
 
 model TransportOrderDispatch {
-  id                   String              @id @default(cuid())
+  id                   String   @id @default(cuid())
   organizationId       String
   orderId              String
   dispatchReference    String
   dispatchedByName     String
   dispatchInstructions String
-  sourceSystem         String              @default("saptm")
+  sourceSystem         String   @default("saptm")
   idempotencyKey       String
   dispatchedAt         DateTime
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @updatedAt
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
-  organization         Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  transportOrder       TransportOrder      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  transportOrder TransportOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, dispatchReference])
   @@unique([organizationId, idempotencyKey])
@@ -889,7 +952,7 @@ model TransportOrderDispatch {
 }
 
 model TransportOrderScheduleRevision {
-  id                         String              @id @default(cuid())
+  id                         String             @id @default(cuid())
   organizationId             String
   orderId                    String
   revisionReference          String
@@ -909,14 +972,14 @@ model TransportOrderScheduleRevision {
   newPlannedArrivalAt        DateTime
   rescheduledByName          String
   rescheduleReason           String
-  sourceSystem               String              @default("saptm")
+  sourceSystem               String             @default("saptm")
   idempotencyKey             String
   rescheduledAt              DateTime
-  createdAt                  DateTime            @default(now())
-  updatedAt                  DateTime            @updatedAt
+  createdAt                  DateTime           @default(now())
+  updatedAt                  DateTime           @updatedAt
 
-  organization               Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  transportOrder             TransportOrder      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  transportOrder TransportOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, revisionReference])
   @@unique([organizationId, idempotencyKey])
@@ -937,9 +1000,9 @@ model TariffRateCard {
   createdAt            DateTime             @default(now())
   updatedAt            DateTime             @updatedAt
 
-  organization         Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  rules                TariffRateRule[]
-  quotes               TariffQuote[]
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  rules        TariffRateRule[]
+  quotes       TariffQuote[]
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, rateCardCode])
@@ -969,8 +1032,8 @@ model TariffRateRule {
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @updatedAt
 
-  organization         Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  rateCard             TariffRateCard         @relation(fields: [rateCardId], references: [id], onDelete: Cascade)
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  rateCard     TariffRateCard @relation(fields: [rateCardId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, rateCardId, ruleCode])
@@ -1001,9 +1064,9 @@ model TariffQuote {
   createdAt               DateTime          @default(now())
   updatedAt               DateTime          @updatedAt
 
-  organization            Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo                   Cargo             @relation(fields: [cargoId], references: [id], onDelete: Cascade)
-  rateCard                TariffRateCard    @relation(fields: [rateCardId], references: [id], onDelete: Cascade)
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  cargo        Cargo          @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  rateCard     TariffRateCard @relation(fields: [rateCardId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, calculateIdempotencyKey])
   @@unique([organizationId, approveIdempotencyKey])
@@ -1033,8 +1096,8 @@ model CargoOperationalHandoff {
   createdAt            DateTime                    @default(now())
   updatedAt            DateTime                    @updatedAt
 
-  organization         Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo                Cargo                       @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  cargo        Cargo        @relation(fields: [cargoId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, handoffReference])
@@ -1043,33 +1106,33 @@ model CargoOperationalHandoff {
 }
 
 model CargoComplianceEvidence {
-  id                    String                         @id @default(cuid())
-  organizationId        String
-  cargoId               String
-  evidenceType          CargoComplianceEvidenceType
-  documentReference     String
-  documentTitle         String
-  documentUri           String?
-  issuerName            String
-  issuedAt              DateTime?
-  expiresAt             DateTime?
-  status                CargoComplianceEvidenceStatus @default(pending_review)
-  reviewerName          String?
-  reviewReference       String?
-  reviewSummary         String?
-  rejectionReason       String?
-  reviewedAt            DateTime?
-  sourceSystem          String                         @default("saptm")
-  recordIdempotencyKey  String?
-  verifyIdempotencyKey  String?
-  recordedByActorId     String
-  reviewedByActorId     String?
-  recordedAt            DateTime                       @default(now())
-  createdAt             DateTime                       @default(now())
-  updatedAt             DateTime                       @updatedAt
+  id                   String                        @id @default(cuid())
+  organizationId       String
+  cargoId              String
+  evidenceType         CargoComplianceEvidenceType
+  documentReference    String
+  documentTitle        String
+  documentUri          String?
+  issuerName           String
+  issuedAt             DateTime?
+  expiresAt            DateTime?
+  status               CargoComplianceEvidenceStatus @default(pending_review)
+  reviewerName         String?
+  reviewReference      String?
+  reviewSummary        String?
+  rejectionReason      String?
+  reviewedAt           DateTime?
+  sourceSystem         String                        @default("saptm")
+  recordIdempotencyKey String?
+  verifyIdempotencyKey String?
+  recordedByActorId    String
+  reviewedByActorId    String?
+  recordedAt           DateTime                      @default(now())
+  createdAt            DateTime                      @default(now())
+  updatedAt            DateTime                      @updatedAt
 
-  organization          Organization                   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo                 Cargo                          @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  cargo        Cargo        @relation(fields: [cargoId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, verifyIdempotencyKey])
@@ -1096,14 +1159,54 @@ model TrackingShipment {
   createdAt          DateTime               @default(now())
   updatedAt          DateTime               @updatedAt
 
-  organization       Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  events             TrackingEvent[]
-  cargo              Cargo?
-  transportOrders    TransportOrder[]
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  events          TrackingEvent[]
+  cargo           Cargo?
+  transportOrders TransportOrder[]
 
   @@unique([organizationId, referenceCode])
   @@index([organizationId, status, estimatedArrivalAt])
   @@index([organizationId, transportMode, status])
+}
+
+model WebhookEndpoint {
+  id              String       @id @default(cuid())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name            String
+  url             String
+  secret          String?
+  events          String[]
+  isActive        Boolean      @default(true)
+  lastTriggeredAt DateTime?
+  failureCount    Int          @default(0)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  deliveries WebhookDelivery[]
+
+  @@index([organizationId, isActive])
+  @@map("webhook_endpoints")
+}
+
+model WebhookDelivery {
+  id           String          @id @default(cuid())
+  webhookId    String
+  webhook      WebhookEndpoint @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+  eventType    String
+  payload      Json
+  status       String          @default("pending")
+  statusCode   Int?
+  responseBody String?
+  attemptCount Int             @default(0)
+  nextRetryAt  DateTime?
+  deliveredAt  DateTime?
+  createdAt    DateTime        @default(now())
+
+  @@index([webhookId])
+  @@index([status])
+  @@index([status, nextRetryAt])
+  @@map("webhook_deliveries")
 }
 
 model TrackingEvent {
@@ -1120,11 +1223,63 @@ model TrackingEvent {
   idempotencyKey String?
   createdAt      DateTime          @default(now())
 
-  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  shipment       TrackingShipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  shipment     TrackingShipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
 
+  @@unique([organizationId, idempotencyKey])
   @@index([organizationId, eventType, occurredAt])
   @@index([shipmentId, occurredAt])
   @@index([correlationId])
-  @@unique([organizationId, idempotencyKey])
+}
+
+model Subscription {
+  id                   String       @id @default(cuid())
+  organizationId       String       @unique
+  organization         Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  plan                 String       @default("free")
+  status               String       @default("active")
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean      @default(false)
+  trialEndsAt          DateTime?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  @@map("subscriptions")
+}
+
+model Invoice {
+  id              String       @id @default(cuid())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  stripeInvoiceId String?
+  amount          Int
+  currency        String       @default("eur")
+  status          String
+  periodStart     DateTime?
+  periodEnd       DateTime?
+  paidAt          DateTime?
+  downloadUrl     String?
+  createdAt       DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("invoices")
+}
+
+model UsageRecord {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  metric         String
+  current        Int          @default(0)
+  limit          Int
+  periodStart    DateTime?
+  periodEnd      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([organizationId, metric])
+  @@map("usage_records")
 }

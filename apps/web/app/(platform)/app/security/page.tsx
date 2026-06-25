@@ -1,8 +1,8 @@
 import { getUserSessionSecuritySummaryFromEnv } from "@saptm/auth";
-import { Badge, Card, CardHeader, CardTitle } from "@saptm/ui";
+import { Badge, MetricTile } from "@saptm/ui";
 
-import { MfaEnrollmentForm } from "../../../../components/mfa-enrollment-form";
-import { SessionRevocationForm } from "../../../../components/session-revocation-form";
+import { MfaEnrollmentForm } from "../../../../components/security/mfa-enrollment-form";
+import { SessionRevocationForm } from "../../../../components/security/session-revocation-form";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import { revokeOtherSessionsAction } from "./actions";
 import { initialSessionRevocationFormState } from "./form-state";
@@ -36,16 +36,18 @@ export default async function SecurityPage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-4">
-        <SecurityMetric label="Sessoes ativas" value={sessionSummary.activeSessions.toString()} />
-        <SecurityMetric label="Outras sessoes" value={sessionSummary.otherSessions.toString()} />
-        <SecurityMetric
+        <MetricTile label="Sessoes ativas" value={sessionSummary.activeSessions.toString()} />
+        <MetricTile label="Outras sessoes" value={sessionSummary.otherSessions.toString()} />
+        <MetricTile
           label="MFA"
           value={platformSession.viewer.twoFactorEnabled ? "ativo" : "inativo"}
+          badge={platformSession.viewer.twoFactorEnabled ? "Ativo" : "Inativo"}
           variant={platformSession.viewer.twoFactorEnabled ? "secondary" : "outline"}
         />
-        <SecurityMetric
+        <MetricTile
           label="Organizacao"
           value={platformSession.viewer.organizationId ?? "sem-organizacao"}
+          badge="Organizacao"
           variant="secondary"
         />
       </section>
@@ -64,20 +66,5 @@ export default async function SecurityPage() {
         />
       </section>
     </main>
-  );
-}
-
-function SecurityMetric(props: {
-  label: string;
-  value: string;
-  variant?: "secondary" | "outline";
-}) {
-  return (
-    <Card>
-      <CardHeader className="gap-2">
-        <Badge variant={props.variant ?? "outline"}>{props.label}</Badge>
-        <CardTitle className="text-2xl">{props.value}</CardTitle>
-      </CardHeader>
-    </Card>
   );
 }

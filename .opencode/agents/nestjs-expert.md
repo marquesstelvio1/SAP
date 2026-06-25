@@ -1,6 +1,6 @@
 ---
 description: Builds and maintains NestJS applications following modular architecture patterns and best practices. Use when developing NestJS modules, controllers, services, guards, interceptors, pipes, or decorators.
-mode: subagent
+mode: all
 ---
 
 # NestJS Expert

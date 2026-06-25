@@ -681,8 +681,218 @@ function createCargoService(database) {
   const service = Object.create(CargoService.prototype);
 
   service.database = database;
+  service.cargoRepo = createMockCargoRepository(database);
+  service.eventBus = {
+    async publish(tx, event) {
+      await tx.outboxEvent.create({
+        data: {
+          organizationId: event.organizationId,
+          eventType: event.eventType,
+          aggregateType: event.aggregateType,
+          aggregateId: event.aggregateId,
+          payload: event.payload,
+        },
+      });
+    },
+  };
+  service.usageService = {
+    async trackUsage() {},
+  };
 
   return service;
+}
+
+function createMockCargoRepository(database) {
+  return {
+    async findById(organizationId, id) {
+      const raw = await database.cargo.findFirst({ where: { id, organizationId } });
+      return raw;
+    },
+    async findByIdempotencyKey(organizationId, key) {
+      const raw = await database.cargo.findFirst({
+        where: { organizationId, registrationIdempotencyKey: key },
+      });
+      return raw;
+    },
+    async findByReleaseIdempotencyKey(organizationId, key) {
+      const raw = await database.cargo.findFirst({
+        where: { organizationId, releaseIdempotencyKey: key },
+      });
+      return raw;
+    },
+    async findByTransportPlanIdempotencyKey(organizationId, key) {
+      const raw = await database.cargo.findFirst({
+        where: { organizationId, transportPlanIdempotencyKey: key },
+      });
+      return raw;
+    },
+    async findByDepartureIdempotencyKey(organizationId, key) {
+      const raw = await database.cargo.findFirst({
+        where: { organizationId, departureIdempotencyKey: key },
+      });
+      return raw;
+    },
+    async findByArrivalIdempotencyKey(organizationId, key) {
+      const raw = await database.cargo.findFirst({
+        where: { organizationId, arrivalIdempotencyKey: key },
+      });
+      return raw;
+    },
+    async findByDeliveryIdempotencyKey(organizationId, key) {
+      const raw = await database.cargo.findFirst({
+        where: { organizationId, deliveryIdempotencyKey: key },
+      });
+      return raw;
+    },
+    async findExistingReference(organizationId, cargoReference) {
+      return database.cargo.findFirst({
+        where: { organizationId, cargoReference },
+        select: { id: true },
+      });
+    },
+    async findTrackingShipmentByReferenceCode(organizationId, referenceCode) {
+      return database.trackingShipment.findFirst({
+        where: { organizationId, referenceCode },
+        select: { id: true },
+      });
+    },
+    async findTrackingShipmentById(organizationId, id) {
+      if (id === null) return null;
+      const raw = await database.trackingShipment.findFirst({ where: { id, organizationId } });
+      return raw;
+    },
+    async findTrackingDepartureEventByIdempotencyKey(organizationId, key) {
+      const raw = await database.trackingEvent.findFirst({
+        where: { organizationId, idempotencyKey: key, eventType: "departed" },
+        select: { id: true, eventType: true, occurredAt: true, locationName: true },
+      });
+      return raw;
+    },
+    async findTrackingLifecycleEventByIdempotencyKey(organizationId, key, eventType) {
+      const raw = await database.trackingEvent.findFirst({
+        where: { organizationId, idempotencyKey: key, eventType },
+        select: { id: true, eventType: true, occurredAt: true, locationName: true },
+      });
+      return raw;
+    },
+    async getComplianceEvidenceStatusCounts(organizationId, cargoId) {
+      const groups = await database.cargoComplianceEvidence.groupBy({
+        by: ["status"],
+        where: { organizationId, cargoId },
+        _count: { _all: true },
+      });
+      return groups.map((g) => ({ status: g.status, count: g._count._all }));
+    },
+    async findOpenDeliveryExceptionForCargo(organizationId, cargoId) {
+      const raw = await database.cargoDeliveryException.findFirst({
+        where: { organizationId, cargoId, status: "open" },
+      });
+      return raw;
+    },
+    async findOperationalHandoffByRecordIdempotencyKey() {
+      return null;
+    },
+    async findDeliveryExceptionByRecordIdempotencyKey(organizationId, key) {
+      const raw = await database.cargoDeliveryException.findFirst({
+        where: { organizationId, recordIdempotencyKey: key },
+      });
+      return raw;
+    },
+    async findDeliveryExceptionByResolveIdempotencyKey(organizationId, key) {
+      const raw = await database.cargoDeliveryException.findFirst({
+        where: { organizationId, resolveIdempotencyKey: key },
+      });
+      return raw;
+    },
+    async findDeliveryExceptionById(organizationId, id) {
+      const raw = await database.cargoDeliveryException.findFirst({
+        where: { id, organizationId },
+        include: { cargo: true },
+      });
+      return raw;
+    },
+    async findClaimSettlementByRecordIdempotencyKey(organizationId, key) {
+      const raw = await database.cargoClaimSettlement.findFirst({
+        where: { organizationId, recordIdempotencyKey: key },
+      });
+      return raw;
+    },
+    async findClaimSettlementByExceptionId(organizationId, exceptionId) {
+      const raw = await database.cargoClaimSettlement.findFirst({
+        where: { organizationId, deliveryExceptionId: exceptionId },
+      });
+      return raw;
+    },
+    async findClaimSettlementBySettlementReference(organizationId, ref) {
+      const raw = await database.cargoClaimSettlement.findFirst({
+        where: { organizationId, settlementReference: ref },
+      });
+      return raw;
+    },
+    async findComplianceEvidenceByRecordIdempotencyKey(orgId, key) {
+      const raw = await database.cargoComplianceEvidence.findFirst({
+        where: { organizationId: orgId, recordIdempotencyKey: key },
+      });
+      return raw;
+    },
+    async findComplianceEvidenceByVerifyIdempotencyKey(orgId, key) {
+      const raw = await database.cargoComplianceEvidence.findFirst({
+        where: { organizationId: orgId, verifyIdempotencyKey: key },
+      });
+      return raw;
+    },
+    async findComplianceEvidenceById(orgId, id) {
+      const raw = await database.cargoComplianceEvidence.findFirst({
+        where: { organizationId: orgId, id },
+      });
+      return raw;
+    },
+    async getOverview() {
+      return {
+        statusGroups: [],
+        hazardousCount: 0,
+        inspectionRequiredCount: 0,
+        totalCount: 0,
+        recentCargo: [],
+      };
+    },
+    async createCargo(tx, data) {
+      const raw = await tx.cargo.create({ data });
+      return raw;
+    },
+    async updateCargo(tx, id, data) {
+      const raw = await tx.cargo.update({ where: { id }, data });
+      return raw;
+    },
+    async createTrackingShipment(tx, data) {
+      const raw = await tx.trackingShipment.create({ data });
+      return raw;
+    },
+    async createTrackingEvent(tx, data) {
+      await tx.trackingEvent.create({ data });
+    },
+    async updateTrackingShipment(tx, id, data) {
+      await tx.trackingShipment.update({ where: { id }, data });
+    },
+    async createDeliveryException(tx, data) {
+      return tx.cargoDeliveryException.create({ data });
+    },
+    async updateDeliveryException(tx, id, data) {
+      await tx.cargoDeliveryException.update({ where: { id }, data });
+    },
+    async createOperationalHandoff(_tx, data) {
+      return { id: "mock_operational_handoff_001", ...data };
+    },
+    async createClaimSettlement(tx, data) {
+      return tx.cargoClaimSettlement.create({ data });
+    },
+    async createComplianceEvidence(tx, data) {
+      return tx.cargoComplianceEvidence.create({ data });
+    },
+    async updateComplianceEvidence(tx, id, data) {
+      return tx.cargoComplianceEvidence.update({ where: { id }, data });
+    },
+  };
 }
 
 function createActorContext(correlationSuffix) {
@@ -1029,9 +1239,7 @@ function createCargoLifecycleDatabase() {
       },
       async update({ where, data }) {
         const record = findMutableByWhere(state.deliveryExceptions, where);
-
         Object.assign(record, data, { updatedAt: fixedNow });
-
         return record;
       },
     },

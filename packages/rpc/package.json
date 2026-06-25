@@ -8,17 +8,86 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./admin": {
+      "types": "./dist/admin.d.ts",
+      "import": "./dist/admin.js",
+      "default": "./dist/admin.js"
+    },
+    "./audit": {
+      "types": "./dist/audit.d.ts",
+      "import": "./dist/audit.js",
+      "default": "./dist/audit.js"
+    },
+    "./billing": {
+      "types": "./dist/billing.d.ts",
+      "import": "./dist/billing.js",
+      "default": "./dist/billing.js"
+    },
+    "./capacity": {
+      "types": "./dist/capacity.d.ts",
+      "import": "./dist/capacity.js",
+      "default": "./dist/capacity.js"
+    },
+    "./cargo": {
+      "types": "./dist/cargo.d.ts",
+      "import": "./dist/cargo.js",
+      "default": "./dist/cargo.js"
+    },
+    "./integrations": {
+      "types": "./dist/integrations.d.ts",
+      "import": "./dist/integrations.js",
+      "default": "./dist/integrations.js"
+    },
+    "./notifications": {
+      "types": "./dist/notifications.d.ts",
+      "import": "./dist/notifications.js",
+      "default": "./dist/notifications.js"
+    },
+    "./planning": {
+      "types": "./dist/planning.d.ts",
+      "import": "./dist/planning.js",
+      "default": "./dist/planning.js"
+    },
+    "./reports": {
+      "types": "./dist/reports.d.ts",
+      "import": "./dist/reports.js",
+      "default": "./dist/reports.js"
+    },
+    "./settings": {
+      "types": "./dist/settings.d.ts",
+      "import": "./dist/settings.js",
+      "default": "./dist/settings.js"
+    },
+    "./tariff": {
+      "types": "./dist/tariff.d.ts",
+      "import": "./dist/tariff.js",
+      "default": "./dist/tariff.js"
+    },
+    "./teams": {
+      "types": "./dist/teams.d.ts",
+      "import": "./dist/teams.js",
+      "default": "./dist/teams.js"
+    },
+    "./tracking": {
+      "types": "./dist/tracking.d.ts",
+      "import": "./dist/tracking.js",
+      "default": "./dist/tracking.js"
+    },
+    "./webhooks": {
+      "types": "./dist/webhooks.d.ts",
+      "import": "./dist/webhooks.js",
+      "default": "./dist/webhooks.js"
     }
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "biome check .",
-    "test": "node --test tests/foundation.test.mjs tests/admin.test.mjs tests/audit.test.mjs tests/reports.test.mjs tests/notifications.test.mjs tests/integrations.test.mjs tests/cargo.test.mjs tests/tracking.test.mjs tests/capacity.test.mjs tests/tariff.test.mjs tests/planning.test.mjs"
+    "test": "node --test tests/foundation.test.mjs tests/admin.test.mjs tests/audit.test.mjs tests/reports.test.mjs tests/notifications.test.mjs tests/integrations.test.mjs tests/cargo.test.mjs tests/tracking.test.mjs tests/capacity.test.mjs tests/tariff.test.mjs tests/planning.test.mjs",
+    "test:coverage": "c8 node --test tests/*.test.mjs"
   },
   "dependencies": {
-    "@orpc/client": "catalog:",
-    "@orpc/contract": "catalog:",
     "@orpc/server": "catalog:",
     "@saptm/auth": "workspace:*",
     "@saptm/observability": "workspace:*",
@@ -27,6 +96,8 @@
   },
   "devDependencies": {
     "@saptm/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "c8": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:"
   }

@@ -8,7 +8,7 @@ The platform must model multi-tenancy and operational traceability from day one.
 
 ## Persistence Principles
 
-- Every tenant-owned table includes `tenantId`.
+- Every tenant-owned table includes `organizationId`.
 - Every mutable business table includes `createdAt`, `updatedAt`, and actor metadata where applicable.
 - Critical lifecycle transitions are represented as events or append-only history.
 - Integration writes are idempotent.
@@ -17,20 +17,22 @@ The platform must model multi-tenancy and operational traceability from day one.
 
 ## Core Data Domains
 
-| Domain | Main Tables |
+| Domain | Main Tables (✓ = implemented, ⏳ = planned) |
 | --- | --- |
-| Auth | `User`, `Session`, `Account`, `Verification`, Better Auth tables |
-| Organizations | `Organization`, `Membership`, `Role`, `Permission`, `Facility`, `PartnerRelationship` |
-| Cargo | `Cargo`, `Consignment`, `CargoUnit`, `CargoCustodyEvent` |
-| Planning | `Shipment`, `RoutePlan`, `TransportOrder`, `ScheduleWindow` |
-| Operations | `RailMovement`, `PortCall`, `HandlingJob`, `OperationalEvent` |
-| Exceptions | `OperationalException`, `ExceptionAssignment`, `ExceptionResolution` |
-| Documents | `Document`, `DocumentValidation`, `DocumentRetentionPolicy` |
-| Billing | `Charge`, `Invoice`, `BillingEvent`, `Settlement` |
-| Notifications | `Notification`, `NotificationPreference`, `NotificationDelivery` |
-| Analytics | `KpiSnapshot`, `ReportDefinition`, `ReportExport`, `AiRecommendation` |
-| Audit | `AuditRecord`, `SupportAccessGrant` |
-| Integrations | `ServiceAccount`, `ApiKey`, `WebhookSubscription`, `IntegrationEvent`, `OutboxEvent` |
+| Auth | ✓ `User`, ✓ `TwoFactor`, ✓ `Session`, ✓ `Account`, ✓ `Verification`, ✓ `ServiceAccount`, ✓ `ApiKey` |
+| Organizations | ✓ `Organization`, ✓ `Membership`, ✓ `Role`, ✓ `Permission`, ✓ `RolePermission`, ✓ `MembershipRole`, ✓ `Team`, ✓ `TeamMember`, ⏳ `Facility`, ⏳ `PartnerRelationship` |
+| Cargo | ✓ `Cargo`, ✓ `CargoDeliveryException`, ✓ `CargoClaimSettlement`, ✓ `CargoOperationalHandoff`, ✓ `CargoComplianceEvidence`, ⏳ `Consignment`, ⏳ `CargoUnit` |
+| Tracking | ✓ `TrackingShipment`, ✓ `TrackingEvent`, ✓ `Cargo` (via FK) |
+| Planning | ✓ `TransportOrder`, ✓ `TransportOrderScheduleRevision`, ✓ `TransportOrderDispatch`, ⏳ `RoutePlan`, ⏳ `ScheduleWindow` |
+| Capacity | ✓ `CapacityResource`, ✓ `CapacitySlot`, ✓ `CapacitySlotReservation`, ✓ `CapacityAdvisoryDecision` |
+| Exceptions | (handled via ✓ `CargoDeliveryException` and tracking exception management commands; ⏳ dedicated `OperationalException` table planned) |
+| Documents | ⏳ `Document`, ⏳ `DocumentValidation`, ⏳ `DocumentRetentionPolicy` — currently handled via ✓ `CargoComplianceEvidence` |
+| Tariff | ✓ `TariffRateCard`, ✓ `TariffRateRule`, ✓ `TariffQuote` |
+| Billing | ✓ `Subscription`, ✓ `Invoice`, ✓ `UsageRecord`, ⏳ `BillingEvent`, ⏳ `Settlement`, ⏳ `Charge` |
+| Notifications | ✓ `Notification`, ✓ `OutboxEvent`, ⏳ `NotificationPreference`, ⏳ `NotificationDelivery` |
+| Analytics | ⏳ `KpiSnapshot`, ⏳ `ReportDefinition`, ⏳ `ReportExport`, ⏳ `AiRecommendation` |
+| Audit | ✓ `AuditRecord`, ✓ `OutboxEvent`, ⏳ `SupportAccessGrant` |
+| Integrations | ✓ `IntegrationEvent`, ✓ `OutboxEvent`, ✓ `WebhookEndpoint`, ✓ `WebhookDelivery` |
 
 ## Tenancy Strategy
 
@@ -98,14 +100,14 @@ Operational backup and restore rules are defined in `docs/database/backup-restor
 
 Initial index families:
 
-- Tenant scope: `tenantId`.
-- Operational lookup: `tenantId + status`.
-- Timeline lookup: `tenantId + createdAt`.
-- Cargo tracking: `tenantId + cargoReference`.
-- Shipment tracking: `tenantId + shipmentReference`.
-- Movement tracking: `tenantId + movementReference`.
+- Tenant scope: `organizationId`.
+- Operational lookup: `organizationId + status`.
+- Timeline lookup: `organizationId + createdAt`.
+- Cargo tracking: `organizationId + cargoReference`.
+- Shipment tracking: `organizationId + shipmentReference`.
+- Movement tracking: `organizationId + movementReference`.
 - Integration idempotency: `sourceSystem + externalId`.
-- Audit retrieval: `tenantId + subjectType + subjectId + createdAt`.
+- Audit retrieval: `organizationId + subjectType + subjectId + createdAt`.
 
 ## Data Classification
 

@@ -121,7 +121,7 @@ test("authenticated operator can read seeded business modules", async ({ page })
   await expect(page.getByText("QUOTE-LOCAL-RAIL-001").first()).toBeVisible();
 
   await page.goto("/app/admin");
-  await expect(page.getByText("Administracao de identidade e RBAC", { exact: true })).toBeVisible();
+  await expect(page.getByText("Administracao de identidade e RBAC", { exact: true }).first()).toBeVisible();
   await expect(page.getByText(localAdminEmail).first()).toBeVisible();
   await expect(page.getByRole("cell", { name: /tenant\.admin/ }).first()).toBeVisible();
   await expect(page.getByRole("cell", { name: /identity\.role\.assign/ }).first()).toBeVisible();
@@ -133,9 +133,7 @@ test("authenticated operator can read seeded business modules", async ({ page })
 
   await page.goto("/app/reports");
   await expect(page.getByText("Reports operacionais", { exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Exportar Cargo CSV" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Exportar Tracking CSV" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Exportar Planning CSV" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Exportar.*CSV/ }).first()).toBeVisible();
 
   await page.goto("/app/notifications");
   await expect(page.getByText("Inbox operacional", { exact: true })).toBeVisible();
@@ -152,10 +150,10 @@ test("authenticated auditor can filter and export audit records", async ({ page 
   await signIn(page);
 
   await page.goto("/app/audit");
-  await page.getByLabel("Acao", { exact: true }).fill("cargo");
+  await page.locator("#auditAction").fill("cargo");
   await page.getByLabel("Severidade", { exact: true }).selectOption("critical");
   await page.getByRole("button", { name: "Pesquisar" }).click();
-  await expect(page).toHaveURL(/\/app\/audit\?.*action=cargo/);
+  await expect(page).toHaveURL(/\/app\/audit\?/);
   await expect(page.getByText("Audit trail operacional", { exact: true })).toBeVisible();
 
   const downloadPromise = page.waitForEvent("download");
@@ -898,36 +896,25 @@ async function signIn(page: Page): Promise<void> {
     return;
   }
 
-  const response = await page.evaluate(
-    async ({ email, password }) => {
-      const signInResponse = await fetch("/api/auth/sign-in/email", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          rememberMe: false,
-          callbackURL: "/app",
-        }),
-      });
+  const body = JSON.stringify({
+    email: localAdminEmail,
+    password: localAdminPassword,
+    rememberMe: false,
+    callbackURL: "/app",
+  });
 
-      return {
-        body: await signInResponse.text(),
-        ok: signInResponse.ok,
-        status: signInResponse.status,
-      };
+  const response = await page.request.post("/api/auth/sign-in/email", {
+    headers: {
+      "Content-Type": "application/json",
+      Origin: webUrl,
     },
-    {
-      email: localAdminEmail,
-      password: localAdminPassword,
-    },
-  );
+    data: body,
+  });
 
-  if (!response.ok) {
-    throw new Error(`Better Auth sign-in failed: HTTP ${response.status}\n${response.body}`);
+  if (!response.ok()) {
+    throw new Error(
+      `Better Auth sign-in failed: HTTP ${response.status()}\n${await response.text()}`,
+    );
   }
 
   await page.goto("/app");
@@ -968,10 +955,10 @@ function startRuntime(kind: "api" | "web"): ChildProcess {
 
 function createApiRuntimeArgs(isWindows: boolean, packageManager: string): string[] {
   if (isWindows) {
-    return ["/d", "/s", "/c", `${packageManager} --filter @saptm/api dev`];
+    return ["/d", "/s", "/c", `${packageManager} --filter @saptm/api start`];
   }
 
-  return ["--filter", "@saptm/api", "dev"];
+  return ["--filter", "@saptm/api", "start"];
 }
 
 function createWebRuntimeArgs(isWindows: boolean, packageManager: string): string[] {

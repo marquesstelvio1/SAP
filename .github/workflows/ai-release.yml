@@ -15,15 +15,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - name: Build changelog and release report
-        shell: pwsh
+        shell: bash
         run: |
-          $releaseName = '${{ github.event.inputs.release_name }}'
-          if ([string]::IsNullOrWhiteSpace($releaseName)) {
-            $releaseName = "main-${{ github.sha }}"
-          }
-          & ./scripts/New-AIChangelog.ps1 -ReleaseName $releaseName
-          & ./scripts/Invoke-AIWorkflow.ps1 -Workflow release -ReleaseName $releaseName
+          RELEASE_NAME="${{ github.event.inputs.release_name }}"
+          [ -z "$RELEASE_NAME" ] && RELEASE_NAME="main-${{ github.sha }}"
+          node ./scripts/new-ai-changelog.mjs --release-name "$RELEASE_NAME"
+          node ./scripts/invoke-ai-workflow.mjs --workflow release --release-name "$RELEASE_NAME"
       - name: Upload release artifacts
         uses: actions/upload-artifact@v4
         with:

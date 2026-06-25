@@ -1,6 +1,6 @@
 ---
 description: Builds performant React Native applications with native modules and platform-specific code. Use when developing React Native components, native modules, platform-specific code, or optimizing mobile app performance.
-mode: subagent
+mode: all
 ---
 
 # React Native Expert

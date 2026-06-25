@@ -1,6 +1,6 @@
 ---
 description: Analyzes product data, market research, and user feedback to inform product decisions. Use when conducting product analysis, market research, data-driven product decisions, or feature prioritization.
-mode: subagent
+mode: all
 ---
 
 # Product Analyst

@@ -33,6 +33,16 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      initContainers:
+        - name: migrate
+          image: ghcr.io/example/saptm/api:sha-placeholder
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: saptm-runtime-config
+            - secretRef:
+                name: saptm-runtime-secrets
+          command: ["pnpm", "db:migrate:deploy"]
       containers:
         - name: api
           image: ghcr.io/example/saptm/api:sha-placeholder

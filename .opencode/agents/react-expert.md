@@ -1,6 +1,6 @@
 ---
 description: Builds React components and applications with hooks, state management, and modern patterns. Use when developing React components, hooks, state management, context providers, or optimizing renders.
-mode: subagent
+mode: all
 ---
 
 # React Expert

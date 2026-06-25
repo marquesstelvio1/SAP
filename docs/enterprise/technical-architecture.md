@@ -47,18 +47,29 @@ flowchart LR
 
 | NestJS Module | Bounded Context |
 | --- | --- |
-| `AuthModule` | Auth integration and session guard adapters |
-| `OrganizationsModule` | Organizations, memberships, facilities, partner relationships |
-| `CargoModule` | Cargo and consignment lifecycle |
-| `PlanningModule` | Shipments, corridors, schedules, transport orders |
-| `OperationsModule` | Rail movements, port calls, handling jobs, operational events |
-| `ExceptionsModule` | Exception lifecycle and escalation |
-| `DocumentsModule` | Document metadata, validation state, retention rules |
-| `BillingModule` | Charge and invoice lifecycle |
-| `NotificationsModule` | Notification commands and delivery integration |
-| `AnalyticsModule` | Query models, KPIs, AI recommendation boundaries |
+| `AdminModule` | Platform-level administration (user management, system config) |
 | `AuditModule` | Immutable audit capture and retrieval |
+| `AuthModule` | Auth integration and session guard adapters |
+| `BillingModule` | Charge and invoice lifecycle via Stripe |
+| `CacheModule` | Redis-backed cache management |
+| `CapacityModule` | Resource and slot management (vessels, railcars, trucks) |
+| `CargoModule` | Cargo and consignment lifecycle |
+| `DocumentsModule` | Document metadata, validation state, retention rules |
+| `EventBusModule` | Domain event bus (outbox pattern) |
+| `HealthModule` | Health check endpoints (liveness/readiness) |
+| `IntegrationsModule` | External system integration (TMS, WMS, GPS, Port, Customs) |
+| `NotificationsModule` | Notification commands and delivery integration |
+| `ObservabilityModule` | OpenTelemetry tracing, Prometheus metrics, structured logging |
+| `OrganizationsModule` | Organizations, memberships, facilities, partner relationships |
+| `PlanningModule` | Shipments, corridors, schedules, transport orders |
+| `RateLimitModule` | Global rate limiting via @nestjs/throttler |
 | `ReportsModule` | Report definitions and governed exports |
+| `RpcModule` | oRPC contract mounting and context propagation |
+| `SettingsModule` | Organization-level settings and branding configuration |
+| `TariffModule` | Pricing and rate management (rate cards, rules, quotes) |
+| `TeamsModule` | Team management within organizations |
+| `TrackingModule` | Real-time shipment tracking, telematics, GPS, anomalies |
+| `WebhooksModule` | Outbound webhook delivery to external systems |
 
 ## API Strategy
 

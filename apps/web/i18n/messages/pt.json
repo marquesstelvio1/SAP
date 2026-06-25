@@ -1,0 +1,59 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Algo deu errado",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "search": "Pesquisar",
+    "noResults": "Nenhum resultado encontrado",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior"
+  },
+  "auth": {
+    "signIn": "Entrar",
+    "signUp": "Cadastrar",
+    "signOut": "Sair",
+    "email": "E-mail",
+    "password": "Senha",
+    "forgotPassword": "Esqueceu a senha?",
+    "resetPassword": "Redefinir senha",
+    "twoFactor": "Autenticação de dois fatores"
+  },
+  "nav": {
+    "dashboard": "Painel",
+    "cargo": "Carga",
+    "tracking": "Rastreamento",
+    "capacity": "Capacidade",
+    "planning": "Planejamento",
+    "tariffs": "Tarifas",
+    "admin": "Administração",
+    "settings": "Configurações",
+    "reports": "Relatórios",
+    "audit": "Auditoria",
+    "integrations": "Integrações",
+    "notifications": "Notificações",
+    "security": "Segurança"
+  },
+  "cargo": {
+    "create": "Criar carga",
+    "edit": "Editar carga",
+    "delete": "Excluir carga",
+    "status": "Status",
+    "origin": "Origem",
+    "destination": "Destino",
+    "weight": "Peso",
+    "volume": "Volume",
+    "trackingNumber": "Número de rastreamento"
+  },
+  "tracking": {
+    "title": "Rastreamento de remessas",
+    "search": "Pesquisar remessas",
+    "status": "Status",
+    "event": "Evento",
+    "location": "Localização",
+    "timestamp": "Data/hora",
+    "exception": "Exceção"
+  }
+}

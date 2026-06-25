@@ -36,7 +36,7 @@ test("tracking overview metadata requires session and read permission", () => {
 });
 
 test("tracking overview schemas validate operational dashboard contracts", () => {
-  assert.deepEqual(trackingOverviewInputSchema.parse(undefined), { limit: 10 });
+  assert.deepEqual(trackingOverviewInputSchema.parse(undefined), { limit: 10, offset: 0 });
 
   const parsed = trackingOverviewOutputSchema.parse({
     generatedAt: "2026-06-03T00:00:00.000Z",
@@ -65,6 +65,11 @@ test("tracking overview schemas validate operational dashboard contracts", () =>
         lastKnownLocation: "Rail Yard A",
       },
     ],
+    pagination: {
+      totalCount: 1,
+      limit: 10,
+      offset: 0,
+    },
   });
 
   assert.equal(parsed.recentShipments[0].referenceCode, "SAPTM-RAIL-001");

@@ -96,9 +96,11 @@ const cargoCurrencyCodeSchema = z
 export const cargoOverviewInputSchema = z
   .object({
     limit: z.number().int().min(1).max(50).default(10),
+    offset: z.number().int().min(0).default(0),
   })
   .default({
     limit: 10,
+    offset: 0,
   });
 
 export const cargoRegisterInputSchema = z
@@ -406,6 +408,11 @@ export const cargoOverviewOutputSchema = z.object({
   }),
   statusCounts: z.array(cargoStatusCountSchema),
   recentCargo: z.array(cargoSummarySchema),
+  pagination: z.object({
+    totalCount: z.number().int().nonnegative(),
+    limit: z.number().int().positive(),
+    offset: z.number().int().min(0),
+  }),
 });
 
 export const cargoRegisterOutputSchema = z.object({

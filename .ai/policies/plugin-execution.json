@@ -1,0 +1,56 @@
+{
+  "policy": "plugin-execution",
+  "version": "1.0.0",
+  "rules": [
+    {
+      "id": "PE01",
+      "description": "Plugins must execute in defined order based on executionOrder in registry",
+      "severity": "error"
+    },
+    {
+      "id": "PE02",
+      "description": "Blocking plugins must halt pipeline on failure",
+      "severity": "critical"
+    },
+    {
+      "id": "PE03",
+      "description": "Failed blocking plugins require correction and re-run before continuing",
+      "severity": "critical"
+    },
+    {
+      "id": "PE04",
+      "description": "Non-blocking plugin failures are logged as warnings only",
+      "severity": "warning"
+    },
+    {
+      "id": "PE05",
+      "description": "All plugin outputs must be written to .ai/reports/",
+      "severity": "error"
+    },
+    {
+      "id": "PE06",
+      "description": "Context loader must run before any other plugin",
+      "severity": "critical"
+    },
+    {
+      "id": "PE07",
+      "description": "Workflow enforcer must run after all other plugins",
+      "severity": "critical"
+    },
+    {
+      "id": "PE08",
+      "description": "Product design must run before any implementation",
+      "severity": "critical"
+    },
+    {
+      "id": "PE09",
+      "description": "Architecture audit must pass before backend implementation",
+      "severity": "critical"
+    },
+    {
+      "id": "PE10",
+      "description": "Security audit must pass before release",
+      "severity": "critical"
+    }
+  ]
+}

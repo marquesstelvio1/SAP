@@ -27,6 +27,9 @@ const env = sanitizePnpmLifecycleEnv(process.env);
 await assertRuntimeDependencies(env);
 
 for (const spec of specs) {
+  if (spec.includes("authenticated-platform")) {
+    await assertApiBuild();
+  }
   const specEnv = createSpecEnv(spec, env);
   const specPorts = readSpecPorts(spec, specEnv);
 
@@ -38,6 +41,21 @@ for (const spec of specs) {
   if (exitCode !== 0) {
     process.exit(exitCode);
   }
+}
+
+async function assertApiBuild() {
+  const pnpmCmd = process.platform === "win32"
+    ? ["cmd.exe", "/d", "/s", "/c", "pnpm"]
+    : ["pnpm"];
+  const runPnpm = (...args) =>
+    captureProcessOutput(pnpmCmd[0], [...pnpmCmd.slice(1), ...args]);
+
+  console.log("Building API dependencies...");
+  await runPnpm("--filter", "@saptm/database", "db:generate");
+
+  await runPnpm("turbo", "build", "--filter", "@saptm/api");
+
+  console.log("API build completed.");
 }
 
 function createSpecEnv(spec, sourceEnv) {
@@ -276,12 +294,13 @@ async function readWindowsListeningPortProcessIds(port) {
   return Array.from(new Set(output.split(/\s+/).filter((value) => /^\d+$/.test(value))));
 }
 
-function captureProcessOutput(command, args) {
+function captureProcessOutput(command, args, options) {
   return new Promise((resolveOutput) => {
     const child = spawn(command, args, {
       cwd: rootDir,
       stdio: ["ignore", "pipe", "pipe"],
       windowsHide: true,
+      env: options?.env,
     });
     let output = "";
     let settled = false;
@@ -298,7 +317,7 @@ function captureProcessOutput(command, args) {
     timeout = setTimeout(() => {
       child.kill();
       finish();
-    }, 5_000);
+    }, options?.timeout ?? 5_000);
 
     child.stdout?.on("data", (chunk) => {
       output = `${output}${String(chunk)}`;
@@ -306,7 +325,14 @@ function captureProcessOutput(command, args) {
     child.stderr?.on("data", (chunk) => {
       output = `${output}${String(chunk)}`;
     });
-    child.once("error", finish);
-    child.once("close", finish);
+    child.once("error", () => finish());
+    child.once("close", (exitCode) => {
+      if (exitCode !== 0) {
+        resolveOutput(`Process exited with code ${exitCode}\n${output}`);
+        return;
+      }
+
+      resolveOutput(output);
+    });
   });
 }

@@ -1,6 +1,6 @@
 ---
 description: Designs and optimizes Prisma schemas, migrations, and queries for data access. Use when defining Prisma schemas, creating migrations, optimizing queries, managing relations, or using Prisma Client.
-mode: subagent
+mode: all
 ---
 
 # Prisma Expert

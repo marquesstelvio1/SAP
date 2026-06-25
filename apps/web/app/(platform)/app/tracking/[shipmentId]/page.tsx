@@ -1,6 +1,7 @@
 import type { PlatformPermission } from "@saptm/auth";
-import type { TrackingShipmentDetailOutput } from "@saptm/rpc";
+import type { TrackingShipmentDetailOutput } from "@saptm/rpc/tracking";
 import {
+  AccessState,
   Badge,
   Button,
   Card,
@@ -8,20 +9,18 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  ContextRow,
+  MetricTile,
   Separator,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Timeline,
+  TimelineItem,
 } from "@saptm/ui";
 import type { Route } from "next";
 import Link from "next/link";
 
-import { TrackingExceptionManageForm } from "../../../../../components/tracking-exception-manage-form";
-import { TrackingExceptionResolveForm } from "../../../../../components/tracking-exception-resolve-form";
-import { TrackingNextActionCard } from "../../../../../components/tracking-next-action-card";
+import { TrackingExceptionManageForm } from "../../../../../components/tracking/tracking-exception-manage-form";
+import { TrackingExceptionResolveForm } from "../../../../../components/tracking/tracking-exception-resolve-form";
+import { TrackingNextActionCard } from "../../../../../components/tracking/tracking-next-action-card";
 import { requirePlatformSession } from "../../../../../lib/auth-session";
 import { getTrackingShipmentDetail } from "../../../../../lib/tracking-shipment-detail";
 import { manageTrackingExceptionAction, resolveTrackingExceptionAction } from "../actions";
@@ -29,48 +28,23 @@ import {
   initialTrackingExceptionManageFormState,
   initialTrackingExceptionResolveFormState,
 } from "../form-state";
+import {
+  eventLabels,
+  formatDateTime,
+  formatNullableDateTime,
+  modeLabels,
+  resolveNullable,
+  resolveStatusVariant,
+  resolveWorkflowStateVariant,
+  statusLabels,
+  workflowStateLabels,
+} from "./logic";
 
 export const dynamic = "force-dynamic";
 
 const readTrackingPermission: PlatformPermission = "tracking.shipment.read";
 const manageTrackingExceptionPermission: PlatformPermission = "tracking.exception.manage";
 const resolveTrackingExceptionPermission: PlatformPermission = "tracking.exception.resolve";
-
-const statusLabels = {
-  planned: "Planeado",
-  in_transit: "Em transito",
-  delayed: "Atrasado",
-  exception: "Excecao",
-  arrived: "Chegou",
-  completed: "Concluido",
-  cancelled: "Cancelado",
-} as const;
-
-const modeLabels = {
-  rail: "Ferrovia",
-  port: "Porto",
-  road: "Rodovia",
-  multimodal: "Multimodal",
-} as const;
-
-const eventLabels = {
-  created: "Criado",
-  departed: "Partida",
-  arrived: "Chegada",
-  delayed: "Atraso",
-  exception: "Excecao",
-  location_updated: "Local atualizado",
-  handover_completed: "Handover concluido",
-  customs_hold: "Retencao alfandegaria",
-  released: "Liberacao",
-} as const;
-
-const workflowStateLabels = {
-  exception_opened: "Excecao aberta",
-  pending_review: "Pendente revisao",
-  approved_for_resolution: "Aprovada para resolucao",
-  closed: "Fechado",
-} as const;
 
 type TrackingShipmentDetailPageProps = {
   params: Promise<{
@@ -87,11 +61,19 @@ export default async function TrackingShipmentDetailPage({
 
   if (!viewerPermissions.includes(readTrackingPermission)) {
     return (
-      <TrackingDetailState
-        message="A sessao esta autenticada, mas falta a permissao tracking.shipment.read para abrir o detalhe."
-        status="Sem grant"
-        title="Detalhe de tracking bloqueado"
-      />
+      <div className="mx-auto flex max-w-4xl flex-col gap-6" role="alert" aria-live="assertive">
+        <Button asChild variant="outline">
+          <Link href="/app/tracking">Voltar ao tracking</Link>
+        </Button>
+        <AccessState
+          badgeLabel="Operational Tracking"
+          message="A sessao esta autenticada, mas falta a permissao tracking.shipment.read para abrir o detalhe."
+          role="alert"
+          status="Sem grant"
+          title="Detalhe de tracking bloqueado"
+          variant="error"
+        />
+      </div>
     );
   }
 
@@ -99,11 +81,19 @@ export default async function TrackingShipmentDetailPage({
 
   if (result.status !== "ok") {
     return (
-      <TrackingDetailState
-        message={result.message}
-        status={result.status}
-        title="Detalhe de tracking indisponivel"
-      />
+      <div className="mx-auto flex max-w-4xl flex-col gap-6" role="alert" aria-live="assertive">
+        <Button asChild variant="outline">
+          <Link href="/app/tracking">Voltar ao tracking</Link>
+        </Button>
+        <AccessState
+          badgeLabel="Operational Tracking"
+          message={result.message}
+          role="alert"
+          status={result.status}
+          title="Detalhe de tracking indisponivel"
+          variant="error"
+        />
+      </div>
     );
   }
 
@@ -384,38 +374,42 @@ export default async function TrackingShipmentDetailPage({
 function TrackingTimeline({ detail }: { detail: TrackingShipmentDetailOutput }) {
   if (detail.timeline.length === 0) {
     return (
-      <div className="rounded-lg border bg-muted/30 p-4 text-muted-foreground text-sm">
+      <div
+        className="rounded-lg border bg-muted/30 p-4 text-muted-foreground text-sm"
+        role="status"
+      >
         Nenhum evento operacional registado para esta carga.
       </div>
     );
   }
 
+  function resolveTimelineStatus(
+    event: TrackingShipmentDetailOutput["timeline"][number],
+    index: number,
+    events: TrackingShipmentDetailOutput["timeline"],
+  ): "completed" | "current" | "pending" | "error" | "warning" {
+    if (event.eventType === "delayed") return "warning";
+    if (event.eventType === "exception" || event.eventType === "customs_hold") {
+      return event.workflowState === "closed" ? "completed" : "error";
+    }
+    const isLatest = index === events.length - 1;
+    return isLatest ? "current" : "completed";
+  }
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Evento</TableHead>
-          <TableHead>Ocorrido em</TableHead>
-          <TableHead>Local</TableHead>
-          <TableHead>Workflow</TableHead>
-          <TableHead>Fonte</TableHead>
-          <TableHead>Payload</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {detail.timeline.map((event) => (
-          <TableRow key={event.id}>
-            <TableCell className="font-medium">
-              <div className="flex flex-col gap-1">
-                <span>{eventLabels[event.eventType]}</span>
-                <span className="text-muted-foreground text-xs">{event.id}</span>
-              </div>
-            </TableCell>
-            <TableCell className="text-muted-foreground">
-              {formatDateTime(event.occurredAt)}
-            </TableCell>
-            <TableCell>{event.locationName ?? "Nao informado"}</TableCell>
-            <TableCell>
+    <Timeline>
+      {detail.timeline.map((event, index, events) => {
+        const eventDescription = [event.locationName, event.notes].filter(Boolean).join(" — ");
+
+        return (
+          <TimelineItem
+            key={event.id}
+            status={resolveTimelineStatus(event, index, events)}
+            title={eventLabels[event.eventType]}
+            {...(eventDescription ? { description: eventDescription } : {})}
+            timestamp={formatDateTime(event.occurredAt)}
+          >
+            <div className="flex flex-wrap items-center gap-2">
               {event.workflowState === null ? (
                 <Badge variant="outline">N/A</Badge>
               ) : (
@@ -423,130 +417,17 @@ function TrackingTimeline({ detail }: { detail: TrackingShipmentDetailOutput }) 
                   {workflowStateLabels[event.workflowState]}
                 </Badge>
               )}
-            </TableCell>
-            <TableCell>
-              <div className="flex flex-col gap-1">
-                <Badge variant="outline">{event.sourceSystem}</Badge>
-                <span className="text-muted-foreground text-xs">{event.correlationId}</span>
-              </div>
-            </TableCell>
-            <TableCell className="max-w-72">
-              {event.payload === null ? (
-                <span className="text-muted-foreground text-xs">Sem payload</span>
-              ) : (
-                <pre className="max-h-28 overflow-auto rounded-md border bg-muted/30 p-2 text-xs">
-                  {JSON.stringify(event.payload, null, 2)}
-                </pre>
-              )}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+              <Badge variant="outline">{event.sourceSystem}</Badge>
+              <span className="text-muted-foreground text-[0.65rem]">{event.correlationId}</span>
+            </div>
+            {event.payload !== null ? (
+              <pre className="mt-2 max-h-20 overflow-auto rounded-md border bg-muted/30 p-2 text-[0.65rem]">
+                {JSON.stringify(event.payload, null, 2)}
+              </pre>
+            ) : null}
+          </TimelineItem>
+        );
+      })}
+    </Timeline>
   );
-}
-
-function TrackingDetailState({
-  title,
-  status,
-  message,
-}: {
-  title: string;
-  status: string;
-  message: string;
-}) {
-  return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-6">
-      <Button asChild variant="outline">
-        <Link href="/app/tracking">Voltar ao tracking</Link>
-      </Button>
-      <Card>
-        <CardHeader>
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="warning">{status}</Badge>
-            <Badge variant="outline">Operational Tracking</Badge>
-          </div>
-          <CardTitle className="text-3xl">{title}</CardTitle>
-          <CardDescription className="text-base leading-7">{message}</CardDescription>
-        </CardHeader>
-        <CardContent className="text-muted-foreground text-sm">
-          Modelo de seguranca aplicado: detalhe exige sessao, organizacao resolvida e permissao de
-          leitura.
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-function MetricTile({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex min-w-0 flex-col gap-3 rounded-xl border bg-card p-4">
-      <span className="text-muted-foreground text-xs uppercase tracking-[0.14em]">{label}</span>
-      <span className="truncate text-2xl font-semibold">{value}</span>
-    </div>
-  );
-}
-
-function ContextRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex min-w-0 items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="truncate font-medium">{value}</span>
-    </div>
-  );
-}
-
-function resolveStatusVariant(
-  status: keyof typeof statusLabels,
-): "info" | "success" | "warning" | "destructive" | "outline" {
-  if (status === "exception") {
-    return "destructive";
-  }
-
-  if (status === "delayed") {
-    return "warning";
-  }
-
-  if (status === "completed" || status === "arrived") {
-    return "success";
-  }
-
-  if (status === "cancelled") {
-    return "outline";
-  }
-
-  return "info";
-}
-
-function resolveWorkflowStateVariant(
-  state: keyof typeof workflowStateLabels,
-): "success" | "warning" | "info" | "outline" {
-  if (state === "closed") {
-    return "success";
-  }
-
-  if (state === "approved_for_resolution") {
-    return "info";
-  }
-
-  if (state === "pending_review") {
-    return "warning";
-  }
-
-  return "outline";
-}
-
-function resolveNullable<T extends string>(labels: Record<T, string>, value: T | null): string {
-  return value === null ? "Sem evento" : labels[value];
-}
-
-function formatNullableDateTime(value: string | null): string {
-  return value === null ? "Nao informado" : formatDateTime(value);
-}
-
-function formatDateTime(value: string): string {
-  return new Intl.DateTimeFormat("pt-PT", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
 }

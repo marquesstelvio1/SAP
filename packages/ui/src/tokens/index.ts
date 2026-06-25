@@ -71,6 +71,53 @@ export const elevationTokens = {
   sticky: "var(--shadow-sticky)",
 } as const;
 
+export const spacingTokens = {
+  0: "var(--space-0)",
+  0.5: "var(--space-0\\.5)",
+  1: "var(--space-1)",
+  1.5: "var(--space-1\\.5)",
+  2: "var(--space-2)",
+  2.5: "var(--space-2\\.5)",
+  3: "var(--space-3)",
+  3.5: "var(--space-3\\.5)",
+  4: "var(--space-4)",
+  5: "var(--space-5)",
+  6: "var(--space-6)",
+  7: "var(--space-7)",
+  8: "var(--space-8)",
+  9: "var(--space-9)",
+  10: "var(--space-10)",
+  11: "var(--space-11)",
+  12: "var(--space-12)",
+  14: "var(--space-14)",
+  16: "var(--space-16)",
+  20: "var(--space-20)",
+  24: "var(--space-24)",
+  28: "var(--space-28)",
+  32: "var(--space-32)",
+} as const;
+
+export const motionTokens = {
+  durationFast: "var(--motion-duration-fast)",
+  durationNormal: "var(--motion-duration-normal)",
+  durationSlow: "var(--motion-duration-slow)",
+  easeLinear: "var(--motion-ease-linear)",
+  easeIn: "var(--motion-ease-in)",
+  easeOut: "var(--motion-ease-out)",
+  easeInOut: "var(--motion-ease-in-out)",
+} as const;
+
+export const zIndexTokens = {
+  base: "var(--z-base)",
+  dropdown: "var(--z-dropdown)",
+  sticky: "var(--z-sticky)",
+  overlay: "var(--z-overlay)",
+  modal: "var(--z-modal)",
+  popover: "var(--z-popover)",
+  toast: "var(--z-toast)",
+  command: "var(--z-command)",
+} as const;
+
 export type SemanticColorToken = keyof typeof semanticColorTokens;
 export type OperationalStatusToken = keyof typeof operationalStatusTokens;
 export type DensityToken = keyof typeof densityTokens;

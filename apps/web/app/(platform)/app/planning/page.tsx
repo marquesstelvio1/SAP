@@ -1,11 +1,15 @@
 import type { PlatformPermission } from "@saptm/auth";
 import {
+  AccessState,
   Badge,
+  BadgeGroup,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  ContextRow,
+  MetricTile,
   Table,
   TableBody,
   TableCell,
@@ -13,10 +17,10 @@ import {
   TableHeader,
   TableRow,
 } from "@saptm/ui";
-import { TransportOrderCancelForm } from "../../../../components/transport-order-cancel-form";
-import { TransportOrderConfirmForm } from "../../../../components/transport-order-confirm-form";
-import { TransportOrderDispatchForm } from "../../../../components/transport-order-dispatch-form";
-import { TransportOrderRescheduleForm } from "../../../../components/transport-order-reschedule-form";
+import { TransportOrderCancelForm } from "../../../../components/planning/transport-order-cancel-form";
+import { TransportOrderConfirmForm } from "../../../../components/planning/transport-order-confirm-form";
+import { TransportOrderDispatchForm } from "../../../../components/planning/transport-order-dispatch-form";
+import { TransportOrderRescheduleForm } from "../../../../components/planning/transport-order-reschedule-form";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import { getPlanningOverview } from "../../../../lib/planning-overview";
 import {
@@ -63,10 +67,13 @@ export default async function PlanningOverviewPage() {
 
   if (!viewerPermissions.includes(readPlanningPermission)) {
     return (
-      <PlanningAccessState
+      <AccessState
+        badgeLabel="Transport Planning"
         message="A sessao esta autenticada, mas falta a permissao planning.order.read para abrir o modulo."
+        role="alert"
         status="Sem grant"
         title="Planeamento operacional bloqueado"
+        variant="empty"
       />
     );
   }
@@ -75,10 +82,13 @@ export default async function PlanningOverviewPage() {
 
   if (result.status !== "ok") {
     return (
-      <PlanningAccessState
+      <AccessState
+        badgeLabel="Transport Planning"
         message={result.message}
+        role="alert"
         status={result.status}
         title="Planeamento operacional indisponivel"
+        variant="empty"
       />
     );
   }
@@ -90,11 +100,13 @@ export default async function PlanningOverviewPage() {
       <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
         <Card>
           <CardHeader className="gap-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="success">Business P26</Badge>
-              <Badge variant="success">P26 Pos-dispatch guard</Badge>
-              <Badge variant="outline">Transport Planning</Badge>
-            </div>
+            <BadgeGroup
+              items={[
+                { label: "Business P26", variant: "success" },
+                { label: "P26 Pos-dispatch guard", variant: "success" },
+                { label: "Transport Planning", variant: "outline" },
+              ]}
+            />
             <div className="flex flex-col gap-2">
               <CardTitle className="text-3xl">Planeamento de transporte governado</CardTitle>
               <CardDescription className="max-w-3xl text-base leading-7">
@@ -151,7 +163,7 @@ export default async function PlanningOverviewPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table aria-label="Transport orders recentes">
               <TableHeader>
                 <TableRow>
                   <TableHead>Ordem</TableHead>
@@ -164,7 +176,7 @@ export default async function PlanningOverviewPage() {
               <TableBody>
                 {overview.recentOrders.length === 0 ? (
                   <TableRow>
-                    <TableCell className="text-muted-foreground" colSpan={5}>
+                    <TableCell className="text-muted-foreground" colSpan={5} role="status">
                       Sem transport orders confirmadas neste tenant.
                     </TableCell>
                   </TableRow>
@@ -243,30 +255,30 @@ export default async function PlanningOverviewPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3 text-sm">
-            <RuleRow label="Carga elegivel" value="ready_for_transport, customs ok e sound" />
-            <RuleRow label="Rota definida" value="origem/destino distintos e resumo minimo" />
-            <RuleRow
+            <ContextRow label="Carga elegivel" value="ready_for_transport, customs ok e sound" />
+            <ContextRow label="Rota definida" value="origem/destino distintos e resumo minimo" />
+            <ContextRow
               label="Timing valido"
               value="confirmado antes da partida e chegada posterior"
             />
-            <RuleRow
+            <ContextRow
               label="Capacidade"
               value="reserva ativa e alinhada a janela quando informada"
             />
-            <RuleRow
+            <ContextRow
               label="Tracking"
               value="shipment tenant-scoped vinculado a carga quando informado"
             />
-            <RuleRow label="Idempotencia" value="ordem unica por cargo, referencia e chave" />
-            <RuleRow
+            <ContextRow label="Idempotencia" value="ordem unica por cargo, referencia e chave" />
+            <ContextRow
               label="Replaneamento"
               value="somente ordem confirmada, sem dispatch, mudanca real, janela valida e revisao unica"
             />
-            <RuleRow
+            <ContextRow
               label="Dispatch"
               value="somente ordem confirmada, apos ultimo replaneamento, antes da partida e sem duplicidade"
             />
-            <RuleRow
+            <ContextRow
               label="Cancelamento"
               value="somente ordem confirmada, sem dispatch, antes da partida, com motivo e referencia unica"
             />
@@ -298,55 +310,6 @@ export default async function PlanningOverviewPage() {
           />
         </div>
       </section>
-    </div>
-  );
-}
-
-function PlanningAccessState({
-  message,
-  status,
-  title,
-}: {
-  message: string;
-  status: string;
-  title: string;
-}) {
-  return (
-    <div className="mx-auto max-w-3xl">
-      <Card>
-        <CardHeader>
-          <Badge variant="warning">{status}</Badge>
-          <CardTitle>{title}</CardTitle>
-          <CardDescription>{message}</CardDescription>
-        </CardHeader>
-      </Card>
-    </div>
-  );
-}
-
-function MetricTile({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border bg-muted/30 p-4">
-      <p className="text-muted-foreground text-xs uppercase tracking-[0.2em]">{label}</p>
-      <p className="mt-2 font-semibold text-2xl">{value}</p>
-    </div>
-  );
-}
-
-function ContextRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="max-w-72 truncate font-mono text-xs">{value}</span>
-    </div>
-  );
-}
-
-function RuleRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border bg-muted/20 p-3">
-      <p className="font-medium">{label}</p>
-      <p className="mt-1 text-muted-foreground">{value}</p>
     </div>
   );
 }

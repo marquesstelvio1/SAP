@@ -59,26 +59,26 @@ Override with `SAPTM_LOCAL_ADMIN_EMAIL`, `SAPTM_LOCAL_ADMIN_PASSWORD`, `SAPTM_LO
 
 Validate the operating system:
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Test-AIOS.ps1
+```bash
+node ./scripts/test-aios.mjs
 ```
 
 Create a diagnostic and task bundle:
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Invoke-AIWorkflow.ps1 -Workflow diagnostic -Domain frontend -TaskId FIN-001 -Feature "checkout-loading-states" -Priority high
+```bash
+node ./scripts/invoke-ai-workflow.mjs --workflow diagnostic --domain frontend --task-id FIN-001 --feature "checkout-loading-states" --priority high
 ```
 
 Generate delivery artifacts for a task:
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Invoke-AIWorkflow.ps1 -Workflow delivery -Domain frontend -TaskId FIN-001 -Feature "checkout-loading-states"
+```bash
+node ./scripts/invoke-ai-workflow.mjs --workflow delivery --domain frontend --task-id FIN-001 --feature "checkout-loading-states"
 ```
 
 Generate release artifacts:
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Invoke-AIWorkflow.ps1 -Workflow release -ReleaseName release-candidate
+```bash
+node ./scripts/invoke-ai-workflow.mjs --workflow release --release-name release-candidate
 ```
 
 ## Delivery Principles

@@ -26,13 +26,13 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
     <main className="min-h-screen bg-sidebar text-sidebar-foreground">
       <div className="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
         <section className="relative hidden overflow-hidden border-sidebar-border border-r p-10 lg:flex lg:flex-col lg:justify-between">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,oklch(0.68_0.13_210_/_26%),transparent_32%),radial-gradient(circle_at_80%_10%,oklch(0.77_0.16_75_/_18%),transparent_28%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,var(--sidebar-accent)/0.26,transparent_32%),radial-gradient(circle_at_80%_10%,var(--sidebar-primary)/0.18,transparent_28%)]" />
           <div className="relative flex items-center gap-3">
             <div className="flex size-11 items-center justify-center rounded-xl bg-sidebar-primary font-semibold text-sidebar-primary-foreground">
               ST
             </div>
             <div className="flex flex-col gap-0.5">
-              <span className="font-semibold tracking-[var(--tracking-heading)]">SAPTM</span>
+              <span className="font-semibold tracking-tight">SAPTM</span>
               <span className="text-sidebar-foreground/65 text-sm">Enterprise Logistics OS</span>
             </div>
           </div>
@@ -41,7 +41,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
               Foundation before business features
             </div>
             <div className="flex flex-col gap-4">
-              <h1 className="font-semibold text-4xl tracking-[var(--tracking-heading)]">
+              <h1 className="font-semibold text-4xl tracking-tight">
                 Acesso seguro antes de qualquer operação logística.
               </h1>
               <p className="text-sidebar-foreground/70 text-lg leading-8">

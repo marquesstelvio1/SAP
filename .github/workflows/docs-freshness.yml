@@ -1,0 +1,59 @@
+name: Documentation Freshness
+
+on:
+  pull_request:
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - '.github/workflows/**'
+      - 'pnpm-workspace.yaml'
+      - 'docs/**'
+      - '.ai/**'
+  push:
+    branches: [main]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - '.github/workflows/**'
+      - 'pnpm-workspace.yaml'
+  schedule:
+    - cron: '0 6 * * 1'  # Every Monday at 6am
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate documentation freshness
+        run: node scripts/validate-doc-freshness.mjs
+        env:
+          CI: 'true'
+
+      - name: Check AGENTS.md is up to date
+        run: |
+          if ! grep -q "Version: 2.0.0" AGENTS.md; then
+            echo "AGENTS.md version is outdated. Recompile from docs/ knowledge."
+            exit 1
+          fi
+          echo "AGENTS.md is current."
+
+      - name: Verify docs directory structure
+        run: |
+          for dir in discovery diagnostics architecture business-rules standards rules skills agents roadmaps governance flows; do
+            if [ ! -d "docs/$dir" ]; then
+              echo "Missing required docs directory: docs/$dir"
+              exit 1
+            fi
+          done
+          echo "All required docs directories exist."

@@ -95,6 +95,7 @@ export function createCargoRpcRouter(deps: CreateCargoRpcRouterInput) {
           return deps.cargoService.getOverview({
             organizationId,
             limit: input.limit,
+            offset: input.offset,
           });
         }),
       register: cargoRpc

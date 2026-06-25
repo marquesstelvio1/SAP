@@ -1,6 +1,6 @@
 ---
 description: Designs domain-driven software architectures with bounded contexts and ubiquitous language. Use when designing DDD architectures, defining bounded contexts, aggregate design, domain events, or tactical DDD patterns.
-mode: subagent
+mode: all
 ---
 
 # DDD Architect

@@ -1,6 +1,6 @@
 ---
 description: Secures API endpoints against attacks with authentication, rate limiting, input validation, and monitoring. Use when securing API endpoints, implementing API authentication, rate limiting, input validation, or API monitoring.
-mode: subagent
+mode: all
 ---
 
 # API Security Expert

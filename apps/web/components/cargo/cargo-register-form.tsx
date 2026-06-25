@@ -1,0 +1,371 @@
+"use client";
+
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Checkbox,
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  Input,
+  SelectNative,
+} from "@saptm/ui";
+import { useActionState, useEffect, useMemo, useState } from "react";
+
+import type { CargoRegisterFormState } from "../../app/(platform)/app/cargo/form-state";
+
+export type CargoRegisterFormProps = {
+  canRegisterCargo: boolean;
+  initialState: CargoRegisterFormState;
+  action: (
+    previousState: CargoRegisterFormState,
+    formData: FormData,
+  ) => Promise<CargoRegisterFormState>;
+};
+
+const cargoTypeOptions = [
+  { value: "container", label: "Contentor" },
+  { value: "bulk", label: "Granel" },
+  { value: "break_bulk", label: "Carga solta" },
+  { value: "liquid_bulk", label: "Granel liquido" },
+  { value: "refrigerated", label: "Refrigerada" },
+  { value: "hazardous", label: "Perigosa" },
+  { value: "vehicle", label: "Veiculo" },
+  { value: "other", label: "Outra" },
+] as const;
+
+const customsStatusOptions = [
+  { value: "pending", label: "Pendente" },
+  { value: "cleared", label: "Liberada" },
+  { value: "held", label: "Retida" },
+  { value: "not_required", label: "Nao requerido" },
+] as const;
+
+const conditionStatusOptions = [
+  { value: "sound", label: "Integra" },
+  { value: "requires_inspection", label: "Requer inspecao" },
+  { value: "damaged", label: "Danificada" },
+] as const;
+
+export function CargoRegisterForm({
+  canRegisterCargo,
+  initialState,
+  action,
+}: CargoRegisterFormProps) {
+  const [state, formAction, isPending] = useActionState(action, initialState);
+  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const defaultExpectedReadyAt = useMemo(
+    () => createDatetimeLocalValue(addHours(new Date(), 24)),
+    [],
+  );
+  const isDisabled = isPending || !canRegisterCargo;
+
+  useEffect(() => {
+    if (state.status === "success") {
+      setIdempotencyKey(createIdempotencyKey());
+    }
+  }, [state.status]);
+
+  return (
+    <Card>
+      <CardHeader className="gap-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant={canRegisterCargo ? "success" : "warning"}>
+            {canRegisterCargo ? "Registo governado" : "Sem permissao"}
+          </Badge>
+          <Badge variant="outline">cargo.register</Badge>
+        </div>
+        <div className="flex flex-col gap-2">
+          <CardTitle>Registar carga</CardTitle>
+          <CardDescription className="leading-6">
+            Aplica regras de negocio antes do transporte: identidade unica, custodia, peso, volumes,
+            compliance aduaneiro, perigosidade, inspecao, idempotencia, audit e outbox.
+          </CardDescription>
+        </div>
+      </CardHeader>
+      <form action={formAction}>
+        <CardContent>
+          <FieldGroup>
+            <input name="idempotencyKey" type="hidden" value={idempotencyKey} />
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="cargoReference">Referencia da carga</FieldLabel>
+                <Input
+                  disabled={isDisabled}
+                  id="cargoReference"
+                  name="cargoReference"
+                  placeholder="CGO-2026-0001"
+                  required
+                />
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="externalReference">Referencia externa</FieldLabel>
+                <Input
+                  disabled={isDisabled}
+                  id="externalReference"
+                  name="externalReference"
+                  placeholder="BL, manifesto ou ordem externa"
+                />
+              </Field>
+            </div>
+
+            <Field data-disabled={!canRegisterCargo}>
+              <FieldLabel htmlFor="cargoDescription">Descricao</FieldLabel>
+              <Input
+                disabled={isDisabled}
+                id="cargoDescription"
+                name="cargoDescription"
+                placeholder="Ex.: 20 contentores de componentes industriais"
+                required
+              />
+            </Field>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="cargoType">Tipo</FieldLabel>
+                <SelectNative disabled={isDisabled} id="cargoType" name="cargoType" required>
+                  {cargoTypeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </SelectNative>
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="grossWeightKg">Peso bruto kg</FieldLabel>
+                <Input
+                  disabled={isDisabled}
+                  id="grossWeightKg"
+                  min="0.001"
+                  name="grossWeightKg"
+                  placeholder="12000"
+                  required
+                  step="0.001"
+                  type="number"
+                />
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="packageCount">Volumes</FieldLabel>
+                <Input
+                  disabled={isDisabled}
+                  id="packageCount"
+                  min="1"
+                  name="packageCount"
+                  placeholder="20"
+                  required
+                  type="number"
+                />
+              </Field>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="shipperName">Expedidor</FieldLabel>
+                <Input disabled={isDisabled} id="shipperName" name="shipperName" required />
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="consigneeName">Consignatario</FieldLabel>
+                <Input disabled={isDisabled} id="consigneeName" name="consigneeName" required />
+              </Field>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="originName">Origem</FieldLabel>
+                <Input disabled={isDisabled} id="originName" name="originName" required />
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="destinationName">Destino</FieldLabel>
+                <Input disabled={isDisabled} id="destinationName" name="destinationName" required />
+              </Field>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="custodyOwnerName">Responsavel custodia</FieldLabel>
+                <Input
+                  disabled={isDisabled}
+                  id="custodyOwnerName"
+                  name="custodyOwnerName"
+                  required
+                />
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="priority">Prioridade</FieldLabel>
+                <Input
+                  defaultValue="3"
+                  disabled={isDisabled}
+                  id="priority"
+                  max="5"
+                  min="1"
+                  name="priority"
+                  required
+                  type="number"
+                />
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="expectedReadyAt">Pronto em</FieldLabel>
+                <Input
+                  defaultValue={defaultExpectedReadyAt}
+                  disabled={isDisabled}
+                  id="expectedReadyAt"
+                  name="expectedReadyAt"
+                  type="datetime-local"
+                />
+              </Field>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="customsStatus">Estado aduaneiro</FieldLabel>
+                <SelectNative
+                  defaultValue="pending"
+                  disabled={isDisabled}
+                  id="customsStatus"
+                  name="customsStatus"
+                  required
+                >
+                  {customsStatusOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </SelectNative>
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="customsReference">Referencia aduaneira</FieldLabel>
+                <Input disabled={isDisabled} id="customsReference" name="customsReference" />
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="conditionStatus">Condicao</FieldLabel>
+                <SelectNative
+                  defaultValue="sound"
+                  disabled={isDisabled}
+                  id="conditionStatus"
+                  name="conditionStatus"
+                  required
+                >
+                  {conditionStatusOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </SelectNative>
+              </Field>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <Field data-disabled={!canRegisterCargo} orientation="horizontal">
+                <Checkbox
+                  className="mt-0.5"
+                  disabled={isDisabled}
+                  id="hazardous"
+                  name="hazardous"
+                />
+                <div className="flex flex-col gap-1">
+                  <FieldLabel htmlFor="hazardous">Carga perigosa</FieldLabel>
+                  <FieldDescription>Exige UN number e classe de risco.</FieldDescription>
+                </div>
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="unNumber">UN number</FieldLabel>
+                <Input disabled={isDisabled} id="unNumber" name="unNumber" placeholder="UN1203" />
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="hazardClass">Classe de risco</FieldLabel>
+                <Input disabled={isDisabled} id="hazardClass" name="hazardClass" placeholder="3" />
+              </Field>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <Field data-disabled={!canRegisterCargo} orientation="horizontal">
+                <Checkbox
+                  className="mt-0.5"
+                  disabled={isDisabled}
+                  id="requiresInspection"
+                  name="requiresInspection"
+                />
+                <div className="flex flex-col gap-1">
+                  <FieldLabel htmlFor="requiresInspection">Requer inspecao</FieldLabel>
+                  <FieldDescription>Bloqueia movimento ate validacao operacional.</FieldDescription>
+                </div>
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="volumeM3">Volume m3</FieldLabel>
+                <Input
+                  disabled={isDisabled}
+                  id="volumeM3"
+                  min="0.001"
+                  name="volumeM3"
+                  step="0.001"
+                  type="number"
+                />
+              </Field>
+              <Field data-disabled={!canRegisterCargo}>
+                <FieldLabel htmlFor="sourceSystem">Sistema origem</FieldLabel>
+                <Input
+                  defaultValue="saptm"
+                  disabled={isDisabled}
+                  id="sourceSystem"
+                  name="sourceSystem"
+                />
+              </Field>
+            </div>
+
+            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
+              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
+            </div>
+
+            <Field data-invalid={state.status === "error"}>
+              {state.status === "error" ? (
+                <FieldError>{state.message}</FieldError>
+              ) : (
+                <FieldDescription>
+                  {state.status === "success"
+                    ? `${state.message} Ref.: ${state.cargoReference ?? "sem-ref"} · Bloqueio: ${
+                        state.movementBlocked ? "sim" : "nao"
+                      }`
+                    : state.message}
+                </FieldDescription>
+              )}
+            </Field>
+          </FieldGroup>
+        </CardContent>
+        <CardFooter className="justify-between">
+          <span className="text-muted-foreground text-xs">
+            {canRegisterCargo ? "Registo cria audit trail e outbox." : "Requer cargo.register."}
+          </span>
+          <Button disabled={isDisabled} type="submit">
+            {isPending ? "A registar..." : "Registar carga"}
+          </Button>
+        </CardFooter>
+      </form>
+    </Card>
+  );
+}
+
+function createIdempotencyKey(): string {
+  const randomValue =
+    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
+
+  return `cargo_reg_${randomValue}`;
+}
+
+function addHours(date: Date, hours: number): Date {
+  return new Date(date.getTime() + hours * 60 * 60 * 1000);
+}
+
+function createDatetimeLocalValue(date: Date): string {
+  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
+
+  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
+}

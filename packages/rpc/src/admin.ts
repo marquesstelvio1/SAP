@@ -12,9 +12,11 @@ const adminSourceSystemSchema = z.string().trim().min(1).max(80).default("saptm"
 export const adminOverviewInputSchema = z
   .object({
     limit: z.number().int().min(1).max(100).default(25),
+    offset: z.number().int().min(0).default(0),
   })
   .default({
     limit: 25,
+    offset: 0,
   });
 
 export const adminUserInviteInputSchema = z.object({
@@ -163,6 +165,11 @@ export const adminOverviewOutputSchema = z.object({
   users: z.array(adminUserSummarySchema),
   roles: z.array(adminRoleSummarySchema),
   permissions: z.array(adminPermissionSummarySchema),
+  pagination: z.object({
+    totalCount: z.number().int().nonnegative(),
+    limit: z.number().int().positive(),
+    offset: z.number().int().min(0),
+  }),
   securityModel: z.object({
     authProvider: z.literal("better-auth"),
     authorizationModel: z.literal("tenant-scoped-rbac"),

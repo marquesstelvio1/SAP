@@ -1,6 +1,6 @@
 ---
 description: Develops cross-platform mobile apps with Expo managed workflow and native module integration. Use when developing Expo apps, managing native modules, EAS builds, or configuring app.json for mobile deployment.
-mode: subagent
+mode: all
 ---
 
 # Expo Expert

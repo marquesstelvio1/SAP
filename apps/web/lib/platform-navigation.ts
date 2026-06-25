@@ -157,6 +157,11 @@ export const platformPermissionCatalog = [
     description: "Cancelar reservas ativas e libertar capacidade com trilha auditavel.",
   },
   {
+    key: "billing.read",
+    label: "Faturacao",
+    description: "Ler subscricao, uso e faturas da organizacao.",
+  },
+  {
     key: "capacity.advisory.decide",
     label: "Decisao de advisory",
     description: "Aprovar ou rejeitar recomendacoes de capacidade com evidencia humana.",
@@ -244,6 +249,19 @@ export const platformNavigation: readonly PlatformNavigationGroup[] = [
         description: "Sessao atual, revogacao de sessoes e readiness MFA.",
         status: "available",
       },
+      {
+        label: "Configuracoes",
+        href: "/app/settings/general",
+        description: "Nome, branding, membros e preferencias da organizacao.",
+        status: "available",
+        requiredPermissions: ["tenant.manage"],
+      },
+      {
+        label: "Privacidade (LGPD)",
+        href: "/app/settings/privacy",
+        description: "Exportar dados pessoais ou solicitar eliminacao da conta.",
+        status: "available",
+      },
     ],
   },
   {
@@ -316,6 +334,13 @@ export const platformNavigation: readonly PlatformNavigationGroup[] = [
         description: "Utilizadores, memberships, roles, permissoes e governanca tenant-scoped.",
         status: "available",
         requiredPermissions: ["identity.role.assign"],
+      },
+      {
+        label: "Equipas",
+        href: "/app/admin/teams",
+        description: "Gerir equipas, membros e papeis dentro da organizacao.",
+        status: "available",
+        requiredPermissions: ["tenant.manage"],
       },
       {
         label: "Auditoria",

@@ -246,9 +246,242 @@ function createCapacityService(database) {
   const service = Object.create(CapacityService.prototype);
 
   service.database = database;
+  service.capacityRepo = createMockCapacityRepository(database);
+  service.eventBus = createMockEventBus(database);
 
   return service;
 }
+
+function createMockCapacityRepository(database) {
+  return {
+    async countResources(organizationId) {
+      return database.capacityResource.count({ where: { organizationId } });
+    },
+    async groupSlotStatuses(organizationId) {
+      return database.capacitySlot.groupBy({
+        by: ["status"],
+        where: { organizationId },
+        _count: { _all: true },
+      });
+    },
+    async countActiveReservations(organizationId) {
+      return database.capacitySlotReservation.count({
+        where: { organizationId, status: "reserved" },
+      });
+    },
+    async findUpcomingSlots(organizationId, limit) {
+      return database.capacitySlot.findMany({
+        where: { organizationId },
+        include: { resource: true },
+        orderBy: [{ windowStartAt: "asc" }, { createdAt: "desc" }],
+        take: limit,
+      });
+    },
+    async findRecentReservations(organizationId, limit) {
+      return database.capacitySlotReservation.findMany({
+        where: { organizationId },
+        include: capacityReservationRelations,
+        orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
+        take: limit,
+      });
+    },
+    async findOpenSlots(organizationId, limit) {
+      return database.capacitySlot.findMany({
+        where: { organizationId, status: "open" },
+        include: { resource: true },
+        orderBy: [{ windowEndAt: "asc" }, { reservedUnits: "desc" }, { updatedAt: "desc" }],
+        take: limit,
+      });
+    },
+    async findRecentReservationsForAdvisory(organizationId, limit) {
+      return database.capacitySlotReservation.findMany({
+        where: { organizationId },
+        include: capacityReservationRelations,
+        orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
+        take: limit,
+      });
+    },
+    async findAdvisoryDecisionsInWindow(organizationId, windowStart, windowEnd, limit) {
+      return database.capacityAdvisoryDecision.findMany({
+        where: {
+          organizationId,
+          decidedAt: { gte: windowStart, lte: windowEnd },
+        },
+        orderBy: [{ decidedAt: "desc" }, { createdAt: "desc" }],
+        take: Math.min(limit, 1000),
+      });
+    },
+    async findResourceByRecordIdempotencyKey(organizationId, idempotencyKey) {
+      return database.capacityResource.findFirst({
+        where: { organizationId, recordIdempotencyKey: idempotencyKey },
+      });
+    },
+    async findResourceByCode(organizationId, resourceCode) {
+      return database.capacityResource.findFirst({
+        where: { organizationId, resourceCode },
+      });
+    },
+    async findResourceById(organizationId, resourceId) {
+      return database.capacityResource.findFirst({
+        where: { id: resourceId, organizationId },
+      });
+    },
+    async findSlotByRecordIdempotencyKey(organizationId, idempotencyKey) {
+      return database.capacitySlot.findFirst({
+        where: { organizationId, recordIdempotencyKey: idempotencyKey },
+        include: { resource: true },
+      });
+    },
+    async findSlotByReference(organizationId, slotReference) {
+      return database.capacitySlot.findFirst({
+        where: { organizationId, slotReference },
+        include: { resource: true },
+      });
+    },
+    async findSlotById(organizationId, slotId) {
+      return database.capacitySlot.findFirst({
+        where: { id: slotId, organizationId },
+        include: { resource: true },
+      });
+    },
+    async findReservationByReserveIdempotencyKey(organizationId, idempotencyKey) {
+      return database.capacitySlotReservation.findFirst({
+        where: { organizationId, reserveIdempotencyKey: idempotencyKey },
+        include: capacityReservationRelations,
+      });
+    },
+    async findReservationByCancelIdempotencyKey(organizationId, idempotencyKey) {
+      return database.capacitySlotReservation.findFirst({
+        where: { organizationId, cancelIdempotencyKey: idempotencyKey },
+        include: capacityReservationRelations,
+      });
+    },
+    async findReservationById(organizationId, reservationId) {
+      return database.capacitySlotReservation.findFirst({
+        where: { id: reservationId, organizationId },
+        include: capacityReservationRelations,
+      });
+    },
+    async findReservationByReference(organizationId, reservationReference) {
+      return database.capacitySlotReservation.findFirst({
+        where: { organizationId, reservationReference },
+      });
+    },
+    async findReservationByCargoSlotPurpose(organizationId, cargoId, slotId, reservationPurpose) {
+      return database.capacitySlotReservation.findFirst({
+        where: { organizationId, cargoId, slotId, reservationPurpose },
+      });
+    },
+    async findCargoById(organizationId, cargoId) {
+      return database.cargo.findFirst({
+        where: { id: cargoId, organizationId },
+        select: {
+          id: true,
+          organizationId: true,
+          cargoReference: true,
+          cargoDescription: true,
+          status: true,
+          custodyOwnerName: true,
+        },
+      });
+    },
+    async findAdvisoryDecisionByIdempotencyKey(organizationId, idempotencyKey) {
+      return database.capacityAdvisoryDecision.findFirst({
+        where: { organizationId, decisionIdempotencyKey: idempotencyKey },
+      });
+    },
+    async findAdvisoryDecisionByRecommendationId(organizationId, recommendationId) {
+      return database.capacityAdvisoryDecision.findFirst({
+        where: { organizationId, recommendationId },
+      });
+    },
+    async createResource(tx, data) {
+      return tx.capacityResource.create({ data });
+    },
+    async createSlot(tx, data) {
+      return tx.capacitySlot.create({ data, include: { resource: true } });
+    },
+    async updateSlotReservedUnitsIncrement(
+      tx,
+      slotId,
+      organizationId,
+      status,
+      maxReservedUnits,
+      increment,
+    ) {
+      return tx.capacitySlot.updateMany({
+        where: {
+          id: slotId,
+          organizationId,
+          status,
+          reservedUnits: { lte: maxReservedUnits },
+        },
+        data: { reservedUnits: { increment } },
+      });
+    },
+    async createReservation(tx, data) {
+      return tx.capacitySlotReservation.create({
+        data,
+        include: capacityReservationRelations,
+      });
+    },
+    async updateReservationCancel(tx, reservationId, organizationId, currentStatus, data) {
+      return tx.capacitySlotReservation.updateMany({
+        where: { id: reservationId, organizationId, status: currentStatus },
+        data,
+      });
+    },
+    async updateSlotReservedUnitsDecrement(tx, slotId, decrement) {
+      await tx.capacitySlot.update({
+        where: { id: slotId },
+        data: { reservedUnits: { decrement } },
+      });
+    },
+    async findReservationByIdAfterUpdate(tx, reservationId, organizationId) {
+      return tx.capacitySlotReservation.findFirstOrThrow({
+        where: { id: reservationId, organizationId },
+        include: capacityReservationRelations,
+      });
+    },
+    async createAdvisoryDecision(tx, data) {
+      return tx.capacityAdvisoryDecision.create({ data });
+    },
+  };
+}
+
+function createMockEventBus(_database) {
+  return {
+    async publish(tx, event) {
+      await tx.outboxEvent.create({
+        data: {
+          organizationId: event.organizationId,
+          eventType: event.eventType,
+          aggregateType: event.aggregateType,
+          aggregateId: event.aggregateId,
+          payload: event.payload,
+        },
+      });
+    },
+  };
+}
+
+const capacityReservationRelations = {
+  cargo: {
+    select: {
+      id: true,
+      organizationId: true,
+      cargoReference: true,
+      cargoDescription: true,
+      status: true,
+      custodyOwnerName: true,
+    },
+  },
+  slot: {
+    include: {
+      resource: true,
+    },
+  },
+};
 
 function createActorContext(correlationSuffix) {
   return {

@@ -1,6 +1,6 @@
 ---
 description: Writes and maintains Playwright E2E tests with page objects, fixtures, and CI integration. Use when writing Playwright tests, configuring test runners, creating page objects, or debugging test failures.
-mode: subagent
+mode: all
 ---
 
 # Playwright Expert

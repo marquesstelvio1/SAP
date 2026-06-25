@@ -1,6 +1,6 @@
 ---
 description: Builds Next.js applications with App Router, server components, data fetching patterns, and optimal performance. Use when developing Next.js pages, routes, API endpoints, server components, or SSR strategies.
-mode: subagent
+mode: all
 ---
 
 # Next.js Expert

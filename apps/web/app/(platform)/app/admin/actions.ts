@@ -19,7 +19,7 @@ import {
   adminRoleRevokeOutputSchema,
   adminUserInviteInputSchema,
   adminUserInviteOutputSchema,
-} from "@saptm/rpc";
+} from "@saptm/rpc/admin";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 

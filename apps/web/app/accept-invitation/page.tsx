@@ -1,6 +1,6 @@
 import { Badge, Card, CardDescription, CardHeader, CardTitle } from "@saptm/ui";
 
-import { InvitationAcceptForm } from "../../components/invitation-accept-form";
+import { InvitationAcceptForm } from "../../components/auth/invitation-accept-form";
 import { acceptInvitationAction } from "./actions";
 import { initialAcceptInvitationFormState } from "./form-state";
 

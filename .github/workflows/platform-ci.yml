@@ -145,6 +145,12 @@ jobs:
       - name: E2E smoke tests
         run: pnpm test:e2e
 
+      - name: Check documentation freshness
+        run: node scripts/validate-doc-freshness.mjs
+
+      - name: Check unused dependencies
+        run: pnpm knip
+
       - name: Build
         run: pnpm build
 

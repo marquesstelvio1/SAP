@@ -10,4 +10,6 @@ reports/
 .env
 .env.*
 !.env.example
+tests/load/reports/
 *.tsbuildinfo
+backups/

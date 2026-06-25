@@ -1,11 +1,15 @@
 import type { PlatformPermission } from "@saptm/auth";
 import {
+  AccessState,
   Badge,
+  BadgeGroup,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  ContextRow,
+  MetricTile,
   Table,
   TableBody,
   TableCell,
@@ -14,10 +18,10 @@ import {
   TableRow,
 } from "@saptm/ui";
 
-import { TariffQuoteApproveForm } from "../../../../components/tariff-quote-approve-form";
-import { TariffQuoteCalculateForm } from "../../../../components/tariff-quote-calculate-form";
-import { TariffRateCardRegisterForm } from "../../../../components/tariff-rate-card-register-form";
-import { TariffRateRuleAddForm } from "../../../../components/tariff-rate-rule-add-form";
+import { TariffQuoteApproveForm } from "../../../../components/tariff/tariff-quote-approve-form";
+import { TariffQuoteCalculateForm } from "../../../../components/tariff/tariff-quote-calculate-form";
+import { TariffRateCardRegisterForm } from "../../../../components/tariff/tariff-rate-card-register-form";
+import { TariffRateRuleAddForm } from "../../../../components/tariff/tariff-rate-rule-add-form";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import { getTariffOverview } from "../../../../lib/tariff-overview";
 import {
@@ -60,10 +64,13 @@ export default async function TariffOverviewPage() {
 
   if (!viewerPermissions.includes(readTariffPermission)) {
     return (
-      <TariffAccessState
+      <AccessState
+        badgeLabel="Tariff / Pricing"
         message="A sessao esta autenticada, mas falta a permissao tariff.read para abrir o modulo."
+        role="alert"
         status="Sem grant"
         title="Tariff / Pricing bloqueado"
+        variant="empty"
       />
     );
   }
@@ -72,10 +79,13 @@ export default async function TariffOverviewPage() {
 
   if (result.status !== "ok") {
     return (
-      <TariffAccessState
+      <AccessState
+        badgeLabel="Tariff / Pricing"
         message={result.message}
+        role="alert"
         status={result.status}
         title="Tariff / Pricing indisponivel"
+        variant="empty"
       />
     );
   }
@@ -86,10 +96,12 @@ export default async function TariffOverviewPage() {
     <main className="flex flex-col gap-6">
       <Card>
         <CardHeader className="gap-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="success">P10 local</Badge>
-            <Badge variant="outline">Tariff / Pricing</Badge>
-          </div>
+          <BadgeGroup
+            items={[
+              { label: "P10 local", variant: "success" },
+              { label: "Tariff / Pricing", variant: "outline" },
+            ]}
+          />
           <div className="flex flex-col gap-2">
             <CardTitle className="text-3xl">Pricing operacional governado</CardTitle>
             <CardDescription className="max-w-3xl text-base leading-7">
@@ -117,7 +129,7 @@ export default async function TariffOverviewPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table aria-label="Rate cards ativos">
               <TableHeader>
                 <TableRow>
                   <TableHead>Rate card</TableHead>
@@ -129,7 +141,7 @@ export default async function TariffOverviewPage() {
               <TableBody>
                 {overview.activeRateCards.length === 0 ? (
                   <TableRow>
-                    <TableCell className="text-muted-foreground" colSpan={4}>
+                    <TableCell className="text-muted-foreground" colSpan={4} role="status">
                       Sem rate cards ativos neste tenant.
                     </TableCell>
                   </TableRow>
@@ -170,7 +182,7 @@ export default async function TariffOverviewPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table aria-label="Cotacoes recentes">
               <TableHeader>
                 <TableRow>
                   <TableHead>Cotacao</TableHead>
@@ -183,7 +195,7 @@ export default async function TariffOverviewPage() {
               <TableBody>
                 {overview.recentQuotes.length === 0 ? (
                   <TableRow>
-                    <TableCell className="text-muted-foreground" colSpan={5}>
+                    <TableCell className="text-muted-foreground" colSpan={5} role="status">
                       Sem cotacoes neste tenant.
                     </TableCell>
                   </TableRow>
@@ -267,48 +279,5 @@ export default async function TariffOverviewPage() {
         </CardContent>
       </Card>
     </main>
-  );
-}
-
-function TariffAccessState({
-  title,
-  status,
-  message,
-}: {
-  title: string;
-  status: string;
-  message: string;
-}) {
-  return (
-    <main className="flex min-h-[60vh] items-center justify-center">
-      <Card className="max-w-2xl">
-        <CardHeader className="gap-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="warning">{status}</Badge>
-            <Badge variant="outline">Tariff / Pricing</Badge>
-          </div>
-          <CardTitle className="text-3xl">{title}</CardTitle>
-          <CardDescription className="text-base leading-7">{message}</CardDescription>
-        </CardHeader>
-      </Card>
-    </main>
-  );
-}
-
-function MetricTile({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border bg-muted/30 p-4">
-      <div className="text-muted-foreground text-sm">{label}</div>
-      <div className="font-semibold text-2xl">{value}</div>
-    </div>
-  );
-}
-
-function ContextRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border bg-muted/30 px-4 py-3">
-      <div className="text-muted-foreground text-xs">{label}</div>
-      <div className="font-medium text-sm">{value}</div>
-    </div>
   );
 }

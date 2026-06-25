@@ -42,6 +42,11 @@ test("tracking overview RPC authorizes request and delegates by organization", a
           },
           statusCounts: [],
           recentShipments: [],
+          pagination: {
+            totalCount: 0,
+            limit: 5,
+            offset: 0,
+          },
         };
       },
       async recordEvent() {

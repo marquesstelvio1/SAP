@@ -1,11 +1,15 @@
 import type { PlatformPermission } from "@saptm/auth";
 import {
+  AccessState,
   Badge,
+  BadgeGroup,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  ContextRow,
+  MetricTile,
   Table,
   TableBody,
   TableCell,
@@ -15,13 +19,22 @@ import {
 } from "@saptm/ui";
 import type { Route } from "next";
 import Link from "next/link";
-import { CapacityAdvisoryDecisionForm } from "../../../../components/capacity-advisory-decision-form";
-import { CapacityPreCheck } from "../../../../components/capacity-pre-check";
-import { CapacityResourceRegisterForm } from "../../../../components/capacity-resource-register-form";
-import { CapacitySlotCancelForm } from "../../../../components/capacity-slot-cancel-form";
-import { CapacitySlotOpenForm } from "../../../../components/capacity-slot-open-form";
-import { CapacitySlotReserveForm } from "../../../../components/capacity-slot-reserve-form";
+import { CapacityAdvisoryDecisionForm } from "../../../../components/capacity/capacity-advisory-decision-form";
+import { CapacityPreCheck } from "../../../../components/capacity/capacity-pre-check";
+import { CapacityResourceRegisterForm } from "../../../../components/capacity/capacity-resource-register-form";
+import { CapacitySlotCancelForm } from "../../../../components/capacity/capacity-slot-cancel-form";
+import { CapacitySlotOpenForm } from "../../../../components/capacity/capacity-slot-open-form";
+import { CapacitySlotReserveForm } from "../../../../components/capacity/capacity-slot-reserve-form";
 import { requirePlatformSession } from "../../../../lib/auth-session";
+import {
+  advisoryDecisionStatusLabels,
+  advisoryTypeLabels,
+  reservationPurposeLabels,
+  resolveAdvisorySeverityVariant,
+  resolveSlotStatusVariant,
+  resourceTypeLabels,
+  slotStatusLabels,
+} from "../../../../lib/capacity";
 import { getCapacityAdvisory } from "../../../../lib/capacity-advisory";
 import { getCapacityAdvisoryDecisionAnalytics } from "../../../../lib/capacity-advisory-decision-analytics";
 import { getCapacityOverview } from "../../../../lib/capacity-overview";
@@ -48,43 +61,6 @@ const reserveCapacityPermission: PlatformPermission = "capacity.slot.reserve";
 const cancelCapacityPermission: PlatformPermission = "capacity.slot.cancel";
 const decideCapacityAdvisoryPermission: PlatformPermission = "capacity.advisory.decide";
 
-const resourceTypeLabels = {
-  terminal: "Terminal",
-  gate: "Gate",
-  berth: "Berth / cais",
-  rail_track: "Linha ferroviaria",
-  yard: "Patio",
-  carrier_slot: "Slot transportador",
-} as const;
-
-const slotStatusLabels = {
-  open: "Aberto",
-  blocked: "Bloqueado",
-  closed: "Fechado",
-} as const;
-
-const reservationPurposeLabels = {
-  handoff: "Handoff",
-  departure: "Partida",
-  arrival: "Chegada",
-  delivery: "Entrega",
-  storage: "Armazenagem",
-  other: "Outro",
-} as const;
-
-const advisoryTypeLabels = {
-  slot_saturation: "Saturacao",
-  expiring_slot: "Janela a expirar",
-  unused_capacity: "Baixa utilizacao",
-  reservation_imbalance: "Desequilibrio",
-  cancellation_review: "Cancelamentos",
-} as const;
-
-const advisoryDecisionStatusLabels = {
-  approved: "Aprovada",
-  rejected: "Rejeitada",
-} as const;
-
 export default async function CapacityOverviewPage() {
   const platformSession = await requirePlatformSession("/app/capacity");
   const viewerPermissions = platformSession.viewer.permissions;
@@ -95,8 +71,10 @@ export default async function CapacityOverviewPage() {
 
   if (!viewerPermissions.includes(readCapacityPermission)) {
     return (
-      <CapacityAccessState
+      <AccessState
+        badgeLabel="Capacity / Slot Constraints"
         message="A sessao esta autenticada, mas falta a permissao capacity.read para abrir o modulo."
+        role="alert"
         status="Sem grant"
         title="Capacidade operacional bloqueada"
       />
@@ -111,8 +89,10 @@ export default async function CapacityOverviewPage() {
 
   if (result.status !== "ok") {
     return (
-      <CapacityAccessState
+      <AccessState
+        badgeLabel="Capacity / Slot Constraints"
         message={result.message}
+        role="alert"
         status={result.status}
         title="Capacidade operacional indisponivel"
       />
@@ -121,8 +101,10 @@ export default async function CapacityOverviewPage() {
 
   if (advisoryResult.status !== "ok") {
     return (
-      <CapacityAccessState
+      <AccessState
+        badgeLabel="Capacity / Slot Constraints"
         message={advisoryResult.message}
+        role="alert"
         status={advisoryResult.status}
         title="Advisory de capacidade indisponivel"
       />
@@ -131,8 +113,10 @@ export default async function CapacityOverviewPage() {
 
   if (advisoryDecisionAnalyticsResult.status !== "ok") {
     return (
-      <CapacityAccessState
+      <AccessState
+        badgeLabel="Capacity / Slot Constraints"
         message={advisoryDecisionAnalyticsResult.message}
+        role="alert"
         status={advisoryDecisionAnalyticsResult.status}
         title="Analytics de decisoes de advisory indisponivel"
       />
@@ -148,10 +132,12 @@ export default async function CapacityOverviewPage() {
       <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
         <Card>
           <CardHeader className="gap-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="success">Business P9</Badge>
-              <Badge variant="outline">Capacity / Slot Constraints</Badge>
-            </div>
+            <BadgeGroup
+              items={[
+                { label: "Business P9", variant: "success" },
+                { label: "Capacity / Slot Constraints", variant: "outline" },
+              ]}
+            />
             <div className="flex flex-col gap-2">
               <CardTitle className="text-3xl">Capacidade operacional governada</CardTitle>
               <CardDescription className="max-w-3xl text-base leading-7">
@@ -217,7 +203,7 @@ export default async function CapacityOverviewPage() {
             <CardDescription>Proximas janelas tenant-scoped para capacidade.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table aria-label="Slots operacionais">
               <TableHeader>
                 <TableRow>
                   <TableHead>Slot</TableHead>
@@ -230,7 +216,7 @@ export default async function CapacityOverviewPage() {
               <TableBody>
                 {overview.upcomingSlots.length === 0 ? (
                   <TableRow>
-                    <TableCell className="text-muted-foreground" colSpan={5}>
+                    <TableCell className="text-muted-foreground" colSpan={5} role="status">
                       Sem slots abertos ou historicos neste tenant.
                     </TableCell>
                   </TableRow>
@@ -278,7 +264,7 @@ export default async function CapacityOverviewPage() {
             <CardDescription>Historico de reservas e cancelamentos auditaveis.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table aria-label="Reservas recentes">
               <TableHeader>
                 <TableRow>
                   <TableHead>Reserva</TableHead>
@@ -290,7 +276,7 @@ export default async function CapacityOverviewPage() {
               <TableBody>
                 {overview.recentReservations.length === 0 ? (
                   <TableRow>
-                    <TableCell className="text-muted-foreground" colSpan={4}>
+                    <TableCell className="text-muted-foreground" colSpan={4} role="status">
                       Sem reservas neste tenant.
                     </TableCell>
                   </TableRow>
@@ -326,10 +312,12 @@ export default async function CapacityOverviewPage() {
       <section className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
         <Card>
           <CardHeader>
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="warning">Capacity advisory</Badge>
-              <Badge variant="outline">Sem automacao direta</Badge>
-            </div>
+            <BadgeGroup
+              items={[
+                { label: "Capacity advisory", variant: "warning" },
+                { label: "Sem automacao direta", variant: "outline" },
+              ]}
+            />
             <CardTitle>Otimizacao assistida de capacidade</CardTitle>
             <CardDescription>
               Recomenda saturacao, baixa utilizacao, janelas a expirar e concentracao de reservas.
@@ -343,10 +331,7 @@ export default async function CapacityOverviewPage() {
               </div>
             ) : (
               advisory.recommendations.map((recommendation) => (
-                <div
-                  className="flex flex-col gap-3 rounded-xl border bg-card p-4"
-                  key={recommendation.id}
-                >
+                <Card className="flex flex-col gap-3 p-4 shadow-none" key={recommendation.id}>
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant={resolveAdvisorySeverityVariant(recommendation.severity)}>
                       {recommendation.severity}
@@ -372,7 +357,7 @@ export default async function CapacityOverviewPage() {
                       value={`${recommendation.slot.resourceCode} · ${recommendation.metrics.availableUnits} unidade(s) livres`}
                     />
                   )}
-                </div>
+                </Card>
               ))
             )}
           </CardContent>
@@ -405,10 +390,12 @@ export default async function CapacityOverviewPage() {
       <section className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
         <Card id="capacity-advisory-decision-analytics">
           <CardHeader>
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="info">Business P20</Badge>
-              <Badge variant="outline">Decision analytics</Badge>
-            </div>
+            <BadgeGroup
+              items={[
+                { label: "Business P20", variant: "info" },
+                { label: "Decision analytics", variant: "outline" },
+              ]}
+            />
             <CardTitle>Analytics de decisoes de advisory</CardTitle>
             <CardDescription>
               Mede aprovacao/rejeicao de recomendacoes gravadas por humanos. Este bloco e read-only
@@ -477,7 +464,7 @@ export default async function CapacityOverviewPage() {
             <CardDescription>Distribuicao das decisoes humanas por recomendacao.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table aria-label="Decisoes por tipo">
               <TableHeader>
                 <TableRow>
                   <TableHead>Tipo</TableHead>
@@ -489,7 +476,7 @@ export default async function CapacityOverviewPage() {
               <TableBody>
                 {advisoryDecisionAnalytics.byRecommendationType.length === 0 ? (
                   <TableRow>
-                    <TableCell className="text-muted-foreground" colSpan={4}>
+                    <TableCell className="text-muted-foreground" colSpan={4} role="status">
                       Sem decisoes de advisory na janela atual.
                     </TableCell>
                   </TableRow>
@@ -514,7 +501,7 @@ export default async function CapacityOverviewPage() {
             <CardDescription>Ultimas decisoes gravadas com evidencia humana.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table aria-label="Decisoes recentes">
               <TableHeader>
                 <TableRow>
                   <TableHead>Recomendacao</TableHead>
@@ -526,7 +513,7 @@ export default async function CapacityOverviewPage() {
               <TableBody>
                 {advisoryDecisionAnalytics.recentDecisions.length === 0 ? (
                   <TableRow>
-                    <TableCell className="text-muted-foreground" colSpan={4}>
+                    <TableCell className="text-muted-foreground" colSpan={4} role="status">
                       Sem decisoes humanas registadas.
                     </TableCell>
                   </TableRow>
@@ -630,83 +617,4 @@ export default async function CapacityOverviewPage() {
       </Card>
     </div>
   );
-}
-
-function CapacityAccessState({
-  title,
-  status,
-  message,
-}: {
-  title: string;
-  status: string;
-  message: string;
-}) {
-  return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-6">
-      <Card>
-        <CardHeader>
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="warning">{status}</Badge>
-            <Badge variant="outline">Capacity / Slot Constraints</Badge>
-          </div>
-          <CardTitle className="text-3xl">{title}</CardTitle>
-          <CardDescription className="text-base leading-7">{message}</CardDescription>
-        </CardHeader>
-        <CardContent className="text-muted-foreground text-sm">
-          Modelo de seguranca aplicado: sessao, organizacao e permissao explicita antes de consultar
-          dados de negocio.
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-function MetricTile({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex min-w-0 flex-col gap-3 rounded-xl border bg-card p-4">
-      <span className="text-muted-foreground text-xs uppercase tracking-[0.14em]">{label}</span>
-      <span className="truncate text-2xl font-semibold">{value}</span>
-    </div>
-  );
-}
-
-function ContextRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex min-w-0 items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="truncate font-medium">{value}</span>
-    </div>
-  );
-}
-
-function resolveSlotStatusVariant(
-  status: keyof typeof slotStatusLabels,
-): "success" | "warning" | "outline" {
-  if (status === "open") {
-    return "success";
-  }
-
-  if (status === "blocked") {
-    return "warning";
-  }
-
-  return "outline";
-}
-
-function resolveAdvisorySeverityVariant(
-  severity: "low" | "medium" | "high" | "critical",
-): "success" | "warning" | "destructive" | "outline" {
-  if (severity === "critical" || severity === "high") {
-    return "destructive";
-  }
-
-  if (severity === "medium") {
-    return "warning";
-  }
-
-  if (severity === "low") {
-    return "success";
-  }
-
-  return "outline";
 }

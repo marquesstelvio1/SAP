@@ -551,36 +551,25 @@ async function signIn(page: Page): Promise<void> {
     return;
   }
 
-  const response = await page.evaluate(
-    async ({ email, password }) => {
-      const signInResponse = await fetch("/api/auth/sign-in/email", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          rememberMe: false,
-          callbackURL: "/app",
-        }),
-      });
+  const body = JSON.stringify({
+    email: localAdminEmail,
+    password: localAdminPassword,
+    rememberMe: false,
+    callbackURL: "/app",
+  });
 
-      return {
-        body: await signInResponse.text(),
-        ok: signInResponse.ok,
-        status: signInResponse.status,
-      };
+  const response = await page.request.post("/api/auth/sign-in/email", {
+    headers: {
+      "Content-Type": "application/json",
+      Origin: _webUrl,
     },
-    {
-      email: localAdminEmail,
-      password: localAdminPassword,
-    },
-  );
+    data: body,
+  });
 
-  if (!response.ok) {
-    throw new Error(`Better Auth sign-in failed: HTTP ${response.status}\n${response.body}`);
+  if (!response.ok()) {
+    throw new Error(
+      `Better Auth sign-in failed: HTTP ${response.status()}\n${await response.text()}`,
+    );
   }
 
   await page.goto("/app");

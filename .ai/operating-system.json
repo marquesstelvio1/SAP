@@ -1,42 +1,64 @@
 {
   "name": "saptm-ai-engineering-os",
-  "version": "1.0.0",
-  "mode": "guardrailed-enterprise",
+  "version": "2.0.0",
+  "mode": "plugin-driven-enterprise",
   "product": {
     "name": "SAPTM Enterprise Logistics Platform",
     "domain": "rail-port-logistics",
     "foundationIndex": "docs/enterprise/foundation-index.md"
   },
-  "startupOrder": ["diagnostic", "rules", "standards", "governance", "execution"],
+  "startupOrder": [
+    "diagnostic", "rules", "standards", "governance",
+    "plugin-loader", "context-loader", "execution"
+  ],
+  "pluginSystem": {
+    "registry": ".ai/plugins/plugin-registry.json",
+    "pluginsDir": ".ai/plugins/",
+    "mandatoryPlugins": [
+      "context-loader", "orchestrator", "product-design",
+      "architecture-audit", "monorepo-governance",
+      "api-contract-validator", "frontend-backend-validator",
+      "security-audit", "testing-audit",
+      "enterprise-checklist", "release-readiness",
+      "documentation-generator", "workflow-enforcer"
+    ],
+    "workflowStages": ".ai/workflows/pipeline-definitions.md"
+  },
   "domains": {
     "frontend": {
       "ownerAgent": "agent-frontend",
       "skills": ["skill-frontend-ui"],
+      "plugins": ["design-system-audit", "shadcn-inspector", "ui-consistency", "frontend-backend-validator"],
       "requiredOutputs": ["task", "tests", "documentation", "pr"]
     },
     "backend": {
       "ownerAgent": "agent-backend",
       "skills": ["skill-backend-api"],
+      "plugins": ["architecture-audit", "api-contract-validator"],
       "requiredOutputs": ["task", "tests", "documentation", "pr"]
     },
     "auth": {
       "ownerAgent": "agent-auth",
       "skills": ["skill-auth-guardrails"],
+      "plugins": ["security-audit"],
       "requiredOutputs": ["task", "tests", "documentation", "pr", "approval"]
     },
     "mobile": {
       "ownerAgent": "agent-mobile",
       "skills": ["skill-mobile-experience"],
+      "plugins": ["design-system-audit", "ui-consistency"],
       "requiredOutputs": ["task", "tests", "documentation", "pr"]
     },
     "infra": {
       "ownerAgent": "agent-infra",
       "skills": ["skill-devops-platform"],
+      "plugins": ["dependency-inspector", "monorepo-governance", "release-readiness"],
       "requiredOutputs": ["task", "tests", "documentation", "pr", "approval"]
     },
     "qa": {
       "ownerAgent": "agent-qa",
       "skills": ["skill-quality-engineering"],
+      "plugins": ["testing-audit", "frontend-backend-validator"],
       "requiredOutputs": ["tests", "regression-plan", "report"]
     },
     "observability": {
@@ -47,33 +69,80 @@
     "performance": {
       "ownerAgent": "agent-performance",
       "skills": ["skill-performance-optimization"],
+      "plugins": ["performance-audit"],
       "requiredOutputs": ["benchmark", "tests", "documentation", "report"]
     },
     "design-system": {
       "ownerAgent": "agent-design-system",
       "skills": ["skill-design-system-governance"],
+      "plugins": ["design-system-audit", "shadcn-inspector", "ui-consistency"],
       "requiredOutputs": ["task", "tests", "documentation", "pr"]
+    },
+    "security": {
+      "ownerAgent": "agent-security",
+      "skills": ["skill-security-audit"],
+      "plugins": ["security-audit", "enterprise-checklist"],
+      "requiredOutputs": ["audit-report", "remediation-plan", "approval"]
+    },
+    "architecture": {
+      "ownerAgent": "agent-architect",
+      "skills": ["skill-architecture-governance"],
+      "plugins": ["architecture-audit", "codebase-analysis", "monorepo-governance"],
+      "requiredOutputs": ["architecture-report", "adr", "approval"]
+    },
+    "accessibility": {
+      "ownerAgent": "agent-accessibility",
+      "skills": ["skill-accessibility-audit"],
+      "plugins": ["accessibility-audit"],
+      "requiredOutputs": ["accessibility-report"]
+    },
+    "documentation": {
+      "ownerAgent": "agent-documentation",
+      "skills": ["skill-documentation-generation"],
+      "plugins": ["documentation-generator"],
+      "requiredOutputs": ["updated-docs"]
     }
   },
-  "workflows": ["diagnostic-to-backlog", "feature-delivery", "release-governance"],
-  "governanceGates": ["scope", "contract", "auth-security", "test", "docs-changelog", "release"],
+  "workflows": [
+    "feature-delivery",
+    "bug-fix",
+    "release-governance"
+  ],
+  "governanceGates": [
+    "product-design",
+    "architecture",
+    "contract",
+    "auth-security",
+    "test",
+    "performance",
+    "accessibility",
+    "docs-changelog",
+    "release"
+  ],
   "automations": [
     "task-generation",
     "pr-generation",
     "changelog-generation",
     "documentation-generation",
-    "test-generation"
+    "test-generation",
+    "plugin-execution",
+    "release-validation"
   ],
   "contracts": [
     ".ai/schemas/task.schema.json",
     ".ai/schemas/diagnostic.schema.json",
     ".ai/schemas/execution-report.schema.json"
   ],
-  "policies": [".ai/policies/risk-matrix.json", ".ai/policies/governance-gates.json"],
+  "policies": [
+    ".ai/policies/risk-matrix.json",
+    ".ai/policies/governance-gates.json",
+    ".ai/policies/plugin-execution.json"
+  ],
   "registries": [
     ".ai/agents/registry.json",
     ".ai/skills/registry.json",
     ".ai/rules/rule-index.json",
-    ".ai/routing.json"
+    ".ai/routing.json",
+    ".ai/plugins/plugin-registry.json"
   ]
 }

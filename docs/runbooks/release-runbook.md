@@ -33,6 +33,6 @@
 
 ## Command
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Invoke-AIWorkflow.ps1 -Workflow release -ReleaseName release-candidate
+```bash
+node ./scripts/invoke-ai-workflow.mjs --workflow release --release-name release-candidate
 ```

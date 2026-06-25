@@ -8,6 +8,7 @@ import type {
   RuntimeHealthReport,
   RuntimeHealthStatus,
 } from "@saptm/types";
+import { CacheService } from "../cache/cache.service.js";
 
 const serviceName = "@saptm/api";
 
@@ -22,6 +23,8 @@ type HealthCheckInput = {
 
 @Injectable()
 export class HealthService {
+  constructor(private readonly cacheService: CacheService) {}
+
   getLiveness(): RuntimeHealthReport {
     return createHealthReport([
       createHealthCheck({
@@ -35,7 +38,7 @@ export class HealthService {
   }
 
   async getReadiness(): Promise<RuntimeHealthReport> {
-    const checks = [this.checkEnvironment(), await this.checkDatabase()];
+    const checks = [this.checkEnvironment(), await this.checkDatabase(), await this.checkRedis()];
 
     return createHealthReport(checks);
   }
@@ -88,6 +91,43 @@ export class HealthService {
         critical: true,
         startedAt,
         message: "PostgreSQL connection is not ready.",
+      });
+    }
+  }
+
+  private async checkRedis(): Promise<RuntimeHealthCheck> {
+    const startedAt = Date.now();
+
+    try {
+      await this.cacheService.set("health:ping", "pong", 5_000);
+      const result = await this.cacheService.get<string>("health:ping");
+
+      if (result !== "pong") {
+        return createHealthCheck({
+          name: "cache",
+          status: "degraded",
+          critical: false,
+          startedAt,
+          message: "Cache read/write mismatch.",
+        });
+      }
+
+      return createHealthCheck({
+        name: "cache",
+        status: "ok",
+        critical: false,
+        startedAt,
+        message: "Redis connection is ready.",
+      });
+    } catch (e) {
+      const message = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+      console.error("Health check cache error:", message);
+      return createHealthCheck({
+        name: "cache",
+        status: "degraded",
+        critical: false,
+        startedAt,
+        message: `Redis connection is not available (cache degraded): ${message}`,
       });
     }
   }

@@ -1,7 +1,11 @@
 import type { BetterAuthSessionResult, PlatformPermission } from "@saptm/auth";
-import { createSaptmAuthFromEnv, resolveDefaultUserAuthorization } from "@saptm/auth/server";
+import {
+  createSaptmAuthFromEnv,
+  resolveDefaultUserAuthorization,
+  verifyUserOrganizationAccess,
+} from "@saptm/auth/server";
 import type { Route } from "next";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 
@@ -29,6 +33,10 @@ export const getCurrentPlatformSession = cache(async (): Promise<PlatformSession
   }
 
   const authorization = await resolveDefaultUserAuthorization(sessionResult.user.id);
+  const activeOrgId = await resolveActiveOrganizationId(
+    sessionResult.user.id,
+    authorization.organizationId,
+  );
 
   return {
     sessionId: sessionResult.session.id,
@@ -42,9 +50,7 @@ export const getCurrentPlatformSession = cache(async (): Promise<PlatformSession
       emailVerified: sessionResult.user.emailVerified ?? false,
       twoFactorEnabled: readBooleanProperty(sessionResult.user, "twoFactorEnabled"),
       permissions: authorization.permissions,
-      ...(authorization.organizationId === undefined
-        ? {}
-        : { organizationId: authorization.organizationId }),
+      ...(activeOrgId === undefined ? {} : { organizationId: activeOrgId }),
     },
   };
 });
@@ -69,6 +75,24 @@ async function readBetterAuthSession(): Promise<BetterAuthSessionResult> {
       disableRefresh: true,
     },
   });
+}
+
+async function resolveActiveOrganizationId(
+  userId: string,
+  defaultOrganizationId: string | undefined,
+): Promise<string | undefined> {
+  const cookieStore = await cookies();
+  const cookieOrgId = cookieStore.get("saptm_active_org")?.value;
+
+  if (cookieOrgId !== undefined) {
+    const hasAccess = await verifyUserOrganizationAccess(userId, cookieOrgId);
+
+    if (hasAccess) {
+      return cookieOrgId;
+    }
+  }
+
+  return defaultOrganizationId;
 }
 
 function normalizeDateString(value: Date | string): string {

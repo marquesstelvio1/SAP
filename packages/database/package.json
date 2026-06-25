@@ -5,36 +5,46 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js",
+      "default": "./dist/src/index.js"
+    },
+    "./event-bus-module": {
+      "types": "./dist/src/event-bus.module.d.ts",
+      "import": "./dist/src/event-bus.module.js",
+      "default": "./dist/src/event-bus.module.js"
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json && node ../../scripts/patch-esm-dist-extensions.mjs dist/index.js audit rbac-bootstrap",
+    "build": "tsc -p tsconfig.json && node ../../scripts/patch-esm-dist-extensions.mjs dist/src/index.js audit rbac-bootstrap outbox-event-bus event-bus.module domain-events constants prisma/factory && node ../../scripts/patch-prisma-esm-imports.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "biome check .",
-    "db:validate": "prisma validate --schema prisma/schema.prisma",
-    "db:generate": "prisma generate --schema prisma/schema.prisma",
-    "db:migrate:dev": "prisma migrate dev --schema prisma/schema.prisma",
-    "db:migrate:deploy": "prisma migrate deploy --schema prisma/schema.prisma",
-    "db:migrate:status": "prisma migrate status --schema prisma/schema.prisma",
-    "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio --schema prisma/schema.prisma",
+    "db:validate": "dotenvx run -f ../../.env -- prisma validate",
+    "db:generate": "dotenvx run -f ../../.env -- prisma generate",
+    "db:migrate:dev": "dotenvx run -f ../../.env -- prisma migrate dev",
+    "db:migrate:deploy": "dotenvx run -f ../../.env -- prisma migrate deploy",
+    "db:migrate:status": "dotenvx run -f ../../.env -- prisma migrate status",
+    "db:migrate:rollback": "dotenvx run -f ../../.env -- node scripts/rollback-migration.mjs",
+    "db:seed": "dotenvx run -f ../../.env -- tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
     "validate:migrations": "node ../../scripts/validate-migrations.mjs",
     "worker:outbox": "node scripts/process-outbox.mjs"
   },
   "dependencies": {
+    "@nestjs/common": "catalog:",
+    "@prisma/adapter-pg": "catalog:",
     "@prisma/client": "catalog:",
+    "dotenv": "catalog:",
     "@saptm/config": "workspace:*",
+    "@saptm/email": "workspace:*",
     "@saptm/observability": "workspace:*"
   },
   "devDependencies": {
+    "prisma": "catalog:",
     "@saptm/tsconfig": "workspace:*",
     "@types/node": "catalog:",
-    "prisma": "catalog:",
-    "tsx": "catalog:",
     "tsup": "catalog:",
+    "tsx": "catalog:",
     "typescript": "catalog:"
   }
 }

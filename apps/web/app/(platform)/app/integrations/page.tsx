@@ -1,11 +1,14 @@
 import type { PlatformPermission } from "@saptm/auth";
 import {
+  AccessState,
   Badge,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  ContextRow,
+  MetricTile,
   Table,
   TableBody,
   TableCell,
@@ -13,14 +16,14 @@ import {
   TableHeader,
   TableRow,
 } from "@saptm/ui";
-import { IntegrationCarrierTmsMovementForm } from "../../../../components/integration-carrier-tms-movement-form";
-import { IntegrationCustomsErpStatusForm } from "../../../../components/integration-customs-erp-status-form";
-import { IntegrationEventRecordForm } from "../../../../components/integration-event-record-form";
-import { IntegrationPortTosMovementForm } from "../../../../components/integration-port-tos-movement-form";
-import { IntegrationRailTmsMovementForm } from "../../../../components/integration-rail-tms-movement-form";
-import { IntegrationServiceAccountCreateForm } from "../../../../components/integration-service-account-create-form";
-import { IntegrationTelematicsGpsPositionForm } from "../../../../components/integration-telematics-gps-position-form";
-import { IntegrationWarehouseWmsActivityForm } from "../../../../components/integration-warehouse-wms-activity-form";
+import { IntegrationCarrierTmsMovementForm } from "../../../../components/integration/integration-carrier-tms-movement-form";
+import { IntegrationCustomsErpStatusForm } from "../../../../components/integration/integration-customs-erp-status-form";
+import { IntegrationEventRecordForm } from "../../../../components/integration/integration-event-record-form";
+import { IntegrationPortTosMovementForm } from "../../../../components/integration/integration-port-tos-movement-form";
+import { IntegrationRailTmsMovementForm } from "../../../../components/integration/integration-rail-tms-movement-form";
+import { IntegrationServiceAccountCreateForm } from "../../../../components/integration/integration-service-account-create-form";
+import { IntegrationTelematicsGpsPositionForm } from "../../../../components/integration/integration-telematics-gps-position-form";
+import { IntegrationWarehouseWmsActivityForm } from "../../../../components/integration/integration-warehouse-wms-activity-form";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import { getIntegrationOverview } from "../../../../lib/integrations";
 import {
@@ -74,8 +77,10 @@ export default async function IntegrationsPage() {
 
   if (!canOpenIntegrations) {
     return (
-      <IntegrationsAccessState
+      <AccessState
+        badgeLabel="Integration Gateway"
         message="A sessao esta autenticada, mas falta integration.api_key.manage ou integration.event.ingest."
+        role="alert"
         status="Sem grant"
         title="Integracoes bloqueadas"
       />
@@ -86,8 +91,10 @@ export default async function IntegrationsPage() {
 
   if (result.status !== "ok") {
     return (
-      <IntegrationsAccessState
+      <AccessState
+        badgeLabel="Integration Gateway"
         message={result.message}
+        role="alert"
         status={result.status}
         title="Integracoes indisponiveis"
       />
@@ -212,7 +219,7 @@ export default async function IntegrationsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table aria-label="Service accounts">
               <TableHeader>
                 <TableRow>
                   <TableHead>Conta</TableHead>
@@ -224,7 +231,7 @@ export default async function IntegrationsPage() {
               <TableBody>
                 {overview.serviceAccounts.length === 0 ? (
                   <TableRow>
-                    <TableCell className="text-muted-foreground" colSpan={4}>
+                    <TableCell className="text-muted-foreground" colSpan={4} role="status">
                       Nenhuma service account criada para este tenant.
                     </TableCell>
                   </TableRow>
@@ -283,7 +290,7 @@ export default async function IntegrationsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table aria-label="Eventos externos recentes">
               <TableHeader>
                 <TableRow>
                   <TableHead>Evento</TableHead>
@@ -295,7 +302,7 @@ export default async function IntegrationsPage() {
               <TableBody>
                 {overview.recentEvents.length === 0 ? (
                   <TableRow>
-                    <TableCell className="text-muted-foreground" colSpan={4}>
+                    <TableCell className="text-muted-foreground" colSpan={4} role="status">
                       Nenhum evento externo registado.
                     </TableCell>
                   </TableRow>
@@ -331,46 +338,6 @@ export default async function IntegrationsPage() {
           </CardContent>
         </Card>
       </section>
-    </div>
-  );
-}
-
-function IntegrationsAccessState({
-  message,
-  status,
-  title,
-}: {
-  message: string;
-  status: string;
-  title: string;
-}) {
-  return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-4">
-      <Card>
-        <CardHeader className="gap-3">
-          <Badge variant="warning">{status}</Badge>
-          <CardTitle>{title}</CardTitle>
-          <CardDescription className="leading-6">{message}</CardDescription>
-        </CardHeader>
-      </Card>
-    </div>
-  );
-}
-
-function MetricTile({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border bg-muted/35 p-4">
-      <span className="text-muted-foreground text-xs uppercase tracking-[0.14em]">{label}</span>
-      <p className="mt-2 font-semibold text-2xl">{value}</p>
-    </div>
-  );
-}
-
-function ContextRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-start justify-between gap-3 rounded-lg border bg-muted/35 px-3 py-2">
-      <span className="text-muted-foreground text-sm">{label}</span>
-      <span className="max-w-[70%] text-right font-medium text-sm">{value}</span>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { UnauthorizedException } from "@nestjs/common";
 import type { AuthContext } from "@saptm/auth";
 import type { TraceContext } from "@saptm/observability";
 
@@ -12,7 +13,7 @@ export type RequestWithAuthContext = {
 
 export function getRequiredAuthContext(request: RequestWithAuthContext): AuthContext {
   if (!request.authContext) {
-    throw new Error("Authenticated request context is required.");
+    throw new UnauthorizedException("Authenticated request context is required.");
   }
 
   return request.authContext;

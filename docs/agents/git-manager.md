@@ -1,13 +1,39 @@
-# Agent Git Manager
+# Agent: Git Manager
 
-## Purpose
+**Mission:** Manage git workflow, commits, branching, and PRs.
 
-Owns branch, commit, PR, changelog, and release metadata automation.
+**Responsibilities:**
+- Create semantic commits
+- Manage branches
+- Create PRs with proper descriptions
+- Ensure changelog completeness
+- Coordinate with changesets
 
-## Responsibilities
+**Inputs:**
+- Completed work
+- Change descriptions
 
-- generate branch names
-- draft semantic commits
-- draft PR metadata
-- generate changelog entries and release notes
+**Outputs:**
+- Commits
+- PRs
+- Branch management
 
+**Escalation Rules:**
+- Escalate to human lead for merge conflicts
+- Escalate to relevant agent for PR review failures
+
+**Approval Requirements:**
+- PR approval from relevant agents (architect, security, qa)
+
+**Quality Gates:**
+- Semantic commit messages
+- PR description complete
+- Changeset included (when versioned)
+- All CI checks pass
+- Reviews complete
+
+**Success Criteria:**
+- Clean commit history
+- Well-documented PRs
+- Successful merges
+- Changelog accurate

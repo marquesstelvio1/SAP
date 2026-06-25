@@ -1,0 +1,268 @@
+"use client";
+
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  Input,
+  SelectNative,
+  Textarea,
+} from "@saptm/ui";
+import { useActionState, useEffect, useMemo, useState } from "react";
+
+import type { TransportOrderRescheduleFormState } from "../../app/(platform)/app/planning/form-state";
+
+export type TransportOrderRescheduleFormProps = {
+  canRescheduleTransportOrder: boolean;
+  initialState: TransportOrderRescheduleFormState;
+  action: (
+    previousState: TransportOrderRescheduleFormState,
+    formData: FormData,
+  ) => Promise<TransportOrderRescheduleFormState>;
+};
+
+const transportModeOptions = [
+  { value: "rail", label: "Ferrovia" },
+  { value: "road", label: "Rodoviario" },
+  { value: "sea", label: "Maritimo" },
+  { value: "barge", label: "Barca" },
+  { value: "multimodal", label: "Multimodal" },
+] as const;
+
+export function TransportOrderRescheduleForm({
+  canRescheduleTransportOrder,
+  initialState,
+  action,
+}: TransportOrderRescheduleFormProps) {
+  const [state, formAction, isPending] = useActionState(action, initialState);
+  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const defaultRescheduledAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
+  const defaultDepartureAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 8)), []);
+  const defaultArrivalAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 20)), []);
+  const isDisabled = isPending || !canRescheduleTransportOrder;
+
+  useEffect(() => {
+    if (state.status === "success") {
+      setIdempotencyKey(createIdempotencyKey());
+    }
+  }, [state.status]);
+
+  return (
+    <Card>
+      <CardHeader className="gap-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant={canRescheduleTransportOrder ? "success" : "outline"}>
+            {canRescheduleTransportOrder ? "Replaneamento governado" : "Sem permissao"}
+          </Badge>
+          <Badge variant="outline">planning.order.reschedule</Badge>
+        </div>
+        <div className="flex flex-col gap-2">
+          <CardTitle>Replanear transport order</CardTitle>
+          <CardDescription className="leading-6">
+            Atualiza rota, modo, carrier e janela de uma ordem confirmada antes da partida,
+            preservando a revisao, idempotencia, auditoria e evento de outbox.
+          </CardDescription>
+        </div>
+      </CardHeader>
+      <form action={formAction}>
+        <CardContent>
+          <FieldGroup>
+            <input name="idempotencyKey" type="hidden" value={idempotencyKey} />
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="rescheduleTransportOrderId">Transport order ID</FieldLabel>
+                <Input
+                  disabled={isDisabled}
+                  id="rescheduleTransportOrderId"
+                  name="orderId"
+                  placeholder="ID interno da transport order"
+                  required
+                />
+              </Field>
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="revisionReference">Referencia da revisao</FieldLabel>
+                <Input
+                  disabled={isDisabled}
+                  id="revisionReference"
+                  name="revisionReference"
+                  placeholder="REV-TO-2026-0001"
+                  required
+                />
+              </Field>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="rescheduleMode">Modo</FieldLabel>
+                <SelectNative disabled={isDisabled} id="rescheduleMode" name="mode" required>
+                  {transportModeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </SelectNative>
+              </Field>
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="rescheduleCarrierName">Transportador</FieldLabel>
+                <Input
+                  disabled={isDisabled}
+                  id="rescheduleCarrierName"
+                  name="carrierName"
+                  required
+                />
+              </Field>
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="rescheduledByName">Responsavel</FieldLabel>
+                <Input
+                  disabled={isDisabled}
+                  id="rescheduledByName"
+                  name="rescheduledByName"
+                  required
+                />
+              </Field>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="rescheduleOriginName">Origem</FieldLabel>
+                <Input disabled={isDisabled} id="rescheduleOriginName" name="originName" required />
+              </Field>
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="rescheduleDestinationName">Destino</FieldLabel>
+                <Input
+                  disabled={isDisabled}
+                  id="rescheduleDestinationName"
+                  name="destinationName"
+                  required
+                />
+              </Field>
+            </div>
+
+            <Field data-disabled={!canRescheduleTransportOrder}>
+              <FieldLabel htmlFor="rescheduleRouteSummary">Nova rota</FieldLabel>
+              <Textarea
+                disabled={isDisabled}
+                id="rescheduleRouteSummary"
+                name="routeSummary"
+                placeholder="Ex.: Patio ferroviario -> terminal portuario alternativo -> cliente final"
+                required
+              />
+            </Field>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="rescheduledAt">Replaneado em</FieldLabel>
+                <Input
+                  defaultValue={defaultRescheduledAt}
+                  disabled={isDisabled}
+                  id="rescheduledAt"
+                  name="rescheduledAt"
+                  required
+                  type="datetime-local"
+                />
+              </Field>
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="reschedulePlannedDepartureAt">Nova partida</FieldLabel>
+                <Input
+                  defaultValue={defaultDepartureAt}
+                  disabled={isDisabled}
+                  id="reschedulePlannedDepartureAt"
+                  name="plannedDepartureAt"
+                  required
+                  type="datetime-local"
+                />
+              </Field>
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="reschedulePlannedArrivalAt">Nova chegada</FieldLabel>
+                <Input
+                  defaultValue={defaultArrivalAt}
+                  disabled={isDisabled}
+                  id="reschedulePlannedArrivalAt"
+                  name="plannedArrivalAt"
+                  required
+                  type="datetime-local"
+                />
+              </Field>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-[1fr_0.45fr]">
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="rescheduleReason">Motivo operacional</FieldLabel>
+                <Textarea
+                  disabled={isDisabled}
+                  id="rescheduleReason"
+                  name="rescheduleReason"
+                  placeholder="Ex.: Janela ferroviaria alterada por congestionamento no terminal."
+                  required
+                />
+              </Field>
+              <Field data-disabled={!canRescheduleTransportOrder}>
+                <FieldLabel htmlFor="rescheduleSourceSystem">Sistema origem</FieldLabel>
+                <Input
+                  defaultValue="saptm"
+                  disabled={isDisabled}
+                  id="rescheduleSourceSystem"
+                  name="sourceSystem"
+                />
+              </Field>
+            </div>
+
+            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
+              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
+            </div>
+
+            <Field data-invalid={state.status === "error"}>
+              {state.status === "error" ? (
+                <FieldError>{state.message}</FieldError>
+              ) : (
+                <FieldDescription>
+                  {state.status === "success"
+                    ? `${state.message} Revisao: ${state.revisionReference ?? state.revisionId}`
+                    : state.message}
+                </FieldDescription>
+              )}
+            </Field>
+          </FieldGroup>
+        </CardContent>
+        <CardFooter className="justify-between">
+          <span className="text-muted-foreground text-xs">
+            {canRescheduleTransportOrder
+              ? "Replaneamento exige mudanca real, timing valido e referencia unica."
+              : "Requer planning.order.reschedule."}
+          </span>
+          <Button disabled={isDisabled} type="submit" variant="secondary">
+            {isPending ? "A replanear..." : "Replanear transport order"}
+          </Button>
+        </CardFooter>
+      </form>
+    </Card>
+  );
+}
+
+function createIdempotencyKey(): string {
+  const randomValue =
+    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
+
+  return `planning_reschedule_${randomValue}`;
+}
+
+function addHours(date: Date, hours: number): Date {
+  return new Date(date.getTime() + hours * 60 * 60 * 1000);
+}
+
+function createDatetimeLocalValue(date: Date): string {
+  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
+
+  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
+}

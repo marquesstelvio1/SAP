@@ -1,5 +1,6 @@
 import type { PlatformPermission } from "@saptm/auth";
 import {
+  AccessState,
   Badge,
   Button,
   Card,
@@ -8,6 +9,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  ContextRow,
+  MetricTile,
   Table,
   TableBody,
   TableCell,
@@ -17,10 +20,10 @@ import {
 } from "@saptm/ui";
 import type { Route } from "next";
 import Link from "next/link";
-
-import { type PlatformSession, requirePlatformSession } from "../../../lib/auth-session";
+import type { PlatformSession } from "../../../lib/auth-session";
+import { requirePlatformSession } from "../../../lib/auth-session";
 import { platformPermissionCatalog } from "../../../lib/platform-navigation";
-import { getTrackingOverview, type TrackingOverviewResult } from "../../../lib/tracking-overview";
+import { OperationsSnapshot } from "./operations-snapshot";
 
 export const dynamic = "force-dynamic";
 
@@ -40,21 +43,16 @@ type DashboardReadinessItem = {
   status: DashboardReadinessStatus;
 };
 
-type BadgeVariant = "info" | "success" | "warning" | "destructive" | "outline" | "secondary";
-
 export default async function PlatformAppPage() {
   const platformSession = await requirePlatformSession("/app");
   const viewerPermissions = platformSession.viewer.permissions;
   const canReadTracking = viewerPermissions.includes(readTrackingPermission);
-  const trackingOverviewResult = canReadTracking ? await getTrackingOverview() : undefined;
-  const operationsState = resolveOperationsState(canReadTracking, trackingOverviewResult);
   const writeGateGrantCount = controlledWritePermissions.filter((permission) =>
     viewerPermissions.includes(permission),
   ).length;
   const readinessItems = createReadinessItems(
     platformSession,
     canReadTracking,
-    trackingOverviewResult,
     writeGateGrantCount,
   );
 
@@ -65,7 +63,7 @@ export default async function PlatformAppPage() {
           <CardHeader className="gap-4">
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="success">P1 local em fecho</Badge>
-              <Badge variant={operationsState.variant}>{operationsState.badge}</Badge>
+              <Badge variant="info">Tracking integrado</Badge>
               <Badge variant={platformSession.viewer.organizationId ? "success" : "warning"}>
                 {platformSession.viewer.organizationId ? "Tenant resolvido" : "Tenant pendente"}
               </Badge>
@@ -79,20 +77,20 @@ export default async function PlatformAppPage() {
             </div>
           </CardHeader>
           <CardContent className="grid gap-3 md:grid-cols-4">
-            <StatusTile label="Sessao" value="Better Auth" badge="Ativa" variant="success" />
-            <StatusTile
+            <MetricTile label="Sessao" value="Better Auth" badge="Ativa" variant="success" />
+            <MetricTile
               label="Permissoes"
               value={`${viewerPermissions.length} grants`}
               badge={viewerPermissions.length > 0 ? "RBAC" : "Sem grants"}
               variant={viewerPermissions.length > 0 ? "success" : "warning"}
             />
-            <StatusTile
+            <MetricTile
               label="Tracking API"
-              value={operationsState.value}
-              badge={operationsState.badge}
-              variant={operationsState.variant}
+              value={canReadTracking ? "Autorizado" : "Bloqueado"}
+              badge={canReadTracking ? "Dados reais" : "RBAC"}
+              variant={canReadTracking ? "success" : "warning"}
             />
-            <StatusTile
+            <MetricTile
               label="Escrita critica"
               value={`${writeGateGrantCount}/${controlledWritePermissions.length} gates`}
               badge={
@@ -115,7 +113,9 @@ export default async function PlatformAppPage() {
           </CardHeader>
           <CardContent className="flex flex-col gap-3 text-sm">
             <p className="rounded-lg border border-info/30 bg-info/10 p-3 text-info-foreground">
-              {operationsState.message}
+              {canReadTracking
+                ? "Primeira feature ligada ao backend real. Proxima fatia permitida: evidencia e aprovacao de operador."
+                : "Tracking nao e consultado sem permissao explicita de leitura."}
             </p>
             <ContextRow label="Proxima fatia" value="Evidencia + aprovacao de operador" />
             <ContextRow label="Bloqueio permanente" value="Sem CRUD generico" />
@@ -134,7 +134,7 @@ export default async function PlatformAppPage() {
         </Card>
       </section>
 
-      <OperationsSnapshot canReadTracking={canReadTracking} result={trackingOverviewResult} />
+      <OperationsSnapshot canReadTracking={canReadTracking} />
 
       <section className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
         <Card id="design-system">
@@ -195,9 +195,7 @@ export default async function PlatformAppPage() {
                         {permission.description}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={granted ? "success" : "outline"}>
-                          {granted ? "Permitido" : "Nao atribuido"}
-                        </Badge>
+                        <AccessState granted={granted} />
                       </TableCell>
                     </TableRow>
                   );
@@ -217,25 +215,25 @@ export default async function PlatformAppPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-4">
-          <StatusTile
+          <MetricTile
             label="Session ID"
             value={platformSession.sessionId}
             badge="Contexto"
             variant="info"
           />
-          <StatusTile
+          <MetricTile
             label="Organization"
             value={platformSession.viewer.organizationId ?? "Nao resolvida"}
             badge={platformSession.viewer.organizationId ? "Tenant" : "Pendente"}
             variant={platformSession.viewer.organizationId ? "success" : "warning"}
           />
-          <StatusTile
+          <MetricTile
             label="Email"
             value={platformSession.viewer.emailVerified ? "Verificado" : "Nao verificado"}
             badge="Identidade"
             variant={platformSession.viewer.emailVerified ? "success" : "warning"}
           />
-          <StatusTile
+          <MetricTile
             label="Expira em"
             value={platformSession.expiresAt ?? "Nao informado"}
             badge="Sessao"
@@ -247,151 +245,9 @@ export default async function PlatformAppPage() {
   );
 }
 
-function OperationsSnapshot({
-  canReadTracking,
-  result,
-}: {
-  canReadTracking: boolean;
-  result: TrackingOverviewResult | undefined;
-}) {
-  if (!canReadTracking) {
-    return (
-      <Card id="operations">
-        <CardHeader>
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="warning">RBAC</Badge>
-            <Badge variant="outline">Operational Tracking</Badge>
-          </div>
-          <CardTitle>Resumo operacional bloqueado</CardTitle>
-          <CardDescription>
-            A sessao existe, mas o dashboard nao consulta dados de tracking sem
-            tracking.shipment.read.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="text-muted-foreground text-sm">
-          Isto confirma que a UI aplica permissionamento antes de buscar dados de negocio.
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (result === undefined || result.status !== "ok") {
-    const status = result?.status ?? "not_loaded";
-
-    return (
-      <Card id="operations">
-        <CardHeader>
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="warning">{status}</Badge>
-            <Badge variant="outline">Operational Tracking</Badge>
-          </div>
-          <CardTitle>Resumo operacional indisponivel</CardTitle>
-          <CardDescription>
-            {result?.message ?? "O overview de tracking nao foi carregado nesta requisicao."}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-3 md:grid-cols-3">
-          <StatusTile
-            label="Leitura"
-            value={readTrackingPermission}
-            badge="Grant"
-            variant="success"
-          />
-          <StatusTile label="API" value={status} badge="Verificar" variant="warning" />
-          <StatusTile label="Fallback" value="Sem dados falsos" badge="Seguro" variant="info" />
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const { overview } = result;
-
-  return (
-    <Card id="operations">
-      <CardHeader>
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="success">Dados reais</Badge>
-          <Badge variant="outline">Operational Tracking</Badge>
-        </div>
-        <CardTitle>Resumo operacional autenticado</CardTitle>
-        <CardDescription>
-          Snapshot tenant-scoped vindo do RPC de tracking. Serve como entrada segura para a proxima
-          fatia de negocio.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-3 md:grid-cols-4">
-        <StatusTile
-          label="Cargas"
-          value={overview.totals.shipments.toString()}
-          badge="Total"
-          variant="info"
-        />
-        <StatusTile
-          label="Ativas"
-          value={overview.totals.activeShipments.toString()}
-          badge="Operacao"
-          variant="success"
-        />
-        <StatusTile
-          label="Atrasos"
-          value={overview.totals.delayedShipments.toString()}
-          badge="SLA"
-          variant={overview.totals.delayedShipments > 0 ? "warning" : "success"}
-        />
-        <StatusTile
-          label="Excecoes"
-          value={overview.totals.exceptionShipments.toString()}
-          badge="Risco"
-          variant={overview.totals.exceptionShipments > 0 ? "destructive" : "success"}
-        />
-      </CardContent>
-      <CardFooter className="flex flex-wrap items-center justify-between gap-3 text-sm">
-        <span className="text-muted-foreground">
-          Tenant {overview.organizationId} gerado em {overview.generatedAt}
-        </span>
-        <Button asChild size="sm" variant="outline">
-          <Link href={"/app/tracking" as Route}>Ver movimentos</Link>
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-}
-
-function StatusTile({
-  label,
-  value,
-  badge,
-  variant,
-}: {
-  label: string;
-  value: string;
-  badge: string;
-  variant: BadgeVariant;
-}) {
-  return (
-    <div className="flex min-w-0 flex-col gap-3 rounded-xl border bg-card p-4">
-      <span className="text-muted-foreground text-xs uppercase tracking-[0.14em]">{label}</span>
-      <div className="flex min-w-0 items-center justify-between gap-3">
-        <span className="truncate font-semibold">{value}</span>
-        <Badge variant={variant}>{badge}</Badge>
-      </div>
-    </div>
-  );
-}
-
-function ContextRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex min-w-0 items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="truncate font-medium">{value}</span>
-    </div>
-  );
-}
-
 function createReadinessItems(
   platformSession: PlatformSession,
   canReadTracking: boolean,
-  trackingOverviewResult: TrackingOverviewResult | undefined,
   writeGateGrantCount: number,
 ): DashboardReadinessItem[] {
   return [
@@ -412,8 +268,10 @@ function createReadinessItems(
     },
     {
       label: "Dashboard operacional",
-      evidence: resolveTrackingEvidence(canReadTracking, trackingOverviewResult),
-      status: resolveTrackingReadinessStatus(canReadTracking, trackingOverviewResult),
+      evidence: canReadTracking
+        ? "Tracking autorizado; dados carregados via hook no cliente"
+        : "Sem tracking.shipment.read; dados de negocio nao sao consultados",
+      status: canReadTracking ? "Fechado" : "Bloqueado",
     },
     {
       label: "Escrita governada",
@@ -428,75 +286,9 @@ function createReadinessItems(
   ];
 }
 
-function resolveOperationsState(
-  canReadTracking: boolean,
-  trackingOverviewResult: TrackingOverviewResult | undefined,
-): {
-  badge: string;
-  message: string;
-  value: string;
-  variant: BadgeVariant;
-} {
-  if (!canReadTracking) {
-    return {
-      badge: "RBAC bloqueado",
-      message: "Tracking nao e consultado sem permissao explicita de leitura.",
-      value: "Bloqueado",
-      variant: "warning",
-    };
-  }
-
-  if (trackingOverviewResult?.status === "ok") {
-    return {
-      badge: "Dados reais",
-      message:
-        "Primeira feature ligada ao backend real. Proxima fatia permitida: evidencia e aprovacao de operador.",
-      value: `${trackingOverviewResult.overview.totals.shipments} cargas`,
-      variant: "success",
-    };
-  }
-
-  return {
-    badge: "API pendente",
-    message:
-      trackingOverviewResult?.message ??
-      "Tracking autorizado, mas o overview operacional ainda nao foi carregado.",
-    value: trackingOverviewResult?.status ?? "Indisponivel",
-    variant: "warning",
-  };
-}
-
-function resolveTrackingEvidence(
-  canReadTracking: boolean,
-  trackingOverviewResult: TrackingOverviewResult | undefined,
-): string {
-  if (!canReadTracking) {
-    return "Sem tracking.shipment.read; dados de negocio nao sao consultados";
-  }
-
-  if (trackingOverviewResult?.status === "ok") {
-    return `${trackingOverviewResult.overview.totals.shipments} cargas carregadas via RPC`;
-  }
-
-  return trackingOverviewResult?.message ?? "Overview de tracking nao carregado";
-}
-
-function resolveTrackingReadinessStatus(
-  canReadTracking: boolean,
-  trackingOverviewResult: TrackingOverviewResult | undefined,
-): DashboardReadinessStatus {
-  if (!canReadTracking) {
-    return "Bloqueado";
-  }
-
-  if (trackingOverviewResult?.status === "ok") {
-    return "Fechado";
-  }
-
-  return "Atencao";
-}
-
-function resolveReadinessVariant(status: DashboardReadinessStatus): BadgeVariant {
+function resolveReadinessVariant(
+  status: DashboardReadinessStatus,
+): "info" | "success" | "warning" | "destructive" | "outline" | "secondary" {
   if (status === "Fechado") {
     return "success";
   }

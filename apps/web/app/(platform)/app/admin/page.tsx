@@ -1,26 +1,17 @@
 import type { PlatformPermission } from "@saptm/auth";
-import {
-  Badge,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@saptm/ui";
-import { AdminInvitationLifecycleForm } from "../../../../components/admin-invitation-lifecycle-form";
-import { AdminMembershipStatusForm } from "../../../../components/admin-membership-status-form";
-import { AdminRoleAssignForm } from "../../../../components/admin-role-assign-form";
-import { AdminRoleCreateForm } from "../../../../components/admin-role-create-form";
-import { AdminRoleDeleteForm } from "../../../../components/admin-role-delete-form";
-import { AdminRolePermissionsForm } from "../../../../components/admin-role-permissions-form";
-import { AdminRoleRevokeForm } from "../../../../components/admin-role-revoke-form";
-import { AdminUserInviteForm } from "../../../../components/admin-user-invite-form";
+import { AccessState } from "@saptm/ui";
+
+import { AdminInvitationLifecycleForm } from "../../../../components/admin/admin-invitation-lifecycle-form";
+import { AdminMembershipStatusForm } from "../../../../components/admin/admin-membership-status-form";
+import { AdminOverviewHeader } from "../../../../components/admin/admin-overview-header";
+import { AdminRoleAssignForm } from "../../../../components/admin/admin-role-assign-form";
+import { AdminRoleCreateForm } from "../../../../components/admin/admin-role-create-form";
+import { AdminRoleDeleteForm } from "../../../../components/admin/admin-role-delete-form";
+import { AdminRolePermissionsForm } from "../../../../components/admin/admin-role-permissions-form";
+import { AdminRoleRevokeForm } from "../../../../components/admin/admin-role-revoke-form";
+import { AdminRolesTables } from "../../../../components/admin/admin-roles-tables";
+import { AdminUserInviteForm } from "../../../../components/admin/admin-user-invite-form";
+import { AdminUsersTable } from "../../../../components/admin/admin-users-table";
 import { getAdminOverview } from "../../../../lib/admin-overview";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import {
@@ -56,20 +47,12 @@ const inviteUserPermission: PlatformPermission = "identity.user.invite";
 const assignRolePermission: PlatformPermission = "identity.role.assign";
 const manageTenantPermission: PlatformPermission = "tenant.manage";
 
-const membershipStatusLabels = {
-  active: "Ativo",
-  invited: "Convidado",
-  removed: "Removido",
-  suspended: "Suspenso",
-} as const;
-
-const organizationStatusLabels = {
-  active: "Ativa",
-  archived: "Arquivada",
-  suspended: "Suspensa",
-} as const;
-
-export default async function AdminIdentityPage() {
+export default async function AdminIdentityPage(props: {
+  searchParams?: Promise<{ offset?: string; limit?: string }>;
+}) {
+  const searchParams = await props.searchParams;
+  const offset = Number(searchParams?.offset) || 0;
+  const limit = Number(searchParams?.limit) || 25;
   const platformSession = await requirePlatformSession("/app/admin");
   const viewerPermissions = platformSession.viewer.permissions;
   const canOpenAdmin = openAdminPermissions.some((permission) =>
@@ -86,22 +69,28 @@ export default async function AdminIdentityPage() {
 
   if (!canOpenAdmin) {
     return (
-      <AdminAccessState
+      <AccessState
+        badgeLabel="Better Auth + RBAC"
         message="A sessao esta autenticada, mas falta tenant.manage, identity.user.invite ou identity.role.assign."
+        role="alert"
         status="Sem grant"
         title="Administracao bloqueada"
+        variant="empty"
       />
     );
   }
 
-  const result = await getAdminOverview();
+  const result = await getAdminOverview({ offset, limit });
 
   if (result.status !== "ok") {
     return (
-      <AdminAccessState
+      <AccessState
+        badgeLabel="Better Auth + RBAC"
         message={result.message}
+        role="alert"
         status={result.status}
         title="Administracao indisponivel"
+        variant="empty"
       />
     );
   }
@@ -155,51 +144,11 @@ export default async function AdminIdentityPage() {
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
-        <Card>
-          <CardHeader className="gap-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="success">Admin P1</Badge>
-              <Badge variant="outline">Better Auth + RBAC</Badge>
-              <Badge variant="outline">{overview.securityModel.authorizationModel}</Badge>
-            </div>
-            <div className="flex flex-col gap-2">
-              <CardTitle className="text-3xl">Administracao de identidade e RBAC</CardTitle>
-              <CardDescription className="max-w-3xl text-base leading-7">
-                Governanca tenant-scoped para organizacao, utilizadores, memberships, roles e
-                permissoes. Convites e atribuicoes passam por oRPC, RBAC, audit trail e outbox.
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent className="grid gap-3 md:grid-cols-5">
-            <MetricTile label="Utilizadores" value={overview.totals.users.toString()} />
-            <MetricTile label="Ativos" value={overview.totals.activeMemberships.toString()} />
-            <MetricTile label="Convites" value={overview.totals.invitedMemberships.toString()} />
-            <MetricTile label="Roles" value={overview.totals.roles.toString()} />
-            <MetricTile label="Permissoes" value={overview.totals.permissions.toString()} />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Organizacao</CardTitle>
-            <CardDescription>Escopo administrativo resolvido da sessao atual.</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3">
-            <ContextRow label="Nome" value={overview.organization.name} />
-            <ContextRow label="Slug" value={overview.organization.slug} />
-            <ContextRow
-              label="Status"
-              value={organizationStatusLabels[overview.organization.status]}
-            />
-            <ContextRow label="Tenant ID" value={overview.organization.id} />
-            <ContextRow
-              label="Atualizado"
-              value={formatDateTime(overview.organization.updatedAt)}
-            />
-          </CardContent>
-        </Card>
-      </section>
+      <AdminOverviewHeader
+        totals={overview.totals}
+        organization={overview.organization}
+        securityModel={overview.securityModel}
+      />
 
       <section className="grid gap-4 xl:grid-cols-2">
         <AdminUserInviteForm
@@ -275,213 +224,18 @@ export default async function AdminIdentityPage() {
         />
       </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Utilizadores e memberships</CardTitle>
-          <CardDescription>
-            Lista tenant-scoped com status, verificacao de email e roles atribuidas.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Utilizador</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Roles</TableHead>
-                <TableHead>Criado</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {overview.users.map((user) => (
-                <TableRow key={user.membership.id}>
-                  <TableCell>
-                    <div className="flex flex-col gap-1">
-                      <span className="font-medium">{user.name}</span>
-                      <span className="text-muted-foreground text-xs">{user.id}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={resolveMembershipStatusVariant(user.membership.status)}>
-                      {membershipStatusLabels[user.membership.status]}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-1">
-                      <span>{user.email}</span>
-                      <span className="text-muted-foreground text-xs">
-                        {user.emailVerified ? "Email verificado" : "Email pendente"}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {user.membership.roles.length === 0 ? (
-                        <Badge variant="warning">Sem role</Badge>
-                      ) : (
-                        user.membership.roles.map((role) => (
-                          <Badge key={role.id} variant="outline">
-                            {role.key}
-                          </Badge>
-                        ))
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>{formatDateTime(user.createdAt)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <AdminUsersTable
+        users={overview.users}
+        pagination={{
+          totalCount: overview.pagination.totalCount,
+          limit,
+          offset,
+          totalPages: Math.ceil(overview.pagination.totalCount / limit),
+          currentPage: Math.floor(offset / limit) + 1,
+        }}
+      />
 
-      <section className="grid gap-4 xl:grid-cols-[1fr_1fr]">
-        <Card>
-          <CardHeader>
-            <CardTitle>Roles do tenant</CardTitle>
-            <CardDescription>
-              Templates bootstrap e contagem de permissoes/memberships.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Permissoes</TableHead>
-                  <TableHead>Membros</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {overview.roles.map((role) => (
-                  <TableRow key={role.id}>
-                    <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <span className="font-medium">{role.name}</span>
-                        <span className="text-muted-foreground text-xs">
-                          {role.key} · {role.protected ? "template protegido" : "custom"}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-col gap-2">
-                        <span>{role.permissionCount}</span>
-                        <div className="flex flex-wrap gap-1">
-                          {role.permissions.slice(0, 4).map((permission) => (
-                            <Badge key={permission} variant="outline">
-                              {permission}
-                            </Badge>
-                          ))}
-                          {role.permissions.length > 4 ? (
-                            <Badge variant="secondary">+{role.permissions.length - 4}</Badge>
-                          ) : null}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{role.membershipCount}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Permissoes</CardTitle>
-            <CardDescription>
-              Catalogo efetivo usado pelo RBAC, APIs, navegação e formularios governados.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Permissao</TableHead>
-                  <TableHead>Roles</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {overview.permissions.map((permission) => (
-                  <TableRow key={permission.id}>
-                    <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <span className="font-medium">{permission.key}</span>
-                        <span className="text-muted-foreground text-xs">
-                          {permission.description ?? "Sem descricao"}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>{permission.roleCount}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </section>
+      <AdminRolesTables roles={overview.roles} permissions={overview.permissions} />
     </div>
   );
-}
-
-function AdminAccessState({
-  message,
-  status,
-  title,
-}: {
-  message: string;
-  status: string;
-  title: string;
-}) {
-  return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-4">
-      <Card>
-        <CardHeader className="gap-3">
-          <Badge variant="warning">{status}</Badge>
-          <CardTitle>{title}</CardTitle>
-          <CardDescription className="leading-6">{message}</CardDescription>
-        </CardHeader>
-      </Card>
-    </div>
-  );
-}
-
-function MetricTile({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border bg-muted/35 p-4">
-      <span className="text-muted-foreground text-xs uppercase tracking-[0.14em]">{label}</span>
-      <p className="mt-2 font-semibold text-2xl">{value}</p>
-    </div>
-  );
-}
-
-function ContextRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-start justify-between gap-3 rounded-lg border bg-muted/35 px-3 py-2">
-      <span className="text-muted-foreground text-sm">{label}</span>
-      <span className="max-w-[70%] text-right font-medium text-sm">{value}</span>
-    </div>
-  );
-}
-
-function resolveMembershipStatusVariant(
-  status: keyof typeof membershipStatusLabels,
-): "outline" | "success" | "warning" | "destructive" {
-  if (status === "active") {
-    return "success";
-  }
-
-  if (status === "suspended" || status === "removed") {
-    return "destructive";
-  }
-
-  return "warning";
-}
-
-function formatDateTime(value: string): string {
-  return new Intl.DateTimeFormat("pt-PT", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
 }

@@ -15,7 +15,7 @@ import {
   transportOrderDispatchOutputSchema,
   transportOrderRescheduleInputSchema,
   transportOrderRescheduleOutputSchema,
-} from "@saptm/rpc";
+} from "@saptm/rpc/planning";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 

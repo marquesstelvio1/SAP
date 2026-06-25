@@ -4,8 +4,9 @@ import {
   auditActorTypes,
   auditSearchInputSchema,
   auditSeverities,
-} from "@saptm/rpc";
+} from "@saptm/rpc/audit";
 import {
+  AccessState,
   Badge,
   Button,
   Card,
@@ -13,10 +14,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  ContextRow,
   Field,
   FieldGroup,
   FieldLabel,
   Input,
+  JsonBlock,
+  MetricTile,
   SelectNative,
   Table,
   TableBody,
@@ -66,8 +70,10 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
 
   if (!canReadAudit) {
     return (
-      <AuditAccessState
+      <AccessState
+        badgeLabel="Audit"
         message="A sessao esta autenticada, mas falta audit.read para pesquisar auditoria."
+        role="alert"
         status="Sem grant"
         title="Auditoria bloqueada"
       />
@@ -81,8 +87,10 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
 
   if (result.status !== "ok") {
     return (
-      <AuditAccessState
+      <AccessState
+        badgeLabel="Audit"
         message={result.message}
+        role="alert"
         status={result.status}
         title="Auditoria indisponivel"
       />
@@ -130,9 +138,15 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
             <ContextRow label="Tenant" value={search.organizationId} />
             <ContextRow label="Gerado em" value={formatDateTime(search.generatedAt)} />
             <ContextRow label="Limite" value={search.filters.limit.toString()} />
-            <Button asChild disabled={!canExportAudit}>
-              <a href={canExportAudit ? exportHref : "#"}>Exportar CSV</a>
-            </Button>
+            {canExportAudit ? (
+              <Button asChild>
+                <a href={exportHref}>Exportar CSV</a>
+              </Button>
+            ) : (
+              <Button disabled type="button">
+                Exportar CSV
+              </Button>
+            )}
             <span className="text-muted-foreground text-xs">
               {canExportAudit
                 ? "A exportacao exige audit.read + report.export."
@@ -151,130 +165,136 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
         </CardHeader>
         <CardContent>
           {parsedFilters.message === undefined ? null : (
-            <div className="mb-4 rounded-lg border bg-muted/35 p-3 text-muted-foreground text-sm">
+            <div
+              className="mb-4 rounded-lg border bg-muted/35 p-3 text-muted-foreground text-sm"
+              role="status"
+            >
               {parsedFilters.message}
             </div>
           )}
           <form method="get">
-            <FieldGroup>
-              <div className="grid gap-4 md:grid-cols-4">
-                <Field>
-                  <FieldLabel htmlFor="auditAction">Acao</FieldLabel>
-                  <Input
-                    defaultValue={auditInput.action ?? ""}
-                    id="auditAction"
-                    name="action"
-                    placeholder="cargo.registered"
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="auditSubjectType">Subject type</FieldLabel>
-                  <Input
-                    defaultValue={auditInput.subjectType ?? ""}
-                    id="auditSubjectType"
-                    name="subjectType"
-                    placeholder="cargo"
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="auditSubjectId">Subject ID</FieldLabel>
-                  <Input
-                    defaultValue={auditInput.subjectId ?? ""}
-                    id="auditSubjectId"
-                    name="subjectId"
-                    placeholder="cargo_..."
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="auditCorrelationId">Correlation ID</FieldLabel>
-                  <Input
-                    defaultValue={auditInput.correlationId ?? ""}
-                    id="auditCorrelationId"
-                    name="correlationId"
-                    placeholder="corr_..."
-                  />
-                </Field>
-              </div>
-              <div className="grid gap-4 md:grid-cols-5">
-                <Field>
-                  <FieldLabel htmlFor="auditSeverity">Severidade</FieldLabel>
-                  <SelectNative
-                    defaultValue={auditInput.severity ?? ""}
-                    id="auditSeverity"
-                    name="severity"
-                  >
-                    <option value="">Todas</option>
-                    {auditSeverities.map((severity) => (
-                      <option key={severity} value={severity}>
-                        {severityLabels[severity]}
-                      </option>
-                    ))}
-                  </SelectNative>
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="auditActorType">Ator</FieldLabel>
-                  <SelectNative
-                    defaultValue={auditInput.actorType ?? ""}
-                    id="auditActorType"
-                    name="actorType"
-                  >
-                    <option value="">Todos</option>
-                    {auditActorTypes.map((actorType) => (
-                      <option key={actorType} value={actorType}>
-                        {actorTypeLabels[actorType]}
-                      </option>
-                    ))}
-                  </SelectNative>
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="auditActorId">Actor ID</FieldLabel>
-                  <Input
-                    defaultValue={auditInput.actorId ?? ""}
-                    id="auditActorId"
-                    name="actorId"
-                    placeholder="user_..."
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="auditCreatedFrom">Desde</FieldLabel>
-                  <Input
-                    defaultValue={toDatetimeLocalValue(auditInput.createdFrom)}
-                    id="auditCreatedFrom"
-                    name="createdFrom"
-                    type="datetime-local"
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="auditCreatedTo">Ate</FieldLabel>
-                  <Input
-                    defaultValue={toDatetimeLocalValue(auditInput.createdTo)}
-                    id="auditCreatedTo"
-                    name="createdTo"
-                    type="datetime-local"
-                  />
-                </Field>
-              </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <Field className="max-w-36">
-                  <FieldLabel htmlFor="auditLimit">Limite</FieldLabel>
-                  <SelectNative
-                    defaultValue={auditInput.limit.toString()}
-                    id="auditLimit"
-                    name="limit"
-                  >
-                    {[10, 25, 50, 100].map((limit) => (
-                      <option key={limit} value={limit}>
-                        {limit}
-                      </option>
-                    ))}
-                  </SelectNative>
-                </Field>
-                <Button type="submit">Pesquisar</Button>
-                <Button asChild variant="outline">
-                  <Link href={"/app/audit" as Route}>Limpar filtros</Link>
-                </Button>
-              </div>
-            </FieldGroup>
+            <fieldset className="contents">
+              <legend className="sr-only">Filtrar registos de auditoria</legend>
+              <FieldGroup>
+                <div className="grid gap-4 md:grid-cols-4">
+                  <Field>
+                    <FieldLabel htmlFor="auditAction">Acao</FieldLabel>
+                    <Input
+                      defaultValue={auditInput.action ?? ""}
+                      id="auditAction"
+                      name="action"
+                      placeholder="cargo.registered"
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="auditSubjectType">Subject type</FieldLabel>
+                    <Input
+                      defaultValue={auditInput.subjectType ?? ""}
+                      id="auditSubjectType"
+                      name="subjectType"
+                      placeholder="cargo"
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="auditSubjectId">Subject ID</FieldLabel>
+                    <Input
+                      defaultValue={auditInput.subjectId ?? ""}
+                      id="auditSubjectId"
+                      name="subjectId"
+                      placeholder="cargo_..."
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="auditCorrelationId">Correlation ID</FieldLabel>
+                    <Input
+                      defaultValue={auditInput.correlationId ?? ""}
+                      id="auditCorrelationId"
+                      name="correlationId"
+                      placeholder="corr_..."
+                    />
+                  </Field>
+                </div>
+                <div className="grid gap-4 md:grid-cols-5">
+                  <Field>
+                    <FieldLabel htmlFor="auditSeverity">Severidade</FieldLabel>
+                    <SelectNative
+                      defaultValue={auditInput.severity ?? ""}
+                      id="auditSeverity"
+                      name="severity"
+                    >
+                      <option value="">Todas</option>
+                      {auditSeverities.map((severity) => (
+                        <option key={severity} value={severity}>
+                          {severityLabels[severity]}
+                        </option>
+                      ))}
+                    </SelectNative>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="auditActorType">Ator</FieldLabel>
+                    <SelectNative
+                      defaultValue={auditInput.actorType ?? ""}
+                      id="auditActorType"
+                      name="actorType"
+                    >
+                      <option value="">Todos</option>
+                      {auditActorTypes.map((actorType) => (
+                        <option key={actorType} value={actorType}>
+                          {actorTypeLabels[actorType]}
+                        </option>
+                      ))}
+                    </SelectNative>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="auditActorId">Actor ID</FieldLabel>
+                    <Input
+                      defaultValue={auditInput.actorId ?? ""}
+                      id="auditActorId"
+                      name="actorId"
+                      placeholder="user_..."
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="auditCreatedFrom">Desde</FieldLabel>
+                    <Input
+                      defaultValue={toDatetimeLocalValue(auditInput.createdFrom)}
+                      id="auditCreatedFrom"
+                      name="createdFrom"
+                      type="datetime-local"
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="auditCreatedTo">Ate</FieldLabel>
+                    <Input
+                      defaultValue={toDatetimeLocalValue(auditInput.createdTo)}
+                      id="auditCreatedTo"
+                      name="createdTo"
+                      type="datetime-local"
+                    />
+                  </Field>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Field className="max-w-36">
+                    <FieldLabel htmlFor="auditLimit">Limite</FieldLabel>
+                    <SelectNative
+                      defaultValue={auditInput.limit.toString()}
+                      id="auditLimit"
+                      name="limit"
+                    >
+                      {[10, 25, 50, 100].map((limit) => (
+                        <option key={limit} value={limit}>
+                          {limit}
+                        </option>
+                      ))}
+                    </SelectNative>
+                  </Field>
+                  <Button type="submit">Pesquisar</Button>
+                  <Button asChild variant="outline">
+                    <Link href={"/app/audit" as Route}>Limpar filtros</Link>
+                  </Button>
+                </div>
+              </FieldGroup>
+            </fieldset>
           </form>
         </CardContent>
       </Card>
@@ -287,7 +307,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
+          <Table aria-label="Registos auditados">
             <TableHeader>
               <TableRow>
                 <TableHead>Quando</TableHead>
@@ -301,7 +321,9 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
             <TableBody>
               {search.records.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6}>Nenhum registo encontrado para os filtros.</TableCell>
+                  <TableCell colSpan={6} role="status">
+                    Nenhum registo encontrado para os filtros.
+                  </TableCell>
                 </TableRow>
               ) : (
                 search.records.map((record) => (
@@ -338,7 +360,10 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
                     </TableCell>
                     <TableCell>
                       <details className="max-w-xl">
-                        <summary className="cursor-pointer font-medium text-sm">
+                        <summary
+                          className="cursor-pointer font-medium text-sm"
+                          aria-label={`Detalhe do registo ${record.action}`}
+                        >
                           Ver detalhe
                         </summary>
                         <div className="mt-3 flex flex-col gap-3 rounded-lg border bg-muted/35 p-3">
@@ -360,57 +385,6 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
           </Table>
         </CardContent>
       </Card>
-    </div>
-  );
-}
-
-function AuditAccessState({
-  message,
-  status,
-  title,
-}: {
-  message: string;
-  status: string;
-  title: string;
-}) {
-  return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-4">
-      <Card>
-        <CardHeader className="gap-3">
-          <Badge variant="warning">{status}</Badge>
-          <CardTitle>{title}</CardTitle>
-          <CardDescription className="leading-6">{message}</CardDescription>
-        </CardHeader>
-      </Card>
-    </div>
-  );
-}
-
-function MetricTile({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border bg-muted/35 p-4">
-      <span className="text-muted-foreground text-xs uppercase tracking-[0.14em]">{label}</span>
-      <p className="mt-2 font-semibold text-2xl">{value}</p>
-    </div>
-  );
-}
-
-function ContextRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-start justify-between gap-3 rounded-lg border bg-muted/35 px-3 py-2">
-      <span className="text-muted-foreground text-sm">{label}</span>
-      <span className="max-w-[70%] text-right font-medium text-sm">{value}</span>
-    </div>
-  );
-}
-
-function JsonBlock({ label, value }: { label: string; value: unknown }) {
-  return (
-    <div className="flex flex-col gap-2">
-      <span className="text-muted-foreground text-xs uppercase tracking-[0.14em]">{label}</span>
-      <pre className="max-h-56 overflow-auto rounded-lg border bg-background p-3 text-xs">
-        {formatJson(value)}
-      </pre>
     </div>
   );
 }
@@ -536,12 +510,4 @@ function formatDateTime(value: string): string {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
-}
-
-function formatJson(value: unknown): string {
-  if (value === null || value === undefined) {
-    return "null";
-  }
-
-  return JSON.stringify(value, null, 2);
 }

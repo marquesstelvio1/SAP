@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 
-import { TwoFactorVerificationForm } from "../../components/two-factor-verification-form";
+import { TwoFactorVerificationForm } from "../../components/auth/two-factor-verification-form";
 import { getCurrentPlatformSession } from "../../lib/auth-session";
 
 export const dynamic = "force-dynamic";

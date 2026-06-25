@@ -161,9 +161,11 @@ const trackingOperatorEvidenceOutputSchema = z.object({
 export const trackingOverviewInputSchema = z
   .object({
     limit: z.number().int().min(1).max(50).default(10),
+    offset: z.number().int().min(0).default(0),
   })
   .default({
     limit: 10,
+    offset: 0,
   });
 
 export const trackingEventRecordInputSchema = z.object({
@@ -260,6 +262,11 @@ export const trackingOverviewOutputSchema = z.object({
   }),
   statusCounts: z.array(trackingStatusCountSchema),
   recentShipments: z.array(trackingRecentShipmentSchema),
+  pagination: z.object({
+    totalCount: z.number().int().nonnegative(),
+    limit: z.number().int().positive(),
+    offset: z.number().int().min(0),
+  }),
 });
 
 export const trackingModeAggregateSchema = z.object({
