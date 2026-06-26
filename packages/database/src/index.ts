@@ -28,7 +28,6 @@ export {
   outboxEventStatuses,
 } from "./constants.js";
 export type { DomainEvent, EventBus } from "./domain-events.js";
-export { EVENT_BUS, EventBusModule } from "./event-bus.module.js";
 export { OutboxEventBus } from "./outbox-event-bus.js";
 export {
   type CursorPaginationInput,

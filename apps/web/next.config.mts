@@ -70,17 +70,6 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   serverExternalPackages: ["@better-auth/kysely-adapter", "better-auth", "kysely"],
   typedRoutes: true,
-  webpack: (config) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      "file-type": false,
-      "class-validator": false,
-      "class-transformer": false,
-      "dns": false,
-      "fs": false,
-    };
-    return config;
-  },
   async headers() {
     return [
       {
