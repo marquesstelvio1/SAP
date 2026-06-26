@@ -44,6 +44,11 @@
       "import": "./dist/notifications.js",
       "default": "./dist/notifications.js"
     },
+    "./privacy": {
+      "types": "./dist/privacy.d.ts",
+      "import": "./dist/privacy.js",
+      "default": "./dist/privacy.js"
+    },
     "./planning": {
       "types": "./dist/planning.d.ts",
       "import": "./dist/planning.js",
