@@ -54,7 +54,7 @@ export function createPrivacyRpcRouter(deps: CreatePrivacyRpcRouterInput) {
         .route({ method: "POST", path: "/privacy/delete" })
         .input(privacyDeleteInputSchema)
         .output(privacyDeleteOutputSchema)
-        .handler(async ({ context, input }) => {
+        .handler(async ({ context }) => {
           const authorizedContext = await deps.rpcContextService.authorizeRequest(
             context.request,
             privacyDeleteMetadata,

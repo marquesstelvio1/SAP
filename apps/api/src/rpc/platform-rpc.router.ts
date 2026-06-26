@@ -38,6 +38,10 @@ import {
   createSettingsRpcRouter,
   type SettingsRpcContext,
 } from "../settings/settings-rpc.router.js";
+import {
+  createPrivacyRpcRouter,
+  type PrivacyRpcContext,
+} from "../privacy/privacy-rpc.router.js";
 import { createTariffRpcRouter, type TariffRpcContext } from "../tariff/tariff-rpc.router.js";
 import { createTeamsRpcRouter, type TeamsRpcContext } from "../teams/teams-rpc.router.js";
 import {

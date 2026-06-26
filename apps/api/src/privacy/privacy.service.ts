@@ -3,9 +3,9 @@ import {
   getPrismaClient,
   type SaptmPrismaClient,
 } from "@saptm/database";
-import {
-  type PrivacyExportInput,
-  type PrivacyExportOutput,
+import type {
+  PrivacyExportInput,
+  PrivacyExportOutput,
 } from "@saptm/rpc";
 
 @Injectable()
@@ -59,16 +59,16 @@ export class PrivacyService {
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
       },
-      associatedAccounts: user.accounts.map((acc) => ({
+      associatedAccounts: (user.accounts as Array<{ providerId: string; accountId: string; createdAt: Date }>).map((acc) => ({
         providerId: acc.providerId,
         accountId: acc.accountId,
         createdAt: acc.createdAt.toISOString(),
       })),
-      memberships: user.memberships.map((m) => ({
+      memberships: (user.memberships as Array<{ organizationId: string; organization: { name: string }; status: string; membershipRoles: Array<{ role: { key: string } }>; createdAt: Date }>).map((m) => ({
         organizationId: m.organizationId,
         organizationName: m.organization.name,
         status: m.status,
-        roles: m.membershipRoles.map((mr) => mr.role.key),
+        roles: m.membershipRoles.map((mr: { role: { key: string } }) => mr.role.key),
         createdAt: m.createdAt.toISOString(),
       })),
     };
@@ -93,7 +93,7 @@ export class PrivacyService {
         },
       });
 
-      result.auditRecords = auditRecords.map((r) => ({
+      result.auditRecords = (auditRecords as Array<{ id: string; action: string; subjectType: string; subjectId: string | null; severity: string; createdAt: Date }>).map((r) => ({
         id: r.id,
         action: r.action,
         subjectType: r.subjectType,
@@ -117,7 +117,7 @@ export class PrivacyService {
         },
       });
 
-      result.sessions = sessions.map((s) => ({
+      result.sessions = (sessions as Array<{ id: string; createdAt: Date; expiresAt: Date; ipAddress: string | null; userAgent: string | null }>).map((s) => ({
         id: s.id,
         createdAt: s.createdAt.toISOString(),
         expiresAt: s.expiresAt.toISOString(),
@@ -129,7 +129,7 @@ export class PrivacyService {
     return result;
   }
 
-  async scheduleAccountDeletion(userId: string): Promise<{ scheduledAt: string; message: string }> {
+  async scheduleAccountDeletion(_userId: string): Promise<{ scheduledAt: string; message: string }> {
     const scheduledAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
     return {

@@ -15,6 +15,7 @@ import { NotificationsModule } from "./notifications/notifications.module.js";
 import { ObservabilityModule } from "./observability/observability.module.js";
 import { OrganizationsModule } from "./organizations/organizations.module.js";
 import { PlanningModule } from "./planning/planning.module.js";
+import { PrivacyModule } from "./privacy/privacy.module.js";
 import { RateLimitModule } from "./rate-limit/rate-limit.module.js";
 import { ReportsModule } from "./reports/reports.module.js";
 import { RpcModule } from "./rpc/rpc.module.js";
@@ -44,6 +45,7 @@ import { WebhooksModule } from "./webhooks/webhooks.module.js";
     PlanningModule,
     NotificationsModule,
     OrganizationsModule,
+    PrivacyModule,
     ReportsModule,
     SecurityModule,
     SettingsModule,
