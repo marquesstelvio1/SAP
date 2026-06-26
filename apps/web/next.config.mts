@@ -68,19 +68,19 @@ function buildCsp(): string {
 const nextConfig: NextConfig = {
   output: "standalone",
   reactStrictMode: true,
-  serverExternalPackages: [
-    "@better-auth/kysely-adapter",
-    "@nestjs/common",
-    "@nestjs/core",
-    "@saptm/auth",
-    "@saptm/config",
-    "@saptm/database",
-    "@saptm/email",
-    "@saptm/observability",
-    "better-auth",
-    "kysely",
-  ],
+  serverExternalPackages: ["@better-auth/kysely-adapter", "better-auth", "kysely"],
   typedRoutes: true,
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      "file-type": false,
+      "class-validator": false,
+      "class-transformer": false,
+      "dns": false,
+      "fs": false,
+    };
+    return config;
+  },
   async headers() {
     return [
       {

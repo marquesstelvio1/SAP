@@ -1,5 +1,7 @@
 "use server";
 
+import { createSaptmAuthFromEnv } from "@saptm/auth/server";
+
 export type ResetPasswordFormState = {
   status: "idle" | "success" | "error";
   message?: string;
@@ -42,7 +44,6 @@ export async function resetPasswordAction(
   }
 
   try {
-    const { createSaptmAuthFromEnv } = await import("@saptm/auth/server");
     const auth = createSaptmAuthFromEnv();
 
     await auth.api.resetPassword({
