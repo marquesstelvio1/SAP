@@ -1,5 +1,3 @@
-export const contentType = "image/svg+xml";
-
 export async function GET(): Promise<Response> {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32" role="img" aria-label="SAPTM">
     <rect width="100" height="100" rx="20" fill="#1e3a5f"/>
