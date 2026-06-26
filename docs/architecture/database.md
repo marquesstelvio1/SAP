@@ -14,13 +14,14 @@
 
 ## Schema Organization
 
-### Identity & Auth (4 models)
+### Identity & Auth (5 models)
 ```
 User ──┐
   ├── Session        (auth sessions)
   ├── Account        (OAuth + email/password accounts)
   ├── TwoFactor      (TOTP secrets)
-  └── Verification   (email verification tokens)
+  ├── Verification   (email verification tokens)
+  └── LoginAttempt   (failed login tracking for account lockout)
 ```
 
 ### Multi-tenancy (7 models)
