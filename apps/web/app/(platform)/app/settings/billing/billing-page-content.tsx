@@ -16,7 +16,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { CreditCardIcon, ExternalLinkIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
-import { createPortalSessionAction } from "../../../../../lib/billing";
+import { createPortalSessionAction } from "./actions";
 import { PlanComparisonModal } from "./plan-comparison-modal";
 
 const subscriptionBadge: Record<
