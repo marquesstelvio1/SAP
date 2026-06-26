@@ -1,6 +1,5 @@
 "use server";
 
-import { createSaptmAuthFromEnv } from "@saptm/auth/server";
 import { getClientEnv } from "@saptm/config";
 
 export type ForgotPasswordFormState = {
@@ -22,6 +21,7 @@ export async function forgotPasswordAction(
   }
 
   try {
+    const { createSaptmAuthFromEnv } = await import("@saptm/auth/server");
     const auth = createSaptmAuthFromEnv() as unknown as {
       api: {
         forgetPassword: (input: {
