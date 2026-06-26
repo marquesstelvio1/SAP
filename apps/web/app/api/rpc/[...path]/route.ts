@@ -23,12 +23,12 @@ async function proxy(request: NextRequest) {
   }
 
   const body = request.method === "GET" || request.method === "HEAD"
-    ? undefined
+    ? null
     : await request.text();
 
   let response: Response;
   try {
-    response = await fetch(target, {
+    response = await fetch(target.toString(), {
       method: request.method,
       headers,
       body,
