@@ -1,6 +1,6 @@
 "use client";
 
-import { privacyExportInputSchema, privacyExportOutputSchema } from "@saptm/rpc";
+import { privacyExportInputSchema, privacyExportOutputSchema } from "@saptm/rpc/privacy";
 import { Button, Field, FieldGroup, FieldLabel, SelectNative } from "@saptm/ui";
 import { useState } from "react";
 import { rpcPost } from "../../lib/rpc-client";

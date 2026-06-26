@@ -1,6 +1,6 @@
 "use client";
 
-import { privacyDeleteInputSchema, privacyDeleteOutputSchema } from "@saptm/rpc";
+import { privacyDeleteInputSchema, privacyDeleteOutputSchema } from "@saptm/rpc/privacy";
 import { Button, Field, FieldDescription, FieldError, FieldGroup, Input } from "@saptm/ui";
 import { useState } from "react";
 import { rpcPost } from "../../lib/rpc-client";
