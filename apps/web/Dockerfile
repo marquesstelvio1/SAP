@@ -49,7 +49,7 @@ RUN prisma_package="$(find /app/node_modules/.pnpm -path '*/node_modules/@prisma
   rm -rf "$prisma_client" && \
   mkdir -p "$prisma_client" && \
   cp -R /tmp/prisma-client/. "$prisma_client/"
-RUN pnpm --filter @saptm/web... build
+RUN NEXT_DISABLE_TURBOPACK=1 pnpm --filter @saptm/web... build
 
 FROM node:22-alpine AS runner
 

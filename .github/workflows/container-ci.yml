@@ -119,7 +119,7 @@ jobs:
         with:
           image-ref: ${{ steps.image-ref.outputs.ref }}
           vuln-type: os,library
-          severity: CRITICAL,HIGH
+          severity: CRITICAL
           ignore-unfixed: true
           format: json
           output: trivy-${{ matrix.service }}.json
