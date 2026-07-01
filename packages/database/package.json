@@ -20,13 +20,13 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "biome check .",
     "test": "node --test tests/soft-delete.test.mjs",
-    "db:validate": "dotenvx run -f ../../.env -- prisma validate",
-    "db:generate": "dotenvx run -f ../../.env -- prisma generate",
-    "db:migrate:dev": "dotenvx run -f ../../.env -- prisma migrate dev",
-    "db:migrate:deploy": "dotenvx run -f ../../.env -- prisma migrate deploy",
-    "db:migrate:status": "dotenvx run -f ../../.env -- prisma migrate status",
-    "db:migrate:rollback": "dotenvx run -f ../../.env -- node scripts/rollback-migration.mjs",
-    "db:seed": "dotenvx run -f ../../.env -- tsx prisma/seed.ts",
+    "db:validate": "prisma validate",
+    "db:generate": "prisma generate",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:status": "prisma migrate status",
+    "db:migrate:rollback": "node scripts/rollback-migration.mjs",
+    "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "validate:migrations": "node ../../scripts/validate-migrations.mjs",
     "worker:outbox": "node scripts/process-outbox.mjs"
@@ -41,7 +41,7 @@
     "@saptm/observability": "workspace:*"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "catalog:",
+
     "prisma": "catalog:",
     "@saptm/tsconfig": "workspace:*",
     "@types/node": "catalog:",

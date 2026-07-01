@@ -25,14 +25,15 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "biome check .",
     "test": "node --test tests/policy.test.mjs",
-    "seed:local-admin": "dotenvx run -f ../../.env -- tsx src/local-admin-seed.ts"
+    "seed:local-admin": "tsx src/local-admin-seed.ts"
   },
   "dependencies": {
     "@saptm/config": "workspace:*",
     "@saptm/database": "workspace:*",
     "@saptm/email": "workspace:*",
     "@saptm/observability": "workspace:*",
-    "better-auth": "catalog:"
+    "better-auth": "catalog:",
+    "dotenv": "catalog:"
   },
   "devDependencies": {
     "@saptm/tsconfig": "workspace:*",

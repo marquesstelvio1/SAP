@@ -1,3 +1,11 @@
+import { config } from "dotenv";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+config({ path: resolve(__dirname, "../../../.env") });
+
 import { randomInt } from "node:crypto";
 import { getPrismaClient, seedRbacBootstrap } from "@saptm/database";
 import { hashPassword } from "better-auth/crypto";
