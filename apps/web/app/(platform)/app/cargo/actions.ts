@@ -39,7 +39,7 @@ import {
   cargoTransportDepartOutputSchema,
   cargoTransportPlanInputSchema,
   cargoTransportPlanOutputSchema,
-} from "@saptm/rpc";
+} from "@saptm/rpc/cargo";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 

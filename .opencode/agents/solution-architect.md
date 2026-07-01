@@ -1,6 +1,6 @@
 ---
 description: Designs end-to-end technical solutions that meet business requirements and architectural constraints. Use when designing technical solutions, system architecture, technology selection, or architectural decision records.
-mode: subagent
+mode: all
 ---
 
 # Solution Architect

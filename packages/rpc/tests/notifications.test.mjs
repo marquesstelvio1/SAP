@@ -63,7 +63,10 @@ test("notification mark-read contract validates auditable acknowledgement", () =
   assert.deepEqual(notificationMarkReadMetadata.permissions, ["notification.read"]);
 
   assert.equal(
-    notificationMarkReadInputSchema.parse({ notificationId: "notification_001" }).notificationId,
+    notificationMarkReadInputSchema.parse({
+      notificationId: "notification_001",
+      idempotencyKey: "idem_abc123def456",
+    }).notificationId,
     "notification_001",
   );
 
@@ -85,10 +88,16 @@ test("notification mark-read contract validates auditable acknowledgement", () =
       readAt: "2026-06-06T00:01:00.000Z",
       archivedAt: null,
     },
+    idempotency: { key: "idem_abc123def456", replayed: false },
     audit: {
       action: "notification.marked_read",
       subjectType: "notification",
       subjectId: "notification_001",
+    },
+    outbox: {
+      eventType: "notification.marked_read",
+      aggregateType: "notification",
+      aggregateId: "notification_001",
     },
   });
 

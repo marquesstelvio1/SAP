@@ -31,7 +31,7 @@ function SheetOverlay({
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-0 bg-background/80 backdrop-blur-sm transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
+        "fixed inset-0 z-overlay bg-background/80 backdrop-blur-sm transition-opacity duration-[var(--motion-duration-normal)] data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
         className,
       )}
       {...props}
@@ -40,7 +40,7 @@ function SheetOverlay({
 }
 
 const sheetVariants = cva(
-  "fixed gap-4 bg-background p-6 shadow-overlay outline-none transition-transform data-[state=closed]:duration-200 data-[state=open]:duration-300",
+  "fixed gap-4 bg-background p-6 shadow-overlay outline-none transition-transform duration-[var(--motion-duration-normal)]",
   {
     variants: {
       side: {
@@ -80,10 +80,10 @@ function SheetContent({
         {showCloseButton ? (
           <SheetPrimitive.Close
             data-slot="sheet-close"
-            className="absolute top-4 right-4 rounded-xs opacity-70 outline-none transition-opacity hover:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4"
+            className="absolute top-4 right-4 rounded-xs opacity-70 outline-none transition-opacity duration-[var(--motion-duration-fast)] hover:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4"
           >
             <XIcon aria-hidden="true" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">Fechar</span>
           </SheetPrimitive.Close>
         ) : null}
       </SheetPrimitive.Content>
@@ -111,7 +111,7 @@ function SheetTitle({ className, ...props }: React.ComponentProps<typeof SheetPr
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
-      className={cn("font-semibold text-lg tracking-[var(--tracking-heading)]", className)}
+      className={cn("font-semibold text-lg tracking-tight", className)}
       {...props}
     />
   );

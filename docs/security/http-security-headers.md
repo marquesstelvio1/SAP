@@ -22,13 +22,49 @@ business feature is exposed.
 
 ## Web Headers
 
-`apps/web` applies the same baseline through `next.config.ts`. The CSP allows only the minimum
-Next.js runtime needs until product screens and asset domains are explicitly reviewed.
+`apps/web` applies headers through `next.config.ts` `async headers()`.
+
+### Content-Security-Policy (Web)
+
+```
+default-src 'self'
+base-uri 'self'
+form-action 'self'
+frame-ancestors 'none'
+object-src 'none'
+img-src 'self' data: blob:
+font-src 'self' data:
+script-src 'self' 'unsafe-inline' 'unsafe-eval'
+style-src 'self' 'unsafe-inline'
+connect-src 'self'
+worker-src 'self' blob:
+frame-src 'none'
+upgrade-insecure-requests
+```
+
+> **Tailwind v4 note:** `style-src 'unsafe-inline'` is required because Tailwind v4 injects
+> CSS custom properties at runtime for animations, transitions, and JIT utilities.
+> The nonce-based upgrade path is available in `apps/web/src/proxy.ts` for environments that
+> enforce strict CSP (script nonce + `strict-dynamic`). When adopting the nonce approach,
+> `style-src 'unsafe-inline'` must still be retained unless every inline style is hashed.
+
+### Other Web Headers
+
+| Header | Value |
+| --- | --- |
+| `Cross-Origin-Opener-Policy` | `same-origin` |
+| `Cross-Origin-Resource-Policy` | `same-origin` |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), payment=(), usb=()` |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` |
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains; preload` |
+| `X-Content-Type-Options` | `nosniff` |
+| `X-Frame-Options` | `DENY` |
 
 ## Rules
 
 - No page, API route, or business endpoint may remove these headers without security approval.
 - New external asset, analytics, or integration domains must update CSP intentionally.
+- `style-src 'unsafe-inline'` must not be removed while Tailwind v4 is in use.
 - HSTS is valid only when TLS is enabled for the environment.
 - Security headers are validated in CI by `pnpm validate:security-runtime`.
 

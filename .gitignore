@@ -6,8 +6,10 @@ dist/
 coverage/
 playwright-report/
 test-results/
-reports/
+/reports/
 .env
 .env.*
 !.env.example
+tests/load/reports/
 *.tsbuildinfo
+backups/

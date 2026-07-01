@@ -10,8 +10,10 @@ const fixedNow = new Date("2026-06-04T12:00:00.000Z");
 test("evidence services export operational reports and governed audit records", async () => {
   const { database, state } = createEvidenceDatabase();
   seedOperationalEvidence(state);
-  const reportsService = new ReportsService(database);
-  const auditService = new AuditService(database);
+  const reportsRepository = createReportsRepository(database);
+  const reportsService = new ReportsService(reportsRepository, database);
+  const auditRepository = createAuditRepository(database);
+  const auditService = new AuditService(auditRepository, database);
   const actor = createActorContext("evidence_exports");
 
   for (const domain of ["cargo", "tracking", "capacity", "planning", "tariff"]) {
@@ -72,7 +74,8 @@ test("evidence services export operational reports and governed audit records", 
 
 test("notifications service reads inbox and acknowledges notifications with audit", async () => {
   const { database, state } = createEvidenceDatabase();
-  const service = new NotificationsService(database);
+  const notificationsRepository = createNotificationsRepository(database);
+  const service = new NotificationsService(notificationsRepository, database);
   const actor = createActorContext("notifications");
   seedNotification(state, {
     id: "notification_critical_001",
@@ -458,6 +461,100 @@ function createAuditRecord(state, data) {
     userAgent: data.userAgent ?? null,
     correlationId: data.correlationId,
     createdAt: fixedNow,
+  };
+}
+
+function createAuditRepository(database) {
+  return {
+    async searchRecords(where, limit) {
+      return database.auditRecord.findMany({ where, take: limit });
+    },
+    async countRecords(where) {
+      return database.auditRecord.count({ where });
+    },
+    async countBySeverity(where, severity) {
+      return database.auditRecord.count({ where: { ...where, severity } });
+    },
+    async createAuditRecord(tx, input) {
+      await tx.auditRecord.create({ data: input });
+    },
+    async createOutboxEvent(tx, input) {
+      await tx.outboxEvent.create({ data: input });
+    },
+  };
+}
+
+function createNotificationsRepository(database) {
+  return {
+    async searchNotifications(where, limit) {
+      return database.notification.findMany({ where, take: limit });
+    },
+    async countNotifications(organizationId) {
+      return database.notification.count({ where: { organizationId } });
+    },
+    async countByStatus(organizationId, status) {
+      return database.notification.count({ where: { organizationId, status } });
+    },
+    async findNotificationById(organizationId, notificationId) {
+      return database.notification.findFirst({
+        where: { id: notificationId, organizationId },
+      });
+    },
+    async updateNotificationReadStatus(tx, notificationId, readAt) {
+      return tx.notification.update({
+        where: { id: notificationId },
+        data: { status: "read", readAt },
+      });
+    },
+    async createAuditRecord(tx, input) {
+      await tx.auditRecord.create({ data: input });
+    },
+  };
+}
+
+function createReportsRepository(database) {
+  return {
+    async findCargoRows(organizationId, limit) {
+      return database.cargo.findMany({
+        where: { organizationId },
+        take: limit,
+        select: { id: true, cargoReference: true, status: true },
+      });
+    },
+    async findTrackingShipmentRows(organizationId, limit) {
+      return database.trackingShipment.findMany({
+        where: { organizationId },
+        take: limit,
+        select: { id: true, referenceCode: true, status: true },
+      });
+    },
+    async findCapacitySlotRows(organizationId, limit) {
+      return database.capacitySlot.findMany({
+        where: { organizationId },
+        take: limit,
+        select: { id: true, slotReference: true, status: true },
+      });
+    },
+    async findTransportOrderRows(organizationId, limit) {
+      return database.transportOrder.findMany({
+        where: { organizationId },
+        take: limit,
+        select: { id: true, orderReference: true, status: true },
+      });
+    },
+    async findTariffRateCardRows(organizationId, limit) {
+      return database.tariffRateCard.findMany({
+        where: { organizationId },
+        take: limit,
+        select: { id: true, rateCardCode: true, status: true },
+      });
+    },
+    async createAuditRecord(tx, input) {
+      await tx.auditRecord.create({ data: input });
+    },
+    async createOutboxEvent(tx, input) {
+      await tx.outboxEvent.create({ data: input });
+    },
   };
 }
 

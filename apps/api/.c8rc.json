@@ -1,0 +1,11 @@
+{
+  "reporter": ["text", "lcov", "html"],
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/main.ts", "src/**/*.module.ts", "src/**/*.interface.ts"],
+  "all": true,
+  "check-coverage": true,
+  "branches": 80,
+  "lines": 80,
+  "functions": 80,
+  "statements": 80
+}

@@ -140,17 +140,21 @@ export type AuditExportOutput = z.infer<typeof auditExportOutputSchema>;
 export const auditSearchMetadata = createRpcOperationMetadata({
   name: "audit.records.search",
   kind: "query",
+  auth: "session",
   permissions: ["audit.read"],
   organizationRequired: true,
   audit: "sensitive",
   criticality: "high",
+  signals: ["log", "metric", "span"],
 });
 
 export const auditExportMetadata = createRpcOperationMetadata({
   name: "audit.records.export",
   kind: "query",
+  auth: "session",
   permissions: ["audit.read", "report.export"],
   organizationRequired: true,
   audit: "critical",
   criticality: "critical",
+  signals: ["log", "metric", "span"],
 });

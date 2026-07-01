@@ -28,6 +28,6 @@
 
 Use the diagnostic workflow when a finding should become executable work:
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Invoke-AIWorkflow.ps1 -Workflow diagnostic -Domain backend -TaskId FIN-API-001 -Feature "contract-versioning-policy" -Priority high
+```bash
+node ./scripts/invoke-ai-workflow.mjs --workflow diagnostic --domain backend --task-id FIN-API-001 --feature "contract-versioning-policy" --priority high
 ```

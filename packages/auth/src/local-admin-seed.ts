@@ -1,3 +1,4 @@
+import { randomInt } from "node:crypto";
 import { getPrismaClient, seedRbacBootstrap } from "@saptm/database";
 import { hashPassword } from "better-auth/crypto";
 
@@ -6,7 +7,7 @@ const localAdminDefaults = {
   name: "SAPTM Local Admin",
   organizationName: "SAPTM Local",
   organizationSlug: "saptm-local",
-  password: "LocalAdmin!2026",
+  password: undefined as string | undefined,
   roleKey: "tenant.admin",
 } as const;
 
@@ -17,7 +18,7 @@ try {
 
   const email = readEnv("SAPTM_LOCAL_ADMIN_EMAIL", localAdminDefaults.email).toLowerCase();
   const name = readEnv("SAPTM_LOCAL_ADMIN_NAME", localAdminDefaults.name);
-  const password = readEnv("SAPTM_LOCAL_ADMIN_PASSWORD", localAdminDefaults.password);
+  const password = readRequiredPassword();
   const organizationName = readEnv(
     "SAPTM_LOCAL_ORGANIZATION_NAME",
     localAdminDefaults.organizationName,
@@ -178,6 +179,27 @@ function assertPasswordPolicy(password: string): void {
 
 function readEnv(name: string, fallback: string): string {
   const value = process.env[name]?.trim();
-
   return value === undefined || value.length === 0 ? fallback : value;
+}
+
+function readRequiredPassword(): string {
+  const envValue = process.env.SAPTM_LOCAL_ADMIN_PASSWORD?.trim();
+  if (envValue !== undefined && envValue.length > 0) {
+    return envValue;
+  }
+  const generated = generateSecurePassword();
+  console.log(
+    `[WARN] SAPTM_LOCAL_ADMIN_PASSWORD not set. Generated temporary password: ${generated}`,
+  );
+  return generated;
+}
+
+function generateSecurePassword(): string {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
+  let password = "";
+  for (let i = 0; i < 24; i++) {
+    password += chars[randomInt(0, chars.length)];
+  }
+  return password;
 }

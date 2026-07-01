@@ -1,6 +1,6 @@
 ---
 description: Designs and implements end-to-end testing strategies covering critical user journeys and regression. Use when planning E2E test strategy, identifying test scenarios, or ensuring production readiness through testing.
-mode: subagent
+mode: all
 ---
 
 # E2E Expert

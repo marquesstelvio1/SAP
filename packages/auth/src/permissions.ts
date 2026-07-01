@@ -38,6 +38,7 @@ export const platformPermissions = [
   "tariff.manage",
   "tariff.quote.calculate",
   "tariff.quote.approve",
+  "billing.read",
 ] as const;
 
 export type PlatformPermission = (typeof platformPermissions)[number];

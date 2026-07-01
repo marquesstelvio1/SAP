@@ -5,26 +5,38 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "lint": "biome check ."
+    "lint": "biome check .",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@saptm/auth": "workspace:*",
     "@saptm/config": "workspace:*",
+    "@saptm/form": "workspace:*",
     "@saptm/rpc": "workspace:*",
     "@saptm/types": "workspace:*",
     "@saptm/ui": "workspace:*",
+    "zod": "catalog:",
+    "dotenv": "catalog:",
+    "@sentry/nextjs": "catalog:",
     "@tanstack/react-query": "catalog:",
+    "@tanstack/react-table": "catalog:",
     "better-auth": "catalog:",
     "next": "catalog:",
+    "next-intl": "catalog:",
+    "next-themes": "catalog:",
+    "lucide-react": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "posthog-js": "catalog:",
+    "react-dom": "catalog:",
+    "web-vitals": "catalog:"
   },
   "devDependencies": {
     "@saptm/tsconfig": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
+    "@tanstack/react-query-devtools": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",

@@ -1,24 +1,49 @@
-# Flow: Release And Stabilization
+# Flow: Release
 
-## Preconditions
+**Phase:** 10 — Execution Pipeline
 
-- merged PRs are linked to tasks
-- changelog is updated
-- documentation is updated
-- smoke, regression, and domain-critical tests are green
+---
 
-## Release flow
+## Purpose
+Release verified code to production.
 
-1. Build release candidate.
-2. Run release governance checks.
-3. Publish changelog and deployment notes.
-4. Promote to target environment.
-5. Monitor health, error rate, latency, and business metrics.
-6. Create stabilization tasks for any regression or drift.
+## Inputs
+- Approved and merged PRs
+- Release evidence
 
-## Stabilization SLA
+## Outputs
+- Deployed release
+- Release notes
+- Changelog update
 
-- critical regressions: immediate rollback or hotfix
-- high regressions: same-day mitigation
-- medium regressions: next sprint or patch window
+## Steps
+1. Verify all CI gates pass
+2. Generate release evidence
+3. Build container images
+4. Scan containers (Trivy)
+5. Sign containers (Cosign)
+6. Push to registry
+7. Deploy to staging
+8. Run staging smoke tests
+9. Deploy to production
+10. Run production health checks
+11. Run production smoke tests
+12. Monitor for 1 hour
+13. Update changelog
+14. Tag release in git
 
+## Checkpoints
+- [ ] CI gates pass
+- [ ] Release evidence complete
+- [ ] Container scan clean
+- [ ] Staging smoke tests pass
+- [ ] Production health checks pass
+- [ ] Dashboards green
+- [ ] Alerts silent
+
+## Quality Gates
+- No critical/high vulnerability in scan
+- All tests pass
+- Health checks respond 200
+- Rollback plan defined
+- Release notes published

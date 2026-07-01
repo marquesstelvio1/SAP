@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 
-import { TwoFactorVerificationForm } from "../../components/two-factor-verification-form";
+import { TwoFactorVerificationForm } from "../../components/auth/two-factor-verification-form";
 import { getCurrentPlatformSession } from "../../lib/auth-session";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +23,7 @@ export default async function TwoFactorPage({ searchParams }: TwoFactorPageProps
   const nextPath = readSafeNextPath(params.next);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground md:p-8">
+    <main className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground md:p-8" id="main-content">
       <TwoFactorVerificationForm nextPath={nextPath} />
     </main>
   );

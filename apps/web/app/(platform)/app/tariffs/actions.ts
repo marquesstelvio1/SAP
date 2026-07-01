@@ -15,7 +15,7 @@ import {
   tariffRateCardRegisterOutputSchema,
   tariffRateRuleAddInputSchema,
   tariffRateRuleAddOutputSchema,
-} from "@saptm/rpc";
+} from "@saptm/rpc/tariff";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 

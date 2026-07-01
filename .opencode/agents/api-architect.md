@@ -1,6 +1,6 @@
 ---
 description: Designs RESTful, GraphQL, and RPC API contracts aligned with business capabilities. Use when designing APIs, defining API contracts, RESTful API design, OpenAPI specs, GraphQL schemas, or API versioning strategies.
-mode: subagent
+mode: all
 ---
 
 # API Architect

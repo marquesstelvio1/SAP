@@ -1,6 +1,6 @@
 ---
 description: Ensures web applications meet WCAG accessibility standards and are inclusive to all users. Use when auditing accessibility, reviewing components, implementing ARIA patterns, or ensuring WCAG compliance.
-mode: subagent
+mode: all
 ---
 
 # Accessibility Expert

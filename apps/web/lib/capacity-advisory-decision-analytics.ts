@@ -1,68 +1,35 @@
-import { getClientEnv } from "@saptm/config";
 import {
   type CapacityAdvisoryDecisionAnalyticsOutput,
   capacityAdvisoryDecisionAnalyticsOutputSchema,
-} from "@saptm/rpc";
-import { headers } from "next/headers";
+} from "@saptm/rpc/capacity";
+
+import { type RpcFailure, rpcGet } from "./rpc-server";
 
 export type CapacityAdvisoryDecisionAnalyticsResult =
   | {
       status: "ok";
       analytics: CapacityAdvisoryDecisionAnalyticsOutput;
     }
-  | {
-      status: "forbidden" | "unavailable" | "invalid";
-      message: string;
-    };
-
-type RpcJsonEnvelope = {
-  json?: unknown;
-};
+  | RpcFailure;
 
 export async function getCapacityAdvisoryDecisionAnalytics(
   limit = 10,
   windowDays = 30,
 ): Promise<CapacityAdvisoryDecisionAnalyticsResult> {
-  const url = new URL(
+  const result = await rpcGet(
     "/rpc/capacity/advisoryDecisionAnalytics",
-    getClientEnv().NEXT_PUBLIC_API_URL,
+    capacityAdvisoryDecisionAnalyticsOutputSchema,
+    { searchParams: { limit, windowDays } },
   );
-  url.searchParams.set("limit", limit.toString());
-  url.searchParams.set("windowDays", windowDays.toString());
 
-  const requestHeaders = await headers();
-  const cookieHeader = requestHeaders.get("cookie");
-  const response = await fetch(url, {
-    cache: "no-store",
-    headers: cookieHeader === null ? {} : { cookie: cookieHeader },
-  });
-
-  if (response.status === 401 || response.status === 403) {
-    return {
-      status: "forbidden",
-      message: "Sessao sem permissao para ler analytics de decisoes de advisory.",
-    };
+  if (result.status !== "ok") {
+    return result.status === "forbidden"
+      ? {
+          status: "forbidden",
+          message: "Sessao sem permissao para ler analytics de decisoes de advisory.",
+        }
+      : result;
   }
 
-  if (!response.ok) {
-    return {
-      status: "unavailable",
-      message: `API de analytics de advisory indisponivel: HTTP ${response.status}.`,
-    };
-  }
-
-  const envelope = (await response.json()) as RpcJsonEnvelope;
-  const parsed = capacityAdvisoryDecisionAnalyticsOutputSchema.safeParse(envelope.json);
-
-  if (!parsed.success) {
-    return {
-      status: "invalid",
-      message: "Contrato RPC de analytics de advisory retornou payload invalido.",
-    };
-  }
-
-  return {
-    status: "ok",
-    analytics: parsed.data,
-  };
+  return { status: "ok", analytics: result.data };
 }

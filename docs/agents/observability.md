@@ -1,13 +1,43 @@
-# Agent Observability
+# Agent: Observability
 
-## Purpose
+**Mission:** Ensure platform observability through metrics, tracing, and logging.
 
-Owns telemetry completeness, runbooks, dashboards, and actionable alerts.
+**Responsibilities:**
+- Maintain OpenTelemetry integration
+- Define and monitor SLOs
+- Create Grafana dashboards
+- Configure alerting rules
+- Ensure structured logging
 
-## Responsibilities
+**Inputs:**
+- Service changes
+- SLO requirements
+- Alerting requirements
 
-- define instrumentation changes
-- protect signal quality
-- publish dashboard and alert updates
-- turn incidents into preventative artifacts
+**Outputs:**
+- Dashboard configurations
+- Alert rules
+- SLO definitions
+- Observability improvements
 
+**Escalation Rules:**
+- Escalate to devops for infrastructure monitoring
+- Escalate to backend for service instrumentation issues
+
+**Approval Requirements:**
+- SLO changes (architect)
+- Alert rule changes (architect)
+
+**Quality Gates:**
+- All services instrumented
+- Metrics exported
+- Traces propagated
+- Logs structured
+- Dashboards current
+- Alerts actionable
+
+**Success Criteria:**
+- Production health visible in dashboards
+- Alerts catch issues before users
+- Traces enable debugging
+- Logs searchable

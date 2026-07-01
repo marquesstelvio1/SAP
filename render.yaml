@@ -1,0 +1,102 @@
+services:
+  - type: web
+    name: saptm-api
+    runtime: docker
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    branch: main
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_PORT
+        value: "4000"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: saptm-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: saptm-redis
+          property: connectionString
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: BETTER_AUTH_URL
+        fromService:
+          name: saptm-web
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: NEXT_PUBLIC_APP_URL
+        fromService:
+          name: saptm-web
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          name: saptm-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: API_CORS_ORIGINS
+        fromService:
+          name: saptm-web
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: LOG_LEVEL
+        value: info
+      - key: OTEL_SERVICE_NAME
+        value: saptm-api
+    healthCheckPath: /health/live
+    autoDeploy: true
+
+  - type: web
+    name: saptm-web
+    runtime: docker
+    dockerfilePath: ./apps/web/Dockerfile
+    dockerContext: .
+    branch: main
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_APP_URL
+        fromService:
+          name: saptm-web
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          name: saptm-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: BETTER_AUTH_URL
+        fromService:
+          name: saptm-web
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: BETTER_AUTH_SECRET
+        fromService:
+          name: saptm-api
+          type: web
+          envVarKey: BETTER_AUTH_SECRET
+      - key: DATABASE_URL
+        fromService:
+          name: saptm-api
+          type: web
+          envVarKey: DATABASE_URL
+      - key: LOG_LEVEL
+        value: info
+      - key: OTEL_SERVICE_NAME
+        value: saptm-web
+    healthCheckPath: /api/health
+    autoDeploy: true
+
+  - type: keyvalue
+    name: saptm-redis
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: internal
+    plan: starter
+
+databases:
+  - name: saptm-postgres
+    plan: basic-256mb
+    postgresMajorVersion: "16"

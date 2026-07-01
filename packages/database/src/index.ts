@@ -1,5 +1,3 @@
-import { createRequire } from "node:module";
-
 export {
   type AuditJsonValue,
   type AuditRecordCreateDelegate,
@@ -21,7 +19,32 @@ export {
   type PrismaMutationOperation,
   prismaMutationOperations,
   telemetryActorTypeToDatabaseActorType,
-} from "./audit";
+} from "./audit.js";
+export {
+  type AuditAction,
+  auditActions,
+  databaseProvider,
+  type OutboxEventStatus,
+  outboxEventStatuses,
+} from "./constants.js";
+export type { DomainEvent, EventBus } from "./domain-events.js";
+export { OutboxEventBus } from "./outbox-event-bus.js";
+export {
+  type CursorPaginationInput,
+  type CursorPaginationResult,
+  paginateWithCursor,
+} from "./prisma/cursor-pagination.js";
+export {
+  createPrismaClient,
+  getPrismaClient,
+  type PrismaTx,
+  type SaptmPrismaClient,
+} from "./prisma/factory.js";
+export {
+  type PrismaTransaction,
+  type TransactionCallback,
+  withTransactionRetry,
+} from "./prisma/transaction-retry.js";
 export {
   type RbacBootstrapClient,
   type RbacBootstrapPermissionKey,
@@ -31,67 +54,12 @@ export {
   type SeedRbacBootstrapInput,
   type SeedRbacBootstrapResult,
   seedRbacBootstrap,
-} from "./rbac-bootstrap";
-
-const require = createRequire(import.meta.url);
-const { PrismaClient } = require("@prisma/client") as typeof import("@prisma/client");
-
-export const databaseProvider = "postgresql" as const;
-
-export const auditActions = [
-  "auth.session.created",
-  "auth.session.revoked",
-  "identity.role.assigned",
-  "identity.permission.changed",
-  "tenant.organization.created",
-  "tenant.membership.changed",
-  "integration.api_key.created",
-  "integration.api_key.rotated",
-  "integration.event.received",
-  "tracking.shipment.created",
-  "tracking.event.recorded",
-  "tracking.exception.managed",
-  "tracking.exception.resolved",
-  "tracking.exception.updated",
-  "audit.record.created",
-] as const;
-
-export type AuditAction = (typeof auditActions)[number];
-
-export const outboxEventStatuses = ["pending", "processing", "published", "failed"] as const;
-
-export type OutboxEventStatus = (typeof outboxEventStatuses)[number];
-
-type PrismaGlobal = typeof globalThis & {
-  __saptmPrismaClient?: InstanceType<typeof PrismaClient>;
-};
-
-type RuntimeGlobal = typeof globalThis & {
-  process?: {
-    env?: Record<string, string | undefined>;
-  };
-};
-
-function getRuntimeEnv() {
-  return (globalThis as RuntimeGlobal).process?.env ?? {};
-}
-
-export function createPrismaClient() {
-  const env = getRuntimeEnv();
-
-  return new PrismaClient({
-    log: env.NODE_ENV === "production" ? ["error"] : ["query", "warn", "error"],
-  });
-}
-
-export function getPrismaClient() {
-  const globalStore = globalThis as PrismaGlobal;
-
-  if (!globalStore.__saptmPrismaClient) {
-    globalStore.__saptmPrismaClient = createPrismaClient();
-  }
-
-  return globalStore.__saptmPrismaClient;
-}
-
-export type SaptmPrismaClient = ReturnType<typeof getPrismaClient>;
+} from "./rbac-bootstrap.js";
+export { createSoftDeleteExtension } from "./soft-delete.js";
+export {
+  getCurrentOrganizationId,
+  runWithTenantContext,
+  type TenantContextValue,
+  tenantContext,
+} from "./tenant-context.js";
+export { createTenantScopingExtension } from "./tenant-scoping.js";

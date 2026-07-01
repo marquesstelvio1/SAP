@@ -1,0 +1,59 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "search": "Search",
+    "noResults": "No results found",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signOut": "Sign out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "resetPassword": "Reset password",
+    "twoFactor": "Two-factor authentication"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "cargo": "Cargo",
+    "tracking": "Tracking",
+    "capacity": "Capacity",
+    "planning": "Planning",
+    "tariffs": "Tariffs",
+    "admin": "Administration",
+    "settings": "Settings",
+    "reports": "Reports",
+    "audit": "Audit log",
+    "integrations": "Integrations",
+    "notifications": "Notifications",
+    "security": "Security"
+  },
+  "cargo": {
+    "create": "Create cargo",
+    "edit": "Edit cargo",
+    "delete": "Delete cargo",
+    "status": "Status",
+    "origin": "Origin",
+    "destination": "Destination",
+    "weight": "Weight",
+    "volume": "Volume",
+    "trackingNumber": "Tracking number"
+  },
+  "tracking": {
+    "title": "Shipment tracking",
+    "search": "Search shipments",
+    "status": "Status",
+    "event": "Event",
+    "location": "Location",
+    "timestamp": "Timestamp",
+    "exception": "Exception"
+  }
+}

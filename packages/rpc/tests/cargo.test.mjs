@@ -54,7 +54,7 @@ test("cargo overview metadata requires session and cargo read permission", () =>
 });
 
 test("cargo overview schema validates tenant-scoped cargo dashboard", () => {
-  assert.deepEqual(cargoOverviewInputSchema.parse(undefined), { limit: 10 });
+  assert.deepEqual(cargoOverviewInputSchema.parse(undefined), { limit: 10, offset: 0 });
 
   const parsed = cargoOverviewOutputSchema.parse({
     generatedAt: "2026-06-04T00:00:00.000Z",
@@ -90,6 +90,11 @@ test("cargo overview schema validates tenant-scoped cargo dashboard", () => {
         updatedAt: "2026-06-04T00:00:00.000Z",
       },
     ],
+    pagination: {
+      totalCount: 1,
+      limit: 10,
+      offset: 0,
+    },
   });
 
   assert.equal(parsed.recentCargo[0].cargoReference, "CGO-2026-0001");

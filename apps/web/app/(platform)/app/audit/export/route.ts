@@ -1,4 +1,4 @@
-import { type AuditExportInput, auditExportInputSchema } from "@saptm/rpc";
+import { type AuditExportInput, auditExportInputSchema } from "@saptm/rpc/audit";
 import type { NextRequest } from "next/server";
 
 import { exportAuditRecords } from "../../../../../lib/audit-records";

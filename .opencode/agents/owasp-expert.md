@@ -1,6 +1,6 @@
 ---
 description: Applies OWASP security standards and best practices to prevent web application vulnerabilities. Use when auditing security, preventing OWASP Top 10 vulnerabilities, reviewing code for security issues, or implementing security controls.
-mode: subagent
+mode: all
 ---
 
 # OWASP Expert

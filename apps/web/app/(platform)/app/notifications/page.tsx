@@ -1,5 +1,6 @@
 import type { PlatformPermission } from "@saptm/auth";
 import {
+  AccessState,
   Badge,
   Button,
   Card,
@@ -11,6 +12,7 @@ import {
   FieldGroup,
   FieldLabel,
   Input,
+  MetricTile,
   SelectNative,
   Table,
   TableBody,
@@ -22,7 +24,8 @@ import {
 import type { Route } from "next";
 import Link from "next/link";
 
-import { NotificationMarkReadForm } from "../../../../components/notification-mark-read-form";
+import { formatDateTime, formatNullableDateTime } from "@/lib/format";
+import { NotificationMarkReadForm } from "../../../../components/notification/notification-mark-read-form";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import { getNotificationInbox } from "../../../../lib/notifications";
 import { markNotificationReadFormAction } from "./actions";
@@ -48,10 +51,12 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
 
   if (!canReadNotifications) {
     return (
-      <NotificationsAccessState
-        message="A sessao esta autenticada, mas falta notification.read para consultar a inbox."
-        status="Sem grant"
+      <AccessState
+        badgeLabel="Notificacoes"
+        description="O utilizador autenticado nao tem acesso a inbox de notificacoes."
+        role="alert"
         title="Inbox bloqueada"
+        variant="blocked"
       />
     );
   }
@@ -63,10 +68,12 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
 
   if (inboxResult.status !== "ok") {
     return (
-      <NotificationsAccessState
-        message={inboxResult.message}
-        status={inboxResult.status}
+      <AccessState
+        badgeLabel="Notificacoes"
+        description={inboxResult.message}
+        role="alert"
         title="Inbox indisponivel"
+        variant="error"
       />
     );
   }
@@ -77,8 +84,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
     <main className="flex flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline">notification.read</Badge>
-          <Badge variant="secondary">outbox processor</Badge>
+          <Badge variant="secondary">Processador de eventos</Badge>
           <Badge variant={inbox.totals.unread > 0 ? "warning" : "success"}>
             {inbox.totals.unread > 0 ? `${inbox.totals.unread} por ler` : "Sem pendencias"}
           </Badge>
@@ -86,58 +92,61 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <div className="max-w-3xl">
           <h1 className="font-semibold text-3xl tracking-tight">Inbox operacional</h1>
           <p className="mt-2 text-muted-foreground">
-            Notificacoes geradas a partir do outbox local. Cada item e tenant-scoped, filtravel,
-            auditavel e pode ser reconhecido por utilizadores autorizados.
+            Notificacoes operacionais geradas pelo sistema. Cada item e filtravel, auditavel e pode
+            ser reconhecido por utilizadores autorizados.
           </p>
         </div>
       </section>
 
       <section className="grid gap-4 md:grid-cols-4">
-        <MetricCard label="Total" value={inbox.totals.notifications} />
-        <MetricCard label="Por ler" value={inbox.totals.unread} variant="warning" />
-        <MetricCard label="Lidas" value={inbox.totals.read} variant="success" />
-        <MetricCard label="Arquivadas" value={inbox.totals.archived} />
+        <MetricTile label="Total" value={inbox.totals.notifications} />
+        <MetricTile label="Por ler" value={inbox.totals.unread} variant="warning" badge="Por ler" />
+        <MetricTile label="Lidas" value={inbox.totals.read} variant="success" badge="Lidas" />
+        <MetricTile label="Arquivadas" value={inbox.totals.archived} />
       </section>
 
       <Card>
         <CardHeader>
           <CardTitle>Filtros de inbox</CardTitle>
           <CardDescription>
-            Use filtros leves para validar o processamento do outbox sem abrir dominios de negocio.
+            Use filtros leves para validar o processamento de eventos sem abrir dominios de negocio.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="flex flex-col gap-4 md:flex-row md:items-end">
-            <FieldGroup className="md:max-w-xs">
-              <Field>
-                <FieldLabel htmlFor="notificationStatus">Estado</FieldLabel>
-                <SelectNative defaultValue={status} id="notificationStatus" name="status">
-                  <option value="all">Todos</option>
-                  <option value="unread">Por ler</option>
-                  <option value="read">Lidas</option>
-                  <option value="archived">Arquivadas</option>
-                </SelectNative>
-              </Field>
-            </FieldGroup>
-            <FieldGroup className="md:max-w-xs">
-              <Field>
-                <FieldLabel htmlFor="notificationLimit">Limite</FieldLabel>
-                <Input
-                  defaultValue={limit.toString()}
-                  id="notificationLimit"
-                  max={100}
-                  min={1}
-                  name="limit"
-                  type="number"
-                />
-              </Field>
-            </FieldGroup>
-            <Button type="submit" variant="outline">
-              Aplicar filtros
-            </Button>
-            <Button asChild variant="ghost">
-              <Link href={"/app/notifications" as Route}>Limpar</Link>
-            </Button>
+            <fieldset className="contents">
+              <legend className="sr-only">Filtrar notificacoes</legend>
+              <FieldGroup className="md:max-w-xs">
+                <Field>
+                  <FieldLabel htmlFor="notificationStatus">Estado</FieldLabel>
+                  <SelectNative defaultValue={status} id="notificationStatus" name="status">
+                    <option value="all">Todos</option>
+                    <option value="unread">Por ler</option>
+                    <option value="read">Lidas</option>
+                    <option value="archived">Arquivadas</option>
+                  </SelectNative>
+                </Field>
+              </FieldGroup>
+              <FieldGroup className="md:max-w-xs">
+                <Field>
+                  <FieldLabel htmlFor="notificationLimit">Limite</FieldLabel>
+                  <Input
+                    defaultValue={limit.toString()}
+                    id="notificationLimit"
+                    max={100}
+                    min={1}
+                    name="limit"
+                    type="number"
+                  />
+                </Field>
+              </FieldGroup>
+              <Button type="submit" variant="outline">
+                Aplicar filtros
+              </Button>
+              <Button asChild variant="ghost">
+                <Link href={"/app/notifications" as Route}>Limpar</Link>
+              </Button>
+            </fieldset>
           </form>
         </CardContent>
       </Card>
@@ -146,18 +155,20 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <CardHeader>
           <CardTitle>Eventos processados</CardTitle>
           <CardDescription>
-            Snapshot gerado em {formatDateTime(inbox.generatedAt)} para organizacao{" "}
-            {inbox.organizationId}.
+            Lista gerada em {formatDateTime(inbox.generatedAt, { dateStyle: "short" })}.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {inbox.notifications.length === 0 ? (
-            <div className="rounded-lg border border-dashed bg-muted/20 p-6 text-muted-foreground text-sm">
+            <div
+              className="rounded-lg border border-dashed bg-muted/20 p-6 text-muted-foreground text-sm"
+              role="status"
+            >
               Nenhuma notificacao encontrada para os filtros atuais. Execute o worker apos gerar
-              eventos no outbox para popular esta inbox.
+              eventos operacionais para popular esta inbox.
             </div>
           ) : (
-            <Table>
+            <Table aria-label="Eventos processados">
               <TableHeader>
                 <TableRow>
                   <TableHead>Notificacao</TableHead>
@@ -196,7 +207,9 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
                         </Badge>
                       </div>
                     </TableCell>
-                    <TableCell>{formatDateTime(notification.createdAt)}</TableCell>
+                    <TableCell>
+                      {formatDateTime(notification.createdAt, { dateStyle: "short" })}
+                    </TableCell>
                     <TableCell>
                       {notification.status === "unread" ? (
                         <NotificationMarkReadForm
@@ -215,31 +228,6 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
             </Table>
           )}
         </CardContent>
-      </Card>
-    </main>
-  );
-}
-
-function MetricCard(props: { label: string; value: number; variant?: "success" | "warning" }) {
-  return (
-    <Card>
-      <CardHeader className="gap-2">
-        <Badge variant={props.variant ?? "outline"}>{props.label}</Badge>
-        <CardTitle className="text-3xl">{props.value}</CardTitle>
-      </CardHeader>
-    </Card>
-  );
-}
-
-function NotificationsAccessState(props: { title: string; status: string; message: string }) {
-  return (
-    <main className="flex flex-col gap-6">
-      <Card>
-        <CardHeader>
-          <Badge variant="outline">{props.status}</Badge>
-          <CardTitle>{props.title}</CardTitle>
-          <CardDescription>{props.message}</CardDescription>
-        </CardHeader>
       </Card>
     </main>
   );
@@ -286,15 +274,4 @@ function getStatusVariant(status: string): "outline" | "success" | "warning" {
   }
 
   return "outline";
-}
-
-function formatDateTime(value: string): string {
-  return new Intl.DateTimeFormat("pt-PT", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(new Date(value));
-}
-
-function formatNullableDateTime(value: string | null): string {
-  return value === null ? "n/a" : formatDateTime(value);
 }

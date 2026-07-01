@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Plugin Report Schema",
+  "description": "Schema for all plugin-generated reports",
+  "type": "object",
+  "required": ["pluginId", "timestamp", "status", "summary"],
+  "properties": {
+    "pluginId": {
+      "type": "string",
+      "description": "ID of the plugin that generated this report"
+    },
+    "pluginVersion": {
+      "type": "string",
+      "description": "Version of the plugin"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the report was generated"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["PASS", "FAIL", "WARNING"],
+      "description": "Overall status of the plugin check"
+    },
+    "summary": {
+      "type": "object",
+      "required": ["checks", "passed", "failed", "warnings"],
+      "properties": {
+        "checks": { "type": "integer" },
+        "passed": { "type": "integer" },
+        "failed": { "type": "integer" },
+        "warnings": { "type": "integer" },
+        "errors": { "type": "integer" },
+        "critical": { "type": "integer" }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ruleId": { "type": "string" },
+          "severity": { "type": "string", "enum": ["critical", "error", "warning", "info"] },
+          "file": { "type": "string" },
+          "line": { "type": "integer" },
+          "description": { "type": "string" },
+          "recommendation": { "type": "string" }
+        },
+        "required": ["ruleId", "severity", "description"]
+      }
+    },
+    "blocking": {
+      "type": "boolean",
+      "description": "Whether this plugin blocks the pipeline"
+    },
+    "pipelineAction": {
+      "type": "string",
+      "enum": ["continue", "halt", "re-run"],
+      "description": "Action to take in the pipeline"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 "use server";
 
 import type { PlatformPermission } from "@saptm/auth";
-import { notificationMarkReadInputSchema } from "@saptm/rpc";
+import { notificationMarkReadInputSchema } from "@saptm/rpc/notifications";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 

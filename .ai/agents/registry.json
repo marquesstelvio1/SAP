@@ -1,60 +1,86 @@
 {
   "agents": [
     {
+      "id": "agent-orchestrator",
+      "domain": "orchestration",
+      "prompt": ".ai/prompts/orchestrator.md",
+      "doc": "docs/agents/orchestrator.md",
+      "canApprove": ["scope", "contract", "release", "pipeline"],
+      "plugins": ["context-loader", "orchestrator", "workflow-enforcer"]
+    },
+    {
       "id": "agent-architect",
       "domain": "architecture",
       "prompt": ".ai/prompts/architect.md",
       "doc": "docs/agents/architect.md",
-      "canApprove": ["scope", "contract", "release"]
+      "canApprove": ["scope", "contract", "release"],
+      "plugins": [
+        "architecture-audit",
+        "codebase-analysis",
+        "monorepo-governance",
+        "enterprise-checklist"
+      ]
     },
     {
       "id": "agent-planner",
       "domain": "planning",
       "prompt": ".ai/prompts/planner.md",
       "doc": "docs/agents/planner.md",
-      "canApprove": ["scope"]
+      "canApprove": ["scope"],
+      "plugins": ["product-design"]
     },
     {
       "id": "agent-frontend",
       "domain": "frontend",
       "prompt": ".ai/prompts/domains/frontend.md",
       "doc": "docs/agents/frontend.md",
-      "canApprove": []
+      "canApprove": [],
+      "plugins": [
+        "design-system-audit",
+        "shadcn-inspector",
+        "ui-consistency",
+        "frontend-backend-validator"
+      ]
     },
     {
       "id": "agent-backend",
       "domain": "backend",
       "prompt": ".ai/prompts/domains/backend.md",
       "doc": "docs/agents/backend.md",
-      "canApprove": []
+      "canApprove": [],
+      "plugins": ["api-contract-validator"]
     },
     {
       "id": "agent-auth",
       "domain": "auth",
       "prompt": ".ai/prompts/domains/auth.md",
       "doc": "docs/agents/auth.md",
-      "canApprove": ["auth-security"]
+      "canApprove": ["auth-security"],
+      "plugins": ["security-audit"]
     },
     {
       "id": "agent-mobile",
       "domain": "mobile",
       "prompt": ".ai/prompts/domains/mobile.md",
       "doc": "docs/agents/mobile.md",
-      "canApprove": []
+      "canApprove": [],
+      "plugins": ["design-system-audit", "ui-consistency"]
     },
     {
       "id": "agent-infra",
       "domain": "infra",
       "prompt": ".ai/prompts/domains/infra.md",
       "doc": "docs/agents/infra.md",
-      "canApprove": []
+      "canApprove": [],
+      "plugins": ["dependency-inspector", "monorepo-governance", "release-readiness"]
     },
     {
       "id": "agent-qa",
       "domain": "qa",
       "prompt": ".ai/prompts/domains/qa.md",
       "doc": "docs/agents/qa.md",
-      "canApprove": ["test"]
+      "canApprove": ["test"],
+      "plugins": ["testing-audit", "frontend-backend-validator", "enterprise-checklist"]
     },
     {
       "id": "agent-observability",
@@ -68,35 +94,136 @@
       "domain": "performance",
       "prompt": ".ai/prompts/domains/performance.md",
       "doc": "docs/agents/performance.md",
-      "canApprove": []
+      "canApprove": [],
+      "plugins": ["performance-audit"]
     },
     {
       "id": "agent-design-system",
       "domain": "design-system",
       "prompt": ".ai/prompts/domains/design-system.md",
       "doc": "docs/agents/design-system.md",
-      "canApprove": []
+      "canApprove": [],
+      "plugins": ["design-system-audit", "shadcn-inspector", "ui-consistency"]
     },
     {
       "id": "agent-git-manager",
       "domain": "delivery",
       "prompt": ".ai/prompts/execution.md",
       "doc": "docs/agents/git-manager.md",
-      "canApprove": ["docs-changelog"]
+      "canApprove": ["docs-changelog"],
+      "plugins": ["documentation-generator", "release-readiness"]
     },
     {
       "id": "agent-saptm-devops",
       "domain": "devops",
       "prompt": ".ai/agents/devops.md",
       "doc": "docs/agents/saptm-agent-responsibilities.md",
-      "canApprove": ["release"]
+      "canApprove": ["release"],
+      "plugins": ["monorepo-governance", "dependency-inspector"]
     },
     {
       "id": "agent-saptm-security",
       "domain": "security",
       "prompt": ".ai/skills/security.md",
       "doc": "docs/security/auth-security-strategy.md",
-      "canApprove": ["auth-security"]
+      "canApprove": ["auth-security"],
+      "plugins": ["security-audit", "enterprise-checklist"]
+    },
+    {
+      "id": "agent-product-manager",
+      "domain": "product-management",
+      "prompt": ".ai/prompts/governance/product-manager.md",
+      "doc": "docs/agents/product-manager.md",
+      "canApprove": ["scope", "feature"],
+      "plugins": ["product-design"]
+    },
+    {
+      "id": "agent-product-designer",
+      "domain": "product-design",
+      "prompt": ".ai/prompts/governance/product-designer.md",
+      "doc": "docs/agents/product-designer.md",
+      "canApprove": ["design"],
+      "plugins": ["product-design"]
+    },
+    {
+      "id": "agent-design-system-architect",
+      "domain": "design-system-architecture",
+      "prompt": ".ai/prompts/governance/design-system-architect.md",
+      "doc": "docs/agents/design-system-architect.md",
+      "canApprove": ["design-system"],
+      "plugins": ["design-system-audit", "shadcn-inspector", "ui-consistency"]
+    },
+    {
+      "id": "agent-frontend-architect",
+      "domain": "frontend-architecture",
+      "prompt": ".ai/prompts/governance/frontend-architect.md",
+      "doc": "docs/agents/frontend-architect.md",
+      "canApprove": ["contract", "integration"],
+      "plugins": ["design-system-audit", "ui-consistency", "frontend-backend-validator"]
+    },
+    {
+      "id": "agent-backend-architect",
+      "domain": "backend-architecture",
+      "prompt": ".ai/prompts/governance/backend-architect.md",
+      "doc": "docs/agents/backend-architect.md",
+      "canApprove": ["contract", "architecture"],
+      "plugins": ["architecture-audit", "api-contract-validator"]
+    },
+    {
+      "id": "agent-mobile-architect",
+      "domain": "mobile-architecture",
+      "prompt": ".ai/prompts/governance/mobile-architect.md",
+      "doc": "docs/agents/mobile-architect.md",
+      "canApprove": ["architecture"],
+      "plugins": ["architecture-audit"]
+    },
+    {
+      "id": "agent-security-architect",
+      "domain": "security-architecture",
+      "prompt": ".ai/prompts/governance/security-architect.md",
+      "doc": "docs/agents/security-architect.md",
+      "canApprove": ["auth-security", "release"],
+      "plugins": ["security-audit", "enterprise-checklist"]
+    },
+    {
+      "id": "agent-devops-architect",
+      "domain": "devops-architecture",
+      "prompt": ".ai/prompts/governance/devops-architect.md",
+      "doc": "docs/agents/devops-architect.md",
+      "canApprove": ["release"],
+      "plugins": ["monorepo-governance", "dependency-inspector", "release-readiness"]
+    },
+    {
+      "id": "agent-qa-architect",
+      "domain": "qa-architecture",
+      "prompt": ".ai/prompts/governance/qa-architect.md",
+      "doc": "docs/agents/qa-architect.md",
+      "canApprove": ["test", "release"],
+      "plugins": ["testing-audit", "frontend-backend-validator", "enterprise-checklist"]
+    },
+    {
+      "id": "agent-performance-architect",
+      "domain": "performance-architecture",
+      "prompt": ".ai/prompts/governance/performance-architect.md",
+      "doc": "docs/agents/performance-architect.md",
+      "canApprove": ["performance"],
+      "plugins": ["performance-audit"]
+    },
+    {
+      "id": "agent-accessibility-architect",
+      "domain": "accessibility-architecture",
+      "prompt": ".ai/prompts/governance/accessibility-architect.md",
+      "doc": "docs/agents/accessibility-architect.md",
+      "canApprove": ["accessibility"],
+      "plugins": ["accessibility-audit"]
+    },
+    {
+      "id": "agent-documentation-architect",
+      "domain": "documentation-architecture",
+      "prompt": ".ai/prompts/governance/documentation-architect.md",
+      "doc": "docs/agents/documentation-architect.md",
+      "canApprove": ["docs-changelog"],
+      "plugins": ["documentation-generator"]
     }
   ]
 }

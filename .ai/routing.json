@@ -1,34 +1,69 @@
 {
   "routes": {
+    "orchestrator": {
+      "primaryAgent": "agent-orchestrator",
+      "requiredSkill": "skill-orchestration",
+      "supportAgents": [
+        "agent-architect",
+        "agent-planner",
+        "agent-qa",
+        "agent-security",
+        "agent-performance",
+        "agent-accessibility",
+        "agent-documentation"
+      ]
+    },
+    "product-design": {
+      "primaryAgent": "agent-product-designer",
+      "requiredSkill": "skill-product-design",
+      "supportAgents": ["agent-product-manager", "agent-architect"],
+      "plugins": ["product-design"]
+    },
     "frontend": {
       "primaryAgent": "agent-frontend",
       "requiredSkill": "skill-frontend-ui",
-      "supportAgents": ["agent-design-system", "agent-qa", "agent-performance"]
+      "supportAgents": [
+        "agent-design-system",
+        "agent-qa",
+        "agent-performance",
+        "agent-accessibility"
+      ],
+      "plugins": ["design-system-audit", "shadcn-inspector", "ui-consistency"]
     },
     "backend": {
       "primaryAgent": "agent-backend",
       "requiredSkill": "skill-backend-api",
-      "supportAgents": ["agent-architect", "agent-qa", "agent-observability"]
+      "supportAgents": [
+        "agent-architect",
+        "agent-qa",
+        "agent-observability",
+        "agent-backend-architect"
+      ],
+      "plugins": ["architecture-audit", "api-contract-validator"]
     },
     "auth": {
       "primaryAgent": "agent-auth",
       "requiredSkill": "skill-auth-guardrails",
-      "supportAgents": ["agent-architect", "agent-qa", "agent-observability"]
+      "supportAgents": ["agent-architect", "agent-qa", "agent-observability", "agent-security"],
+      "plugins": ["security-audit"]
     },
     "mobile": {
       "primaryAgent": "agent-mobile",
       "requiredSkill": "skill-mobile-experience",
-      "supportAgents": ["agent-backend", "agent-qa", "agent-performance"]
+      "supportAgents": ["agent-backend", "agent-qa", "agent-performance"],
+      "plugins": ["design-system-audit", "ui-consistency"]
     },
     "infra": {
       "primaryAgent": "agent-infra",
       "requiredSkill": "skill-devops-platform",
-      "supportAgents": ["agent-observability", "agent-qa", "agent-architect"]
+      "supportAgents": ["agent-observability", "agent-qa", "agent-architect", "agent-devops"],
+      "plugins": ["dependency-inspector", "monorepo-governance", "release-readiness"]
     },
     "qa": {
       "primaryAgent": "agent-qa",
       "requiredSkill": "skill-quality-engineering",
-      "supportAgents": ["agent-architect"]
+      "supportAgents": ["agent-architect", "agent-qa-architect"],
+      "plugins": ["testing-audit", "frontend-backend-validator", "enterprise-checklist"]
     },
     "observability": {
       "primaryAgent": "agent-observability",
@@ -38,12 +73,61 @@
     "performance": {
       "primaryAgent": "agent-performance",
       "requiredSkill": "skill-performance-optimization",
-      "supportAgents": ["agent-frontend", "agent-backend", "agent-qa"]
+      "supportAgents": [
+        "agent-frontend",
+        "agent-backend",
+        "agent-qa",
+        "agent-performance-architect"
+      ],
+      "plugins": ["performance-audit"]
     },
     "design-system": {
       "primaryAgent": "agent-design-system",
       "requiredSkill": "skill-design-system-governance",
-      "supportAgents": ["agent-frontend", "agent-qa"]
+      "supportAgents": ["agent-frontend", "agent-qa", "agent-design-system-architect"],
+      "plugins": ["design-system-audit", "shadcn-inspector", "ui-consistency"]
+    },
+    "security": {
+      "primaryAgent": "agent-security",
+      "requiredSkill": "skill-security-audit",
+      "supportAgents": ["agent-architect", "agent-auth", "agent-security-architect"],
+      "plugins": ["security-audit", "enterprise-checklist"]
+    },
+    "architecture": {
+      "primaryAgent": "agent-architect",
+      "requiredSkill": "skill-architecture-governance",
+      "supportAgents": [
+        "agent-backend-architect",
+        "agent-frontend-architect",
+        "agent-mobile-architect"
+      ],
+      "plugins": ["architecture-audit", "codebase-analysis", "monorepo-governance"]
+    },
+    "accessibility": {
+      "primaryAgent": "agent-accessibility",
+      "requiredSkill": "skill-accessibility-audit",
+      "supportAgents": ["agent-frontend", "agent-design-system", "agent-qa"],
+      "plugins": ["accessibility-audit"]
+    },
+    "documentation": {
+      "primaryAgent": "agent-documentation",
+      "requiredSkill": "skill-documentation-generation",
+      "supportAgents": ["agent-architect"],
+      "plugins": ["documentation-generator"]
+    },
+    "release": {
+      "primaryAgent": "agent-orchestrator",
+      "requiredSkill": "skill-release-governance",
+      "supportAgents": [
+        "agent-architect",
+        "agent-devops",
+        "agent-qa",
+        "agent-security",
+        "agent-performance",
+        "agent-accessibility",
+        "agent-documentation"
+      ],
+      "plugins": ["release-readiness", "enterprise-checklist", "workflow-enforcer"]
     }
   }
 }

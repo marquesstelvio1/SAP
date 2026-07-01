@@ -4,8 +4,38 @@ import type * as React from "react";
 
 import { cn } from "../lib/utils.js";
 
+const densityHeightMap = {
+  comfortable: "h-[var(--density-comfortable-control-height)]",
+  compact: "h-[var(--density-compact-control-height)]",
+  operational: "h-[var(--density-operational-control-height)]",
+} as const;
+
+const sizeStyles: Record<string, React.CSSProperties> = {
+  default: {
+    paddingLeft: "var(--space-4)",
+    paddingRight: "var(--space-4)",
+    paddingTop: "var(--space-2)",
+    paddingBottom: "var(--space-2)",
+    gap: "var(--space-2)",
+  },
+  sm: {
+    paddingLeft: "var(--space-3)",
+    paddingRight: "var(--space-3)",
+    gap: "var(--space-2)",
+  },
+  lg: {
+    paddingLeft: "var(--space-6)",
+    paddingRight: "var(--space-6)",
+    gap: "var(--space-2)",
+  },
+  icon: {
+    width: "var(--space-9)",
+    height: "var(--space-9)",
+  },
+};
+
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-colors focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&_[data-icon]]:pointer-events-none [&_[data-icon]]:size-4 [&_[data-icon]]:shrink-0",
+  "inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium outline-none transition-[color,background-color,border-color,text-decoration-color,fill,stroke] duration-[var(--motion-duration-fast)] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&_[data-icon]]:pointer-events-none [&_[data-icon]]:size-4 [&_[data-icon]]:shrink-0",
   {
     variants: {
       variant: {
@@ -19,10 +49,10 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground shadow-panel hover:bg-secondary/80",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        icon: "size-9",
-        lg: "h-10 rounded-md px-6",
-        sm: "h-8 rounded-md px-3",
+        default: "",
+        icon: "",
+        lg: "",
+        sm: "",
       },
     },
     defaultVariants: {
@@ -36,18 +66,26 @@ function Button({
   className,
   variant,
   size,
+  density = "compact",
   asChild = false,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    density?: "comfortable" | "compact" | "operational";
   }) {
   const Component = asChild ? Slot.Root : "button";
+  const resolvedSize = size ?? "default";
 
   return (
     <Component
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({ variant, size }),
+        size !== "icon" && densityHeightMap[density],
+        className,
+      )}
+      style={sizeStyles[resolvedSize]}
       {...props}
     />
   );

@@ -1,15 +1,6 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import {
-  createPlatformInvitationToken,
-  deletePlatformInvitationToken,
-  type PlatformInvitationDelivery,
-} from "@saptm/auth";
-import {
-  type DatabaseActorType,
-  getPrismaClient,
-  rbacBootstrapRoleTemplates,
-  type SaptmPrismaClient,
-} from "@saptm/database";
+import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { createPlatformInvitationToken, deletePlatformInvitationToken } from "@saptm/auth";
+import { type DatabaseActorType, getPrismaClient, type PrismaTx } from "@saptm/database";
 import type {
   AdminInvitationCancelInput,
   AdminInvitationLifecycleOutput,
@@ -29,10 +20,28 @@ import type {
   AdminUserInviteInput,
   AdminUserInviteOutput,
 } from "@saptm/rpc";
+import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+import { writeAdminAuditAndOutbox } from "./domain/admin.audit-trail.js";
+import {
+  arraysEqualIgnoringOrder,
+  assertCustomRoleKey,
+  assertMutableRole,
+  assertNotRemovingLastActiveTenantAdmin,
+} from "./domain/admin.business-rules.js";
+import { tenantAdminRoleKey } from "./domain/admin.constants.js";
+import {
+  createAdminInvitationDelivery,
+  mapOrganization,
+  mapPermission,
+  mapRole,
+  mapUserMembership,
+} from "./domain/admin.dto.js";
+import { ADMIN_REPOSITORY, type AdminRepository } from "./domain/admin.repository.js";
 
 export type GetAdminOverviewInput = {
   organizationId: string;
   limit?: number;
+  offset?: number;
   generatedAt?: Date;
 };
 
@@ -72,193 +81,31 @@ export type UpdateAdminMembershipStatusInput = AdminMembershipStatusUpdateInput 
 export type ResendAdminInvitationInput = AdminInvitationResendInput & AdminAuditableInput;
 export type CancelAdminInvitationInput = AdminInvitationCancelInput & AdminAuditableInput;
 
-type OrganizationRecord = {
-  id: string;
-  name: string;
-  slug: string;
-  status: "active" | "suspended" | "archived";
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-type MembershipRecord = {
-  id: string;
-  status: "invited" | "active" | "suspended" | "removed";
-  createdAt: Date;
-  updatedAt: Date;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    emailVerified: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  roles: {
-    role: {
-      id: string;
-      key: string;
-      name: string;
-    };
-  }[];
-};
-
-type RoleRecord = {
-  id: string;
-  key: string;
-  name: string;
-  description: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  permissions: {
-    permission: {
-      key: string;
-    };
-  }[];
-  _count: {
-    memberships: number;
-    permissions: number;
-  };
-};
-
-type RoleForOutputRecord = RoleRecord;
-
-type PermissionRecord = {
-  id: string;
-  key: string;
-  description: string | null;
-  _count: {
-    roles: number;
-  };
-};
-
-const protectedRoleKeys = new Set(
-  rbacBootstrapRoleTemplates.map((template: { key: string }) => template.key),
-);
-const tenantAdminRoleKey = "tenant.admin";
-
 @Injectable()
 export class AdminService {
-  constructor(private readonly database: SaptmPrismaClient = getPrismaClient()) {}
+  constructor(
+    @Inject(ADMIN_REPOSITORY)
+    private readonly adminRepository: AdminRepository,
+    readonly _adminEventBus: OutboxEventBusAdapter,
+  ) {}
 
   async getOverview(input: GetAdminOverviewInput): Promise<AdminOverviewOutput> {
     const limit = input.limit ?? 25;
+    const offset = input.offset ?? 0;
     const generatedAt = input.generatedAt ?? new Date();
-    const organization = await this.database.organization.findUnique({
-      where: {
-        id: input.organizationId,
-      },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        status: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+
+    const organization = await this.adminRepository.findOrganization(input.organizationId);
 
     if (organization === null) {
       throw new NotFoundException("admin.organization_not_found");
     }
 
-    const [memberships, roles, permissions, totals] = await Promise.all([
-      this.database.membership.findMany({
-        where: {
-          organizationId: input.organizationId,
-          status: {
-            not: "removed",
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: limit,
-        select: {
-          id: true,
-          status: true,
-          createdAt: true,
-          updatedAt: true,
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              emailVerified: true,
-              createdAt: true,
-              updatedAt: true,
-            },
-          },
-          roles: {
-            orderBy: {
-              role: {
-                key: "asc",
-              },
-            },
-            select: {
-              role: {
-                select: {
-                  id: true,
-                  key: true,
-                  name: true,
-                },
-              },
-            },
-          },
-        },
-      }),
-      this.database.role.findMany({
-        where: {
-          organizationId: input.organizationId,
-        },
-        orderBy: {
-          key: "asc",
-        },
-        select: {
-          id: true,
-          key: true,
-          name: true,
-          description: true,
-          createdAt: true,
-          updatedAt: true,
-          permissions: {
-            orderBy: {
-              permission: {
-                key: "asc",
-              },
-            },
-            select: {
-              permission: {
-                select: {
-                  key: true,
-                },
-              },
-            },
-          },
-          _count: {
-            select: {
-              memberships: true,
-              permissions: true,
-            },
-          },
-        },
-      }),
-      this.database.permission.findMany({
-        orderBy: {
-          key: "asc",
-        },
-        select: {
-          id: true,
-          key: true,
-          description: true,
-          _count: {
-            select: {
-              roles: true,
-            },
-          },
-        },
-      }),
-      resolveAdminTotals(this.database, input.organizationId),
+    const [memberships, roles, permissions, totals, totalCount] = await Promise.all([
+      this.adminRepository.findMemberships(input.organizationId, limit, offset),
+      this.adminRepository.findRoles(input.organizationId),
+      this.adminRepository.findPermissions(),
+      resolveAdminTotals(this.adminRepository, input.organizationId),
+      this.adminRepository.countMembershipsNotRemoved(input.organizationId),
     ]);
 
     return {
@@ -268,6 +115,11 @@ export class AdminService {
       users: memberships.map(mapUserMembership),
       roles: roles.map(mapRole),
       permissions: permissions.map(mapPermission),
+      pagination: {
+        totalCount,
+        limit,
+        offset,
+      },
       securityModel: {
         authProvider: "better-auth",
         authorizationModel: "tenant-scoped-rbac",
@@ -278,9 +130,15 @@ export class AdminService {
   }
 
   async inviteUser(input: InviteAdminUserInput): Promise<AdminUserInviteOutput> {
-    return this.database.$transaction(async (transaction) => {
-      await assertOrganizationExists(transaction, input.organizationId);
-      const roles = await findRolesByKeys(transaction, input.organizationId, input.roleKeys);
+    const database = getPrismaClient();
+
+    return database.$transaction(async (tx: PrismaTx) => {
+      await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
+      const roles = await this.adminRepository.findRolesByKeys(
+        tx,
+        input.organizationId,
+        input.roleKeys,
+      );
       const missingRoleKeys = input.roleKeys.filter(
         (roleKey) => !roles.some((role) => role.key === roleKey),
       );
@@ -289,122 +147,70 @@ export class AdminService {
         throw new BadRequestException(`admin.role_missing:${missingRoleKeys.join(",")}`);
       }
 
-      const existingUser = await transaction.user.findUnique({
-        where: {
-          email: input.email,
-        },
-        select: {
-          id: true,
-        },
-      });
-      const user = await transaction.user.upsert({
-        where: {
-          email: input.email,
-        },
-        update: {
-          name: input.name,
-        },
-        create: {
-          id: `admin_user_${crypto.randomUUID()}`,
-          email: input.email,
-          emailVerified: false,
-          name: input.name,
-        },
-      });
+      const existingUser = await this.adminRepository.findUserByEmail(tx, input.email);
+      const user = await this.adminRepository.upsertUser(tx, input.email, input.name);
       const existingMembership =
         existingUser === null
           ? null
-          : await transaction.membership.findUnique({
-              where: {
-                organizationId_userId: {
-                  organizationId: input.organizationId,
-                  userId: user.id,
-                },
-              },
-              select: {
-                id: true,
-              },
-            });
-      const membership = await transaction.membership.upsert({
-        where: {
-          organizationId_userId: {
-            organizationId: input.organizationId,
-            userId: user.id,
-          },
-        },
-        update: {
-          status: "invited",
-        },
-        create: {
-          organizationId: input.organizationId,
-          userId: user.id,
-          status: "invited",
-        },
-      });
+          : await this.adminRepository.findMembershipByUserAndOrg(
+              tx,
+              input.organizationId,
+              user.id,
+            );
+      const membership = await this.adminRepository.upsertMembership(
+        tx,
+        input.organizationId,
+        user.id,
+      );
 
       for (const role of roles) {
-        await transaction.membershipRole.upsert({
-          where: {
-            membershipId_roleId: {
-              membershipId: membership.id,
-              roleId: role.id,
-            },
-          },
-          update: {},
-          create: {
-            membershipId: membership.id,
-            roleId: role.id,
-          },
-        });
+        await this.adminRepository.upsertMembershipRole(tx, membership.id, role.id);
       }
 
       const invitation = createAdminInvitationDelivery(
-        await createPlatformInvitationToken(transaction, {
+        await createPlatformInvitationToken(tx, {
           membershipId: membership.id,
         }),
       );
 
-      await transaction.auditRecord.create({
-        data: {
-          organizationId: input.organizationId,
-          actorType: input.actorType,
-          actorId: input.actorId,
-          action: "identity.user.invited",
-          subjectType: "user",
-          subjectId: user.id,
-          severity: "critical",
-          after: {
-            email: user.email,
-            invitationDeliveryChannel: invitation.deliveryChannel,
-            invitationExpiresAt: invitation.expiresAt,
-            membershipId: membership.id,
-            roleKeys: roles.map((role) => role.key),
-            sourceSystem: input.sourceSystem,
-          },
-          reason: "Governed tenant user invitation.",
-          correlationId: input.correlationId,
-          ...createAuditRequestMetadata(input),
+      await writeAdminAuditAndOutbox(this.adminRepository, tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
+        action: "identity.user.invited",
+        subjectType: "user",
+        subjectId: user.id,
+        after: {
+          email: user.email,
+          invitationDeliveryChannel: invitation.deliveryChannel,
+          invitationExpiresAt: invitation.expiresAt,
+          membershipId: membership.id,
+          roleKeys: roles.map((role) => role.key),
+          sourceSystem: input.sourceSystem,
         },
-      });
-      await transaction.outboxEvent.create({
-        data: {
-          organizationId: input.organizationId,
-          eventType: "identity.user.invited",
-          aggregateType: "identity.user",
-          aggregateId: user.id,
-          payload: {
-            userId: user.id,
-            email: user.email,
-            invitation,
-            membershipId: membership.id,
-            roleKeys: roles.map((role) => role.key),
-            idempotencyKey: input.idempotencyKey,
-            sourceSystem: input.sourceSystem,
-          },
+        reason: "Governed tenant user invitation.",
+        correlationId: input.correlationId,
+        ipAddress: input.ipAddress,
+        userAgent: input.userAgent,
+        aggregateType: "identity.user",
+        aggregateId: user.id,
+        payload: {
+          userId: user.id,
+          email: user.email,
+          invitation,
+          membershipId: membership.id,
+          roleKeys: roles.map((role) => role.key),
+          idempotencyKey: input.idempotencyKey,
+          sourceSystem: input.sourceSystem,
         },
+        sourceSystem: input.sourceSystem,
+        idempotencyKey: input.idempotencyKey,
       });
 
-      const reloadedMembership = await findMembershipForOutput(transaction, membership.id);
+      const reloadedMembership = await this.adminRepository.findMembershipForOutput(
+        tx,
+        membership.id,
+      );
 
       return {
         organizationId: input.organizationId,
@@ -431,107 +237,65 @@ export class AdminService {
   }
 
   async assignRole(input: AssignAdminRoleInput): Promise<AdminRoleAssignOutput> {
-    return this.database.$transaction(async (transaction) => {
-      await assertOrganizationExists(transaction, input.organizationId);
-      const membership = await transaction.membership.findFirst({
-        where: {
-          id: input.membershipId,
-          organizationId: input.organizationId,
-          status: {
-            not: "removed",
-          },
+    const database = getPrismaClient();
+
+    return database.$transaction(async (tx: PrismaTx) => {
+      await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
+      const membership = await this.adminRepository.findTenantMembership(
+        tx,
+        input.organizationId,
+        input.membershipId,
+      );
+      const role = await this.adminRepository.findTenantRole(
+        tx,
+        input.organizationId,
+        input.roleId,
+      );
+      const existingAssignment = await this.adminRepository.findExistingAssignment(
+        tx,
+        membership.id,
+        role.id,
+      );
+
+      await this.adminRepository.upsertMembershipRole(tx, membership.id, role.id);
+      await writeAdminAuditAndOutbox(this.adminRepository, tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
+        action: "identity.role.assigned",
+        subjectType: "membership",
+        subjectId: membership.id,
+        aggregateType: "identity.membership",
+        aggregateId: membership.id,
+        after: {
+          membershipId: membership.id,
+          roleId: role.id,
+          roleKey: role.key,
+          sourceSystem: input.sourceSystem,
         },
-        select: {
-          id: true,
+        reason: "Governed tenant role assignment.",
+        correlationId: input.correlationId,
+        ipAddress: input.ipAddress,
+        userAgent: input.userAgent,
+        payload: {
+          membershipId: membership.id,
+          roleId: role.id,
+          roleKey: role.key,
+          idempotencyKey: input.idempotencyKey,
+          sourceSystem: input.sourceSystem,
         },
+        sourceSystem: input.sourceSystem,
+        idempotencyKey: input.idempotencyKey,
       });
 
-      if (membership === null) {
-        throw new NotFoundException("admin.membership_not_found");
-      }
-
-      const role = await transaction.role.findFirst({
-        where: {
-          id: input.roleId,
-          organizationId: input.organizationId,
-        },
-        select: {
-          id: true,
-          key: true,
-          name: true,
-        },
-      });
-
-      if (role === null) {
-        throw new NotFoundException("admin.role_not_found");
-      }
-
-      const existingAssignment = await transaction.membershipRole.findUnique({
-        where: {
-          membershipId_roleId: {
-            membershipId: input.membershipId,
-            roleId: input.roleId,
-          },
-        },
-        select: {
-          membershipId: true,
-        },
-      });
-
-      await transaction.membershipRole.upsert({
-        where: {
-          membershipId_roleId: {
-            membershipId: input.membershipId,
-            roleId: input.roleId,
-          },
-        },
-        update: {},
-        create: {
-          membershipId: input.membershipId,
-          roleId: input.roleId,
-        },
-      });
-      await transaction.auditRecord.create({
-        data: {
-          organizationId: input.organizationId,
-          actorType: input.actorType,
-          actorId: input.actorId,
-          action: "identity.role.assigned",
-          subjectType: "membership",
-          subjectId: input.membershipId,
-          severity: "critical",
-          after: {
-            membershipId: input.membershipId,
-            roleId: role.id,
-            roleKey: role.key,
-            sourceSystem: input.sourceSystem,
-          },
-          reason: "Governed tenant role assignment.",
-          correlationId: input.correlationId,
-          ...createAuditRequestMetadata(input),
-        },
-      });
-      await transaction.outboxEvent.create({
-        data: {
-          organizationId: input.organizationId,
-          eventType: "identity.role.assigned",
-          aggregateType: "identity.membership",
-          aggregateId: input.membershipId,
-          payload: {
-            membershipId: input.membershipId,
-            roleId: role.id,
-            roleKey: role.key,
-            idempotencyKey: input.idempotencyKey,
-            sourceSystem: input.sourceSystem,
-          },
-        },
-      });
-
-      const reloadedMembership = await findMembershipForOutput(transaction, input.membershipId);
+      const reloadedMembership = await this.adminRepository.findMembershipForOutput(
+        tx,
+        membership.id,
+      );
 
       return {
         organizationId: input.organizationId,
-        membershipId: input.membershipId,
+        membershipId: membership.id,
         roleId: role.id,
         user: mapUserMembership(reloadedMembership),
         assignedRole: {
@@ -546,67 +310,52 @@ export class AdminService {
         audit: {
           action: "identity.role.assigned",
           subjectType: "membership",
-          subjectId: input.membershipId,
+          subjectId: membership.id,
         },
         outbox: {
           eventType: "identity.role.assigned",
           aggregateType: "identity.membership",
-          aggregateId: input.membershipId,
+          aggregateId: membership.id,
         },
       };
     });
   }
 
   async createRole(input: CreateAdminRoleInput): Promise<AdminRoleMutationOutput> {
-    return this.database.$transaction(async (transaction) => {
-      await assertOrganizationExists(transaction, input.organizationId);
+    const database = getPrismaClient();
+
+    return database.$transaction(async (tx: PrismaTx) => {
+      await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
       assertCustomRoleKey(input.key);
-      const permissionRecords = await findPermissionsByKeys(transaction, input.permissionKeys);
-      const existingRole = await transaction.role.findUnique({
-        where: {
-          organizationId_key: {
-            organizationId: input.organizationId,
-            key: input.key,
-          },
-        },
-        select: {
-          id: true,
-        },
-      });
+      const permissionRecords = await this.adminRepository.findPermissionsByKeys(
+        tx,
+        input.permissionKeys,
+      );
+      const existingRole = await this.adminRepository.findRoleByKey(
+        tx,
+        input.organizationId,
+        input.key,
+      );
       const role =
         existingRole ??
-        (await transaction.role.create({
-          data: {
-            organizationId: input.organizationId,
-            key: input.key,
-            name: input.name,
-            description: input.description ?? null,
-          },
-          select: {
-            id: true,
-          },
-        }));
+        (await this.adminRepository.createRole(
+          tx,
+          input.organizationId,
+          input.key,
+          input.name,
+          input.description ?? null,
+        ));
 
       if (existingRole === null) {
         for (const permission of permissionRecords) {
-          await transaction.rolePermission.upsert({
-            where: {
-              roleId_permissionId: {
-                roleId: role.id,
-                permissionId: permission.id,
-              },
-            },
-            update: {},
-            create: {
-              roleId: role.id,
-              permissionId: permission.id,
-            },
-          });
+          await this.adminRepository.upsertRolePermission(tx, role.id, permission.id);
         }
       }
 
-      await writeAdminAuditAndOutbox(transaction, {
-        ...input,
+      await writeAdminAuditAndOutbox(this.adminRepository, tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
         action: "identity.role.created",
         subjectType: "role",
         subjectId: role.id,
@@ -619,12 +368,17 @@ export class AdminService {
           sourceSystem: input.sourceSystem,
         },
         reason: "Governed tenant custom role creation.",
+        correlationId: input.correlationId,
+        ipAddress: input.ipAddress,
+        userAgent: input.userAgent,
+        sourceSystem: input.sourceSystem,
+        idempotencyKey: input.idempotencyKey,
       });
 
       return {
         organizationId: input.organizationId,
         roleId: role.id,
-        role: mapRole(await findRoleForOutput(transaction, role.id)),
+        role: mapRole(await this.adminRepository.findRoleForOutput(tx, role.id)),
         idempotency: {
           key: input.idempotencyKey,
           replayed: existingRole !== null,
@@ -646,32 +400,34 @@ export class AdminService {
   async updateRolePermissions(
     input: UpdateAdminRolePermissionsInput,
   ): Promise<AdminRoleMutationOutput> {
-    return this.database.$transaction(async (transaction) => {
-      await assertOrganizationExists(transaction, input.organizationId);
-      const role = await findTenantRole(transaction, input.organizationId, input.roleId);
+    const database = getPrismaClient();
+
+    return database.$transaction(async (tx: PrismaTx) => {
+      await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
+      const role = await this.adminRepository.findTenantRole(
+        tx,
+        input.organizationId,
+        input.roleId,
+      );
 
       assertMutableRole(role.key);
 
-      const permissionRecords = await findPermissionsByKeys(transaction, input.permissionKeys);
-      const beforePermissionKeys = await readRolePermissionKeys(transaction, role.id);
+      const permissionRecords = await this.adminRepository.findPermissionsByKeys(
+        tx,
+        input.permissionKeys,
+      );
+      const beforePermissionKeys = await this.adminRepository.readRolePermissionKeys(tx, role.id);
 
-      await transaction.rolePermission.deleteMany({
-        where: {
-          roleId: role.id,
-        },
-      });
+      await this.adminRepository.deleteRolePermissions(tx, role.id);
 
       for (const permission of permissionRecords) {
-        await transaction.rolePermission.create({
-          data: {
-            roleId: role.id,
-            permissionId: permission.id,
-          },
-        });
+        await this.adminRepository.createRolePermission(tx, role.id, permission.id);
       }
 
-      await writeAdminAuditAndOutbox(transaction, {
-        ...input,
+      await writeAdminAuditAndOutbox(this.adminRepository, tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
         action: "identity.role.permissions.updated",
         subjectType: "role",
         subjectId: role.id,
@@ -689,12 +445,17 @@ export class AdminService {
           sourceSystem: input.sourceSystem,
         },
         reason: "Governed tenant custom role permission update.",
+        correlationId: input.correlationId,
+        ipAddress: input.ipAddress,
+        userAgent: input.userAgent,
+        sourceSystem: input.sourceSystem,
+        idempotencyKey: input.idempotencyKey,
       });
 
       return {
         organizationId: input.organizationId,
         roleId: role.id,
-        role: mapRole(await findRoleForOutput(transaction, role.id)),
+        role: mapRole(await this.adminRepository.findRoleForOutput(tx, role.id)),
         idempotency: {
           key: input.idempotencyKey,
           replayed: arraysEqualIgnoringOrder(beforePermissionKeys, input.permissionKeys),
@@ -714,23 +475,15 @@ export class AdminService {
   }
 
   async deleteRole(input: DeleteAdminRoleInput): Promise<AdminRoleDeleteOutput> {
-    return this.database.$transaction(async (transaction) => {
-      await assertOrganizationExists(transaction, input.organizationId);
-      const role = await transaction.role.findFirst({
-        where: {
-          id: input.roleId,
-          organizationId: input.organizationId,
-        },
-        select: {
-          id: true,
-          key: true,
-          _count: {
-            select: {
-              memberships: true,
-            },
-          },
-        },
-      });
+    const database = getPrismaClient();
+
+    return database.$transaction(async (tx: PrismaTx) => {
+      await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
+      const role = await this.adminRepository.findRoleForDelete(
+        tx,
+        input.organizationId,
+        input.roleId,
+      );
 
       if (role === null) {
         throw new NotFoundException("admin.role_not_found");
@@ -742,13 +495,11 @@ export class AdminService {
         throw new BadRequestException("admin.role_delete_blocked_memberships_exist");
       }
 
-      await transaction.role.delete({
-        where: {
-          id: role.id,
-        },
-      });
-      await writeAdminAuditAndOutbox(transaction, {
-        ...input,
+      await this.adminRepository.deleteRole(tx, role.id);
+      await writeAdminAuditAndOutbox(this.adminRepository, tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
         action: "identity.role.deleted",
         subjectType: "role",
         subjectId: role.id,
@@ -764,6 +515,11 @@ export class AdminService {
           sourceSystem: input.sourceSystem,
         },
         reason: "Governed tenant custom role deletion.",
+        correlationId: input.correlationId,
+        ipAddress: input.ipAddress,
+        userAgent: input.userAgent,
+        sourceSystem: input.sourceSystem,
+        idempotencyKey: input.idempotencyKey,
       });
 
       return {
@@ -789,47 +545,45 @@ export class AdminService {
   }
 
   async revokeRole(input: RevokeAdminRoleInput): Promise<AdminRoleRevokeOutput> {
-    return this.database.$transaction(async (transaction) => {
-      await assertOrganizationExists(transaction, input.organizationId);
-      const membership = await findTenantMembership(
-        transaction,
+    const database = getPrismaClient();
+
+    return database.$transaction(async (tx: PrismaTx) => {
+      await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
+      const membership = await this.adminRepository.findTenantMembership(
+        tx,
         input.organizationId,
         input.membershipId,
       );
-      const role = await findTenantRole(transaction, input.organizationId, input.roleId);
-      const existingAssignment = await transaction.membershipRole.findUnique({
-        where: {
-          membershipId_roleId: {
-            membershipId: membership.id,
-            roleId: role.id,
-          },
-        },
-        select: {
-          membershipId: true,
-        },
-      });
+      const role = await this.adminRepository.findTenantRole(
+        tx,
+        input.organizationId,
+        input.roleId,
+      );
+      const existingAssignment = await this.adminRepository.findExistingAssignment(
+        tx,
+        membership.id,
+        role.id,
+      );
 
       if (existingAssignment !== null) {
         if (role.key === tenantAdminRoleKey) {
           await assertNotRemovingLastActiveTenantAdmin(
-            transaction,
-            input.organizationId,
+            async () => this.adminRepository.findActiveAdminMemberships(tx, input.organizationId),
             membership.id,
           );
         }
 
-        await transaction.membershipRole.delete({
-          where: {
-            membershipId_roleId: {
-              membershipId: membership.id,
-              roleId: role.id,
-            },
-          },
-        });
+        await this.adminRepository.deleteMembershipRoleByMembershipAndRole(
+          tx,
+          membership.id,
+          role.id,
+        );
       }
 
-      await writeAdminAuditAndOutbox(transaction, {
-        ...input,
+      await writeAdminAuditAndOutbox(this.adminRepository, tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
         action: "identity.role.revoked",
         subjectType: "membership",
         subjectId: membership.id,
@@ -847,6 +601,11 @@ export class AdminService {
           sourceSystem: input.sourceSystem,
         },
         reason: "Governed tenant role revocation.",
+        correlationId: input.correlationId,
+        ipAddress: input.ipAddress,
+        userAgent: input.userAgent,
+        sourceSystem: input.sourceSystem,
+        idempotencyKey: input.idempotencyKey,
       });
 
       return {
@@ -858,7 +617,9 @@ export class AdminService {
           key: role.key,
           name: role.name,
         },
-        user: mapUserMembership(await findMembershipForOutput(transaction, membership.id)),
+        user: mapUserMembership(
+          await this.adminRepository.findMembershipForOutput(tx, membership.id),
+        ),
         idempotency: {
           key: input.idempotencyKey,
           replayed: existingAssignment === null,
@@ -880,10 +641,12 @@ export class AdminService {
   async updateMembershipStatus(
     input: UpdateAdminMembershipStatusInput,
   ): Promise<AdminMembershipStatusUpdateOutput> {
-    return this.database.$transaction(async (transaction) => {
-      await assertOrganizationExists(transaction, input.organizationId);
-      const membership = await findTenantMembership(
-        transaction,
+    const database = getPrismaClient();
+
+    return database.$transaction(async (tx: PrismaTx) => {
+      await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
+      const membership = await this.adminRepository.findTenantMembership(
+        tx,
         input.organizationId,
         input.membershipId,
       );
@@ -894,34 +657,25 @@ export class AdminService {
 
       if (input.status !== "active") {
         await assertNotRemovingLastActiveTenantAdmin(
-          transaction,
-          input.organizationId,
+          async () => this.adminRepository.findActiveAdminMemberships(tx, input.organizationId),
           membership.id,
         );
       }
 
-      const updatedMembership = await transaction.membership.update({
-        where: {
-          id: membership.id,
-        },
-        data: {
-          status: input.status,
-        },
-        select: {
-          id: true,
-        },
-      });
+      const updatedMembership = await this.adminRepository.updateMembershipStatus(
+        tx,
+        membership.id,
+        input.status,
+      );
 
       if (input.status === "removed") {
-        await transaction.membershipRole.deleteMany({
-          where: {
-            membershipId: membership.id,
-          },
-        });
+        await this.adminRepository.deleteMembershipRoleByMembership(tx, membership.id);
       }
 
-      await writeAdminAuditAndOutbox(transaction, {
-        ...input,
+      await writeAdminAuditAndOutbox(this.adminRepository, tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
         action: "identity.membership.status.updated",
         subjectType: "membership",
         subjectId: membership.id,
@@ -938,13 +692,20 @@ export class AdminService {
           sourceSystem: input.sourceSystem,
         },
         reason: input.reason,
+        correlationId: input.correlationId,
+        ipAddress: input.ipAddress,
+        userAgent: input.userAgent,
+        sourceSystem: input.sourceSystem,
+        idempotencyKey: input.idempotencyKey,
       });
 
       return {
         organizationId: input.organizationId,
         membershipId: updatedMembership.id,
         status: input.status,
-        user: mapUserMembership(await findMembershipForOutput(transaction, membership.id)),
+        user: mapUserMembership(
+          await this.adminRepository.findMembershipForOutput(tx, membership.id),
+        ),
         idempotency: {
           key: input.idempotencyKey,
           replayed: membership.status === input.status,
@@ -966,10 +727,12 @@ export class AdminService {
   async resendInvitation(
     input: ResendAdminInvitationInput,
   ): Promise<AdminInvitationLifecycleOutput> {
-    return this.database.$transaction(async (transaction) => {
-      await assertOrganizationExists(transaction, input.organizationId);
-      const membership = await findTenantMembership(
-        transaction,
+    const database = getPrismaClient();
+
+    return database.$transaction(async (tx: PrismaTx) => {
+      await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
+      const membership = await this.adminRepository.findTenantMembership(
+        tx,
         input.organizationId,
         input.membershipId,
       );
@@ -979,13 +742,15 @@ export class AdminService {
       }
 
       const invitation = createAdminInvitationDelivery(
-        await createPlatformInvitationToken(transaction, {
+        await createPlatformInvitationToken(tx, {
           membershipId: membership.id,
         }),
       );
 
-      await writeAdminAuditAndOutbox(transaction, {
-        ...input,
+      await writeAdminAuditAndOutbox(this.adminRepository, tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
         action: "identity.invitation.resent",
         subjectType: "membership",
         subjectId: membership.id,
@@ -1006,12 +771,19 @@ export class AdminService {
           email: membership.user.email,
         },
         reason: "Governed tenant invitation resend.",
+        correlationId: input.correlationId,
+        ipAddress: input.ipAddress,
+        userAgent: input.userAgent,
+        sourceSystem: input.sourceSystem,
+        idempotencyKey: input.idempotencyKey,
       });
 
       return {
         organizationId: input.organizationId,
         membershipId: membership.id,
-        user: mapUserMembership(await findMembershipForOutput(transaction, membership.id)),
+        user: mapUserMembership(
+          await this.adminRepository.findMembershipForOutput(tx, membership.id),
+        ),
         invitation,
         idempotency: {
           key: input.idempotencyKey,
@@ -1034,10 +806,12 @@ export class AdminService {
   async cancelInvitation(
     input: CancelAdminInvitationInput,
   ): Promise<AdminInvitationLifecycleOutput> {
-    return this.database.$transaction(async (transaction) => {
-      await assertOrganizationExists(transaction, input.organizationId);
-      const membership = await findTenantMembership(
-        transaction,
+    const database = getPrismaClient();
+
+    return database.$transaction(async (tx: PrismaTx) => {
+      await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
+      const membership = await this.adminRepository.findTenantMembership(
+        tx,
         input.organizationId,
         input.membershipId,
       );
@@ -1046,22 +820,13 @@ export class AdminService {
         throw new BadRequestException("admin.invitation_cancel_requires_invited_membership");
       }
 
-      await transaction.membership.update({
-        where: {
-          id: membership.id,
-        },
-        data: {
-          status: "removed",
-        },
-      });
-      await transaction.membershipRole.deleteMany({
-        where: {
-          membershipId: membership.id,
-        },
-      });
-      await deletePlatformInvitationToken(transaction, membership.id);
-      await writeAdminAuditAndOutbox(transaction, {
-        ...input,
+      await this.adminRepository.updateMembershipStatus(tx, membership.id, "removed");
+      await this.adminRepository.deleteMembershipRoleByMembership(tx, membership.id);
+      await deletePlatformInvitationToken(tx, membership.id);
+      await writeAdminAuditAndOutbox(this.adminRepository, tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
         action: "identity.invitation.cancelled",
         subjectType: "membership",
         subjectId: membership.id,
@@ -1078,12 +843,19 @@ export class AdminService {
           sourceSystem: input.sourceSystem,
         },
         reason: input.reason,
+        correlationId: input.correlationId,
+        ipAddress: input.ipAddress,
+        userAgent: input.userAgent,
+        sourceSystem: input.sourceSystem,
+        idempotencyKey: input.idempotencyKey,
       });
 
       return {
         organizationId: input.organizationId,
         membershipId: membership.id,
-        user: mapUserMembership(await findMembershipForOutput(transaction, membership.id)),
+        user: mapUserMembership(
+          await this.adminRepository.findMembershipForOutput(tx, membership.id),
+        ),
         idempotency: {
           key: input.idempotencyKey,
           replayed: false,
@@ -1103,50 +875,16 @@ export class AdminService {
   }
 }
 
-type AdminQueryClient = Pick<
-  SaptmPrismaClient,
-  | "auditRecord"
-  | "membership"
-  | "membershipRole"
-  | "organization"
-  | "outboxEvent"
-  | "permission"
-  | "role"
-  | "rolePermission"
-  | "verification"
->;
-
 async function resolveAdminTotals(
-  database: SaptmPrismaClient,
+  repository: AdminRepository,
   organizationId: string,
 ): Promise<AdminOverviewOutput["totals"]> {
   const [users, activeMemberships, invitedMemberships, roles, permissions] = await Promise.all([
-    database.membership.count({
-      where: {
-        organizationId,
-        status: {
-          not: "removed",
-        },
-      },
-    }),
-    database.membership.count({
-      where: {
-        organizationId,
-        status: "active",
-      },
-    }),
-    database.membership.count({
-      where: {
-        organizationId,
-        status: "invited",
-      },
-    }),
-    database.role.count({
-      where: {
-        organizationId,
-      },
-    }),
-    database.permission.count(),
+    repository.countMembershipsNotRemoved(organizationId),
+    repository.countActiveMemberships(organizationId),
+    repository.countInvitedMemberships(organizationId),
+    repository.countRoles(organizationId),
+    repository.countPermissions(),
   ]);
 
   return {
@@ -1155,450 +893,5 @@ async function resolveAdminTotals(
     invitedMemberships,
     roles,
     permissions,
-  };
-}
-
-async function assertOrganizationExists(
-  database: AdminQueryClient,
-  organizationId: string,
-): Promise<void> {
-  const organization = await database.organization.findUnique({
-    where: {
-      id: organizationId,
-    },
-    select: {
-      id: true,
-    },
-  });
-
-  if (organization === null) {
-    throw new NotFoundException("admin.organization_not_found");
-  }
-}
-
-async function findRolesByKeys(
-  database: AdminQueryClient,
-  organizationId: string,
-  roleKeys: readonly string[],
-): Promise<{ id: string; key: string }[]> {
-  if (roleKeys.length === 0) {
-    return [];
-  }
-
-  return database.role.findMany({
-    where: {
-      organizationId,
-      key: {
-        in: [...new Set(roleKeys)],
-      },
-    },
-    select: {
-      id: true,
-      key: true,
-    },
-  });
-}
-
-async function findPermissionsByKeys(
-  database: AdminQueryClient,
-  permissionKeys: readonly string[],
-): Promise<{ id: string; key: string }[]> {
-  const uniquePermissionKeys = [...new Set(permissionKeys)];
-  const permissionRecords = await database.permission.findMany({
-    where: {
-      key: {
-        in: uniquePermissionKeys,
-      },
-    },
-    select: {
-      id: true,
-      key: true,
-    },
-  });
-  const missingPermissionKeys = uniquePermissionKeys.filter(
-    (permissionKey) => !permissionRecords.some((permission) => permission.key === permissionKey),
-  );
-
-  if (missingPermissionKeys.length > 0) {
-    throw new BadRequestException(`admin.permission_missing:${missingPermissionKeys.join(",")}`);
-  }
-
-  return permissionRecords;
-}
-
-async function findTenantRole(
-  database: AdminQueryClient,
-  organizationId: string,
-  roleId: string,
-): Promise<{ id: string; key: string; name: string }> {
-  const role = await database.role.findFirst({
-    where: {
-      id: roleId,
-      organizationId,
-    },
-    select: {
-      id: true,
-      key: true,
-      name: true,
-    },
-  });
-
-  if (role === null) {
-    throw new NotFoundException("admin.role_not_found");
-  }
-
-  return role;
-}
-
-async function findTenantMembership(
-  database: AdminQueryClient,
-  organizationId: string,
-  membershipId: string,
-): Promise<MembershipRecord> {
-  const membership = await database.membership.findFirst({
-    where: {
-      id: membershipId,
-      organizationId,
-      status: {
-        not: "removed",
-      },
-    },
-    select: {
-      id: true,
-      status: true,
-      createdAt: true,
-      updatedAt: true,
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          emailVerified: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      },
-      roles: {
-        orderBy: {
-          role: {
-            key: "asc",
-          },
-        },
-        select: {
-          role: {
-            select: {
-              id: true,
-              key: true,
-              name: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  if (membership === null) {
-    throw new NotFoundException("admin.membership_not_found");
-  }
-
-  return membership;
-}
-
-async function findMembershipForOutput(
-  database: AdminQueryClient,
-  membershipId: string,
-): Promise<MembershipRecord> {
-  const membership = await database.membership.findUnique({
-    where: {
-      id: membershipId,
-    },
-    select: {
-      id: true,
-      status: true,
-      createdAt: true,
-      updatedAt: true,
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          emailVerified: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      },
-      roles: {
-        orderBy: {
-          role: {
-            key: "asc",
-          },
-        },
-        select: {
-          role: {
-            select: {
-              id: true,
-              key: true,
-              name: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  if (membership === null) {
-    throw new NotFoundException("admin.membership_not_found");
-  }
-
-  return membership;
-}
-
-async function findRoleForOutput(
-  database: AdminQueryClient,
-  roleId: string,
-): Promise<RoleForOutputRecord> {
-  const role = await database.role.findUnique({
-    where: {
-      id: roleId,
-    },
-    select: {
-      id: true,
-      key: true,
-      name: true,
-      description: true,
-      createdAt: true,
-      updatedAt: true,
-      permissions: {
-        orderBy: {
-          permission: {
-            key: "asc",
-          },
-        },
-        select: {
-          permission: {
-            select: {
-              key: true,
-            },
-          },
-        },
-      },
-      _count: {
-        select: {
-          memberships: true,
-          permissions: true,
-        },
-      },
-    },
-  });
-
-  if (role === null) {
-    throw new NotFoundException("admin.role_not_found");
-  }
-
-  return role;
-}
-
-async function readRolePermissionKeys(
-  database: AdminQueryClient,
-  roleId: string,
-): Promise<string[]> {
-  const records = await database.rolePermission.findMany({
-    where: {
-      roleId,
-    },
-    orderBy: {
-      permission: {
-        key: "asc",
-      },
-    },
-    select: {
-      permission: {
-        select: {
-          key: true,
-        },
-      },
-    },
-  });
-
-  return records.map((record) => record.permission.key);
-}
-
-function assertCustomRoleKey(roleKey: string): void {
-  if (protectedRoleKeys.has(roleKey)) {
-    throw new BadRequestException("admin.role_key_reserved");
-  }
-
-  if (!roleKey.startsWith("tenant.custom.")) {
-    throw new BadRequestException("admin.custom_role_key_must_start_with_tenant_custom");
-  }
-}
-
-function assertMutableRole(roleKey: string): void {
-  if (protectedRoleKeys.has(roleKey)) {
-    throw new BadRequestException("admin.role_template_is_protected");
-  }
-}
-
-async function assertNotRemovingLastActiveTenantAdmin(
-  database: AdminQueryClient,
-  organizationId: string,
-  targetMembershipId: string,
-): Promise<void> {
-  const activeAdminMemberships = await database.membership.findMany({
-    where: {
-      organizationId,
-      status: "active",
-      roles: {
-        some: {
-          role: {
-            key: tenantAdminRoleKey,
-          },
-        },
-      },
-    },
-    select: {
-      id: true,
-    },
-  });
-
-  if (
-    activeAdminMemberships.length === 1 &&
-    activeAdminMemberships.at(0)?.id === targetMembershipId
-  ) {
-    throw new BadRequestException("admin.last_active_tenant_admin_protected");
-  }
-}
-
-function mapOrganization(organization: OrganizationRecord): AdminOverviewOutput["organization"] {
-  return {
-    id: organization.id,
-    name: organization.name,
-    slug: organization.slug,
-    status: organization.status,
-    createdAt: organization.createdAt.toISOString(),
-    updatedAt: organization.updatedAt.toISOString(),
-  };
-}
-
-function mapUserMembership(membership: MembershipRecord): AdminOverviewOutput["users"][number] {
-  return {
-    id: membership.user.id,
-    name: membership.user.name,
-    email: membership.user.email,
-    emailVerified: membership.user.emailVerified,
-    createdAt: membership.user.createdAt.toISOString(),
-    updatedAt: membership.user.updatedAt.toISOString(),
-    membership: {
-      id: membership.id,
-      status: membership.status,
-      createdAt: membership.createdAt.toISOString(),
-      updatedAt: membership.updatedAt.toISOString(),
-      roles: membership.roles.map((membershipRole) => ({
-        id: membershipRole.role.id,
-        key: membershipRole.role.key,
-        name: membershipRole.role.name,
-      })),
-    },
-  };
-}
-
-function mapRole(role: RoleRecord): AdminOverviewOutput["roles"][number] {
-  return {
-    id: role.id,
-    key: role.key,
-    name: role.name,
-    description: role.description,
-    protected: protectedRoleKeys.has(role.key),
-    permissionCount: role._count.permissions,
-    membershipCount: role._count.memberships,
-    permissions: role.permissions.map((rolePermission) => rolePermission.permission.key),
-    createdAt: role.createdAt.toISOString(),
-    updatedAt: role.updatedAt.toISOString(),
-  };
-}
-
-function mapPermission(permission: PermissionRecord): AdminOverviewOutput["permissions"][number] {
-  return {
-    id: permission.id,
-    key: permission.key as AdminOverviewOutput["permissions"][number]["key"],
-    description: permission.description,
-    roleCount: permission._count.roles,
-  };
-}
-
-function createAdminInvitationDelivery(
-  invitation: PlatformInvitationDelivery,
-): PlatformInvitationDelivery {
-  return {
-    acceptUrl: invitation.acceptUrl,
-    deliveryChannel: invitation.deliveryChannel,
-    expiresAt: invitation.expiresAt,
-  };
-}
-
-async function writeAdminAuditAndOutbox(
-  database: AdminQueryClient,
-  input: AdminAuditableInput & {
-    action: string;
-    subjectType: string;
-    subjectId: string;
-    aggregateType: string;
-    aggregateId: string;
-    before?: Record<string, unknown>;
-    after: Record<string, unknown>;
-    payload?: Record<string, unknown>;
-    reason: string;
-    sourceSystem: string;
-    idempotencyKey: string;
-  },
-): Promise<void> {
-  await database.auditRecord.create({
-    data: {
-      organizationId: input.organizationId,
-      actorType: input.actorType,
-      actorId: input.actorId,
-      action: input.action,
-      subjectType: input.subjectType,
-      subjectId: input.subjectId,
-      severity: "critical",
-      ...(input.before === undefined ? {} : { before: input.before as never }),
-      after: input.after as never,
-      reason: input.reason,
-      correlationId: input.correlationId,
-      ...createAuditRequestMetadata(input),
-    },
-  });
-  await database.outboxEvent.create({
-    data: {
-      organizationId: input.organizationId,
-      eventType: input.action,
-      aggregateType: input.aggregateType,
-      aggregateId: input.aggregateId,
-      payload: {
-        ...(input.payload ?? input.after),
-        idempotencyKey: input.idempotencyKey,
-        sourceSystem: input.sourceSystem,
-      } as never,
-    },
-  });
-}
-
-function arraysEqualIgnoringOrder(first: readonly string[], second: readonly string[]): boolean {
-  if (first.length !== second.length) {
-    return false;
-  }
-
-  const firstSet = new Set(first);
-
-  return second.every((value) => firstSet.has(value));
-}
-
-function createAuditRequestMetadata(input: { ipAddress?: string; userAgent?: string }): {
-  ipAddress?: string;
-  userAgent?: string;
-} {
-  return {
-    ...(input.ipAddress === undefined ? {} : { ipAddress: input.ipAddress }),
-    ...(input.userAgent === undefined ? {} : { userAgent: input.userAgent }),
   };
 }

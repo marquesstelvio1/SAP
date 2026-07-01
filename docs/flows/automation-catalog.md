@@ -2,16 +2,16 @@
 
 ## Local scripts
 
-- `scripts/New-AITaskBundle.ps1`: generates task bundles and Jira/Linear payloads
-- `scripts/New-AIDiagnostic.ps1`: generates a structured diagnostic artifact
-- `scripts/New-AITaskFromDiagnostic.ps1`: converts a diagnostic into a task bundle
-- `scripts/New-AITestPlan.ps1`: generates validation scope by task
-- `scripts/New-AIDocumentationPack.ps1`: generates documentation update packs
-- `scripts/New-AIPullRequestDraft.ps1`: generates branch, commit, and PR draft artifacts
-- `scripts/New-AIGovernanceReview.ps1`: generates gate review evidence for a task
-- `scripts/New-AIChangelog.ps1`: generates or updates changelog sections
-- `scripts/Invoke-AIWorkflow.ps1`: orchestrates full workflows
-- `scripts/Test-AIOS.ps1`: validates structure, JSON files, domain packs, and PowerShell syntax
+- `scripts/new-ai-task-bundle.mjs`: generates task bundles and Jira/Linear payloads
+- `scripts/new-ai-diagnostic.mjs`: generates a structured diagnostic artifact
+- `scripts/new-ai-task-from-diagnostic.mjs`: converts a diagnostic into a task bundle
+- `scripts/new-ai-test-plan.mjs`: generates validation scope by task
+- `scripts/new-ai-documentation-pack.mjs`: generates documentation update packs
+- `scripts/new-ai-pull-request-draft.mjs`: generates branch, commit, and PR draft artifacts
+- `scripts/new-ai-governance-review.mjs`: generates gate review evidence for a task
+- `scripts/new-ai-changelog.mjs`: generates or updates changelog sections
+- `scripts/invoke-ai-workflow.mjs`: orchestrates full workflows
+- `scripts/test-aios.mjs`: validates structure, JSON files, domain packs, and script syntax
 
 ## CI/CD automations
 

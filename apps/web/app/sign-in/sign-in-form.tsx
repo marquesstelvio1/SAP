@@ -1,5 +1,6 @@
 "use client";
 
+import { useForm, zodResolver } from "@saptm/form";
 import {
   Badge,
   Button,
@@ -8,6 +9,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  Checkbox,
   Field,
   FieldDescription,
   FieldError,
@@ -16,38 +18,53 @@ import {
   Input,
 } from "@saptm/ui";
 import type { Route } from "next";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { FormEvent } from "react";
 import { useState } from "react";
+import { z } from "zod";
 
 import { authClient } from "../../lib/auth-client";
 
+const signInSchema = z.object({
+  email: z.string().email("Email corporativo inválido"),
+  password: z.string().min(12, "A password deve ter no mínimo 12 caracteres"),
+  rememberMe: z.boolean().optional().default(false),
+});
+
+type SignInFormData = z.infer<typeof signInSchema>;
+
 export function SignInForm({ nextPath }: { nextPath: string }) {
-  const [error, setError] = useState<string | undefined>();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState<string | undefined>();
   const router = useRouter();
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(undefined);
-    setIsSubmitting(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignInFormData>({
+    resolver: zodResolver(signInSchema),
+    mode: "onBlur",
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
+  });
 
-    const formData = new FormData(event.currentTarget);
-    const email = String(formData.get("email") ?? "");
-    const password = String(formData.get("password") ?? "");
-    const rememberMe = formData.get("rememberMe") === "on";
+  async function onSubmit(data: SignInFormData) {
+    setServerError(undefined);
 
     const response = await authClient.signIn.email({
-      email,
-      password,
-      rememberMe,
+      email: data.email,
+      password: data.password,
+      rememberMe: data.rememberMe,
       callbackURL: nextPath,
     });
 
-    setIsSubmitting(false);
-
     if (response.error !== null) {
-      setError(response.error.message ?? "Credenciais inválidas ou email ainda não verificado.");
+      setServerError(
+        response.error.message ?? "Credenciais inválidas ou email ainda não verificado.",
+      );
       return;
     }
 
@@ -64,58 +81,59 @@ export function SignInForm({ nextPath }: { nextPath: string }) {
     <Card className="w-full max-w-md border-border/80 shadow-overlay">
       <CardHeader className="gap-3">
         <div className="flex items-center justify-between gap-3">
-          <Badge variant="info">Better Auth</Badge>
-          <Badge variant="outline">Sessão real</Badge>
+          <Badge variant="outline">Sessão segura</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle className="text-2xl">Entrar na plataforma</CardTitle>
           <CardDescription>
-            Autenticação local com sessão HTTP-only e resolução RBAC no shell.
+            Autenticação local com sessão segura para acesso à plataforma.
           </CardDescription>
         </div>
       </CardHeader>
       <CardContent>
-        <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="email">Email corporativo</FieldLabel>
               <Input
                 autoComplete="email"
                 id="email"
-                name="email"
-                placeholder="operador@saptm.local"
-                required
+                placeholder="operador@empresa.pt"
                 type="email"
+                {...register("email")}
               />
+              {errors.email && <FieldError>{errors.email.message}</FieldError>}
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Password</FieldLabel>
               <Input
                 autoComplete="current-password"
                 id="password"
-                minLength={12}
-                name="password"
-                required
                 type="password"
+                {...register("password")}
               />
-              <FieldDescription>
-                Mínimo de 12 caracteres conforme política de auth.
-              </FieldDescription>
+              <div className="flex items-center justify-between">
+                <FieldDescription>
+                  Mínimo de 12 caracteres conforme política de autenticação.
+                </FieldDescription>
+                <Link
+                  className="rounded-sm text-primary text-xs underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  href={"/forgot-password" as Route}
+                >
+                  Esqueceu-se da password?
+                </Link>
+              </div>
+              {errors.password && <FieldError>{errors.password.message}</FieldError>}
             </Field>
             <Field orientation="horizontal">
-              <input
-                className="mt-0.5 size-4 rounded border-input accent-primary"
-                id="rememberMe"
-                name="rememberMe"
-                type="checkbox"
-              />
+              <Checkbox className="mt-0.5" id="rememberMe" {...register("rememberMe")} />
               <div className="flex flex-col gap-1">
                 <FieldLabel htmlFor="rememberMe">Manter sessão ativa</FieldLabel>
-                <FieldDescription>Usa a estratégia de sessão do Better Auth.</FieldDescription>
+                <FieldDescription>Mantém a sessão ativa entre utilizações.</FieldDescription>
               </div>
             </Field>
           </FieldGroup>
-          <FieldError>{error}</FieldError>
+          {serverError && <FieldError>{serverError}</FieldError>}
           <Button disabled={isSubmitting} type="submit">
             {isSubmitting ? "A validar..." : "Entrar"}
           </Button>

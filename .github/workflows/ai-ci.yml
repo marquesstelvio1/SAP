@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      - develop
+      - developer
   workflow_dispatch:
     inputs:
       domain:
@@ -25,10 +25,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - name: Validate core structure
-        shell: pwsh
+        shell: bash
         run: |
-          ./scripts/Test-AIOS.ps1
+          node ./scripts/test-aios.mjs
 
   generate-delivery-artifacts:
     if: github.event_name == 'workflow_dispatch'
@@ -36,14 +40,18 @@ jobs:
     needs: validate-operating-system
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - name: Generate delivery artifacts
-        shell: pwsh
+        shell: bash
         run: |
-          & ./scripts/Invoke-AIWorkflow.ps1 `
-            -Workflow delivery `
-            -Domain '${{ github.event.inputs.domain }}' `
-            -TaskId '${{ github.event.inputs.task_id }}' `
-            -Feature '${{ github.event.inputs.feature }}'
+          node ./scripts/invoke-ai-workflow.mjs \
+            --workflow delivery \
+            --domain '${{ github.event.inputs.domain }}' \
+            --task-id '${{ github.event.inputs.task_id }}' \
+            --feature '${{ github.event.inputs.feature }}'
       - name: Upload generated artifacts
         uses: actions/upload-artifact@v4
         with:

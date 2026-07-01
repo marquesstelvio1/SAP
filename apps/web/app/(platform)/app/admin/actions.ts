@@ -19,7 +19,7 @@ import {
   adminRoleRevokeOutputSchema,
   adminUserInviteInputSchema,
   adminUserInviteOutputSchema,
-} from "@saptm/rpc";
+} from "@saptm/rpc/admin";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
@@ -170,7 +170,7 @@ export async function createAdminRoleAction(
 
   const result = await callAdminMutation("/rpc/admin/createRole", parsedInput.input);
 
-  return parseAdminRoleMutationResult(result, "Role custom criada com permissoes governadas.");
+  return parseAdminRoleMutationResult(result, "Role custom criada com permissoes configuradas.");
 }
 
 export async function updateAdminRolePermissionsAction(

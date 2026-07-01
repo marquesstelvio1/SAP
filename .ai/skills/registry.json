@@ -1,6 +1,12 @@
 {
   "skills": [
     {
+      "id": "skill-orchestration",
+      "domain": "orchestration",
+      "doc": ".ai/plugins/orchestrator.md",
+      "type": "plugin"
+    },
+    {
       "id": "skill-frontend-ui",
       "domain": "frontend",
       "doc": "docs/skills/domains/frontend.md"
@@ -54,6 +60,42 @@
       "id": "skill-design-system-governance",
       "domain": "design-system",
       "doc": "docs/skills/domains/design-system.md"
+    },
+    {
+      "id": "skill-product-design",
+      "domain": "product-design",
+      "doc": ".ai/plugins/product-design.md",
+      "type": "plugin"
+    },
+    {
+      "id": "skill-architecture-governance",
+      "domain": "architecture-governance",
+      "doc": ".ai/plugins/architecture-audit.md",
+      "type": "plugin"
+    },
+    {
+      "id": "skill-security-audit",
+      "domain": "security-audit",
+      "doc": ".ai/plugins/security-audit.md",
+      "type": "plugin"
+    },
+    {
+      "id": "skill-accessibility-audit",
+      "domain": "accessibility-audit",
+      "doc": ".ai/plugins/accessibility-audit.md",
+      "type": "plugin"
+    },
+    {
+      "id": "skill-documentation-generation",
+      "domain": "documentation-generation",
+      "doc": ".ai/plugins/documentation-generator.md",
+      "type": "plugin"
+    },
+    {
+      "id": "skill-release-governance",
+      "domain": "release-governance",
+      "doc": ".ai/plugins/release-readiness.md",
+      "type": "plugin"
     }
   ]
 }

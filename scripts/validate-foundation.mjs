@@ -309,7 +309,7 @@ const requiredFiles = [
   "packages/rpc/package.json",
   "packages/rpc/tsconfig.json",
   "packages/rpc/src/authorization.ts",
-  "packages/rpc/src/contract.ts",
+
   "packages/rpc/src/errors.ts",
   "packages/rpc/src/foundation.ts",
   "packages/rpc/src/index.ts",

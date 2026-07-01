@@ -463,11 +463,13 @@ export type IntegrationWarehouseWmsActivityOutput = z.infer<
 export const integrationOverviewMetadata = createRpcOperationMetadata({
   name: "integration.gateway.overview.read",
   kind: "query",
+  auth: "session",
   permissions: ["integration.api_key.manage", "integration.event.ingest"],
   permissionMode: "any",
   organizationRequired: true,
   audit: "sensitive",
   criticality: "high",
+  signals: ["log", "metric", "span"],
 });
 
 export const integrationServiceAccountCreateMetadata = createRpcOperationMetadata({

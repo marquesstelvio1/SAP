@@ -8,6 +8,7 @@ export type BetterAuthSessionUser = {
   email?: string;
   emailVerified?: boolean;
   name?: string;
+  twoFactorEnabled?: boolean;
 };
 
 export type BetterAuthSessionRecord = {
@@ -69,6 +70,9 @@ export async function resolveAuthContextFromBetterAuthSession(
     sessionId: sessionResult.session.id,
     userId: sessionResult.user.id,
     ...(input.permissions === undefined ? {} : { permissions: input.permissions }),
+    ...(sessionResult.user.twoFactorEnabled === undefined
+      ? {}
+      : { twoFactorEnabled: sessionResult.user.twoFactorEnabled }),
     ...(authenticatedAt === undefined ? {} : { authenticatedAt }),
     ...(expiresAt === undefined ? {} : { expiresAt }),
     ...(input.organizationId === undefined ? {} : { organizationId: input.organizationId }),

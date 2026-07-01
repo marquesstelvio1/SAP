@@ -17,6 +17,7 @@ export const serverEnvSchema = z.object({
   API_PORT: z.coerce.number().int().positive().default(4000),
   API_CORS_ORIGINS: commaSeparatedUrlsSchema,
   DATABASE_URL: z.string().url(),
+  DATABASE_POOL_SIZE: z.coerce.number().int().positive().default(10),
   REDIS_URL: z.string().url().optional(),
   BETTER_AUTH_SECRET: z.string().min(32),
   BETTER_AUTH_URL: z.string().url(),
@@ -26,11 +27,23 @@ export const serverEnvSchema = z.object({
   OTEL_SERVICE_NAME: z.string().default("saptm"),
   OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional(),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error", "critical"]).default("info"),
+  RESEND_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().default("noreply@saptm.pt"),
+  SENTRY_DSN: z.string().optional(),
+  SENTRY_AUTH_TOKEN: z.string().optional(),
+  SENTRY_ORG: z.string().optional(),
+  SENTRY_PROJECT: z.string().optional(),
+  STRIPE_SECRET_KEY: z.string().min(1).optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
+  STRIPE_PRICE_FREE: z.string().optional(),
+  STRIPE_PRICE_PRO: z.string().optional(),
+  STRIPE_PRICE_ENTERPRISE: z.string().optional(),
 });
 
 export const clientEnvSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url(),
   NEXT_PUBLIC_API_URL: z.string().url(),
+  NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
@@ -43,7 +56,29 @@ type RuntimeGlobal = typeof globalThis & {
 };
 
 export function parseServerEnv(source: EnvSource): ServerEnv {
-  return serverEnvSchema.parse(source);
+  const result = serverEnvSchema.safeParse(source);
+  if (!result.success) {
+    const missing = result.error.issues
+      .filter((i) => i.code === "invalid_type" && i.input === undefined)
+      .map((i) => i.path.join("."));
+    if (missing.length > 0) {
+      throw new Error(
+        [
+          `Missing environment variables: ${missing.join(", ")}`,
+          "Check that your .env file (at the repository root) has these values set.",
+          missing.includes("DATABASE_URL") &&
+            "→ DATABASE_URL: postgresql://postgres:postgres@localhost:25432/saptm",
+          missing.includes("BETTER_AUTH_SECRET") &&
+            "→ BETTER_AUTH_SECRET: generate with: openssl rand -hex 32",
+          missing.includes("BETTER_AUTH_URL") && "→ BETTER_AUTH_URL: http://localhost:3000",
+        ]
+          .filter(Boolean)
+          .join("\n"),
+      );
+    }
+    throw result.error;
+  }
+  return result.data;
 }
 
 export function parseClientEnv(source: EnvSource): ClientEnv {
@@ -55,15 +90,43 @@ export function getServerEnv(): ServerEnv {
 }
 
 export function getClientEnv(): ClientEnv {
-  return parseClientEnv(getRuntimeEnv());
+  return parseClientEnv({
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  });
 }
 
 export function getTrustedOrigins(
-  env: Pick<ServerEnv, "API_CORS_ORIGINS" | "BETTER_AUTH_URL" | "NEXT_PUBLIC_APP_URL">,
-) {
-  return Array.from(
-    new Set([env.BETTER_AUTH_URL, env.NEXT_PUBLIC_APP_URL, ...env.API_CORS_ORIGINS]),
-  );
+  env: Pick<ServerEnv, "API_CORS_ORIGINS" | "BETTER_AUTH_URL" | "NEXT_PUBLIC_APP_URL"> &
+    Partial<Pick<ServerEnv, "NODE_ENV">>,
+): string[] {
+  const trusted = new Set([env.BETTER_AUTH_URL, env.NEXT_PUBLIC_APP_URL, ...env.API_CORS_ORIGINS]);
+
+  if (env.NODE_ENV === "development") {
+    trusted.add("http://localhost:3000");
+    trusted.add("http://localhost:3001");
+    trusted.add("http://localhost:3002");
+    trusted.add("http://localhost:3003");
+    trusted.add("http://localhost:3004");
+    trusted.add("http://localhost:3005");
+    trusted.add("http://localhost:3006");
+    trusted.add("http://localhost:3007");
+    trusted.add("http://localhost:3008");
+    trusted.add("http://localhost:3009");
+    trusted.add("http://127.0.0.1:3000");
+    trusted.add("http://127.0.0.1:3001");
+    trusted.add("http://127.0.0.1:3002");
+    trusted.add("http://127.0.0.1:3003");
+    trusted.add("http://127.0.0.1:3004");
+    trusted.add("http://127.0.0.1:3005");
+    trusted.add("http://127.0.0.1:3006");
+    trusted.add("http://127.0.0.1:3007");
+    trusted.add("http://127.0.0.1:3008");
+    trusted.add("http://127.0.0.1:3009");
+  }
+
+  return Array.from(trusted);
 }
 
 function getRuntimeEnv(): EnvSource {

@@ -1,56 +1,29 @@
-import { getClientEnv } from "@saptm/config";
-import { type TrackingOverviewOutput, trackingOverviewOutputSchema } from "@saptm/rpc";
-import { headers } from "next/headers";
+import { type TrackingOverviewOutput, trackingOverviewOutputSchema } from "@saptm/rpc/tracking";
+
+import { type RpcFailure, rpcGet } from "./rpc-client";
 
 export type TrackingOverviewResult =
   | {
       status: "ok";
       overview: TrackingOverviewOutput;
     }
-  | {
-      status: "forbidden" | "unavailable" | "invalid";
-      message: string;
-    };
+  | RpcFailure;
 
-type RpcJsonEnvelope = {
-  json?: unknown;
-};
+export async function getTrackingOverview(options?: {
+  offset?: number;
+  limit?: number;
+}): Promise<TrackingOverviewResult> {
+  const result = await rpcGet(
+    "/rpc/tracking/overview",
+    trackingOverviewOutputSchema,
+    options === undefined ? {} : { searchParams: options },
+  );
 
-export async function getTrackingOverview(): Promise<TrackingOverviewResult> {
-  const url = new URL("/rpc/tracking/overview", getClientEnv().NEXT_PUBLIC_API_URL);
-  const requestHeaders = await headers();
-  const cookieHeader = requestHeaders.get("cookie");
-  const response = await fetch(url, {
-    cache: "no-store",
-    headers: cookieHeader === null ? {} : { cookie: cookieHeader },
-  });
-
-  if (response.status === 401 || response.status === 403) {
-    return {
-      status: "forbidden",
-      message: "Sessao sem permissao para ler tracking operacional.",
-    };
+  if (result.status !== "ok") {
+    return result.status === "forbidden"
+      ? { status: "forbidden", message: "Sessao sem permissao para ler tracking operacional." }
+      : result;
   }
 
-  if (!response.ok) {
-    return {
-      status: "unavailable",
-      message: `API de tracking indisponivel: HTTP ${response.status}.`,
-    };
-  }
-
-  const envelope = (await response.json()) as RpcJsonEnvelope;
-  const parsed = trackingOverviewOutputSchema.safeParse(envelope.json);
-
-  if (!parsed.success) {
-    return {
-      status: "invalid",
-      message: "Contrato RPC de tracking retornou payload invalido.",
-    };
-  }
-
-  return {
-    status: "ok",
-    overview: parsed.data,
-  };
+  return { status: "ok", overview: result.data };
 }

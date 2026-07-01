@@ -1,6 +1,6 @@
 ---
 description: Implements and secures OAuth 2.0 and OpenID Connect flows for authentication and authorization. Use when implementing OAuth flows, OpenID Connect, SSO, token management, or social login providers.
-mode: subagent
+mode: all
 ---
 
 # OAuth Expert

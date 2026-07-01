@@ -18,6 +18,7 @@ export type AuthContext = {
   serviceAccountId?: string;
   apiKeyId?: string;
   supportGrantId?: string;
+  twoFactorEnabled?: boolean;
   authenticatedAt?: string;
   expiresAt?: string;
 };
@@ -33,6 +34,7 @@ export type CreateAuthContextInput = {
   serviceAccountId?: string;
   apiKeyId?: string;
   supportGrantId?: string;
+  twoFactorEnabled?: boolean;
   authenticatedAt?: Date;
   expiresAt?: Date;
 };
@@ -50,6 +52,7 @@ export function createAuthContext(input: CreateAuthContextInput): AuthContext {
     ...(input.serviceAccountId === undefined ? {} : { serviceAccountId: input.serviceAccountId }),
     ...(input.apiKeyId === undefined ? {} : { apiKeyId: input.apiKeyId }),
     ...(input.supportGrantId === undefined ? {} : { supportGrantId: input.supportGrantId }),
+    ...(input.twoFactorEnabled === undefined ? {} : { twoFactorEnabled: input.twoFactorEnabled }),
     ...(input.authenticatedAt === undefined
       ? {}
       : { authenticatedAt: input.authenticatedAt.toISOString() }),

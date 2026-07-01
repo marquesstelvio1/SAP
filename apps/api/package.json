@@ -9,12 +9,19 @@
     "start": "node dist/main.js",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
-    "test": "node --test tests/rpc-foundation.test.mjs tests/admin-rpc.test.mjs tests/audit-rpc.test.mjs tests/reports-rpc.test.mjs tests/notifications-rpc.test.mjs tests/integrations-rpc.test.mjs tests/cargo-rpc.test.mjs tests/cargo-service-business-rules.test.mjs tests/tracking-rpc.test.mjs tests/capacity-rpc.test.mjs tests/capacity-service-business-rules.test.mjs tests/evidence-services-business-rules.test.mjs tests/tariff-rpc.test.mjs tests/planning-rpc.test.mjs"
+    "test:coverage": "c8 node --test tests/*.test.mjs",
+    "test": "node --test \"tests/*.test.mjs\""
   },
   "dependencies": {
+    "@nestjs/cache-manager": "catalog:",
     "@nestjs/common": "catalog:",
     "@nestjs/core": "catalog:",
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/auto-instrumentations-node": "catalog:",
+    "@opentelemetry/exporter-trace-otlp-http": "catalog:",
+    "@opentelemetry/sdk-node": "catalog:",
     "@nestjs/platform-express": "catalog:",
+    "@nestjs/throttler": "catalog:",
     "@orpc/server": "catalog:",
     "@saptm/auth": "workspace:*",
     "@saptm/config": "workspace:*",
@@ -22,13 +29,25 @@
     "@saptm/observability": "workspace:*",
     "@saptm/rpc": "workspace:*",
     "@saptm/types": "workspace:*",
+    "cache-manager": "catalog:",
+    "cache-manager-redis-yet": "catalog:",
+    "cookie-parser": "catalog:",
+    "csrf-csrf": "catalog:",
+    "dotenv": "catalog:",
+    "ioredis": "catalog:",
+    "stripe": "catalog:",
     "reflect-metadata": "catalog:",
     "rxjs": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@saptm/tsconfig": "workspace:*",
+    "@types/cache-manager": "catalog:",
+    "@types/cookie-parser": "catalog:",
+    "@types/express": "catalog:",
+    "@types/ioredis": "^5.0.0",
     "@types/node": "catalog:",
+    "c8": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:"
   }

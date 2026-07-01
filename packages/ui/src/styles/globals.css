@@ -1,4 +1,5 @@
 :root {
+  --color-scheme: light;
   --background: oklch(0.99 0.004 255);
   --foreground: oklch(0.18 0.024 255);
   --card: oklch(1 0 0);
@@ -43,12 +44,59 @@
   --sidebar-border: oklch(0.32 0.04 255);
   --sidebar-ring: oklch(0.68 0.13 210);
 
-  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-  --font-numeric: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  --font-sans: var(--font-inter, Inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono, "IBM Plex Mono"), "SFMono-Regular", Consolas, monospace;
+  --font-numeric: var(--font-ibm-plex-mono, "IBM Plex Mono"), "SFMono-Regular", Consolas, monospace;
   --tracking-heading: -0.025em;
   --tracking-label: 0.01em;
+  --tracking-uppercase: 0.14em;
 
+  --space-0: 0px;
+  --space-0\.5: 0.125rem;
+  --space-0_5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-1\.5: 0.375rem;
+  --space-1_5: 0.375rem;
+  --space-2: 0.5rem;
+  --space-2\.5: 0.625rem;
+  --space-2_5: 0.625rem;
+  --space-3: 0.75rem;
+  --space-3\.5: 0.875rem;
+  --space-3_5: 0.875rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-9: 2.25rem;
+  --space-10: 2.5rem;
+  --space-11: 2.75rem;
+  --space-12: 3rem;
+  --space-14: 3.5rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-28: 7rem;
+  --space-32: 8rem;
+
+  --motion-duration-fast: 150ms;
+  --motion-duration-normal: 200ms;
+  --motion-duration-slow: 300ms;
+  --motion-ease-linear: linear;
+  --motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-toast: 600;
+  --z-command: 700;
+
+  --density-row-height: 3rem;
   --density-comfortable-control-height: 2.75rem;
   --density-comfortable-row-height: 3rem;
   --density-comfortable-panel-padding: 1.5rem;
@@ -72,6 +120,7 @@
 }
 
 .dark {
+  --color-scheme: dark;
   --background: oklch(0.14 0.02 255);
   --foreground: oklch(0.96 0.008 255);
   --card: oklch(0.18 0.024 255);
@@ -91,6 +140,29 @@
   --border: oklch(0.3 0.038 255);
   --input: oklch(0.3 0.038 255);
   --ring: oklch(0.72 0.13 215);
+
+  --success: oklch(0.62 0.18 150);
+  --success-foreground: oklch(0.98 0.005 150);
+  --warning: oklch(0.8 0.15 70);
+  --warning-foreground: oklch(0.15 0.03 70);
+  --risk: oklch(0.68 0.2 35);
+  --risk-foreground: oklch(0.98 0.005 35);
+  --info: oklch(0.65 0.16 225);
+  --info-foreground: oklch(0.98 0.005 225);
+  --chart-1: oklch(0.62 0.18 220);
+  --chart-2: oklch(0.62 0.16 165);
+  --chart-3: oklch(0.75 0.17 80);
+  --chart-4: oklch(0.68 0.19 20);
+  --chart-5: oklch(0.58 0.16 280);
+
+  --sidebar: oklch(0.16 0.025 255);
+  --sidebar-foreground: oklch(0.96 0.008 255);
+  --sidebar-primary: oklch(0.72 0.13 215);
+  --sidebar-primary-foreground: oklch(0.14 0.02 255);
+  --sidebar-accent: oklch(0.22 0.03 255);
+  --sidebar-accent-foreground: oklch(0.96 0.008 255);
+  --sidebar-border: oklch(0.26 0.035 255);
+  --sidebar-ring: oklch(0.72 0.13 215);
 }
 
 @theme inline {
@@ -134,12 +206,62 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  --font-sans: var(--font-inter, Inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono, "IBM Plex Mono"), "SFMono-Regular", Consolas, monospace;
+  --font-numeric: var(--font-ibm-plex-mono, "IBM Plex Mono"), "SFMono-Regular", Consolas, monospace;
+  --text-2xs: 0.65rem;
   --radius-sm: calc(var(--radius) - 0.25rem);
   --radius-md: calc(var(--radius) - 0.125rem);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 0.25rem);
+  --spacing-1: var(--space-1);
+  --spacing-1_5: var(--space-1_5);
+  --spacing-2: var(--space-2);
+  --spacing-2_5: var(--space-2_5);
+  --spacing-3: var(--space-3);
+  --spacing-3_5: var(--space-3_5);
+  --spacing-4: var(--space-4);
+  --spacing-5: var(--space-5);
+  --spacing-6: var(--space-6);
+  --spacing-7: var(--space-7);
+  --spacing-8: var(--space-8);
+  --spacing-9: var(--space-9);
+  --spacing-10: var(--space-10);
+  --spacing-11: var(--space-11);
+  --spacing-12: var(--space-12);
+  --spacing-14: var(--space-14);
+  --spacing-16: var(--space-16);
+  --spacing-20: var(--space-20);
+  --spacing-0: var(--space-0);
+  --spacing-0_5: var(--space-0_5);
+  --spacing-24: var(--space-24);
+  --spacing-28: var(--space-28);
+  --spacing-32: var(--space-32);
+  --animate-pulse: pulse 2s var(--motion-ease-in-out);
+  --default-transition-duration: var(--motion-duration-normal);
+  --default-transition-timing-function: var(--motion-ease-in-out);
+  --ease-in: var(--motion-ease-in);
+  --ease-out: var(--motion-ease-out);
+  --ease-in-out: var(--motion-ease-in-out);
+  --ease-linear: var(--motion-ease-linear);
+  --z-base: var(--z-base);
+  --z-dropdown: var(--z-dropdown);
+  --z-sticky: var(--z-sticky);
+  --z-overlay: var(--z-overlay);
+  --z-modal: var(--z-modal);
+  --z-popover: var(--z-popover);
+  --z-toast: var(--z-toast);
+  --z-command: var(--z-command);
+  --shadow-panel: var(--shadow-panel);
+  --shadow-overlay: var(--shadow-overlay);
+  --shadow-command: var(--shadow-command);
+  --shadow-sticky: var(--shadow-sticky);
+  --tracking-heading: var(--tracking-heading);
+  --tracking-label: var(--tracking-label);
+  --tracking-uppercase: var(--tracking-uppercase);
+  --duration-fast: var(--motion-duration-fast);
+  --duration-normal: var(--motion-duration-normal);
+  --duration-slow: var(--motion-duration-slow);
 }
 
 * {
@@ -147,11 +269,7 @@
 }
 
 html {
-  color-scheme: light;
-}
-
-html.dark {
-  color-scheme: dark;
+  color-scheme: var(--color-scheme);
 }
 
 body {
@@ -161,4 +279,61 @@ body {
   font-family: var(--font-sans);
   font-feature-settings: "cv02", "cv03", "cv04", "tnum";
   text-rendering: optimizeLegibility;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Reduced Motion                                                    */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: required to override all animations per WCAG reduced motion */
+    animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: required to override all animations per WCAG reduced motion */
+    animation-iteration-count: 1 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: required to override all transitions per WCAG reduced motion */
+    transition-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: required to override scroll behavior per WCAG reduced motion */
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  High Contrast (system preference)                                 */
+/* ------------------------------------------------------------------ */
+@media (prefers-contrast: high) {
+  :root {
+    --border: oklch(0.5 0.05 255);
+    --ring: oklch(0.3 0.1 248);
+    --input: oklch(0.5 0.05 255);
+  }
+  .dark {
+    --border: oklch(0.7 0.05 255);
+    --ring: oklch(0.7 0.1 215);
+    --input: oklch(0.7 0.05 255);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  High Contrast (manual override — same as prefers-contrast: high)  */
+/* ------------------------------------------------------------------ */
+.high-contrast {
+  --border: oklch(0.5 0.05 255);
+  --ring: oklch(0.3 0.1 248);
+  --input: oklch(0.5 0.05 255);
+}
+.high-contrast.dark {
+  --border: oklch(0.7 0.05 255);
+  --ring: oklch(0.7 0.1 215);
+  --input: oklch(0.7 0.05 255);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Tailwind v4 variants                                              */
+/* ------------------------------------------------------------------ */
+@custom-variant high-contrast {
+  @media (prefers-contrast: high) {
+    @slot;
+  }
 }

@@ -8,25 +8,19 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "paths": {
-      "@saptm/auth": ["packages/auth/src/index.ts"],
-      "@saptm/auth/client": ["packages/auth/src/client.ts"],
-      "@saptm/auth/server": ["packages/auth/src/server.ts"],
-      "@saptm/config": ["packages/config/src/index.ts"],
-      "@saptm/database": ["packages/database/src/index.ts"],
-      "@saptm/observability": ["packages/observability/src/index.ts"],
-      "@saptm/rpc": ["packages/rpc/src/index.ts"],
-      "@saptm/testing": ["packages/testing/src/index.ts"],
-      "@saptm/types": ["packages/types/src/index.ts"],
-      "@saptm/ui": ["packages/ui/src/index.ts"],
-      "@saptm/ui/*": ["packages/ui/src/*"]
-    }
+    "sourceMap": true
   }
 }

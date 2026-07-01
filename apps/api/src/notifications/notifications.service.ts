@@ -1,11 +1,26 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { type DatabaseActorType, getPrismaClient, type SaptmPrismaClient } from "@saptm/database";
+import { Inject, Injectable, NotFoundException, Optional } from "@nestjs/common";
+import {
+  type DatabaseActorType,
+  getPrismaClient,
+  type PrismaTx,
+  type SaptmPrismaClient,
+} from "@saptm/database";
 import type {
   NotificationInboxInput,
   NotificationInboxOutput,
   NotificationMarkReadInput,
   NotificationMarkReadOutput,
 } from "@saptm/rpc";
+
+import {
+  createRequestMetadata,
+  mapNotification,
+  toIsoStringOrNull,
+} from "./domain/notifications.dto.js";
+import {
+  NOTIFICATIONS_REPOSITORY,
+  type NotificationsRepository,
+} from "./domain/notifications.repository.js";
 
 export type ReadNotificationInboxInput = NotificationInboxInput & {
   organizationId: string;
@@ -18,35 +33,22 @@ export type MarkNotificationReadInput = NotificationMarkReadInput & {
   actorId: string;
   correlationId: string;
   readAt?: Date;
-  ipAddress?: string;
-  userAgent?: string;
-};
-
-type NotificationFindManyArgs = NonNullable<
-  Parameters<SaptmPrismaClient["notification"]["findMany"]>[0]
->;
-type NotificationWhereInput = NonNullable<NotificationFindManyArgs["where"]>;
-
-type NotificationRecord = {
-  id: string;
-  organizationId: string;
-  sourceOutboxEventId: string | null;
-  eventType: string;
-  aggregateType: string;
-  aggregateId: string;
-  title: string;
-  message: string;
-  severity: "low" | "medium" | "high" | "critical";
-  status: "unread" | "read" | "archived";
-  createdAt: Date;
-  updatedAt: Date;
-  readAt: Date | null;
-  archivedAt: Date | null;
+  ipAddress?: string | undefined;
+  userAgent?: string | undefined;
 };
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly database: SaptmPrismaClient = getPrismaClient()) {}
+  constructor(
+    @Inject(NOTIFICATIONS_REPOSITORY)
+    private readonly notificationsRepository: NotificationsRepository,
+    @Optional()
+    private readonly database?: SaptmPrismaClient,
+  ) {}
+
+  private getDatabase(): SaptmPrismaClient {
+    return this.database ?? getPrismaClient();
+  }
 
   async readInbox(input: ReadNotificationInboxInput): Promise<NotificationInboxOutput> {
     const generatedAt = input.generatedAt ?? new Date();
@@ -54,34 +56,11 @@ export class NotificationsService {
     const where = createNotificationWhere(input);
 
     const [notifications, totalCount, unreadCount, readCount, archivedCount] = await Promise.all([
-      this.database.notification.findMany({
-        where,
-        orderBy: [{ createdAt: "desc" }, { updatedAt: "desc" }],
-        take: limit,
-      }),
-      this.database.notification.count({
-        where: {
-          organizationId: input.organizationId,
-        },
-      }),
-      this.database.notification.count({
-        where: {
-          organizationId: input.organizationId,
-          status: "unread",
-        },
-      }),
-      this.database.notification.count({
-        where: {
-          organizationId: input.organizationId,
-          status: "read",
-        },
-      }),
-      this.database.notification.count({
-        where: {
-          organizationId: input.organizationId,
-          status: "archived",
-        },
-      }),
+      this.notificationsRepository.searchNotifications(where, limit),
+      this.notificationsRepository.countNotifications(input.organizationId),
+      this.notificationsRepository.countByStatus(input.organizationId, "unread"),
+      this.notificationsRepository.countByStatus(input.organizationId, "read"),
+      this.notificationsRepository.countByStatus(input.organizationId, "archived"),
     ]);
 
     return {
@@ -97,115 +76,79 @@ export class NotificationsService {
         read: readCount,
         archived: archivedCount,
       },
-      notifications: notifications.map((notification) =>
-        mapNotification(notification as NotificationRecord),
-      ),
+      notifications: notifications.map(mapNotification),
     };
   }
 
   async markRead(input: MarkNotificationReadInput): Promise<NotificationMarkReadOutput> {
     const readAt = input.readAt ?? new Date();
-    const existingNotification = (await this.database.notification.findFirst({
-      where: {
-        id: input.notificationId,
-        organizationId: input.organizationId,
-      },
-    })) as NotificationRecord | null;
+    const existingNotification = await this.notificationsRepository.findNotificationById(
+      input.organizationId,
+      input.notificationId,
+    );
 
     if (existingNotification === null) {
       throw new NotFoundException("notification.not_found");
     }
 
-    const notification = await this.database.$transaction(async (transaction) => {
+    const notification = await this.getDatabase().$transaction(async (tx: PrismaTx) => {
       const updatedNotification =
         existingNotification.status === "unread"
-          ? await transaction.notification.update({
-              where: {
-                id: existingNotification.id,
-              },
-              data: {
-                status: "read",
-                readAt,
-              },
-            })
+          ? await this.notificationsRepository.updateNotificationReadStatus(
+              tx,
+              existingNotification.id,
+              readAt,
+            )
           : existingNotification;
 
-      await transaction.auditRecord.create({
-        data: {
-          organizationId: input.organizationId,
-          actorType: input.actorType,
-          actorId: input.actorId,
-          action: "notification.marked_read",
-          subjectType: "notification",
-          subjectId: existingNotification.id,
-          severity: "low",
-          before: {
-            status: existingNotification.status,
-            readAt: toIsoStringOrNull(existingNotification.readAt),
-          },
-          after: {
-            status: updatedNotification.status,
-            readAt: toIsoStringOrNull(updatedNotification.readAt),
-          },
-          reason: "Operational notification acknowledged by authorized user.",
-          correlationId: input.correlationId,
-          ...createRequestMetadata(input),
+      await this.notificationsRepository.createAuditRecord(tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
+        action: "notification.marked_read",
+        subjectType: "notification",
+        subjectId: existingNotification.id,
+        severity: "low",
+        before: {
+          status: existingNotification.status,
+          readAt: toIsoStringOrNull(existingNotification.readAt),
         },
+        after: {
+          status: updatedNotification.status,
+          readAt: toIsoStringOrNull(updatedNotification.readAt),
+        },
+        reason: "Operational notification acknowledged by authorized user.",
+        correlationId: input.correlationId,
+        ...createRequestMetadata(input),
       });
 
-      return updatedNotification as NotificationRecord;
+      return updatedNotification;
     });
 
     return {
       organizationId: input.organizationId,
       notification: mapNotification(notification),
+      idempotency: { key: input.idempotencyKey, replayed: false },
       audit: {
         action: "notification.marked_read",
         subjectType: "notification",
         subjectId: notification.id,
       },
+      outbox: {
+        eventType: "notification.marked_read",
+        aggregateType: "notification",
+        aggregateId: notification.id,
+      },
     };
   }
 }
 
-function createNotificationWhere(input: ReadNotificationInboxInput): NotificationWhereInput {
+function createNotificationWhere(input: ReadNotificationInboxInput): {
+  organizationId: string;
+  status?: string | undefined;
+} {
   return {
     organizationId: input.organizationId,
     ...(input.status === undefined ? {} : { status: input.status }),
-  };
-}
-
-function mapNotification(
-  notification: NotificationRecord,
-): NotificationInboxOutput["notifications"][number] {
-  return {
-    id: notification.id,
-    organizationId: notification.organizationId,
-    sourceOutboxEventId: notification.sourceOutboxEventId,
-    eventType: notification.eventType,
-    aggregateType: notification.aggregateType,
-    aggregateId: notification.aggregateId,
-    title: notification.title,
-    message: notification.message,
-    severity: notification.severity,
-    status: notification.status,
-    createdAt: notification.createdAt.toISOString(),
-    updatedAt: notification.updatedAt.toISOString(),
-    readAt: toIsoStringOrNull(notification.readAt),
-    archivedAt: toIsoStringOrNull(notification.archivedAt),
-  };
-}
-
-function toIsoStringOrNull(value: Date | null): string | null {
-  return value === null ? null : value.toISOString();
-}
-
-function createRequestMetadata(input: { ipAddress?: string; userAgent?: string }): {
-  ipAddress?: string;
-  userAgent?: string;
-} {
-  return {
-    ...(input.ipAddress === undefined ? {} : { ipAddress: input.ipAddress }),
-    ...(input.userAgent === undefined ? {} : { userAgent: input.userAgent }),
   };
 }

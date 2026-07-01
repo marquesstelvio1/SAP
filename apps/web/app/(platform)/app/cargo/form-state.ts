@@ -10,7 +10,7 @@ export type CargoRegisterFormState = {
 
 export const initialCargoRegisterFormState: CargoRegisterFormState = {
   status: "idle",
-  message: "Preencha os dados da carga para aplicar as regras P0 de registo governado.",
+  message: "Preencha os dados da carga para iniciar o registo operacional.",
 };
 
 export type CargoReleaseFormState = {
@@ -42,7 +42,7 @@ export type CargoTransportPlanFormState = {
 
 export const initialCargoTransportPlanFormState: CargoTransportPlanFormState = {
   status: "idle",
-  message: "Informe a carga liberada e o plano operacional para criar o tracking governado.",
+  message: "Informe a carga liberada e o plano operacional para criar o tracking.",
 };
 
 export type CargoTransportDepartFormState = {
@@ -93,7 +93,7 @@ export type CargoDeliveryCompleteFormState = {
 
 export const initialCargoDeliveryCompleteFormState: CargoDeliveryCompleteFormState = {
   status: "idle",
-  message: "Informe a carga chegada para concluir a entrega governada P5.",
+  message: "Informe a carga chegada para concluir a entrega.",
 };
 
 export type CargoDeliveryExceptionRecordFormState = {
@@ -179,7 +179,7 @@ export type CargoComplianceEvidenceRecordFormState = {
 export const initialCargoComplianceEvidenceRecordFormState: CargoComplianceEvidenceRecordFormState =
   {
     status: "idle",
-    message: "Registe evidencia documental antes da verificacao governada P3.",
+    message: "Registe evidencia documental antes da verificacao.",
   };
 
 export type CargoComplianceEvidenceVerifyFormState = {

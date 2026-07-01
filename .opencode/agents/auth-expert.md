@@ -1,6 +1,6 @@
 ---
 description: Implements authentication and authorization using Better Auth, OAuth strategies, and session management. Use when implementing auth flows, login/signup, OAuth providers, role-based access control, or session management.
-mode: subagent
+mode: all
 ---
 
 # Auth Expert

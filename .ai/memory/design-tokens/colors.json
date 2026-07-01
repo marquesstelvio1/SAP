@@ -1,0 +1,81 @@
+{
+  "background": {
+    "value": "hsl(var(--background))",
+    "type": "color",
+    "description": "Main page background"
+  },
+  "foreground": {
+    "value": "hsl(var(--foreground))",
+    "type": "color",
+    "description": "Main text color"
+  },
+  "card": { "value": "hsl(var(--card))", "type": "color", "description": "Card background" },
+  "card-foreground": {
+    "value": "hsl(var(--card-foreground))",
+    "type": "color",
+    "description": "Card text color"
+  },
+  "popover": {
+    "value": "hsl(var(--popover))",
+    "type": "color",
+    "description": "Popover background"
+  },
+  "popover-foreground": {
+    "value": "hsl(var(--popover-foreground))",
+    "type": "color",
+    "description": "Popover text"
+  },
+  "primary": {
+    "value": "hsl(var(--primary))",
+    "type": "color",
+    "description": "Primary action color"
+  },
+  "primary-foreground": {
+    "value": "hsl(var(--primary-foreground))",
+    "type": "color",
+    "description": "Text on primary"
+  },
+  "secondary": {
+    "value": "hsl(var(--secondary))",
+    "type": "color",
+    "description": "Secondary action color"
+  },
+  "secondary-foreground": {
+    "value": "hsl(var(--secondary-foreground))",
+    "type": "color",
+    "description": "Text on secondary"
+  },
+  "muted": { "value": "hsl(var(--muted))", "type": "color", "description": "Muted background" },
+  "muted-foreground": {
+    "value": "hsl(var(--muted-foreground))",
+    "type": "color",
+    "description": "Muted text"
+  },
+  "accent": { "value": "hsl(var(--accent))", "type": "color", "description": "Accent background" },
+  "accent-foreground": {
+    "value": "hsl(var(--accent-foreground))",
+    "type": "color",
+    "description": "Accent text"
+  },
+  "destructive": {
+    "value": "hsl(var(--destructive))",
+    "type": "color",
+    "description": "Destructive actions"
+  },
+  "destructive-foreground": {
+    "value": "hsl(var(--destructive-foreground))",
+    "type": "color",
+    "description": "Text on destructive"
+  },
+  "success": { "value": "hsl(var(--success))", "type": "color", "description": "Success state" },
+  "warning": { "value": "hsl(var(--warning))", "type": "color", "description": "Warning state" },
+  "info": { "value": "hsl(var(--info))", "type": "color", "description": "Info state" },
+  "border": { "value": "hsl(var(--border))", "type": "color", "description": "Default border" },
+  "input": { "value": "hsl(var(--input))", "type": "color", "description": "Input border" },
+  "ring": { "value": "hsl(var(--ring))", "type": "color", "description": "Focus ring" },
+  "radius": {
+    "value": "var(--radius)",
+    "type": "border-radius",
+    "description": "Default border radius"
+  }
+}

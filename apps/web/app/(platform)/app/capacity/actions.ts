@@ -18,7 +18,7 @@ import {
   capacitySlotOpenOutputSchema,
   capacitySlotReserveInputSchema,
   capacitySlotReserveOutputSchema,
-} from "@saptm/rpc";
+} from "@saptm/rpc/capacity";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 

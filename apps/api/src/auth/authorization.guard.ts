@@ -12,6 +12,7 @@ import { type AuthorizationRequirement, evaluateAuthorization } from "@saptm/aut
 import { ObservabilityService } from "../observability/observability.service.js";
 import type { RequestWithAuthContext } from "./auth-context.js";
 import { authorizationRequirementMetadataKey } from "./authorization.decorator.js";
+import { IS_PUBLIC_KEY } from "./public.decorator.js";
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
@@ -21,13 +22,23 @@ export class AuthorizationGuard implements CanActivate {
   ) {}
 
   canActivate(context: ExecutionContext): boolean {
+    // Allow public routes (marked with @Public()) to bypass authorization
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) {
+      return true;
+    }
+
     const requirement = this.reflector.getAllAndOverride<AuthorizationRequirement>(
       authorizationRequirementMetadataKey,
       [context.getHandler(), context.getClass()],
     );
 
     if (requirement === undefined) {
-      return true;
+      throw new ForbiddenException("Request is not authorized for this operation.");
     }
 
     const request = context.switchToHttp().getRequest<RequestWithAuthContext>();

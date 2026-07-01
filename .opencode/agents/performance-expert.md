@@ -1,6 +1,6 @@
 ---
 description: Analyzes and optimizes web and mobile application performance across load, runtime, and network dimensions. Use when analyzing performance bottlenecks, improving Core Web Vitals, load testing, or optimizing runtime performance.
-mode: subagent
+mode: all
 ---
 
 # Performance Expert

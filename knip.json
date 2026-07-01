@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["apps/api/src/main.ts", "apps/web/next.config.ts", "packages/*/src/index.ts"],
+  "project": ["apps/**/*.ts", "packages/**/*.ts"],
+  "ignoreDependencies": [
+    "@biomejs/biome",
+    "turbo",
+    "tsx",
+    "tsup",
+    "reflect-metadata",
+    "class-variance-authority",
+    "radix-ui"
+  ],
+  "ignoreBinaries": ["dotenvx", "turbo", "tsx", "biome"]
+}

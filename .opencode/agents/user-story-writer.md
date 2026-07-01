@@ -1,6 +1,6 @@
 ---
 description: Crafts clear, testable user stories and acceptance criteria for product backlog. Use when writing user stories, defining acceptance criteria, breaking down epics, or refining product backlog items.
-mode: subagent
+mode: all
 ---
 
 # User Story Writer

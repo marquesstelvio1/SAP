@@ -49,7 +49,7 @@ test("admin overview metadata accepts any tenant identity admin permission", () 
 });
 
 test("admin overview schema validates tenant identity governance snapshot", () => {
-  assert.deepEqual(adminOverviewInputSchema.parse(undefined), { limit: 25 });
+  assert.deepEqual(adminOverviewInputSchema.parse(undefined), { limit: 25, offset: 0 });
 
   const parsed = adminOverviewOutputSchema.parse({
     generatedAt: "2026-06-05T00:00:00.000Z",
@@ -107,6 +107,11 @@ test("admin overview schema validates tenant identity governance snapshot", () =
         roleCount: 1,
       },
     ],
+    pagination: {
+      totalCount: 1,
+      limit: 25,
+      offset: 0,
+    },
     securityModel: {
       authProvider: "better-auth",
       authorizationModel: "tenant-scoped-rbac",

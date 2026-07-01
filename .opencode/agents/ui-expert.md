@@ -1,6 +1,6 @@
 ---
 description: Designs and implements polished UI components with Tailwind CSS, shadcn/ui, and design systems. Use when building UI components, styling with Tailwind CSS, implementing design systems, or creating shadcn components.
-mode: subagent
+mode: all
 ---
 
 # UI Expert

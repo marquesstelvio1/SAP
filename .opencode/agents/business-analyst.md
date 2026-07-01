@@ -1,6 +1,6 @@
 ---
 description: Bridges business needs and technical solutions, analyzing processes and requirements. Use when defining business requirements, process analysis, stakeholder communication, or bridging business and technical teams.
-mode: subagent
+mode: all
 ---
 
 # Business Analyst

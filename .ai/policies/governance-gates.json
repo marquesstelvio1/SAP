@@ -1,34 +1,100 @@
 {
   "gates": [
     {
-      "name": "scope",
+      "name": "product-design",
       "requiredFor": ["all"],
-      "owner": "agent-planner"
+      "owner": "agent-product-manager",
+      "plugin": "product-design",
+      "blocking": true,
+      "artifact": "docs/product/*"
+    },
+    {
+      "name": "architecture",
+      "requiredFor": ["all"],
+      "owner": "agent-architect",
+      "plugin": "architecture-audit",
+      "blocking": true,
+      "artifact": "architecture-report.md"
+    },
+    {
+      "name": "design-system",
+      "requiredFor": ["frontend", "mobile"],
+      "owner": "agent-design-system-architect",
+      "plugin": "design-system-audit",
+      "blocking": false,
+      "artifact": "design-system-report.md"
     },
     {
       "name": "contract",
       "requiredFor": ["backend", "mobile", "frontend"],
-      "owner": "agent-architect"
+      "owner": "agent-backend-architect",
+      "plugin": "api-contract-validator",
+      "blocking": true,
+      "artifact": "contract-report.md"
+    },
+    {
+      "name": "integration",
+      "requiredFor": ["frontend", "mobile"],
+      "owner": "agent-qa-architect",
+      "plugin": "frontend-backend-validator",
+      "blocking": true,
+      "artifact": "integration-report.md"
     },
     {
       "name": "auth-security",
       "requiredFor": ["auth", "backend", "infra"],
-      "owner": "agent-auth"
+      "owner": "agent-security-architect",
+      "plugin": "security-audit",
+      "blocking": true,
+      "artifact": "security-report.md"
+    },
+    {
+      "name": "performance",
+      "requiredFor": ["critical", "high"],
+      "owner": "agent-performance-architect",
+      "plugin": "performance-audit",
+      "blocking": false,
+      "artifact": "performance-report.md"
+    },
+    {
+      "name": "accessibility",
+      "requiredFor": ["frontend", "mobile"],
+      "owner": "agent-accessibility-architect",
+      "plugin": "accessibility-audit",
+      "blocking": false,
+      "artifact": "accessibility-report.md"
+    },
+    {
+      "name": "enterprise",
+      "requiredFor": ["release"],
+      "owner": "agent-architect",
+      "plugin": "enterprise-checklist",
+      "blocking": true,
+      "artifact": "enterprise-report.md"
     },
     {
       "name": "test",
       "requiredFor": ["all"],
-      "owner": "agent-qa"
+      "owner": "agent-qa-architect",
+      "plugin": "testing-audit",
+      "blocking": true,
+      "artifact": "testing-report.md"
     },
     {
       "name": "docs-changelog",
       "requiredFor": ["all"],
-      "owner": "agent-git-manager"
+      "owner": "agent-documentation-architect",
+      "plugin": "documentation-generator",
+      "blocking": false,
+      "artifact": "docs/*"
     },
     {
       "name": "release",
       "requiredFor": ["critical", "high"],
-      "owner": "agent-architect"
+      "owner": "agent-orchestrator",
+      "plugin": "release-readiness",
+      "blocking": true,
+      "artifact": "release-report.md"
     }
   ]
 }

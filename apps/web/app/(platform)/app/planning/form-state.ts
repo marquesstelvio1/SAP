@@ -10,7 +10,7 @@ export type TransportOrderConfirmFormState = {
 
 export const initialTransportOrderConfirmFormState: TransportOrderConfirmFormState = {
   status: "idle",
-  message: "Confirme uma transport order somente apos carga, rota, timing e responsabilidade.",
+  message: "Confirme uma ordem de transporte apos validar carga, rota e responsabilidade.",
 };
 
 export type TransportOrderCancelFormState = {
@@ -25,8 +25,7 @@ export type TransportOrderCancelFormState = {
 
 export const initialTransportOrderCancelFormState: TransportOrderCancelFormState = {
   status: "idle",
-  message:
-    "Cancele uma transport order confirmada somente antes da partida, com motivo e audit trail.",
+  message: "Cancele uma ordem de transporte confirmada antes da partida.",
 };
 
 export type TransportOrderRescheduleFormState = {
@@ -43,8 +42,7 @@ export type TransportOrderRescheduleFormState = {
 
 export const initialTransportOrderRescheduleFormState: TransportOrderRescheduleFormState = {
   status: "idle",
-  message:
-    "Replaneie uma transport order confirmada antes da partida, mantendo audit trail e outbox.",
+  message: "Replaneie uma ordem de transporte confirmada antes da partida.",
 };
 
 export type TransportOrderDispatchFormState = {
@@ -61,6 +59,5 @@ export type TransportOrderDispatchFormState = {
 
 export const initialTransportOrderDispatchFormState: TransportOrderDispatchFormState = {
   status: "idle",
-  message:
-    "Despache uma transport order confirmada para execucao antes da partida, com instrucoes auditaveis.",
+  message: "Despache uma ordem de transporte confirmada para execucao.",
 };

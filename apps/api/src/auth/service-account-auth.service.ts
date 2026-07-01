@@ -1,17 +1,17 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import {
   createServiceAccountAuthContext,
   extractApiKeyFromHeaders,
   hashApiKey,
   validateApiKeyCredential,
 } from "@saptm/auth";
-import { getPrismaClient } from "@saptm/database";
 
 import type { RequestWithAuthContext } from "./auth-context.js";
+import { AUTH_REPOSITORY, type AuthRepository } from "./domain/auth.repository.js";
 
 @Injectable()
 export class ServiceAccountAuthService {
-  private readonly database = getPrismaClient();
+  constructor(@Inject(AUTH_REPOSITORY) private readonly authRepo: AuthRepository) {}
 
   async resolveContext(request: RequestWithAuthContext) {
     if (!request.traceContext) {
@@ -25,14 +25,7 @@ export class ServiceAccountAuthService {
     }
 
     const keyHash = await hashApiKey(apiKey);
-    const apiKeyRecord = await this.database.apiKey.findUnique({
-      where: {
-        keyHash,
-      },
-      include: {
-        serviceAccount: true,
-      },
-    });
+    const apiKeyRecord = await this.authRepo.findApiKeyWithServiceAccount(keyHash);
 
     if (apiKeyRecord === null) {
       throw new Error("api_key.not_found");

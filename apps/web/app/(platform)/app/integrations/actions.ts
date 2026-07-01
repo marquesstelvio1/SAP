@@ -19,7 +19,7 @@ import {
   integrationTelematicsGpsPositionOutputSchema,
   integrationWarehouseWmsActivityInputSchema,
   integrationWarehouseWmsActivityOutputSchema,
-} from "@saptm/rpc";
+} from "@saptm/rpc/integrations";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 

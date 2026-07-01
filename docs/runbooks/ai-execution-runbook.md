@@ -3,7 +3,7 @@
 ## Routine
 
 1. Read `diagnóstico.md`.
-2. Run `scripts/Test-AIOS.ps1`.
+2. Run `scripts/test-aios.mjs`.
 3. Create or select a diagnostic.
 4. Generate task bundle.
 5. Generate test plan, docs pack, PR draft, commit draft, and changelog.
@@ -12,9 +12,9 @@
 
 ## Local commands
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Test-AIOS.ps1
-powershell -ExecutionPolicy Bypass -File .\scripts\Invoke-AIWorkflow.ps1 -Workflow delivery -Domain frontend -TaskId FIN-001 -Feature ai-bootstrap
+```bash
+node ./scripts/test-aios.mjs
+node ./scripts/invoke-ai-workflow.mjs --workflow delivery --domain frontend --task-id FIN-001 --feature ai-bootstrap
 ```
 
 ## Required human review

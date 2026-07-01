@@ -11,7 +11,7 @@
 
 ## Command
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\New-AIDiagnostic.ps1 -Domain observability -Title "error-rate-spike" -Severity high -Impact "Critical flow degradation" -Evidence "Incident report or telemetry link"
+```bash
+node ./scripts/new-ai-diagnostic.mjs --domain observability --title "error-rate-spike" --severity high --impact "Critical flow degradation" --evidence "Incident report or telemetry link"
 ```
 

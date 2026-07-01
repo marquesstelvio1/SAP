@@ -67,3 +67,48 @@ export function uniquePlatformPermissions(
 ): PlatformPermission[] {
   return Array.from(new Set(permissions));
 }
+
+export type UserOrganization = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
+export async function getUserOrganizations(
+  userId: string,
+  database: UserAuthorizationClient = getPrismaClient(),
+): Promise<UserOrganization[]> {
+  const memberships = await database.membership.findMany({
+    where: {
+      userId,
+      status: "active",
+    },
+    include: {
+      organization: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
+    },
+  });
+
+  return memberships.map((m) => m.organization);
+}
+
+export async function verifyUserOrganizationAccess(
+  userId: string,
+  organizationId: string,
+  database: UserAuthorizationClient = getPrismaClient(),
+): Promise<boolean> {
+  const membership = await database.membership.findFirst({
+    where: {
+      userId,
+      organizationId,
+      status: "active",
+    },
+  });
+
+  return membership !== null;
+}

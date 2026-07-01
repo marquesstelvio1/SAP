@@ -8,9 +8,14 @@
       "!**/.turbo",
       "!**/.next",
       "!**/dist",
+      "!**/generated",
       "!**/coverage",
       "!**/playwright-report",
       "!**/test-results",
+      "!**/.agents",
+      "!**/.docker",
+      "!**/.pnpm-store",
+      "!scripts",
       "!pnpm-lock.yaml"
     ]
   },

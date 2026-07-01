@@ -39,13 +39,24 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "lint": "biome check ."
+    "lint": "biome check .",
+    "test": "node --test \"src/components/__tests__/*.test.mjs\"",
+    "test:coverage": "c8 node --test \"src/components/__tests__/*.test.mjs\"",
+    "storybook": "storybook dev -p 6006",
+    "build:storybook": "storybook build"
   },
   "dependencies": {
+    "@tanstack/react-table": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
+    "cmdk": "^1.1.1",
+    "date-fns": "catalog:",
     "lucide-react": "catalog:",
+    "next-themes": "catalog:",
     "radix-ui": "catalog:",
+    "react-day-picker": "catalog:",
+    "recharts": "catalog:",
+    "sonner": "catalog:",
     "tailwind-merge": "catalog:"
   },
   "peerDependencies": {
@@ -54,8 +65,18 @@
   },
   "devDependencies": {
     "@saptm/tsconfig": "workspace:*",
+    "@storybook/addon-a11y": "^8.0.0",
+    "@storybook/addon-essentials": "^8.0.0",
+    "@storybook/addon-interactions": "^8.0.0",
+    "@storybook/addon-links": "^8.0.0",
+    "@storybook/addon-themes": "^8.0.0",
+    "@storybook/blocks": "^8.0.0",
+    "@storybook/react": "^8.6.18",
+    "@storybook/react-vite": "^8.0.0",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "c8": "catalog:",
+    "storybook": "^8.0.0",
     "tsup": "catalog:",
     "typescript": "catalog:"
   }

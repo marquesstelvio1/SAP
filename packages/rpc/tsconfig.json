@@ -2,12 +2,7 @@
   "extends": "../tsconfig/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
-    "paths": {
-      "@saptm/auth": ["../auth/dist/index.d.ts"],
-      "@saptm/observability": ["../observability/dist/index.d.ts"],
-      "@saptm/types": ["../types/dist/index.d.ts"]
-    }
+    "rootDir": "src"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
