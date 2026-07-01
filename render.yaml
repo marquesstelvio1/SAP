@@ -54,9 +54,6 @@ services:
     dockerfilePath: ./apps/web/Dockerfile
     dockerContext: .
     branch: main
-    dockerBuildArgs:
-      NEXT_PUBLIC_APP_URL: $NEXT_PUBLIC_APP_URL
-      NEXT_PUBLIC_API_URL: $NEXT_PUBLIC_API_URL
     envVars:
       - key: NODE_ENV
         value: production
