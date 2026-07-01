@@ -185,3 +185,21 @@ Departamentos: `product`, `ux-research`, `visual-design`, `learning-design`, `fr
 Cada departamento carrega conhecimento profundo do skill correspondente em `~/.agents/skills/enterprise-*/SKILL.md`.
 
 **Design QA** é um quality gate read-only (`edit: deny`) — auditoria final obrigatória antes de entregar.
+
+## Sprint Execution Status
+
+### Sprint 1 — Design System + Loading Boundaries ✅ Concluído
+
+**Task 1 — Design token consumption** ✅
+- `input.tsx`: `file:h-7` → `file:h-[var(--density-compact-control-height)]`
+- `skeleton.tsx`: `h-8` → `h-[var(--density-operational-control-height)]`
+- `navigation-menu.tsx`: `h-9` → `h-[var(--density-compact-control-height)]`
+- `sidebar.tsx`: todas hardcoded heights → density tokens
+- `toggle.tsx`: `h-9/h-8/h-10` → density tokens
+- `loading.tsx` (platform): `z-50` → `z-sticky`
+
+**Task 2 — loading.tsx em 11 domain routes** ✅ Já existente
+
+**Task 3 — error.tsx em 11 domain routes** ✅ Já existente
+
+### Próximo Sprint: Sprint 2 — Frontend Architecture + Shared Components

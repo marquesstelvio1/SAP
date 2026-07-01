@@ -418,8 +418,9 @@ function SidebarGroupLabel({ className, ...props }: React.ComponentProps<"div">)
     <div
       data-slot="sidebar-group-label"
       className={cn(
-        "flex h-8 items-center px-2 text-sidebar-foreground/50 text-xs font-medium uppercase tracking-wider",
-        density === "operational" && "h-6 text-2xs",
+        "flex h-[var(--density-operational-control-height)] items-center px-2 text-sidebar-foreground/50 text-xs font-medium uppercase tracking-wider",
+        density === "comfortable" && "h-[var(--density-comfortable-control-height)]",
+        density === "operational" && "text-2xs",
         className,
       )}
       {...props}
@@ -475,9 +476,21 @@ function SidebarMenuButton({
   const Comp = asChild ? Slot.Root : "button";
 
   const sizeClasses = {
-    default: cn("h-9", density === "compact" && "h-8", density === "operational" && "h-7"),
-    sm: cn("h-8", density === "compact" && "h-7", density === "operational" && "h-6"),
-    lg: cn("h-12", density === "compact" && "h-10", density === "operational" && "h-9"),
+    default: cn(
+      "h-[var(--density-compact-control-height)]",
+      density === "compact" && "h-[var(--density-operational-control-height)]",
+      density === "operational" && "h-[var(--density-operational-control-height)]",
+    ),
+    sm: cn(
+      "h-[var(--density-operational-control-height)]",
+      density === "compact" && "h-[var(--density-operational-control-height)]",
+      density === "operational" && "h-[var(--density-operational-control-height)]",
+    ),
+    lg: cn(
+      "h-[var(--density-row-height)]",
+      density === "compact" && "h-[var(--density-comfortable-control-height)]",
+      density === "operational" && "h-[var(--density-compact-control-height)]",
+    ),
   };
 
   return (
@@ -537,7 +550,7 @@ function SidebarMenuSkeleton({ className, ...props }: React.ComponentProps<"div"
   return (
     <div
       data-slot="sidebar-menu-skeleton"
-      className={cn("flex h-9 items-center gap-3 px-3", className)}
+      className={cn("flex h-[var(--density-compact-control-height)] items-center gap-3 px-3", className)}
       {...props}
     >
       <div className="size-4 rounded-md bg-sidebar-accent/50 animate-pulse" />
