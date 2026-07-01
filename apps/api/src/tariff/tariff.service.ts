@@ -7,6 +7,7 @@ import type {
   TariffRateCardRegisterOutput,
   TariffRateRuleAddOutput,
 } from "@saptm/rpc";
+import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createTariffQuoteApproveAuditAfter,
   createTariffQuoteApproveAuditBefore,
@@ -46,7 +47,6 @@ import {
   readLineItemsFromPayload,
 } from "./domain/tariff.dto.js";
 import { TARIFF_REPOSITORY, type TariffRepository } from "./domain/tariff.repository.js";
-import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 
 @Injectable()
 export class TariffService {

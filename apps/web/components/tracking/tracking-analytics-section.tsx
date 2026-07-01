@@ -6,6 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  ContextRow,
   MetricTile,
   Table,
   TableBody,
@@ -77,7 +78,7 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
             />
             <CardTitle>Agregados de risco e SLA</CardTitle>
             <CardDescription>
-              Leitura tenant-scoped para operacao, atraso, excecao, prioridade e risco de ETA.
+              Leitura operacional para tracking, atraso, excecao, prioridade e risco de ETA.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3 md:grid-cols-3">
@@ -209,31 +210,20 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
           <CardHeader>
             <CardTitle>Politica de automacao</CardTitle>
             <CardDescription>
-              A IA local e consultiva; eventos, excecoes e releases continuam protegidos por RBAC,
-              idempotencia, audit trail e aprovacao.
+              A IA local e consultiva; eventos, excecoes e releases continuam protegidos por
+              permissoes, idempotencia, registo de auditoria e aprovacao.
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Automacao</span>
-              <span>{advisory.policy.automationAllowed ? "Permitida" : "Bloqueada"}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Aprovacao humana</span>
-              <span>{advisory.policy.humanApprovalRequired ? "Obrigatoria" : "Nao exigida"}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Fonte</span>
-              <span>{advisory.policy.source}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Operacao</span>
-              <span>tracking.ai.advisory.read</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Transporte</span>
-              <span>GET /rpc/tracking/advisory</span>
-            </div>
+          <CardContent className="flex flex-col gap-1">
+            <ContextRow
+              label="Automacao"
+              value={advisory.policy.automationAllowed ? "Permitida" : "Bloqueada"}
+            />
+            <ContextRow
+              label="Aprovacao humana"
+              value={advisory.policy.humanApprovalRequired ? "Obrigatoria" : "Nao exigida"}
+            />
+            <ContextRow label="Fonte" value={advisory.policy.source} />
           </CardContent>
         </Card>
       </section>

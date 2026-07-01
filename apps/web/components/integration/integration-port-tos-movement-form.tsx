@@ -59,7 +59,7 @@ export function IntegrationPortTosMovementForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessPortTos ? "success" : "warning"}>
-            {canProcessPortTos ? "Adapter governado" : "Sem permissao"}
+            {canProcessPortTos ? "Movimento autorizado" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">Port TOS</Badge>
           <Badge variant="outline">tracking.event.record</Badge>
@@ -68,7 +68,7 @@ export function IntegrationPortTosMovementForm({
           <CardTitle>Processar movimento Port TOS</CardTitle>
           <CardDescription className="leading-6">
             Converte um movimento TOS local em evento operacional de tracking. A operacao valida
-            service account, tenant, idempotencia externa, audit trail e outbox.
+            processamento de movimento Port TOS com registo de evento.
           </CardDescription>
         </div>
       </CardHeader>
@@ -199,7 +199,7 @@ export function IntegrationPortTosMovementForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma service account com tracking.event.record."
+              ? "Crie uma conta de servico com permissoes de tracking."
               : "Adapter local sem chamada externa."}
           </span>
         </CardFooter>

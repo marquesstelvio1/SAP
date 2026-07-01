@@ -71,7 +71,7 @@ async function readBetterAuthSession(): Promise<BetterAuthSessionResult> {
   return auth.api.getSession({
     headers: await headers(),
     query: {
-      disableCookieCache: false,
+      disableCookieCache: true,
       disableRefresh: true,
     },
   });

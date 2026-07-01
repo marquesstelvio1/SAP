@@ -170,7 +170,7 @@ export async function createAdminRoleAction(
 
   const result = await callAdminMutation("/rpc/admin/createRole", parsedInput.input);
 
-  return parseAdminRoleMutationResult(result, "Role custom criada com permissoes governadas.");
+  return parseAdminRoleMutationResult(result, "Role custom criada com permissoes configuradas.");
 }
 
 export async function updateAdminRolePermissionsAction(

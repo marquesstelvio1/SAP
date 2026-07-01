@@ -199,6 +199,57 @@ export class PrismaTrackingRepository implements TrackingRepository {
     return this.database.trackingShipment.count({ where: { organizationId } });
   }
 
+  async countExceptionEvents(organizationId: string) {
+    const groups = await this.database.trackingEvent.groupBy({
+      by: ["eventType"],
+      where: {
+        organizationId,
+        eventType: { in: ["exception", "customs_hold", "delayed"] },
+      },
+      _count: { _all: true },
+    });
+    return groups as Array<{ eventType: string; _count: { _all: number } }>;
+  }
+
+  async findRecentExceptionEvents(organizationId: string, limit: number, offset: number) {
+    return this.database.trackingEvent.findMany({
+      where: {
+        organizationId,
+        eventType: { in: ["exception", "customs_hold", "delayed"] },
+      },
+      orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }],
+      skip: offset,
+      take: limit,
+      select: {
+        id: true,
+        eventType: true,
+        occurredAt: true,
+        locationName: true,
+        payload: true,
+        shipment: {
+          select: {
+            id: true,
+            referenceCode: true,
+            transportMode: true,
+          },
+        },
+      },
+    }) as Promise<
+      Array<{
+        id: string;
+        eventType: string;
+        occurredAt: Date;
+        locationName: string | null;
+        payload: unknown;
+        shipment: {
+          id: string;
+          referenceCode: string;
+          transportMode: string;
+        };
+      }>
+    >;
+  }
+
   async createEvent(tx: PrismaTx, data: Record<string, unknown>) {
     const event = await tx.trackingEvent.create({
       data: data as never,

@@ -19,6 +19,8 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
+
 import type { CapacityResourceRegisterFormState } from "../../app/(platform)/app/capacity/form-state";
 
 export type CapacityResourceRegisterFormProps = {
@@ -34,8 +36,8 @@ const resourceTypeOptions = [
   { value: "terminal", label: "Terminal" },
   { value: "gate", label: "Gate" },
   { value: "berth", label: "Berth / cais" },
-  { value: "rail_track", label: "Linha ferroviaria" },
-  { value: "yard", label: "Patio" },
+  { value: "rail_track", label: "Linha ferroviária" },
+  { value: "yard", label: "Pátio" },
   { value: "carrier_slot", label: "Slot de transportador" },
 ] as const;
 
@@ -45,12 +47,14 @@ export function CapacityResourceRegisterForm({
   action,
 }: CapacityResourceRegisterFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("capacity_resource"),
+  );
   const isDisabled = isPending || !canManageCapacity;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("capacity_resource"));
     }
   }, [state.status]);
 
@@ -59,15 +63,15 @@ export function CapacityResourceRegisterForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageCapacity ? "success" : "warning"}>
-            {canManageCapacity ? "Capacity governada" : "Sem permissao"}
+            {canManageCapacity ? "Recurso autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">capacity.manage</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar recurso operacional</CardTitle>
           <CardDescription className="leading-6">
-            Cria capacidade base por tenant: terminal, gate, cais, linha, patio ou slot de
-            transportador. O codigo e unico e o comando e idempotente.
+            Cria capacidade base por tenant: terminal, gate, cais, linha, pátio ou slot de
+            transportador. O código é único e o comando é idempotente.
           </CardDescription>
         </div>
       </CardHeader>
@@ -78,7 +82,7 @@ export function CapacityResourceRegisterForm({
 
             <div className="grid gap-4 md:grid-cols-2">
               <Field data-disabled={!canManageCapacity}>
-                <FieldLabel htmlFor="resourceCode">Codigo do recurso</FieldLabel>
+                <FieldLabel htmlFor="resourceCode">Código do recurso</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="resourceCode"
@@ -116,12 +120,12 @@ export function CapacityResourceRegisterForm({
                   disabled={isDisabled}
                   id="locationName"
                   name="locationName"
-                  placeholder="Porto / Patio / Estacao"
+                  placeholder="Porto / Pátio / Estação"
                   required
                 />
               </Field>
               <Field data-disabled={!canManageCapacity}>
-                <FieldLabel htmlFor="maxConcurrentBookings">Limite simultaneo</FieldLabel>
+                <FieldLabel htmlFor="maxConcurrentBookings">Limite simultâneo</FieldLabel>
                 <Input
                   defaultValue="10"
                   disabled={isDisabled}
@@ -163,7 +167,7 @@ export function CapacityResourceRegisterForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canManageCapacity ? "Cria audit trail e outbox." : "Requer capacity.manage."}
+            {canManageCapacity ? "Registo cria auditoria." : "Requer gestao de capacidade."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A registar..." : "Registar recurso"}
@@ -172,11 +176,4 @@ export function CapacityResourceRegisterForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `capacity_resource_${randomValue}`;
 }

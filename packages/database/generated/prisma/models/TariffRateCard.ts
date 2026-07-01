@@ -37,6 +37,8 @@ export type TariffRateCardMinAggregateOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TariffRateCardMaxAggregateOutputType = {
@@ -52,6 +54,8 @@ export type TariffRateCardMaxAggregateOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TariffRateCardCountAggregateOutputType = {
@@ -67,6 +71,8 @@ export type TariffRateCardCountAggregateOutputType = {
   recordIdempotencyKey: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -84,6 +90,8 @@ export type TariffRateCardMinAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TariffRateCardMaxAggregateInputType = {
@@ -99,6 +107,8 @@ export type TariffRateCardMaxAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TariffRateCardCountAggregateInputType = {
@@ -114,6 +124,8 @@ export type TariffRateCardCountAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -202,6 +214,8 @@ export type TariffRateCardGroupByOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: TariffRateCardCountAggregateOutputType | null
   _min: TariffRateCardMinAggregateOutputType | null
   _max: TariffRateCardMaxAggregateOutputType | null
@@ -238,6 +252,8 @@ export type TariffRateCardWhereInput = {
   recordIdempotencyKey?: Prisma.StringNullableFilter<"TariffRateCard"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TariffRateCard"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TariffRateCard"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TariffRateCard"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TariffRateCard"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   rules?: Prisma.TariffRateRuleListRelationFilter
   quotes?: Prisma.TariffQuoteListRelationFilter
@@ -256,6 +272,8 @@ export type TariffRateCardOrderByWithRelationInput = {
   recordIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   rules?: Prisma.TariffRateRuleOrderByRelationAggregateInput
   quotes?: Prisma.TariffQuoteOrderByRelationAggregateInput
@@ -279,6 +297,8 @@ export type TariffRateCardWhereUniqueInput = Prisma.AtLeast<{
   recordIdempotencyKey?: Prisma.StringNullableFilter<"TariffRateCard"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TariffRateCard"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TariffRateCard"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TariffRateCard"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TariffRateCard"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   rules?: Prisma.TariffRateRuleListRelationFilter
   quotes?: Prisma.TariffQuoteListRelationFilter
@@ -297,6 +317,8 @@ export type TariffRateCardOrderByWithAggregationInput = {
   recordIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TariffRateCardCountOrderByAggregateInput
   _max?: Prisma.TariffRateCardMaxOrderByAggregateInput
   _min?: Prisma.TariffRateCardMinOrderByAggregateInput
@@ -318,6 +340,8 @@ export type TariffRateCardScalarWhereWithAggregatesInput = {
   recordIdempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"TariffRateCard"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TariffRateCard"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TariffRateCard"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"TariffRateCard"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"TariffRateCard"> | string | null
 }
 
 export type TariffRateCardCreateInput = {
@@ -332,6 +356,8 @@ export type TariffRateCardCreateInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTariffRateCardsInput
   rules?: Prisma.TariffRateRuleCreateNestedManyWithoutRateCardInput
   quotes?: Prisma.TariffQuoteCreateNestedManyWithoutRateCardInput
@@ -350,6 +376,8 @@ export type TariffRateCardUncheckedCreateInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   rules?: Prisma.TariffRateRuleUncheckedCreateNestedManyWithoutRateCardInput
   quotes?: Prisma.TariffQuoteUncheckedCreateNestedManyWithoutRateCardInput
 }
@@ -366,6 +394,8 @@ export type TariffRateCardUpdateInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTariffRateCardsNestedInput
   rules?: Prisma.TariffRateRuleUpdateManyWithoutRateCardNestedInput
   quotes?: Prisma.TariffQuoteUpdateManyWithoutRateCardNestedInput
@@ -384,6 +414,8 @@ export type TariffRateCardUncheckedUpdateInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.TariffRateRuleUncheckedUpdateManyWithoutRateCardNestedInput
   quotes?: Prisma.TariffQuoteUncheckedUpdateManyWithoutRateCardNestedInput
 }
@@ -401,6 +433,8 @@ export type TariffRateCardCreateManyInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TariffRateCardUpdateManyMutationInput = {
@@ -415,6 +449,8 @@ export type TariffRateCardUpdateManyMutationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TariffRateCardUncheckedUpdateManyInput = {
@@ -430,6 +466,8 @@ export type TariffRateCardUncheckedUpdateManyInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TariffRateCardListRelationFilter = {
@@ -465,6 +503,8 @@ export type TariffRateCardCountOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TariffRateCardMaxOrderByAggregateInput = {
@@ -480,6 +520,8 @@ export type TariffRateCardMaxOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TariffRateCardMinOrderByAggregateInput = {
@@ -495,6 +537,8 @@ export type TariffRateCardMinOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TariffRateCardScalarRelationFilter = {
@@ -588,6 +632,8 @@ export type TariffRateCardCreateWithoutOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   rules?: Prisma.TariffRateRuleCreateNestedManyWithoutRateCardInput
   quotes?: Prisma.TariffQuoteCreateNestedManyWithoutRateCardInput
 }
@@ -604,6 +650,8 @@ export type TariffRateCardUncheckedCreateWithoutOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   rules?: Prisma.TariffRateRuleUncheckedCreateNestedManyWithoutRateCardInput
   quotes?: Prisma.TariffQuoteUncheckedCreateNestedManyWithoutRateCardInput
 }
@@ -650,6 +698,8 @@ export type TariffRateCardScalarWhereInput = {
   recordIdempotencyKey?: Prisma.StringNullableFilter<"TariffRateCard"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TariffRateCard"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TariffRateCard"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TariffRateCard"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TariffRateCard"> | string | null
 }
 
 export type TariffRateCardCreateWithoutRulesInput = {
@@ -664,6 +714,8 @@ export type TariffRateCardCreateWithoutRulesInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTariffRateCardsInput
   quotes?: Prisma.TariffQuoteCreateNestedManyWithoutRateCardInput
 }
@@ -681,6 +733,8 @@ export type TariffRateCardUncheckedCreateWithoutRulesInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   quotes?: Prisma.TariffQuoteUncheckedCreateNestedManyWithoutRateCardInput
 }
 
@@ -712,6 +766,8 @@ export type TariffRateCardUpdateWithoutRulesInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTariffRateCardsNestedInput
   quotes?: Prisma.TariffQuoteUpdateManyWithoutRateCardNestedInput
 }
@@ -729,6 +785,8 @@ export type TariffRateCardUncheckedUpdateWithoutRulesInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quotes?: Prisma.TariffQuoteUncheckedUpdateManyWithoutRateCardNestedInput
 }
 
@@ -744,6 +802,8 @@ export type TariffRateCardCreateWithoutQuotesInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTariffRateCardsInput
   rules?: Prisma.TariffRateRuleCreateNestedManyWithoutRateCardInput
 }
@@ -761,6 +821,8 @@ export type TariffRateCardUncheckedCreateWithoutQuotesInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   rules?: Prisma.TariffRateRuleUncheckedCreateNestedManyWithoutRateCardInput
 }
 
@@ -792,6 +854,8 @@ export type TariffRateCardUpdateWithoutQuotesInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTariffRateCardsNestedInput
   rules?: Prisma.TariffRateRuleUpdateManyWithoutRateCardNestedInput
 }
@@ -809,6 +873,8 @@ export type TariffRateCardUncheckedUpdateWithoutQuotesInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.TariffRateRuleUncheckedUpdateManyWithoutRateCardNestedInput
 }
 
@@ -824,6 +890,8 @@ export type TariffRateCardCreateManyOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TariffRateCardUpdateWithoutOrganizationInput = {
@@ -838,6 +906,8 @@ export type TariffRateCardUpdateWithoutOrganizationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.TariffRateRuleUpdateManyWithoutRateCardNestedInput
   quotes?: Prisma.TariffQuoteUpdateManyWithoutRateCardNestedInput
 }
@@ -854,6 +924,8 @@ export type TariffRateCardUncheckedUpdateWithoutOrganizationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.TariffRateRuleUncheckedUpdateManyWithoutRateCardNestedInput
   quotes?: Prisma.TariffQuoteUncheckedUpdateManyWithoutRateCardNestedInput
 }
@@ -870,6 +942,8 @@ export type TariffRateCardUncheckedUpdateManyWithoutOrganizationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -925,6 +999,8 @@ export type TariffRateCardSelect<ExtArgs extends runtime.Types.Extensions.Intern
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   rules?: boolean | Prisma.TariffRateCard$rulesArgs<ExtArgs>
   quotes?: boolean | Prisma.TariffRateCard$quotesArgs<ExtArgs>
@@ -944,6 +1020,8 @@ export type TariffRateCardSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tariffRateCard"]>
 
@@ -960,6 +1038,8 @@ export type TariffRateCardSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tariffRateCard"]>
 
@@ -976,9 +1056,11 @@ export type TariffRateCardSelectScalar = {
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type TariffRateCardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "rateCardCode" | "rateCardName" | "status" | "currencyCode" | "validFrom" | "validUntil" | "sourceSystem" | "recordIdempotencyKey" | "createdAt" | "updatedAt", ExtArgs["result"]["tariffRateCard"]>
+export type TariffRateCardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "rateCardCode" | "rateCardName" | "status" | "currencyCode" | "validFrom" | "validUntil" | "sourceSystem" | "recordIdempotencyKey" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["tariffRateCard"]>
 export type TariffRateCardInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   rules?: boolean | Prisma.TariffRateCard$rulesArgs<ExtArgs>
@@ -1012,6 +1094,8 @@ export type $TariffRateCardPayload<ExtArgs extends runtime.Types.Extensions.Inte
     recordIdempotencyKey: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["tariffRateCard"]>
   composites: {}
 }
@@ -1450,6 +1534,8 @@ export interface TariffRateCardFieldRefs {
   readonly recordIdempotencyKey: Prisma.FieldRef<"TariffRateCard", 'String'>
   readonly createdAt: Prisma.FieldRef<"TariffRateCard", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TariffRateCard", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"TariffRateCard", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"TariffRateCard", 'String'>
 }
     
 

@@ -19,7 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
-
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TrackingExceptionResolveFormState } from "../../app/(platform)/app/tracking/form-state";
 
 export type TrackingExceptionResolutionShipment = {
@@ -41,7 +42,7 @@ export type TrackingExceptionResolveFormProps = {
 };
 
 const resolutionCodeOptions = [
-  { value: "documentation_fixed", label: "Documentacao corrigida" },
+  { value: "documentation_fixed", label: "Documentação corrigida" },
   { value: "customs_released", label: "Alfandega liberou" },
   { value: "capacity_reallocated", label: "Capacidade realocada" },
   { value: "infrastructure_restored", label: "Infraestrutura restaurada" },
@@ -54,7 +55,7 @@ const resolutionCodeOptions = [
 const nextStatusOptions = [
   { value: "in_transit", label: "Retomar em transito" },
   { value: "arrived", label: "Marcar como chegou" },
-  { value: "completed", label: "Marcar como concluido" },
+  { value: "completed", label: "Marcar como concluído" },
 ] as const;
 
 const evidenceTypeOptions = [
@@ -62,7 +63,7 @@ const evidenceTypeOptions = [
   { value: "photo", label: "Foto" },
   { value: "document", label: "Documento" },
   { value: "sensor", label: "Sensor" },
-  { value: "inspection", label: "Inspecao" },
+  { value: "inspection", label: "Inspeção" },
   { value: "external_reference", label: "Referencia externa" },
 ] as const;
 
@@ -74,13 +75,13 @@ export function TrackingExceptionResolveForm({
   action,
 }: TrackingExceptionResolveFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("trk_res"));
   const defaultOccurredAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canResolveExceptions || !isResolutionAllowed;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("trk_res"));
     }
   }, [state.status]);
 
@@ -89,15 +90,14 @@ export function TrackingExceptionResolveForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canResolveExceptions && isResolutionAllowed ? "success" : "outline"}>
-            {canResolveExceptions && isResolutionAllowed ? "Resolucao habilitada" : "Bloqueado"}
+            {canResolveExceptions && isResolutionAllowed ? "Resolucao autorizada" : "Indisponivel"}
           </Badge>
-          <Badge variant="outline">tracking.exception.resolve</Badge>
+          <Badge variant="outline">Resolucao</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Resolver excecao operacional</CardTitle>
           <CardDescription className="leading-6">
-            Fecha uma excecao ativa com release event, status recuperado, idempotencia, audit trail
-            e outbox. O backend rejeita cargas sem atraso/excecao ativa.
+            Fecha uma excecao ativa com registo de auditoria e recuperacao de status.
           </CardDescription>
         </div>
       </CardHeader>
@@ -278,7 +278,7 @@ export function TrackingExceptionResolveForm({
                 disabled={isDisabled}
                 id="resolveApproverName"
                 name="approverName"
-                placeholder="Ex.: Supervisor de Operacoes"
+                placeholder="Ex.: Supervisor de Operações"
                 required
               />
               <FieldDescription>Resolucao so aceita aprovacao aprovada.</FieldDescription>
@@ -319,7 +319,7 @@ export function TrackingExceptionResolveForm({
                   {state.status === "success"
                     ? `${state.message} Evento: ${state.eventId ?? "sem-id"} Status: ${
                         state.currentStatus ?? "sem-status"
-                      } Evidencia: ${state.evidenceReference ?? "sem-evidencia"} Aprovacao: ${
+                      } Evidência: ${state.evidenceReference ?? "sem-evidencia"} Aprovação: ${
                         state.approvalStatus ?? "sem-status"
                       } Workflow: ${state.workflowState ?? "sem-workflow"}`
                     : state.message}
@@ -343,25 +343,12 @@ export function TrackingExceptionResolveForm({
 
 function resolveFooterMessage(canResolveExceptions: boolean, isResolutionAllowed: boolean): string {
   if (!canResolveExceptions) {
-    return "Requer tracking.exception.resolve.";
+    return "Requer resolucao de excecoes.";
   }
 
   if (!isResolutionAllowed) {
     return "Requer status atrasado ou em excecao.";
   }
 
-  return "Resolucao grava release event, status, audit e outbox no backend.";
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `trk_res_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
+  return "Resolucao grava recuperacao de status com auditoria.";
 }

@@ -1,10 +1,10 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { getTrackingAdvisory } from "../lib/tracking-advisory";
+import { useRpcQuery } from "./use-rpc";
 
 export function useTrackingAdvisory(limit = 5) {
-  return useQuery({
+  return useRpcQuery({
     queryKey: ["tracking-advisory", limit],
     queryFn: async () => {
       const result = await getTrackingAdvisory(limit);
@@ -13,6 +13,5 @@ export function useTrackingAdvisory(limit = 5) {
       }
       return result.advisory;
     },
-    staleTime: 30_000,
   });
 }

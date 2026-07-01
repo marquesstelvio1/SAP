@@ -53,9 +53,9 @@ test("CardHeader is a function and returns a React element", () => {
   assert.ok(element.props.className.includes("flex-col"));
 });
 
-test("CardHeader applies padding via style", () => {
+test("CardHeader applies padding via class", () => {
   const element = CardHeader({});
-  assert.equal(element.props.style.padding, "var(--space-6)");
+  assert.ok(element.props.className.includes("p-6"));
 });
 
 test("CardHeader merges custom className", () => {
@@ -73,7 +73,7 @@ test("CardTitle is a function and returns a React element", () => {
   assert.equal(element.type, "h3");
   assert.equal(element.props["data-slot"], "card-title");
   assert.ok(element.props.className.includes("font-semibold"));
-  assert.ok(element.props.className.includes("tracking-tight"));
+  assert.ok(element.props.className.includes("tracking-heading"));
 });
 
 test("CardTitle merges custom className", () => {
@@ -111,10 +111,9 @@ test("CardContent is a function and returns a React element", () => {
   assert.equal(typeof CardContent, "function");
   const element = CardContent({});
   assert.equal(element.props["data-slot"], "card-content");
-  assert.equal(element.props.style.paddingLeft, "var(--space-6)");
-  assert.equal(element.props.style.paddingRight, "var(--space-6)");
-  assert.equal(element.props.style.paddingBottom, "var(--space-6)");
-  assert.equal(element.props.style.paddingTop, 0);
+  assert.ok(element.props.className.includes("px-6"));
+  assert.ok(element.props.className.includes("pb-6"));
+  assert.ok(element.props.className.includes("pt-0"));
 });
 
 test("CardContent merges custom className", () => {
@@ -134,11 +133,11 @@ test("CardFooter is a function and returns a React element", () => {
   assert.ok(element.props.className.includes("items-center"));
 });
 
-test("CardFooter applies padding via style", () => {
+test("CardFooter applies padding via class", () => {
   const element = CardFooter({});
-  assert.equal(element.props.style.paddingLeft, "var(--space-6)");
-  assert.equal(element.props.style.paddingRight, "var(--space-6)");
-  assert.equal(element.props.style.gap, "var(--space-3)");
+  assert.ok(element.props.className.includes("px-6"));
+  assert.ok(element.props.className.includes("pb-6"));
+  assert.ok(element.props.className.includes("gap-3"));
 });
 
 test("CardFooter merges custom className", () => {

@@ -1,5 +1,10 @@
 import { z } from "zod";
-
+import {
+  sharedAuditSchema,
+  sharedIdempotencyKeySchema,
+  sharedIdempotencyResultSchema,
+  sharedOutboxSchema,
+} from "./foundation.js";
 import { createRpcOperationMetadata } from "./metadata.js";
 
 // ─── Constants ───────────────────────────────────────────────────────────
@@ -21,12 +26,16 @@ export const organizationProfileOutputSchema = z.object({
 export const organizationStatusUpdateInputSchema = z.object({
   status: z.enum(organizationStatuses),
   reason: z.string().trim().min(8).max(320),
+  idempotencyKey: sharedIdempotencyKeySchema,
 });
 
 export const organizationStatusUpdateOutputSchema = z.object({
   organizationId: z.string(),
   status: z.enum(organizationStatuses),
   updatedAt: z.string(),
+  idempotency: sharedIdempotencyResultSchema,
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 // ─── Types ────────────────────────────────────────────────────────────────
@@ -40,11 +49,13 @@ export type OrganizationStatusUpdateOutput = z.infer<typeof organizationStatusUp
 export const organizationProfileMetadata = createRpcOperationMetadata({
   name: "organization.profile.read",
   kind: "query",
+  auth: "session",
   permissions: ["tenant.manage"],
   permissionMode: "all",
   organizationRequired: true,
   audit: "standard",
   criticality: "low",
+  signals: ["log", "metric", "span"],
 });
 
 export const organizationStatusUpdateMetadata = createRpcOperationMetadata({
@@ -57,4 +68,5 @@ export const organizationStatusUpdateMetadata = createRpcOperationMetadata({
   audit: "critical",
   idempotency: "required",
   criticality: "high",
+  signals: ["log", "metric", "span"],
 });

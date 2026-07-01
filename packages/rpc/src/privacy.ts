@@ -1,6 +1,19 @@
 import { z } from "zod/v4";
 import { createRpcOperationMetadata } from "./metadata.js";
 
+const privacyIdempotencyKeySchema = z.string().trim().min(12).max(128);
+const privacyIdempotencyResultSchema = z.object({ key: z.string(), replayed: z.boolean() });
+const privacyAuditSchema = z.object({
+  action: z.string(),
+  subjectType: z.string(),
+  subjectId: z.string(),
+});
+const privacyOutboxSchema = z.object({
+  eventType: z.string(),
+  aggregateType: z.string(),
+  aggregateId: z.string(),
+});
+
 export const privacyExportInputSchema = z.object({
   format: z.enum(["json", "csv"]).default("json"),
   includeAuditLogs: z.boolean().default(true),
@@ -69,14 +82,17 @@ export type PrivacyExportOutput = z.infer<typeof privacyExportOutputSchema>;
 export const privacyExportMetadata = createRpcOperationMetadata({
   name: "privacy.data.export",
   kind: "query",
+  auth: "session",
   permissions: [],
   organizationRequired: false,
   audit: "sensitive",
   criticality: "high",
+  signals: ["log", "metric", "span"],
 });
 
 export const privacyDeleteInputSchema = z.object({
   confirmation: z.literal("CONFIRM_DELETE_MY_ACCOUNT"),
+  idempotencyKey: privacyIdempotencyKeySchema,
 });
 
 export type PrivacyDeleteInput = z.infer<typeof privacyDeleteInputSchema>;
@@ -84,6 +100,9 @@ export type PrivacyDeleteInput = z.infer<typeof privacyDeleteInputSchema>;
 export const privacyDeleteOutputSchema = z.object({
   scheduledAt: z.string(),
   message: z.string(),
+  idempotency: privacyIdempotencyResultSchema,
+  audit: privacyAuditSchema,
+  outbox: privacyOutboxSchema,
 });
 
 export type PrivacyDeleteOutput = z.infer<typeof privacyDeleteOutputSchema>;
@@ -96,5 +115,6 @@ export const privacyDeleteMetadata = createRpcOperationMetadata({
   organizationRequired: false,
   audit: "critical",
   criticality: "critical",
-  idempotency: "recommended",
+  idempotency: "required",
+  signals: ["log", "metric", "span"],
 });

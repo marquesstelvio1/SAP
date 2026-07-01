@@ -82,6 +82,9 @@ export function createWebhooksRpcRouter(deps: CreateWebhooksRpcRouterInput) {
           return deps.webhooksService.create({
             ...input,
             organizationId,
+            actorType: authContext.actorType,
+            actorId: authContext.actorId,
+            correlationId: authContext.correlationId,
           });
         }),
       update: webhooksRpc
@@ -104,6 +107,9 @@ export function createWebhooksRpcRouter(deps: CreateWebhooksRpcRouterInput) {
           return deps.webhooksService.update({
             ...input,
             organizationId,
+            actorType: authContext.actorType,
+            actorId: authContext.actorId,
+            correlationId: authContext.correlationId,
           });
         }),
       delete: webhooksRpc
@@ -126,6 +132,9 @@ export function createWebhooksRpcRouter(deps: CreateWebhooksRpcRouterInput) {
           return deps.webhooksService.delete({
             ...input,
             organizationId,
+            actorType: authContext.actorType,
+            actorId: authContext.actorId,
+            correlationId: authContext.correlationId,
           });
         }),
       getDeliveryLog: webhooksRpc

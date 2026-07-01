@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "dotenvx run -f ../../.env -- next dev",
+    "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
@@ -19,6 +19,7 @@
     "@saptm/types": "workspace:*",
     "@saptm/ui": "workspace:*",
     "zod": "catalog:",
+    "dotenv": "catalog:",
     "@sentry/nextjs": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-table": "catalog:",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@saptm/tsconfig": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
+    "@tanstack/react-query-devtools": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",

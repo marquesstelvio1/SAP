@@ -4,8 +4,12 @@
       "primaryAgent": "agent-orchestrator",
       "requiredSkill": "skill-orchestration",
       "supportAgents": [
-        "agent-architect", "agent-planner", "agent-qa",
-        "agent-security", "agent-performance", "agent-accessibility",
+        "agent-architect",
+        "agent-planner",
+        "agent-qa",
+        "agent-security",
+        "agent-performance",
+        "agent-accessibility",
         "agent-documentation"
       ]
     },
@@ -19,7 +23,9 @@
       "primaryAgent": "agent-frontend",
       "requiredSkill": "skill-frontend-ui",
       "supportAgents": [
-        "agent-design-system", "agent-qa", "agent-performance",
+        "agent-design-system",
+        "agent-qa",
+        "agent-performance",
         "agent-accessibility"
       ],
       "plugins": ["design-system-audit", "shadcn-inspector", "ui-consistency"]
@@ -28,7 +34,9 @@
       "primaryAgent": "agent-backend",
       "requiredSkill": "skill-backend-api",
       "supportAgents": [
-        "agent-architect", "agent-qa", "agent-observability",
+        "agent-architect",
+        "agent-qa",
+        "agent-observability",
         "agent-backend-architect"
       ],
       "plugins": ["architecture-audit", "api-contract-validator"]
@@ -65,7 +73,12 @@
     "performance": {
       "primaryAgent": "agent-performance",
       "requiredSkill": "skill-performance-optimization",
-      "supportAgents": ["agent-frontend", "agent-backend", "agent-qa", "agent-performance-architect"],
+      "supportAgents": [
+        "agent-frontend",
+        "agent-backend",
+        "agent-qa",
+        "agent-performance-architect"
+      ],
       "plugins": ["performance-audit"]
     },
     "design-system": {
@@ -83,7 +96,11 @@
     "architecture": {
       "primaryAgent": "agent-architect",
       "requiredSkill": "skill-architecture-governance",
-      "supportAgents": ["agent-backend-architect", "agent-frontend-architect", "agent-mobile-architect"],
+      "supportAgents": [
+        "agent-backend-architect",
+        "agent-frontend-architect",
+        "agent-mobile-architect"
+      ],
       "plugins": ["architecture-audit", "codebase-analysis", "monorepo-governance"]
     },
     "accessibility": {
@@ -102,8 +119,13 @@
       "primaryAgent": "agent-orchestrator",
       "requiredSkill": "skill-release-governance",
       "supportAgents": [
-        "agent-architect", "agent-devops", "agent-qa", "agent-security",
-        "agent-performance", "agent-accessibility", "agent-documentation"
+        "agent-architect",
+        "agent-devops",
+        "agent-qa",
+        "agent-security",
+        "agent-performance",
+        "agent-accessibility",
+        "agent-documentation"
       ],
       "plugins": ["release-readiness", "enterprise-checklist", "workflow-enforcer"]
     }

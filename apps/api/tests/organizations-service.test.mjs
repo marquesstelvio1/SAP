@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-
 import { OrganizationsService } from "../dist/organizations/organizations.service.js";
+import { assertRejectsWithMessage } from "./test-utils.mjs";
 
 const fixedNow = new Date("2026-06-23T00:00:00.000Z");
 
@@ -31,19 +31,24 @@ test("organizations service throws NotFoundException for non-existent organizati
   );
 });
 
-test("organizations service updates organization status", async () => {
+test("organizations service updates organization status with audit and outbox", async () => {
   const repository = createMockRepository();
   const service = createOrganizationsService(repository);
 
   const result = await service.updateStatus({
     organizationId: "org_001",
     status: "suspended",
+    actorType: "user",
+    actorId: "user_admin",
+    correlationId: "corr_org_update",
   });
 
   assert.equal(result.organizationId, "org_001");
   assert.equal(result.status, "suspended");
   assert.equal(typeof result.updatedAt, "string");
   assert.ok(new Date(result.updatedAt).getTime() > fixedNow.getTime());
+  assert.equal(result.audit.action, "organization.status_updated");
+  assert.equal(result.outbox.eventType, "organization.status_updated");
 });
 
 test("organizations service throws NotFoundException when updating status of non-existent org", async () => {
@@ -51,7 +56,14 @@ test("organizations service throws NotFoundException when updating status of non
   const service = createOrganizationsService(repository);
 
   await assertRejectsWithMessage(
-    () => service.updateStatus({ organizationId: "org_nonexistent", status: "suspended" }),
+    () =>
+      service.updateStatus({
+        organizationId: "org_nonexistent",
+        status: "suspended",
+        actorType: "user",
+        actorId: "user_admin",
+        correlationId: "corr_org_update",
+      }),
     "organizations.not_found",
   );
 });
@@ -72,6 +84,7 @@ function createOrganizationsService(repository) {
   const service = Object.create(OrganizationsService.prototype);
 
   service.organizationsRepo = repository;
+  service.database = createMockDatabase();
 
   return service;
 }
@@ -104,7 +117,6 @@ function createMockRepository() {
     },
   ];
 
-  let nextOrgId = organizations.length + 1;
   let nextUpdateRef = 0;
 
   return {
@@ -125,24 +137,15 @@ function createMockRepository() {
       org.updatedAt = new Date(fixedNow.getTime() + nextUpdateRef);
       return { ...org };
     },
+    async createAuditRecord(_tx, _input) {},
+    async createOutboxEvent(_tx, _input) {},
   };
 }
 
-async function assertRejectsWithMessage(action, expectedMessage) {
-  let rejectedError = null;
-
-  try {
-    await action();
-  } catch (error) {
-    rejectedError = error;
-  }
-
-  assert.ok(rejectedError, `Expected rejection with ${expectedMessage}`);
-
-  const response =
-    typeof rejectedError.getResponse === "function" ? rejectedError.getResponse() : undefined;
-  const message =
-    typeof response === "object" && response !== null ? response.message : rejectedError.message;
-
-  assert.equal(message, expectedMessage);
+function createMockDatabase() {
+  return {
+    $transaction: async (fn) => {
+      return fn({});
+    },
+  };
 }

@@ -147,11 +147,81 @@ export class PrismaPlanningRepository implements PlanningRepository {
     });
   }
 
+  async countDispatchableOrders(organizationId: string, now: Date): Promise<number> {
+    return this.database.transportOrder.count({
+      where: {
+        organizationId,
+        status: "confirmed",
+        deletedAt: null,
+        OR: [
+          {
+            dispatches: {
+              none: {},
+            },
+          },
+          {
+            dispatches: {
+              every: {
+                dispatchedAt: { lt: now },
+              },
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  async countDispatchedOrders(organizationId: string): Promise<number> {
+    return this.database.transportOrder.count({
+      where: {
+        organizationId,
+        status: "confirmed",
+        deletedAt: null,
+        dispatches: {
+          some: {},
+        },
+      },
+    });
+  }
+
   async findRecentOrders(organizationId: string, limit: number) {
     return this.database.transportOrder.findMany({
       where: { organizationId },
       include: transportOrderContextInclude,
       orderBy: [{ plannedDepartureAt: "asc" as const }, { createdAt: "desc" as const }],
+      take: limit,
+    }) as unknown as Promise<PlanningTransportOrderWithContext[]>;
+  }
+
+  async findRecentDispatchableOrders(
+    organizationId: string,
+    limit: number,
+    offset: number,
+    now: Date,
+  ): Promise<PlanningTransportOrderWithContext[]> {
+    return this.database.transportOrder.findMany({
+      where: {
+        organizationId,
+        status: "confirmed",
+        deletedAt: null,
+        OR: [
+          {
+            dispatches: {
+              none: {},
+            },
+          },
+          {
+            dispatches: {
+              every: {
+                dispatchedAt: { lt: now },
+              },
+            },
+          },
+        ],
+      },
+      include: transportOrderContextInclude,
+      orderBy: [{ plannedDepartureAt: "asc" as const }, { createdAt: "desc" as const }],
+      skip: offset,
       take: limit,
     }) as unknown as Promise<PlanningTransportOrderWithContext[]>;
   }

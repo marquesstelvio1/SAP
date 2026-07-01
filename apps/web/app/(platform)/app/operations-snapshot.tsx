@@ -17,8 +17,6 @@ import { useTrackingOverview } from "../../../hooks/use-tracking-overview";
 
 type BadgeVariant = "info" | "success" | "warning" | "destructive" | "outline" | "secondary";
 
-const readTrackingPermission = "tracking.shipment.read" as const;
-
 function StatusTile({
   label,
   value,
@@ -32,7 +30,7 @@ function StatusTile({
 }) {
   return (
     <Card className="p-4 shadow-none">
-      <span className="text-muted-foreground text-xs uppercase tracking-[0.14em]">{label}</span>
+      <span className="text-muted-foreground text-xs uppercase tracking-uppercase">{label}</span>
       <div className="mt-3 flex min-w-0 items-center justify-between gap-3">
         <span className="truncate font-semibold">{value}</span>
         <Badge variant={variant}>{badge}</Badge>
@@ -47,17 +45,17 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
       <Card id="operations">
         <CardHeader>
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="warning">RBAC</Badge>
-            <Badge variant="outline">Operational Tracking</Badge>
+            <Badge variant="warning">Indisponivel</Badge>
+            <Badge variant="outline">Tracking</Badge>
           </div>
-          <CardTitle>Resumo operacional bloqueado</CardTitle>
+          <CardTitle>Resumo operacional indisponivel</CardTitle>
           <CardDescription>
-            A sessao existe, mas o dashboard nao consulta dados de tracking sem
-            tracking.shipment.read.
+            O utilizador autenticado nao tem acesso ao modulo de tracking. Contacte o gestor de
+            operacoes para solicitacao de acesso.
           </CardDescription>
         </CardHeader>
         <CardContent className="text-muted-foreground text-sm">
-          Isto confirma que a UI aplica permissionamento antes de buscar dados de negocio.
+          Os dados operacionais so sao apresentados a utilizadores autorizados.
         </CardContent>
       </Card>
     );
@@ -70,10 +68,10 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
       <Card id="operations">
         <CardHeader>
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="outline">Operational Tracking</Badge>
+            <Badge variant="outline">Tracking</Badge>
           </div>
           <CardTitle>Resumo operacional</CardTitle>
-          <CardDescription>Carregando dados de tracking...</CardDescription>
+          <CardDescription>A carregar dados de tracking...</CardDescription>
         </CardHeader>
         <CardContent className="text-muted-foreground text-sm">
           Aguarde enquanto os dados operacionais sao carregados.
@@ -88,7 +86,7 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
         <CardHeader>
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="warning">Erro</Badge>
-            <Badge variant="outline">Operational Tracking</Badge>
+            <Badge variant="outline">Tracking</Badge>
           </div>
           <CardTitle>Resumo operacional indisponivel</CardTitle>
           <CardDescription>
@@ -100,9 +98,9 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
         <CardContent className="grid gap-3 md:grid-cols-3">
           <StatusTile
             label="Leitura"
-            value={readTrackingPermission}
-            badge="Grant"
-            variant="success"
+            value="Nao autorizada"
+            badge="Indisponivel"
+            variant="warning"
           />
           <StatusTile label="API" value="Erro" badge="Verificar" variant="warning" />
           <StatusTile label="Fallback" value="Sem dados falsos" badge="Seguro" variant="info" />
@@ -122,12 +120,12 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
       <CardHeader>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="success">Dados reais</Badge>
-          <Badge variant="outline">Operational Tracking</Badge>
+          <Badge variant="outline">Tracking</Badge>
         </div>
-        <CardTitle>Resumo operacional autenticado</CardTitle>
+        <CardTitle>Resumo operacional</CardTitle>
         <CardDescription>
-          Snapshot tenant-scoped vindo do RPC de tracking. Serve como entrada segura para a proxima
-          fatia de negocio.
+          Dados de tracking operacional actualizados em tempo real. Servem como entrada para
+          decisoes de gestao de cargas e excepcoes.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-3 md:grid-cols-4">
@@ -157,9 +155,7 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
         />
       </CardContent>
       <CardFooter className="flex flex-wrap items-center justify-between gap-3 text-sm">
-        <span className="text-muted-foreground">
-          Tenant {overview.organizationId} gerado em {overview.generatedAt}
-        </span>
+        <span className="text-muted-foreground">Actualizado em {overview.generatedAt}</span>
         <Button asChild size="sm" variant="outline">
           <Link href={"/app/tracking" as Route}>Ver movimentos</Link>
         </Button>

@@ -14,7 +14,12 @@
       "prompt": ".ai/prompts/architect.md",
       "doc": "docs/agents/architect.md",
       "canApprove": ["scope", "contract", "release"],
-      "plugins": ["architecture-audit", "codebase-analysis", "monorepo-governance", "enterprise-checklist"]
+      "plugins": [
+        "architecture-audit",
+        "codebase-analysis",
+        "monorepo-governance",
+        "enterprise-checklist"
+      ]
     },
     {
       "id": "agent-planner",
@@ -30,7 +35,12 @@
       "prompt": ".ai/prompts/domains/frontend.md",
       "doc": "docs/agents/frontend.md",
       "canApprove": [],
-      "plugins": ["design-system-audit", "shadcn-inspector", "ui-consistency", "frontend-backend-validator"]
+      "plugins": [
+        "design-system-audit",
+        "shadcn-inspector",
+        "ui-consistency",
+        "frontend-backend-validator"
+      ]
     },
     {
       "id": "agent-backend",

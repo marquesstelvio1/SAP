@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import type { DomainEvent, EventBus, PrismaTx, SaptmPrismaClient } from "@saptm/database";
 import { getPrismaClient } from "@saptm/database";
-import { EventBusService } from "./event-bus.service.js";
+import type { EventBusService } from "./event-bus.service.js";
 
 @Injectable()
 export class OutboxEventBusAdapter implements EventBus {

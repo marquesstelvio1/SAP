@@ -30,7 +30,7 @@ const subscriptionBadge: Record<
   incomplete_expired: { label: "Expirado", variant: "destructive" },
   trialing: { label: "Teste", variant: "info" },
   paused: { label: "Pausado", variant: "outline" },
-  unpaid: { label: "Nao pago", variant: "destructive" },
+  unpaid: { label: "Não pago", variant: "destructive" },
 };
 
 const planNames: Record<string, string> = {
@@ -46,7 +46,7 @@ const invoiceStatusMap: Record<
   paid: { label: "Paga", variant: "success" },
   open: { label: "Pendente", variant: "warning" },
   draft: { label: "Rascunho", variant: "outline" },
-  uncollectible: { label: "Incobravel", variant: "destructive" },
+  uncollectible: { label: "Incobrável", variant: "destructive" },
   void: { label: "Anulada", variant: "info" },
 };
 
@@ -98,7 +98,7 @@ const invoiceColumns: ColumnDef<BillingInvoice>[] = [
           href={row.original.downloadUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+          className="inline-flex items-center gap-1 rounded-sm text-sm text-primary outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <ExternalLinkIcon className="size-3.5" />
           Descarregar
@@ -134,8 +134,8 @@ export function BillingPageContent({
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="font-semibold text-lg tracking-tight">Faturacao</h2>
-        <p className="text-muted-foreground text-sm">Subscricao, planos e faturas da organizacao</p>
+        <h2 className="font-semibold text-lg tracking-tight">Faturação</h2>
+        <p className="text-muted-foreground text-sm">Subscrição, planos e faturas da organização</p>
       </div>
 
       {/* Current plan card */}
@@ -144,7 +144,7 @@ export function BillingPageContent({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CreditCardIcon className="size-5 text-muted-foreground" />
-              <CardTitle>Subscricao</CardTitle>
+              <CardTitle>Subscrição</CardTitle>
             </div>
             {subscription ? (
               <Badge variant={subscriptionBadge[subscription.status]?.variant ?? "outline"}>
@@ -155,7 +155,7 @@ export function BillingPageContent({
           <CardDescription>
             {subscription
               ? `Plano ${planNames[subscription.plan] ?? subscription.plan}`
-              : "Nenhuma subscricao ativa"}
+              : "Nenhuma subscrição ativa"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -163,7 +163,7 @@ export function BillingPageContent({
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="space-y-1">
                 <p className="text-muted-foreground text-sm">
-                  Periodo atual:{" "}
+                  Período atual:{" "}
                   {subscription.currentPeriodStart
                     ? new Date(subscription.currentPeriodStart).toLocaleDateString("pt-PT")
                     : "N/A"}{" "}
@@ -174,21 +174,21 @@ export function BillingPageContent({
                 </p>
                 {subscription.cancelAtPeriodEnd ? (
                   <p className="text-destructive text-xs">
-                    A subscricao sera cancelada no final do periodo.
+                    A subscrição será cancelada no final do período.
                   </p>
                 ) : null}
               </div>
             </div>
           ) : (
             <p className="text-muted-foreground text-sm">
-              Configure a sua subscricao para aceder a todos os recursos.
+              Configure a sua subscrição para aceder a todos os recursos.
             </p>
           )}
           <div className="mt-4 flex flex-wrap gap-3">
             <form action={portalAction}>
               <input type="hidden" name="returnUrl" value="/app/settings/billing" />
               <Button type="submit" variant="default" disabled={portalPending}>
-                Gerir subscricao
+                Gerir subscrição
               </Button>
             </form>
             <PlanComparisonModal currentPlan={subscription?.plan ?? null} />
@@ -201,20 +201,20 @@ export function BillingPageContent({
         <h3 className="mb-3 font-semibold text-base tracking-tight">Uso</h3>
         {usage.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {usage.flatMap((u) => u.metrics).map((m) => {
-              const pct = m.limit > 0 ? (m.current / m.limit) * 100 : 0;
-              return (
-                <MetricTile
-                  key={m.metric}
-                  label={m.metric}
-                  value={`${m.current} / ${m.limit}`}
-                  badge={`${Math.round(pct)}%`}
-                  variant={
-                    pct >= 100 ? "destructive" : pct >= 90 ? "warning" : "default"
-                  }
-                />
-              );
-            })}
+            {usage
+              .flatMap((u) => u.metrics)
+              .map((m) => {
+                const pct = m.limit > 0 ? (m.current / m.limit) * 100 : 0;
+                return (
+                  <MetricTile
+                    key={m.metric}
+                    label={m.metric}
+                    value={`${m.current} / ${m.limit}`}
+                    badge={`${Math.round(pct)}%`}
+                    variant={pct >= 100 ? "destructive" : pct >= 90 ? "warning" : "default"}
+                  />
+                );
+              })}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center gap-3 rounded-lg border py-12 text-center">
@@ -223,7 +223,7 @@ export function BillingPageContent({
             </div>
             <p className="font-semibold text-base tracking-tight">Sem dados de uso</p>
             <p className="max-w-sm text-muted-foreground text-sm">
-              As metricas de uso aparecerao aqui quando disponiveis.
+              As metricas de uso aparecerão aqui quando disponiveis.
             </p>
           </div>
         )}
@@ -241,7 +241,7 @@ export function BillingPageContent({
             </div>
             <p className="font-semibold text-base tracking-tight">Sem faturas</p>
             <p className="max-w-sm text-muted-foreground text-sm">
-              As faturas aparecerao aqui apos a primeira cobranca.
+              As faturas aparecerão aqui apos a primeira cobranca.
             </p>
           </div>
         )}

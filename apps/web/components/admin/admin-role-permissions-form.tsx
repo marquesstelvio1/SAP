@@ -19,6 +19,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { AdminRolePermissionsFormState } from "../../app/(platform)/app/admin/form-state";
 
 export type AdminRolePermissionRoleOption = {
@@ -47,12 +48,14 @@ export function AdminRolePermissionsForm({
 }: AdminRolePermissionsFormProps) {
   const customRoles = roles.filter((role) => !role.protected);
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("permissions"));
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("admin_role_permissions"),
+  );
   const isDisabled = isPending || !canManageRoles || customRoles.length === 0;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey("permissions"));
+      setIdempotencyKey(createIdempotencyKey("admin_role_permissions"));
     }
   }, [state.status]);
 
@@ -60,16 +63,16 @@ export function AdminRolePermissionsForm({
     <Card>
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant={canManageRoles ? "success" : "warning"}>
-            {canManageRoles ? "Permissoes custom" : "Sem permissao"}
-          </Badge>
+              <Badge variant={canManageRoles ? "success" : "warning"}>
+                {canManageRoles ? "Permissões custom" : "Indisponível"}
+              </Badge>
           <Badge variant="outline">templates protegidos</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Atualizar permissoes</CardTitle>
+          <CardTitle>Atualizar permissões</CardTitle>
           <CardDescription className="leading-6">
-            Substitui o conjunto de permissoes de uma role custom. Roles bootstrap nao podem ser
-            alteradas pela UI.
+            Substitui o conjunto de permissões de uma role custom. Roles base não podem ser
+            alteradas pela interface.
           </CardDescription>
         </div>
       </CardHeader>
@@ -87,7 +90,7 @@ export function AdminRolePermissionsForm({
               >
                 {customRoles.map((role) => (
                   <option key={role.id} value={role.id}>
-                    {role.name} ({role.key})
+                    {role.name}
                   </option>
                 ))}
               </SelectNative>
@@ -102,14 +105,14 @@ export function AdminRolePermissionsForm({
                 required
               />
               <FieldDescription>
-                Informe o conjunto completo. A operacao e transacional e auditavel.
+                Informe o conjunto completo. A operação é transacional e auditável.
               </FieldDescription>
             </Field>
             <Field>
               <FieldDescription>
                 {state.status === "success" && state.roleKey !== undefined
-                  ? `${state.message} Role: ${state.roleKey} · Replay: ${
-                      state.replayed ? "sim" : "nao"
+                  ? `${state.message} · Replay: ${
+                      state.replayed ? "sim" : "não"
                     }`
                   : state.message}
               </FieldDescription>
@@ -119,19 +122,10 @@ export function AdminRolePermissionsForm({
         </CardContent>
         <CardFooter>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A atualizar..." : "Atualizar permissoes"}
+            {isPending ? "A atualizar..." : "Atualizar permissões"}
           </Button>
         </CardFooter>
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(scope: string): string {
-  const randomValue =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2);
-
-  return `admin_role_${scope}_${randomValue}`;
 }

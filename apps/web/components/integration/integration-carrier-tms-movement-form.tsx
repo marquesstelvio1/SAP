@@ -59,7 +59,7 @@ export function IntegrationCarrierTmsMovementForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessCarrierTms ? "success" : "warning"}>
-            {canProcessCarrierTms ? "Adapter governado" : "Sem permissao"}
+            {canProcessCarrierTms ? "Movimento autorizado" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">Carrier TMS</Badge>
           <Badge variant="outline">tracking.event.record</Badge>
@@ -68,7 +68,7 @@ export function IntegrationCarrierTmsMovementForm({
           <CardTitle>Processar movimento Carrier TMS</CardTitle>
           <CardDescription className="leading-6">
             Converte movimentos rodoviarios locais em eventos de tracking. A operacao valida service
-            account, tenant, idempotencia externa, audit trail e outbox.
+            movimento Carrier TMS com registo de evento.
           </CardDescription>
         </div>
       </CardHeader>
@@ -236,7 +236,7 @@ export function IntegrationCarrierTmsMovementForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma service account com tracking.event.record."
+              ? "Crie uma conta de servico com permissoes de tracking."
               : "Adapter rodoviario local sem chamada externa."}
           </span>
         </CardFooter>

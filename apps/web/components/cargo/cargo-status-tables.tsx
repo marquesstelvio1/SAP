@@ -177,7 +177,7 @@ export function CargoRecentTable({
       <CardHeader>
         <CardTitle>Cargas recentes</CardTitle>
         <CardDescription>
-          Registos tenant-scoped com compliance, condicao, custodia e bloqueios.
+          Registos operacionais com compliance, condicao, custodia e bloqueios.
         </CardDescription>
       </CardHeader>
       <CardContent>

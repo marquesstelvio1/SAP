@@ -90,6 +90,7 @@ export const listDocumentsMetadata = createRpcOperationMetadata({
   audit: "standard",
   idempotency: "none",
   criticality: "low",
+  signals: ["log", "metric", "span"],
 });
 
 export const getDocumentMetadata = createRpcOperationMetadata({
@@ -102,4 +103,5 @@ export const getDocumentMetadata = createRpcOperationMetadata({
   audit: "standard",
   idempotency: "none",
   criticality: "low",
+  signals: ["log", "metric", "span"],
 });

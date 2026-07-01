@@ -167,7 +167,10 @@ export function WebhooksSettingsContent({ initialData }: WebhooksSettingsContent
               <DropdownMenuItem asChild>
                 <form action={deleteFormAction}>
                   <input type="hidden" name="webhookId" value={webhook.id} />
-                  <button type="submit" className="w-full text-left text-destructive">
+                  <button
+                    type="submit"
+                    className="w-full rounded-sm text-left text-destructive outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  >
                     Remover
                   </button>
                 </form>

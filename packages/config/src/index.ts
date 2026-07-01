@@ -98,11 +98,35 @@ export function getClientEnv(): ClientEnv {
 }
 
 export function getTrustedOrigins(
-  env: Pick<ServerEnv, "API_CORS_ORIGINS" | "BETTER_AUTH_URL" | "NEXT_PUBLIC_APP_URL">,
-) {
-  return Array.from(
-    new Set([env.BETTER_AUTH_URL, env.NEXT_PUBLIC_APP_URL, ...env.API_CORS_ORIGINS]),
-  );
+  env: Pick<ServerEnv, "API_CORS_ORIGINS" | "BETTER_AUTH_URL" | "NEXT_PUBLIC_APP_URL"> &
+    Partial<Pick<ServerEnv, "NODE_ENV">>,
+): string[] {
+  const trusted = new Set([env.BETTER_AUTH_URL, env.NEXT_PUBLIC_APP_URL, ...env.API_CORS_ORIGINS]);
+
+  if (env.NODE_ENV === "development") {
+    trusted.add("http://localhost:3000");
+    trusted.add("http://localhost:3001");
+    trusted.add("http://localhost:3002");
+    trusted.add("http://localhost:3003");
+    trusted.add("http://localhost:3004");
+    trusted.add("http://localhost:3005");
+    trusted.add("http://localhost:3006");
+    trusted.add("http://localhost:3007");
+    trusted.add("http://localhost:3008");
+    trusted.add("http://localhost:3009");
+    trusted.add("http://127.0.0.1:3000");
+    trusted.add("http://127.0.0.1:3001");
+    trusted.add("http://127.0.0.1:3002");
+    trusted.add("http://127.0.0.1:3003");
+    trusted.add("http://127.0.0.1:3004");
+    trusted.add("http://127.0.0.1:3005");
+    trusted.add("http://127.0.0.1:3006");
+    trusted.add("http://127.0.0.1:3007");
+    trusted.add("http://127.0.0.1:3008");
+    trusted.add("http://127.0.0.1:3009");
+  }
+
+  return Array.from(trusted);
 }
 
 function getRuntimeEnv(): EnvSource {

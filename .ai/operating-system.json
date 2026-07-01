@@ -8,19 +8,31 @@
     "foundationIndex": "docs/enterprise/foundation-index.md"
   },
   "startupOrder": [
-    "diagnostic", "rules", "standards", "governance",
-    "plugin-loader", "context-loader", "execution"
+    "diagnostic",
+    "rules",
+    "standards",
+    "governance",
+    "plugin-loader",
+    "context-loader",
+    "execution"
   ],
   "pluginSystem": {
     "registry": ".ai/plugins/plugin-registry.json",
     "pluginsDir": ".ai/plugins/",
     "mandatoryPlugins": [
-      "context-loader", "orchestrator", "product-design",
-      "architecture-audit", "monorepo-governance",
-      "api-contract-validator", "frontend-backend-validator",
-      "security-audit", "testing-audit",
-      "enterprise-checklist", "release-readiness",
-      "documentation-generator", "workflow-enforcer"
+      "context-loader",
+      "orchestrator",
+      "product-design",
+      "architecture-audit",
+      "monorepo-governance",
+      "api-contract-validator",
+      "frontend-backend-validator",
+      "security-audit",
+      "testing-audit",
+      "enterprise-checklist",
+      "release-readiness",
+      "documentation-generator",
+      "workflow-enforcer"
     ],
     "workflowStages": ".ai/workflows/pipeline-definitions.md"
   },
@@ -28,7 +40,12 @@
     "frontend": {
       "ownerAgent": "agent-frontend",
       "skills": ["skill-frontend-ui"],
-      "plugins": ["design-system-audit", "shadcn-inspector", "ui-consistency", "frontend-backend-validator"],
+      "plugins": [
+        "design-system-audit",
+        "shadcn-inspector",
+        "ui-consistency",
+        "frontend-backend-validator"
+      ],
       "requiredOutputs": ["task", "tests", "documentation", "pr"]
     },
     "backend": {
@@ -103,11 +120,7 @@
       "requiredOutputs": ["updated-docs"]
     }
   },
-  "workflows": [
-    "feature-delivery",
-    "bug-fix",
-    "release-governance"
-  ],
+  "workflows": ["feature-delivery", "bug-fix", "release-governance"],
   "governanceGates": [
     "product-design",
     "architecture",

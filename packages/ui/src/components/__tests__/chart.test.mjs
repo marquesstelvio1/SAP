@@ -94,9 +94,7 @@ test("ChartTooltipContent hides label when hideLabel is true", () => {
   });
   const children = element.props.children;
   // When hideLabel is true, the label slot is null, so skip it.
-  const payloadDiv = children.find(
-    (c) => c != null && c.props?.className?.includes("flex flex-col"),
-  );
+  const payloadDiv = children.find((c) => c?.props?.className?.includes("flex flex-col"));
   assert.ok(payloadDiv != null);
 });
 

@@ -20,7 +20,7 @@ export default async function SecurityPage() {
     <main className="flex flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline">Better Auth</Badge>
+          <Badge variant="outline">Autenticacao</Badge>
           <Badge variant="success">Sessao autenticada</Badge>
           <Badge variant={platformSession.viewer.emailVerified ? "success" : "warning"}>
             {platformSession.viewer.emailVerified ? "Email verificado" : "Email pendente"}
@@ -30,7 +30,7 @@ export default async function SecurityPage() {
           <h1 className="font-semibold text-3xl tracking-tight">Seguranca da conta</h1>
           <p className="mt-2 text-muted-foreground">
             Centro de seguranca do utilizador autenticado: sessao atual, revogacao de outras sessoes
-            e readiness para MFA com Better Auth.
+            e configuracao de MFA.
           </p>
         </div>
       </section>
@@ -44,12 +44,7 @@ export default async function SecurityPage() {
           badge={platformSession.viewer.twoFactorEnabled ? "Ativo" : "Inativo"}
           variant={platformSession.viewer.twoFactorEnabled ? "secondary" : "outline"}
         />
-        <MetricTile
-          label="Organizacao"
-          value={platformSession.viewer.organizationId ?? "sem-organizacao"}
-          badge="Organizacao"
-          variant="secondary"
-        />
+        <MetricTile label="Ambiente" value="Producao" badge="Online" variant="secondary" />
       </section>
 
       <section className="grid gap-4 xl:grid-cols-2">

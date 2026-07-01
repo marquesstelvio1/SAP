@@ -31,6 +31,8 @@ export type MembershipMinAggregateOutputType = {
   status: $Enums.MembershipStatus | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type MembershipMaxAggregateOutputType = {
@@ -40,6 +42,8 @@ export type MembershipMaxAggregateOutputType = {
   status: $Enums.MembershipStatus | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type MembershipCountAggregateOutputType = {
@@ -49,6 +53,8 @@ export type MembershipCountAggregateOutputType = {
   status: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -60,6 +66,8 @@ export type MembershipMinAggregateInputType = {
   status?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type MembershipMaxAggregateInputType = {
@@ -69,6 +77,8 @@ export type MembershipMaxAggregateInputType = {
   status?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type MembershipCountAggregateInputType = {
@@ -78,6 +88,8 @@ export type MembershipCountAggregateInputType = {
   status?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -160,6 +172,8 @@ export type MembershipGroupByOutputType = {
   status: $Enums.MembershipStatus
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: MembershipCountAggregateOutputType | null
   _min: MembershipMinAggregateOutputType | null
   _max: MembershipMaxAggregateOutputType | null
@@ -190,6 +204,8 @@ export type MembershipWhereInput = {
   status?: Prisma.EnumMembershipStatusFilter<"Membership"> | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Membership"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"Membership"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   roles?: Prisma.MembershipRoleListRelationFilter
@@ -202,6 +218,8 @@ export type MembershipOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
   roles?: Prisma.MembershipRoleOrderByRelationAggregateInput
@@ -218,6 +236,8 @@ export type MembershipWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumMembershipStatusFilter<"Membership"> | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Membership"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"Membership"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   roles?: Prisma.MembershipRoleListRelationFilter
@@ -230,6 +250,8 @@ export type MembershipOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MembershipCountOrderByAggregateInput
   _max?: Prisma.MembershipMaxOrderByAggregateInput
   _min?: Prisma.MembershipMinOrderByAggregateInput
@@ -245,6 +267,8 @@ export type MembershipScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumMembershipStatusWithAggregatesFilter<"Membership"> | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Membership"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Membership"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Membership"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"Membership"> | string | null
 }
 
 export type MembershipCreateInput = {
@@ -252,6 +276,8 @@ export type MembershipCreateInput = {
   status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutMembershipsInput
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   roles?: Prisma.MembershipRoleCreateNestedManyWithoutMembershipInput
@@ -264,6 +290,8 @@ export type MembershipUncheckedCreateInput = {
   status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   roles?: Prisma.MembershipRoleUncheckedCreateNestedManyWithoutMembershipInput
 }
 
@@ -272,6 +300,8 @@ export type MembershipUpdateInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutMembershipsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   roles?: Prisma.MembershipRoleUpdateManyWithoutMembershipNestedInput
@@ -284,6 +314,8 @@ export type MembershipUncheckedUpdateInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.MembershipRoleUncheckedUpdateManyWithoutMembershipNestedInput
 }
 
@@ -294,6 +326,8 @@ export type MembershipCreateManyInput = {
   status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type MembershipUpdateManyMutationInput = {
@@ -301,6 +335,8 @@ export type MembershipUpdateManyMutationInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MembershipUncheckedUpdateManyInput = {
@@ -310,6 +346,8 @@ export type MembershipUncheckedUpdateManyInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MembershipListRelationFilter = {
@@ -334,6 +372,8 @@ export type MembershipCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type MembershipMaxOrderByAggregateInput = {
@@ -343,6 +383,8 @@ export type MembershipMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type MembershipMinOrderByAggregateInput = {
@@ -352,6 +394,8 @@ export type MembershipMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type MembershipScalarRelationFilter = {
@@ -466,6 +510,8 @@ export type MembershipCreateWithoutUserInput = {
   status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutMembershipsInput
   roles?: Prisma.MembershipRoleCreateNestedManyWithoutMembershipInput
 }
@@ -476,6 +522,8 @@ export type MembershipUncheckedCreateWithoutUserInput = {
   status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   roles?: Prisma.MembershipRoleUncheckedCreateNestedManyWithoutMembershipInput
 }
 
@@ -515,6 +563,8 @@ export type MembershipScalarWhereInput = {
   status?: Prisma.EnumMembershipStatusFilter<"Membership"> | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Membership"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"Membership"> | string | null
 }
 
 export type MembershipCreateWithoutOrganizationInput = {
@@ -522,6 +572,8 @@ export type MembershipCreateWithoutOrganizationInput = {
   status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   roles?: Prisma.MembershipRoleCreateNestedManyWithoutMembershipInput
 }
@@ -532,6 +584,8 @@ export type MembershipUncheckedCreateWithoutOrganizationInput = {
   status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   roles?: Prisma.MembershipRoleUncheckedCreateNestedManyWithoutMembershipInput
 }
 
@@ -566,6 +620,8 @@ export type MembershipCreateWithoutRolesInput = {
   status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutMembershipsInput
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
 }
@@ -577,6 +633,8 @@ export type MembershipUncheckedCreateWithoutRolesInput = {
   status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type MembershipCreateOrConnectWithoutRolesInput = {
@@ -600,6 +658,8 @@ export type MembershipUpdateWithoutRolesInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutMembershipsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
 }
@@ -611,6 +671,8 @@ export type MembershipUncheckedUpdateWithoutRolesInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MembershipCreateManyUserInput = {
@@ -619,6 +681,8 @@ export type MembershipCreateManyUserInput = {
   status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type MembershipUpdateWithoutUserInput = {
@@ -626,6 +690,8 @@ export type MembershipUpdateWithoutUserInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutMembershipsNestedInput
   roles?: Prisma.MembershipRoleUpdateManyWithoutMembershipNestedInput
 }
@@ -636,6 +702,8 @@ export type MembershipUncheckedUpdateWithoutUserInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.MembershipRoleUncheckedUpdateManyWithoutMembershipNestedInput
 }
 
@@ -645,6 +713,8 @@ export type MembershipUncheckedUpdateManyWithoutUserInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MembershipCreateManyOrganizationInput = {
@@ -653,6 +723,8 @@ export type MembershipCreateManyOrganizationInput = {
   status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type MembershipUpdateWithoutOrganizationInput = {
@@ -660,6 +732,8 @@ export type MembershipUpdateWithoutOrganizationInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   roles?: Prisma.MembershipRoleUpdateManyWithoutMembershipNestedInput
 }
@@ -670,6 +744,8 @@ export type MembershipUncheckedUpdateWithoutOrganizationInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.MembershipRoleUncheckedUpdateManyWithoutMembershipNestedInput
 }
 
@@ -679,6 +755,8 @@ export type MembershipUncheckedUpdateManyWithoutOrganizationInput = {
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -719,6 +797,8 @@ export type MembershipSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   roles?: boolean | Prisma.Membership$rolesArgs<ExtArgs>
@@ -732,6 +812,8 @@ export type MembershipSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["membership"]>
@@ -743,6 +825,8 @@ export type MembershipSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["membership"]>
@@ -754,9 +838,11 @@ export type MembershipSelectScalar = {
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type MembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "userId" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["membership"]>
+export type MembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "userId" | "status" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["membership"]>
 export type MembershipInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -786,6 +872,8 @@ export type $MembershipPayload<ExtArgs extends runtime.Types.Extensions.Internal
     status: $Enums.MembershipStatus
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["membership"]>
   composites: {}
 }
@@ -1218,6 +1306,8 @@ export interface MembershipFieldRefs {
   readonly status: Prisma.FieldRef<"Membership", 'MembershipStatus'>
   readonly createdAt: Prisma.FieldRef<"Membership", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Membership", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"Membership", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"Membership", 'String'>
 }
     
 

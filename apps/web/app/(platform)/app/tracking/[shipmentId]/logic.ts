@@ -60,13 +60,4 @@ export function resolveNullable<T extends string>(
   return value === null ? "Sem evento" : labels[value];
 }
 
-export function formatNullableDateTime(value: string | null): string {
-  return value === null ? "Nao informado" : formatDateTime(value);
-}
-
-export function formatDateTime(value: string): string {
-  return new Intl.DateTimeFormat("pt-PT", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
-}
+export { formatDateTime, formatNullableDateTime } from "@/lib/format";

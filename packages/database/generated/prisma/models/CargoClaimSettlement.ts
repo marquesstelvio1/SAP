@@ -53,6 +53,8 @@ export type CargoClaimSettlementMinAggregateOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CargoClaimSettlementMaxAggregateOutputType = {
@@ -74,6 +76,8 @@ export type CargoClaimSettlementMaxAggregateOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CargoClaimSettlementCountAggregateOutputType = {
@@ -95,6 +99,8 @@ export type CargoClaimSettlementCountAggregateOutputType = {
   recordIdempotencyKey: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -126,6 +132,8 @@ export type CargoClaimSettlementMinAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CargoClaimSettlementMaxAggregateInputType = {
@@ -147,6 +155,8 @@ export type CargoClaimSettlementMaxAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CargoClaimSettlementCountAggregateInputType = {
@@ -168,6 +178,8 @@ export type CargoClaimSettlementCountAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -276,6 +288,8 @@ export type CargoClaimSettlementGroupByOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: CargoClaimSettlementCountAggregateOutputType | null
   _avg: CargoClaimSettlementAvgAggregateOutputType | null
   _sum: CargoClaimSettlementSumAggregateOutputType | null
@@ -320,6 +334,8 @@ export type CargoClaimSettlementWhereInput = {
   recordIdempotencyKey?: Prisma.StringNullableFilter<"CargoClaimSettlement"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CargoClaimSettlement"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoClaimSettlement"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoClaimSettlement"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoClaimSettlement"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
   deliveryException?: Prisma.XOR<Prisma.CargoDeliveryExceptionScalarRelationFilter, Prisma.CargoDeliveryExceptionWhereInput>
@@ -344,6 +360,8 @@ export type CargoClaimSettlementOrderByWithRelationInput = {
   recordIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   cargo?: Prisma.CargoOrderByWithRelationInput
   deliveryException?: Prisma.CargoDeliveryExceptionOrderByWithRelationInput
@@ -374,6 +392,8 @@ export type CargoClaimSettlementWhereUniqueInput = Prisma.AtLeast<{
   recordIdempotencyKey?: Prisma.StringNullableFilter<"CargoClaimSettlement"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CargoClaimSettlement"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoClaimSettlement"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoClaimSettlement"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoClaimSettlement"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
   deliveryException?: Prisma.XOR<Prisma.CargoDeliveryExceptionScalarRelationFilter, Prisma.CargoDeliveryExceptionWhereInput>
@@ -398,6 +418,8 @@ export type CargoClaimSettlementOrderByWithAggregationInput = {
   recordIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CargoClaimSettlementCountOrderByAggregateInput
   _avg?: Prisma.CargoClaimSettlementAvgOrderByAggregateInput
   _max?: Prisma.CargoClaimSettlementMaxOrderByAggregateInput
@@ -427,6 +449,8 @@ export type CargoClaimSettlementScalarWhereWithAggregatesInput = {
   recordIdempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"CargoClaimSettlement"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CargoClaimSettlement"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CargoClaimSettlement"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CargoClaimSettlement"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"CargoClaimSettlement"> | string | null
 }
 
 export type CargoClaimSettlementCreateInput = {
@@ -445,6 +469,8 @@ export type CargoClaimSettlementCreateInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoClaimSettlementsInput
   cargo: Prisma.CargoCreateNestedOneWithoutClaimSettlementsInput
   deliveryException: Prisma.CargoDeliveryExceptionCreateNestedOneWithoutClaimSettlementInput
@@ -469,6 +495,8 @@ export type CargoClaimSettlementUncheckedCreateInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoClaimSettlementUpdateInput = {
@@ -487,6 +515,8 @@ export type CargoClaimSettlementUpdateInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoClaimSettlementsNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutClaimSettlementsNestedInput
   deliveryException?: Prisma.CargoDeliveryExceptionUpdateOneRequiredWithoutClaimSettlementNestedInput
@@ -511,6 +541,8 @@ export type CargoClaimSettlementUncheckedUpdateInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoClaimSettlementCreateManyInput = {
@@ -532,6 +564,8 @@ export type CargoClaimSettlementCreateManyInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoClaimSettlementUpdateManyMutationInput = {
@@ -550,6 +584,8 @@ export type CargoClaimSettlementUpdateManyMutationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoClaimSettlementUncheckedUpdateManyInput = {
@@ -571,6 +607,8 @@ export type CargoClaimSettlementUncheckedUpdateManyInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoClaimSettlementListRelationFilter = {
@@ -622,6 +660,8 @@ export type CargoClaimSettlementCountOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoClaimSettlementAvgOrderByAggregateInput = {
@@ -647,6 +687,8 @@ export type CargoClaimSettlementMaxOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoClaimSettlementMinOrderByAggregateInput = {
@@ -668,6 +710,8 @@ export type CargoClaimSettlementMinOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoClaimSettlementSumOrderByAggregateInput = {
@@ -814,6 +858,8 @@ export type CargoClaimSettlementCreateWithoutOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   cargo: Prisma.CargoCreateNestedOneWithoutClaimSettlementsInput
   deliveryException: Prisma.CargoDeliveryExceptionCreateNestedOneWithoutClaimSettlementInput
 }
@@ -836,6 +882,8 @@ export type CargoClaimSettlementUncheckedCreateWithoutOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoClaimSettlementCreateOrConnectWithoutOrganizationInput = {
@@ -886,6 +934,8 @@ export type CargoClaimSettlementScalarWhereInput = {
   recordIdempotencyKey?: Prisma.StringNullableFilter<"CargoClaimSettlement"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CargoClaimSettlement"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoClaimSettlement"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoClaimSettlement"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoClaimSettlement"> | string | null
 }
 
 export type CargoClaimSettlementCreateWithoutCargoInput = {
@@ -904,6 +954,8 @@ export type CargoClaimSettlementCreateWithoutCargoInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoClaimSettlementsInput
   deliveryException: Prisma.CargoDeliveryExceptionCreateNestedOneWithoutClaimSettlementInput
 }
@@ -926,6 +978,8 @@ export type CargoClaimSettlementUncheckedCreateWithoutCargoInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoClaimSettlementCreateOrConnectWithoutCargoInput = {
@@ -970,6 +1024,8 @@ export type CargoClaimSettlementCreateWithoutDeliveryExceptionInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoClaimSettlementsInput
   cargo: Prisma.CargoCreateNestedOneWithoutClaimSettlementsInput
 }
@@ -992,6 +1048,8 @@ export type CargoClaimSettlementUncheckedCreateWithoutDeliveryExceptionInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoClaimSettlementCreateOrConnectWithoutDeliveryExceptionInput = {
@@ -1026,6 +1084,8 @@ export type CargoClaimSettlementUpdateWithoutDeliveryExceptionInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoClaimSettlementsNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutClaimSettlementsNestedInput
 }
@@ -1048,6 +1108,8 @@ export type CargoClaimSettlementUncheckedUpdateWithoutDeliveryExceptionInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoClaimSettlementCreateManyOrganizationInput = {
@@ -1068,6 +1130,8 @@ export type CargoClaimSettlementCreateManyOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoClaimSettlementUpdateWithoutOrganizationInput = {
@@ -1086,6 +1150,8 @@ export type CargoClaimSettlementUpdateWithoutOrganizationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargo?: Prisma.CargoUpdateOneRequiredWithoutClaimSettlementsNestedInput
   deliveryException?: Prisma.CargoDeliveryExceptionUpdateOneRequiredWithoutClaimSettlementNestedInput
 }
@@ -1108,6 +1174,8 @@ export type CargoClaimSettlementUncheckedUpdateWithoutOrganizationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoClaimSettlementUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1128,6 +1196,8 @@ export type CargoClaimSettlementUncheckedUpdateManyWithoutOrganizationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoClaimSettlementCreateManyCargoInput = {
@@ -1148,6 +1218,8 @@ export type CargoClaimSettlementCreateManyCargoInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoClaimSettlementUpdateWithoutCargoInput = {
@@ -1166,6 +1238,8 @@ export type CargoClaimSettlementUpdateWithoutCargoInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoClaimSettlementsNestedInput
   deliveryException?: Prisma.CargoDeliveryExceptionUpdateOneRequiredWithoutClaimSettlementNestedInput
 }
@@ -1188,6 +1262,8 @@ export type CargoClaimSettlementUncheckedUpdateWithoutCargoInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoClaimSettlementUncheckedUpdateManyWithoutCargoInput = {
@@ -1208,6 +1284,8 @@ export type CargoClaimSettlementUncheckedUpdateManyWithoutCargoInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1231,6 +1309,8 @@ export type CargoClaimSettlementSelect<ExtArgs extends runtime.Types.Extensions.
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   deliveryException?: boolean | Prisma.CargoDeliveryExceptionDefaultArgs<ExtArgs>
@@ -1255,6 +1335,8 @@ export type CargoClaimSettlementSelectCreateManyAndReturn<ExtArgs extends runtim
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   deliveryException?: boolean | Prisma.CargoDeliveryExceptionDefaultArgs<ExtArgs>
@@ -1279,6 +1361,8 @@ export type CargoClaimSettlementSelectUpdateManyAndReturn<ExtArgs extends runtim
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   deliveryException?: boolean | Prisma.CargoDeliveryExceptionDefaultArgs<ExtArgs>
@@ -1303,9 +1387,11 @@ export type CargoClaimSettlementSelectScalar = {
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type CargoClaimSettlementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "deliveryExceptionId" | "claimReference" | "settlementReference" | "settlementType" | "settlementStatus" | "currencyCode" | "settlementAmount" | "settledByName" | "counterpartyName" | "settlementSummary" | "settledAt" | "sourceSystem" | "recordIdempotencyKey" | "createdAt" | "updatedAt", ExtArgs["result"]["cargoClaimSettlement"]>
+export type CargoClaimSettlementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "deliveryExceptionId" | "claimReference" | "settlementReference" | "settlementType" | "settlementStatus" | "currencyCode" | "settlementAmount" | "settledByName" | "counterpartyName" | "settlementSummary" | "settledAt" | "sourceSystem" | "recordIdempotencyKey" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["cargoClaimSettlement"]>
 export type CargoClaimSettlementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
@@ -1348,6 +1434,8 @@ export type $CargoClaimSettlementPayload<ExtArgs extends runtime.Types.Extension
     recordIdempotencyKey: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["cargoClaimSettlement"]>
   composites: {}
 }
@@ -1792,6 +1880,8 @@ export interface CargoClaimSettlementFieldRefs {
   readonly recordIdempotencyKey: Prisma.FieldRef<"CargoClaimSettlement", 'String'>
   readonly createdAt: Prisma.FieldRef<"CargoClaimSettlement", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CargoClaimSettlement", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"CargoClaimSettlement", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"CargoClaimSettlement", 'String'>
 }
     
 

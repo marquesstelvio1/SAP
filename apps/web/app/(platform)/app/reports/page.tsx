@@ -1,5 +1,6 @@
 import type { ReportExportDomain } from "@saptm/rpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, EmptyState } from "@saptm/ui";
+import { BoxIcon, ContainerIcon, GaugeIcon, RouteIcon, DollarSignIcon } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 
@@ -8,19 +9,19 @@ import { requirePlatformSession } from "../../../../lib/auth-session";
 export const dynamic = "force-dynamic";
 
 const domainLabels: Record<ReportExportDomain, string> = {
-  tracking: "Tracking / Shipments",
+  tracking: "Tracking / Expedições",
   cargo: "Cargas",
   capacity: "Capacidade / Slots",
-  planning: "Planeamento / Transport Orders",
-  tariff: "Tarifas / Rate Cards",
+  planning: "Planeamento / Ordens de Transporte",
+  tariff: "Tarifas / Tabelas de Preços",
 };
 
-const domainIcons: Record<ReportExportDomain, string> = {
-  tracking: "📦",
-  cargo: "🚛",
-  capacity: "📊",
-  planning: "📋",
-  tariff: "💰",
+const domainIcons: Record<ReportExportDomain, React.ReactNode> = {
+  tracking: <ContainerIcon className="size-5" />,
+  cargo: <BoxIcon className="size-5" />,
+  capacity: <GaugeIcon className="size-5" />,
+  planning: <RouteIcon className="size-5" />,
+  tariff: <DollarSignIcon className="size-5" />,
 };
 
 export default async function ReportsPage() {
@@ -33,13 +34,11 @@ export default async function ReportsPage() {
       <div className="space-y-6">
         <div>
           <h1 className="font-semibold text-2xl tracking-tight">Reports operacionais</h1>
-          <p className="mt-1 text-muted-foreground text-sm">
-            Exportacoes CSV governadas e auditaveis.
-          </p>
+          <p className="mt-1 text-muted-foreground text-sm">Exportacoes CSV com auditoria.</p>
         </div>
         <EmptyState
-          title="Sem permissao report.export"
-          description="Contacte o administrador da organizacao para solicitar acesso a exportacao de reports."
+          title="Exportacao indisponivel"
+          description="Contacte o gestor de operacoes para solicitar acesso a exportacao de reports."
         />
       </div>
     );
@@ -50,7 +49,7 @@ export default async function ReportsPage() {
       <div>
         <h1 className="font-semibold text-2xl tracking-tight">Reports operacionais</h1>
         <p className="mt-1 text-muted-foreground text-sm">
-          Exportacoes CSV governadas e auditaveis com outbox para integracoes.
+          Exportacoes CSV com auditoria e integracoes.
         </p>
       </div>
 
@@ -60,12 +59,12 @@ export default async function ReportsPage() {
             <Link
               key={domain}
               href={`/app/reports/export?domain=${domain}` as Route}
-              className="block transition-colors hover:opacity-80"
+              className="block rounded-lg outline-none transition-colors hover:opacity-80 focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <Card className="h-full cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <span>{domainIcons[domain]}</span>
+                    {domainIcons[domain]}
                     {domainLabels[domain]}
                   </CardTitle>
                   <CardDescription>

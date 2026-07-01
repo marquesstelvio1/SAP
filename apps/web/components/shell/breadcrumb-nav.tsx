@@ -11,6 +11,7 @@ import {
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Fragment } from "react";
 import { buildBreadcrumbs } from "../../lib/breadcrumbs";
 
 export function BreadcrumbNav() {
@@ -28,16 +29,18 @@ export function BreadcrumbNav() {
           const isLast = index === items.length - 1;
 
           return (
-            <BreadcrumbItem key={item.href ?? item.label}>
-              {isLast ? (
-                <BreadcrumbPage>{item.label}</BreadcrumbPage>
-              ) : (
-                <BreadcrumbLink asChild>
-                  <Link href={item.href as Route}>{item.label}</Link>
-                </BreadcrumbLink>
-              )}
-              {!isLast ? <BreadcrumbSeparator /> : null}
-            </BreadcrumbItem>
+            <Fragment key={item.href ?? item.label}>
+              <BreadcrumbItem>
+                {isLast ? (
+                  <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink asChild>
+                    <Link href={item.href as Route}>{item.label}</Link>
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+              {!isLast && <BreadcrumbSeparator />}
+            </Fragment>
           );
         })}
       </BreadcrumbList>

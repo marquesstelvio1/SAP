@@ -13,7 +13,6 @@ export type AccessStateProps = {
   icon?: LucideIcon;
   label?: string;
   message?: string;
-  permission?: string;
   role?: "alert";
   status?: string;
   title?: string;
@@ -28,7 +27,6 @@ export function AccessState({
   icon: Icon = ShieldBan,
   label,
   message,
-  permission,
   role,
   status,
   title,
@@ -39,9 +37,8 @@ export function AccessState({
       <div className={cn("flex items-center gap-2", className)}>
         {label && <span className="text-muted-foreground text-sm">{label}</span>}
         <Badge variant={granted ? "success" : "outline"}>
-          {granted ? "Permitido" : "Nao atribuido"}
+          {granted ? "Autorizado" : "Indisponivel"}
         </Badge>
-        {permission && <span className="text-muted-foreground/70 text-xs">{permission}</span>}
       </div>
     );
   }
@@ -53,7 +50,7 @@ export function AccessState({
       aria-live={role === "alert" ? "assertive" : undefined}
     >
       {badgeLabel && (
-        <span className="text-muted-foreground mb-1 text-xs font-medium uppercase tracking-wider">
+        <span className="text-muted-foreground mb-1 text-xs font-medium uppercase tracking-uppercase">
           {badgeLabel}
         </span>
       )}

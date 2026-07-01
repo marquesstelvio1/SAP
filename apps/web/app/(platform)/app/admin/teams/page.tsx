@@ -30,12 +30,11 @@ export default async function AdminTeamsPage(props: {
   if (!canManageTeams) {
     return (
       <AccessState
-        badgeLabel="Better Auth + RBAC"
-        message="A sessao nao possui tenant.manage para gerir equipas."
+        badgeLabel="Equipas"
+        description="O utilizador autenticado nao tem acesso a gestao de equipas."
         role="alert"
-        status="Sem grant"
-        title="Equipas bloqueado"
-        variant="empty"
+        title="Equipas bloqueadas"
+        variant="blocked"
       />
     );
   }
@@ -51,12 +50,11 @@ export default async function AdminTeamsPage(props: {
   if (result.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Teams API"
-        message={result.message}
+        badgeLabel="Equipas"
+        description={result.message}
         role="alert"
-        status={result.status}
-        title="Equipas indisponivel"
-        variant="empty"
+        title="Equipas indisponiveis"
+        variant="error"
       />
     );
   }

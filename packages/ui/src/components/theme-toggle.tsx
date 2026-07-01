@@ -18,7 +18,7 @@ function ThemeToggle({ className, mode = "button" }: ThemeToggleProps) {
       <div
         data-slot="theme-toggle"
         className={cn(
-          "relative inline-flex h-[var(--density-compact-control-height)] w-14 cursor-pointer items-center rounded-full border border-input bg-muted p-0.5 transition-colors duration-[var(--motion-duration-fast)]",
+          "relative inline-flex h-[var(--density-compact-control-height)] w-14 cursor-pointer items-center rounded-full border border-input bg-muted p-0.5 outline-none transition-colors duration-[var(--motion-duration-fast)] focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:border-ring",
           className,
         )}
         role="switch"
@@ -54,7 +54,7 @@ function ThemeToggle({ className, mode = "button" }: ThemeToggleProps) {
     >
       <SunIcon className="size-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <MoonIcon className="absolute size-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-      <span className="sr-only">Toggle theme</span>
+      <span className="sr-only">Alternar tema</span>
     </Button>
   );
 }

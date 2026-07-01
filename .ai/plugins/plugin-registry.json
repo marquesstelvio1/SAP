@@ -246,8 +246,21 @@
     { "id": "context-load", "order": 0, "plugins": ["context-loader"] },
     { "id": "orchestrate", "order": 1, "plugins": ["orchestrator"] },
     { "id": "product-design", "order": 10, "plugins": ["product-design"] },
-    { "id": "architecture", "order": 20, "plugins": ["architecture-audit", "codebase-analysis", "dependency-inspector", "monorepo-governance"] },
-    { "id": "design-system", "order": 25, "plugins": ["design-system-audit", "shadcn-inspector", "ui-consistency"] },
+    {
+      "id": "architecture",
+      "order": 20,
+      "plugins": [
+        "architecture-audit",
+        "codebase-analysis",
+        "dependency-inspector",
+        "monorepo-governance"
+      ]
+    },
+    {
+      "id": "design-system",
+      "order": 25,
+      "plugins": ["design-system-audit", "shadcn-inspector", "ui-consistency"]
+    },
     { "id": "contracts", "order": 45, "plugins": ["api-contract-validator"] },
     { "id": "integration", "order": 50, "plugins": ["frontend-backend-validator"] },
     { "id": "testing", "order": 55, "plugins": ["testing-audit"] },

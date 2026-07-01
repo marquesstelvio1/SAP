@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,7 +8,7 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const ROOT = join(__dirname, "..");
 const API_SRC = join(ROOT, "apps", "api", "src");
 
-function isFile(p) {
+function _isFile(p) {
   return statSync(p).isFile();
 }
 
@@ -48,7 +48,7 @@ function findConstructorParamTypes(content) {
     const params = content.slice(openParen + 1, i - 1);
     // Extract type names from parameter declarations
     // Matches: paramName: TypeName followed by , or ) or =
-    const paramRegex = /:\s*(\w+)\s*(?:[,\)=]|$)/g;
+    const paramRegex = /:\s*(\w+)\s*(?:[,)=]|$)/g;
     let paramMatch;
     while ((paramMatch = paramRegex.exec(params)) !== null) {
       const typeName = paramMatch[1];
@@ -64,7 +64,7 @@ function findConstructorParamTypes(content) {
  * Parse an import type line and return:
  * { line, symbols: string[] } where symbols are the imported names
  */
-function parseImportTypeLine(line) {
+function _parseImportTypeLine(line) {
   const trimmed = line.trim();
   if (!trimmed.startsWith("import type")) return null;
 
@@ -97,7 +97,7 @@ function parseImportTypeLine(line) {
  * For a multi-line import type block (spanning multiple lines), collect ALL symbols.
  * Returns { startLine, endLine, fullText, symbols: string[] }
  */
-function collectImportTypeBlock(lines, startIdx) {
+function _collectImportTypeBlock(lines, startIdx) {
   let fullText = lines[startIdx];
   let i = startIdx;
   const braceStartIdx = fullText.indexOf("{");
@@ -113,7 +113,7 @@ function collectImportTypeBlock(lines, startIdx) {
   if (braceStartIdx !== -1 && braceEndIdx === -1) {
     i++;
     while (i < lines.length) {
-      fullText += "\n" + lines[i];
+      fullText += `\n${lines[i]}`;
       if (lines[i].includes("}")) {
         break;
       }
@@ -131,7 +131,12 @@ function extractSymbolsFromBlock(text) {
   if (!match) return [];
   return match[1]
     .split(",")
-    .map((s) => s.trim().replace(/\s+as\s+\w+$/, "").trim())
+    .map((s) =>
+      s
+        .trim()
+        .replace(/\s+as\s+\w+$/, "")
+        .trim(),
+    )
     .filter(Boolean);
 }
 
@@ -148,7 +153,7 @@ for (const filePath of walk(API_SRC)) {
   if (constructorTypes.size === 0) continue;
 
   // Find all import type lines/blocks that need to be changed
-  const replacements = [];
+  const _replacements = [];
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -193,10 +198,10 @@ for (const filePath of walk(API_SRC)) {
         // If some symbols in the import are type-only and some are classes, we need to split them
         // Let's handle this: if ALL uppercase-starting symbols in the import are constructor types, we can safely remove 'type'
         // If only some are, we need to split
-        
+
         const allUpperSymbols = symbols.filter((s) => s[0] >= "A" && s[0] <= "Z");
         const typeOnlyUpper = allUpperSymbols.filter((s) => !constructorTypes.has(s));
-        
+
         if (typeOnlyUpper.length === 0) {
           // ALL uppercase symbols are constructor-injected - safe to remove 'type'
           lines[i] = line.replace(/^(\s*)import\s+type\s+/, "$1import ");
@@ -205,11 +210,11 @@ for (const filePath of walk(API_SRC)) {
           // Need to split: constructor-injected classes go to regular import, type-only stay
           const classesToKeep = symbols.filter((s) => constructorTypes.has(s));
           const typesToKeep = symbols.filter((s) => !constructorTypes.has(s));
-          
+
           // Replace current line with two imports
           const indent = line.match(/^\s*/)[0];
           const fromPart = trimmed.match(/\s+from\s+["'].*["']\s*;?\s*$/)[0];
-          
+
           if (classesToKeep.length > 0 && typesToKeep.length > 0) {
             lines[i] = `${indent}import { ${classesToKeep.join(", ")} }${fromPart}`;
             lines.splice(i + 1, 0, `${indent}import type { ${typesToKeep.join(", ")} }${fromPart}`);
@@ -224,7 +229,7 @@ for (const filePath of walk(API_SRC)) {
       let blockText = line;
       let j = i + 1;
       while (j < lines.length) {
-        blockText += "\n" + lines[j];
+        blockText += `\n${lines[j]}`;
         if (lines[j].includes("}")) {
           blockEnd = j;
           break;
@@ -244,26 +249,24 @@ for (const filePath of walk(API_SRC)) {
         // Need to split
         const classesToKeep = symbols.filter((s) => constructorTypes.has(s));
         const typesToKeep = symbols.filter((s) => !constructorTypes.has(s));
-        
+
         if (classesToKeep.length > 0) {
           // Reconstruct the import
           const fromMatch = blockText.match(/\s+from\s+["'].*["']\s*;?\s*$/m);
           const fromPart = fromMatch ? fromMatch[0] : "";
           const indent = lines[i].match(/^\s*/)[0];
-          
+
           // Replace the multi-line block with two imports
           if (typesToKeep.length > 0) {
             // Need both class and type imports
-            const classImportLines = [
-              `${indent}import { ${classesToKeep.join(", ")} }${fromPart}`,
-            ];
+            const classImportLines = [`${indent}import { ${classesToKeep.join(", ")} }${fromPart}`];
             const typeImportLines = [
               `${indent}import type {`,
               ...typesToKeep.map((s) => `${indent}  ${s},`),
               `${indent}}${fromPart}`,
             ];
             const replacement = [...classImportLines, ...typeImportLines];
-            
+
             // Replace lines from i to blockEnd with the new content
             const removeCount = blockEnd - i + 1;
             lines.splice(i, removeCount, ...replacement);
@@ -295,6 +298,6 @@ if (changedFiles.length === 0) {
 } else {
   console.log(`Changed ${changedFiles.length} file(s):`);
   for (const f of changedFiles) {
-    console.log("  " + relative(ROOT, f));
+    console.log(`  ${relative(ROOT, f)}`);
   }
 }

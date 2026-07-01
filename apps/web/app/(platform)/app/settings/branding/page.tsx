@@ -14,12 +14,11 @@ export default async function BrandingSettingsPage() {
   if (!canManageTenant) {
     return (
       <AccessState
-        badgeLabel="RBAC"
-        message="A sessao esta autenticada, mas falta tenant.manage para aceder ao branding."
+        badgeLabel="Branding"
+        description="O utilizador autenticado não tem permissões para gerir a identidade visual da organização."
         role="alert"
-        status="Sem grant"
-        title="Branding bloqueado"
-        variant="empty"
+        title="Branding indisponível"
+        variant="blocked"
       />
     );
   }

@@ -1,5 +1,10 @@
 import { z } from "zod";
-
+import {
+  sharedAuditSchema,
+  sharedIdempotencyKeySchema,
+  sharedIdempotencyResultSchema,
+  sharedOutboxSchema,
+} from "./foundation.js";
 import { createRpcOperationMetadata } from "./metadata.js";
 
 export type BillingOverviewOutput = z.infer<typeof billingOverviewOutputSchema>;
@@ -70,18 +75,25 @@ export const billingCheckoutInputSchema = z.object({
   plan: z.enum(billingPlans),
   successUrl: z.string().url(),
   cancelUrl: z.string().url(),
+  idempotencyKey: sharedIdempotencyKeySchema,
 });
 
 export const createCheckoutSessionInputSchema = billingCheckoutInputSchema;
 
 export const billingCheckoutOutputSchema = z.object({
   url: z.string().url(),
+  idempotency: sharedIdempotencyResultSchema,
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export const createCheckoutSessionOutputSchema = billingCheckoutOutputSchema;
 
 export const billingPortalOutputSchema = z.object({
   url: z.string().url(),
+  idempotency: sharedIdempotencyResultSchema,
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export const createPortalSessionOutputSchema = billingPortalOutputSchema;
@@ -132,6 +144,7 @@ export const usageSchema = billingUsageOutputSchema;
 
 export const createPortalSessionInputSchema = z.object({
   returnUrl: z.string().optional(),
+  idempotencyKey: sharedIdempotencyKeySchema,
 });
 
 export const billingOverviewMetadata = createRpcOperationMetadata({
@@ -168,7 +181,7 @@ export const billingCheckoutMetadata = createRpcOperationMetadata({
   permissionMode: "all",
   organizationRequired: true,
   audit: "standard",
-  idempotency: "recommended",
+  idempotency: "required",
   criticality: "medium",
   signals: ["log", "metric", "span"],
 });
@@ -183,7 +196,7 @@ export const billingPortalMetadata = createRpcOperationMetadata({
   permissionMode: "all",
   organizationRequired: true,
   audit: "standard",
-  idempotency: "none",
+  idempotency: "required",
   criticality: "low",
   signals: ["log", "metric", "span"],
 });

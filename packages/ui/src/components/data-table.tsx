@@ -58,9 +58,9 @@ function DataTable<TData>({
   data,
   pageSize = 10,
   filterColumn,
-  filterPlaceholder = "Filter...",
+  filterPlaceholder = "Filtrar...",
   loading = false,
-  emptyMessage = "No results.",
+  emptyMessage = "Sem resultados.",
   wrapperClassName,
   manualPagination = false,
   pageCount,
@@ -133,7 +133,10 @@ function DataTable<TData>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className={cn(header.column.getCanSort() && "cursor-pointer select-none")}
+                    className={cn(
+                      header.column.getCanSort() &&
+                        "cursor-pointer select-none outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                    )}
                     onClick={
                       header.column.getCanSort()
                         ? header.column.getToggleSortingHandler()
@@ -220,7 +223,7 @@ function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="gap-1.5 text-xs">
           <Columns3Icon className="size-3.5" />
-          Columns
+          Colunas
           <ChevronDownIcon className="size-3 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -235,7 +238,7 @@ function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>
             return (
               <div
                 key={column.id}
-                className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs hover:bg-accent"
+                className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
               >
                 <Checkbox
                   checked={isVisible}
@@ -252,7 +255,7 @@ function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>
         </div>
         {columns.length === 0 ? (
           <p className="px-2 py-4 text-center text-muted-foreground text-xs">
-            No columns to toggle
+            Nenhuma coluna para alternar
           </p>
         ) : null}
       </PopoverContent>
@@ -269,12 +272,12 @@ function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) 
     <div className="flex flex-wrap items-center justify-between gap-2 text-muted-foreground text-xs">
       <div className="flex-1">
         {table.getFilteredSelectedRowModel().rows.length > 0
-          ? `${table.getFilteredSelectedRowModel().rows.length} of ${table.getFilteredRowModel().rows.length} row(s) selected.`
-          : `${table.getFilteredRowModel().rows.length} row(s).`}
+          ? `${table.getFilteredSelectedRowModel().rows.length} de ${table.getFilteredRowModel().rows.length} linha(s) seleccionada(s).`
+          : `${table.getFilteredRowModel().rows.length} linha(s).`}
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1.5">
-          Rows per page
+          Linhas por página
           <SelectNative
             value={String(table.getState().pagination.pageSize)}
             onChange={(e) => table.setPageSize(Number(e.target.value))}
@@ -288,7 +291,7 @@ function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) 
           </SelectNative>
         </div>
         <div>
-          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+          Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
         </div>
         <div className="flex items-center gap-0.5">
           <Button

@@ -24,6 +24,7 @@ import {
 import type { Route } from "next";
 import Link from "next/link";
 
+import { formatDateTime, formatNullableDateTime } from "@/lib/format";
 import { NotificationMarkReadForm } from "../../../../components/notification/notification-mark-read-form";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import { getNotificationInbox } from "../../../../lib/notifications";
@@ -51,11 +52,11 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
   if (!canReadNotifications) {
     return (
       <AccessState
-        badgeLabel="Notifications"
-        message="A sessao esta autenticada, mas falta notification.read para consultar a inbox."
+        badgeLabel="Notificacoes"
+        description="O utilizador autenticado nao tem acesso a inbox de notificacoes."
         role="alert"
-        status="Sem grant"
         title="Inbox bloqueada"
+        variant="blocked"
       />
     );
   }
@@ -68,11 +69,11 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
   if (inboxResult.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Notifications"
-        message={inboxResult.message}
+        badgeLabel="Notificacoes"
+        description={inboxResult.message}
         role="alert"
-        status={inboxResult.status}
         title="Inbox indisponivel"
+        variant="error"
       />
     );
   }
@@ -83,8 +84,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
     <main className="flex flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline">notification.read</Badge>
-          <Badge variant="secondary">outbox processor</Badge>
+          <Badge variant="secondary">Processador de eventos</Badge>
           <Badge variant={inbox.totals.unread > 0 ? "warning" : "success"}>
             {inbox.totals.unread > 0 ? `${inbox.totals.unread} por ler` : "Sem pendencias"}
           </Badge>
@@ -92,8 +92,8 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <div className="max-w-3xl">
           <h1 className="font-semibold text-3xl tracking-tight">Inbox operacional</h1>
           <p className="mt-2 text-muted-foreground">
-            Notificacoes geradas a partir do outbox local. Cada item e tenant-scoped, filtravel,
-            auditavel e pode ser reconhecido por utilizadores autorizados.
+            Notificacoes operacionais geradas pelo sistema. Cada item e filtravel, auditavel e pode
+            ser reconhecido por utilizadores autorizados.
           </p>
         </div>
       </section>
@@ -109,7 +109,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <CardHeader>
           <CardTitle>Filtros de inbox</CardTitle>
           <CardDescription>
-            Use filtros leves para validar o processamento do outbox sem abrir dominios de negocio.
+            Use filtros leves para validar o processamento de eventos sem abrir dominios de negocio.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -155,8 +155,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <CardHeader>
           <CardTitle>Eventos processados</CardTitle>
           <CardDescription>
-            Snapshot gerado em {formatDateTime(inbox.generatedAt)} para organizacao{" "}
-            {inbox.organizationId}.
+            Lista gerada em {formatDateTime(inbox.generatedAt, { dateStyle: "short" })}.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -166,7 +165,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
               role="status"
             >
               Nenhuma notificacao encontrada para os filtros atuais. Execute o worker apos gerar
-              eventos no outbox para popular esta inbox.
+              eventos operacionais para popular esta inbox.
             </div>
           ) : (
             <Table aria-label="Eventos processados">
@@ -208,7 +207,9 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
                         </Badge>
                       </div>
                     </TableCell>
-                    <TableCell>{formatDateTime(notification.createdAt)}</TableCell>
+                    <TableCell>
+                      {formatDateTime(notification.createdAt, { dateStyle: "short" })}
+                    </TableCell>
                     <TableCell>
                       {notification.status === "unread" ? (
                         <NotificationMarkReadForm
@@ -273,15 +274,4 @@ function getStatusVariant(status: string): "outline" | "success" | "warning" {
   }
 
   return "outline";
-}
-
-function formatDateTime(value: string): string {
-  return new Intl.DateTimeFormat("pt-PT", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(new Date(value));
-}
-
-function formatNullableDateTime(value: string | null): string {
-  return value === null ? "n/a" : formatDateTime(value);
 }

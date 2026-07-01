@@ -49,13 +49,13 @@ export function BrandingSettingsForm({
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline">Branding</Badge>
           <Badge variant={canManageTenant ? "success" : "warning"}>
-            {canManageTenant ? "tenant.manage" : "Sem permissao"}
+            {canManageTenant ? "Gerir organizacao" : "Indisponivel"}
           </Badge>
         </div>
         <div className="max-w-3xl">
           <h1 className="font-semibold text-3xl tracking-tight">Branding</h1>
           <p className="mt-2 text-muted-foreground">
-            Personalize o aspeto visual da organizacao: logotipo, cor primaria e favicon.
+            Personalize o aspeto visual da organização: logotipo, cor primária e favicon.
           </p>
         </div>
       </section>
@@ -66,8 +66,8 @@ export function BrandingSettingsForm({
             <CardHeader>
               <CardTitle>Logotipo</CardTitle>
               <CardDescription>
-                Envie uma imagem para o logotipo da organizacao. Formatos aceites: PNG, SVG. Tamanho
-                maximo: 2MB.
+                Envie uma imagem para o logotipo da organização. Formatos aceites: PNG, SVG. Tamanho
+                máximo: 2MB.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -91,7 +91,7 @@ export function BrandingSettingsForm({
             <CardHeader>
               <CardTitle>Cor primaria</CardTitle>
               <CardDescription>
-                Define a cor principal da organizacao usada em headers, botoes e acentos visuais.
+                Define a cor principal da organização usada em headers, botões e acentos visuais.
               </CardDescription>
             </CardHeader>
             <form action={formAction}>
@@ -118,7 +118,7 @@ export function BrandingSettingsForm({
                         />
                       </div>
                       <FieldDescription>
-                        Formato hexadecimal de 6 digitos (ex: #FF6600).
+                        Formato hexadecimal de 6 dígitos (ex: #FF6600).
                       </FieldDescription>
                     </FieldContent>
                   </Field>
@@ -133,7 +133,7 @@ export function BrandingSettingsForm({
               </CardContent>
               <CardFooter>
                 <Button disabled={isDisabled} type="submit">
-                  {isPending ? "A guardar..." : "Guardar alteracoes"}
+                  {isPending ? "A guardar..." : "Guardar alterações"}
                 </Button>
               </CardFooter>
             </form>
@@ -197,14 +197,14 @@ export function BrandingSettingsForm({
               </div>
               <div className="flex gap-2">
                 <button
-                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-white shadow-panel outline-none transition-colors"
+                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-white shadow-panel outline-none transition-colors hover:opacity-90 focus-visible:ring-[3px] focus-visible:ring-ring/50"
                   style={{ backgroundColor: primaryColor }}
                   type="button"
                 >
                   Botao primario
                 </button>
                 <button
-                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium shadow-panel outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium shadow-panel outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
                   type="button"
                 >
                   Botao secundario

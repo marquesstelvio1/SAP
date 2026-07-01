@@ -19,6 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CargoDeliveryExceptionRecordFormState } from "../../app/(platform)/app/cargo/form-state";
 
@@ -37,13 +39,13 @@ export function CargoDeliveryExceptionRecordForm({
   action,
 }: CargoDeliveryExceptionRecordFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_dex"));
   const defaultOccurredAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canRecordDeliveryException;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("cargo_dex"));
     }
   }, [state.status]);
 
@@ -52,7 +54,7 @@ export function CargoDeliveryExceptionRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordDeliveryException ? "success" : "warning"}>
-            {canRecordDeliveryException ? "Excecao governada" : "Sem permissao"}
+            {canRecordDeliveryException ? "Excecao autorizada" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">cargo.delivery.exception.record</Badge>
         </div>
@@ -200,8 +202,8 @@ export function CargoDeliveryExceptionRecordForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canRecordDeliveryException
-              ? "Cria exception event, cargo held, audit e outbox."
-              : "Requer cargo.delivery.exception.record."}
+              ? "Cria excecao de entrega com registo de auditoria."
+              : "Requer registo de excecao."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A registar..." : "Registar excecao"}
@@ -210,17 +212,4 @@ export function CargoDeliveryExceptionRecordForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `cargo_dex_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

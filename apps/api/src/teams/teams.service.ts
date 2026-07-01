@@ -1,4 +1,16 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  Optional,
+} from "@nestjs/common";
+import {
+  type DatabaseActorType,
+  getPrismaClient,
+  type PrismaTx,
+  type SaptmPrismaClient,
+} from "@saptm/database";
 import type {
   AddTeamMemberInput,
   AddTeamMemberOutput,
@@ -22,14 +34,23 @@ import { TEAMS_REPOSITORY, type TeamsRepository } from "./domain/teams.repositor
 
 export type CreateTeamServiceInput = CreateTeamInput & {
   organizationId: string;
+  actorType: DatabaseActorType;
+  actorId: string;
+  correlationId: string;
 };
 
 export type UpdateTeamServiceInput = UpdateTeamInput & {
   organizationId: string;
+  actorType: DatabaseActorType;
+  actorId: string;
+  correlationId: string;
 };
 
 export type DeleteTeamServiceInput = DeleteTeamInput & {
   organizationId: string;
+  actorType: DatabaseActorType;
+  actorId: string;
+  correlationId: string;
 };
 
 export type ListTeamsServiceInput = ListTeamsInput & {
@@ -42,14 +63,23 @@ export type GetTeamServiceInput = GetTeamInput & {
 
 export type AddTeamMemberServiceInput = AddTeamMemberInput & {
   organizationId: string;
+  actorType: DatabaseActorType;
+  actorId: string;
+  correlationId: string;
 };
 
 export type RemoveTeamMemberServiceInput = RemoveTeamMemberInput & {
   organizationId: string;
+  actorType: DatabaseActorType;
+  actorId: string;
+  correlationId: string;
 };
 
 export type UpdateTeamMemberRoleServiceInput = UpdateTeamMemberRoleInput & {
   organizationId: string;
+  actorType: DatabaseActorType;
+  actorId: string;
+  correlationId: string;
 };
 
 @Injectable()
@@ -57,7 +87,13 @@ export class TeamsService {
   constructor(
     @Inject(TEAMS_REPOSITORY)
     private readonly teamsRepo: TeamsRepository,
+    @Optional()
+    private readonly database?: SaptmPrismaClient,
   ) {}
+
+  private getDatabase(): SaptmPrismaClient {
+    return this.database ?? getPrismaClient();
+  }
 
   async createTeam(input: CreateTeamServiceInput): Promise<CreateTeamOutput> {
     const existing = await this.teamsRepo.findTeamBySlug(input.organizationId, input.slug);
@@ -66,11 +102,36 @@ export class TeamsService {
       throw new BadRequestException("teams.slug_already_exists");
     }
 
-    const team = await this.teamsRepo.createTeam({
-      name: input.name,
-      description: input.description ?? null,
-      slug: input.slug,
-      orgId: input.organizationId,
+    const team = await this.getDatabase().$transaction(async (tx: PrismaTx) => {
+      const result = await this.teamsRepo.createTeam({
+        name: input.name,
+        description: input.description ?? null,
+        slug: input.slug,
+        organizationId: input.organizationId,
+      });
+
+      await this.teamsRepo.createAuditRecord(tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
+        action: "team.created",
+        subjectType: "team",
+        subjectId: result.id,
+        severity: "medium",
+        after: { id: result.id, name: result.name, slug: result.slug },
+        reason: `Team "${result.name}" created.`,
+        correlationId: input.correlationId,
+      });
+
+      await this.teamsRepo.createOutboxEvent(tx, {
+        organizationId: input.organizationId,
+        eventType: "team.created",
+        aggregateType: "team",
+        aggregateId: result.id,
+        payload: { teamId: result.id, name: result.name, slug: result.slug },
+      });
+
+      return result;
     });
 
     return {
@@ -80,12 +141,22 @@ export class TeamsService {
         name: team.name,
         description: team.description,
         slug: team.slug,
-        orgId: team.orgId,
+        organizationId: team.organizationId,
         memberCount: team._count.members,
         createdAt: team.createdAt.toISOString(),
         updatedAt: team.updatedAt.toISOString(),
       },
       idempotency: { key: input.idempotencyKey, replayed: false },
+      audit: {
+        action: "team.created",
+        subjectType: "team",
+        subjectId: team.id,
+      },
+      outbox: {
+        eventType: "team.created",
+        aggregateType: "team",
+        aggregateId: team.id,
+      },
     };
   }
 
@@ -96,9 +167,39 @@ export class TeamsService {
       throw new NotFoundException("teams.team_not_found");
     }
 
-    const updated = await this.teamsRepo.updateTeam(input.teamId, {
-      ...(input.name !== undefined ? { name: input.name } : {}),
-      ...(input.description !== undefined ? { description: input.description ?? null } : {}),
+    const before = { name: team.name, description: team.description };
+
+    const updated = await this.getDatabase().$transaction(async (tx: PrismaTx) => {
+      const result = await this.teamsRepo.updateTeam(input.teamId, {
+        ...(input.name !== undefined ? { name: input.name } : {}),
+        ...(input.description !== undefined ? { description: input.description ?? null } : {}),
+      });
+
+      const after = { name: result.name, description: result.description };
+
+      await this.teamsRepo.createAuditRecord(tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
+        action: "team.updated",
+        subjectType: "team",
+        subjectId: result.id,
+        severity: "medium",
+        before,
+        after,
+        reason: `Team "${result.name}" updated.`,
+        correlationId: input.correlationId,
+      });
+
+      await this.teamsRepo.createOutboxEvent(tx, {
+        organizationId: input.organizationId,
+        eventType: "team.updated",
+        aggregateType: "team",
+        aggregateId: result.id,
+        payload: { teamId: result.id },
+      });
+
+      return result;
     });
 
     return {
@@ -108,12 +209,22 @@ export class TeamsService {
         name: updated.name,
         description: updated.description,
         slug: updated.slug,
-        orgId: updated.orgId,
+        organizationId: updated.organizationId,
         memberCount: updated._count.members,
         createdAt: updated.createdAt.toISOString(),
         updatedAt: updated.updatedAt.toISOString(),
       },
       idempotency: { key: input.idempotencyKey, replayed: false },
+      audit: {
+        action: "team.updated",
+        subjectType: "team",
+        subjectId: updated.id,
+      },
+      outbox: {
+        eventType: "team.updated",
+        aggregateType: "team",
+        aggregateId: updated.id,
+      },
     };
   }
 
@@ -124,11 +235,44 @@ export class TeamsService {
       throw new NotFoundException("teams.team_not_found");
     }
 
-    await this.teamsRepo.deleteTeam(input.teamId);
+    await this.getDatabase().$transaction(async (tx: PrismaTx) => {
+      await this.teamsRepo.deleteTeam(input.teamId);
+
+      await this.teamsRepo.createAuditRecord(tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
+        action: "team.deleted",
+        subjectType: "team",
+        subjectId: input.teamId,
+        severity: "medium",
+        before: { name: team.name, slug: team.slug },
+        reason: `Team "${team.name}" deleted.`,
+        correlationId: input.correlationId,
+      });
+
+      await this.teamsRepo.createOutboxEvent(tx, {
+        organizationId: input.organizationId,
+        eventType: "team.deleted",
+        aggregateType: "team",
+        aggregateId: input.teamId,
+        payload: { teamId: input.teamId },
+      });
+    });
 
     return {
       teamId: input.teamId,
       idempotency: { key: input.idempotencyKey, replayed: false },
+      audit: {
+        action: "team.deleted",
+        subjectType: "team",
+        subjectId: input.teamId,
+      },
+      outbox: {
+        eventType: "team.deleted",
+        aggregateType: "team",
+        aggregateId: input.teamId,
+      },
     };
   }
 
@@ -147,7 +291,7 @@ export class TeamsService {
         name: team.name,
         description: team.description,
         slug: team.slug,
-        orgId: team.orgId,
+        organizationId: team.organizationId,
         memberCount: team._count.members,
         createdAt: team.createdAt.toISOString(),
         updatedAt: team.updatedAt.toISOString(),
@@ -169,7 +313,7 @@ export class TeamsService {
         name: team.name,
         description: team.description,
         slug: team.slug,
-        orgId: team.orgId,
+        organizationId: team.organizationId,
         memberCount: team._count.members,
         createdAt: team.createdAt.toISOString(),
         updatedAt: team.updatedAt.toISOString(),
@@ -203,10 +347,35 @@ export class TeamsService {
       throw new BadRequestException("teams.member_already_exists");
     }
 
-    const member = await this.teamsRepo.createTeamMember({
-      teamId: input.teamId,
-      userId: input.userId,
-      role: input.role,
+    const member = await this.getDatabase().$transaction(async (tx: PrismaTx) => {
+      const result = await this.teamsRepo.createTeamMember({
+        teamId: input.teamId,
+        userId: input.userId,
+        role: input.role,
+      });
+
+      await this.teamsRepo.createAuditRecord(tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
+        action: "team.member_added",
+        subjectType: "team",
+        subjectId: input.teamId,
+        severity: "medium",
+        after: { userId: result.userId, role: result.role },
+        reason: `User "${result.user.name}" added to team "${team.name}".`,
+        correlationId: input.correlationId,
+      });
+
+      await this.teamsRepo.createOutboxEvent(tx, {
+        organizationId: input.organizationId,
+        eventType: "team.member_added",
+        aggregateType: "team",
+        aggregateId: input.teamId,
+        payload: { teamId: input.teamId, userId: input.userId, role: input.role },
+      });
+
+      return result;
     });
 
     return {
@@ -219,6 +388,16 @@ export class TeamsService {
         role: member.role as "admin" | "member" | "viewer",
       },
       idempotency: { key: input.idempotencyKey, replayed: false },
+      audit: {
+        action: "team.member_added",
+        subjectType: "team",
+        subjectId: input.teamId,
+      },
+      outbox: {
+        eventType: "team.member_added",
+        aggregateType: "team",
+        aggregateId: input.teamId,
+      },
     };
   }
 
@@ -235,12 +414,45 @@ export class TeamsService {
       throw new NotFoundException("teams.member_not_found");
     }
 
-    await this.teamsRepo.deleteTeamMember(member.id);
+    await this.getDatabase().$transaction(async (tx: PrismaTx) => {
+      await this.teamsRepo.deleteTeamMember(member.id);
+
+      await this.teamsRepo.createAuditRecord(tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
+        action: "team.member_removed",
+        subjectType: "team",
+        subjectId: input.teamId,
+        severity: "medium",
+        before: { userId: member.userId, role: member.role },
+        reason: `User removed from team "${team.name}".`,
+        correlationId: input.correlationId,
+      });
+
+      await this.teamsRepo.createOutboxEvent(tx, {
+        organizationId: input.organizationId,
+        eventType: "team.member_removed",
+        aggregateType: "team",
+        aggregateId: input.teamId,
+        payload: { teamId: input.teamId, userId: input.userId },
+      });
+    });
 
     return {
       teamId: input.teamId,
       userId: input.userId,
       idempotency: { key: input.idempotencyKey, replayed: false },
+      audit: {
+        action: "team.member_removed",
+        subjectType: "team",
+        subjectId: input.teamId,
+      },
+      outbox: {
+        eventType: "team.member_removed",
+        aggregateType: "team",
+        aggregateId: input.teamId,
+      },
     };
   }
 
@@ -259,7 +471,35 @@ export class TeamsService {
       throw new NotFoundException("teams.member_not_found");
     }
 
-    const updated = await this.teamsRepo.updateTeamMember(member.id, input.role);
+    const beforeRole = member.role;
+
+    const updated = await this.getDatabase().$transaction(async (tx: PrismaTx) => {
+      const result = await this.teamsRepo.updateTeamMember(member.id, input.role);
+
+      await this.teamsRepo.createAuditRecord(tx, {
+        organizationId: input.organizationId,
+        actorType: input.actorType,
+        actorId: input.actorId,
+        action: "team.member_role_updated",
+        subjectType: "team",
+        subjectId: input.teamId,
+        severity: "medium",
+        before: { userId: member.userId, role: beforeRole },
+        after: { userId: result.userId, role: result.role },
+        reason: `Role of user "${result.user.name}" changed from "${beforeRole}" to "${result.role}".`,
+        correlationId: input.correlationId,
+      });
+
+      await this.teamsRepo.createOutboxEvent(tx, {
+        organizationId: input.organizationId,
+        eventType: "team.member_role_updated",
+        aggregateType: "team",
+        aggregateId: input.teamId,
+        payload: { teamId: input.teamId, userId: input.userId, role: input.role },
+      });
+
+      return result;
+    });
 
     return {
       teamId: input.teamId,
@@ -271,6 +511,16 @@ export class TeamsService {
         role: updated.role as "admin" | "member" | "viewer",
       },
       idempotency: { key: input.idempotencyKey, replayed: false },
+      audit: {
+        action: "team.member_role_updated",
+        subjectType: "team",
+        subjectId: input.teamId,
+      },
+      outbox: {
+        eventType: "team.member_role_updated",
+        aggregateType: "team",
+        aggregateId: input.teamId,
+      },
     };
   }
 }

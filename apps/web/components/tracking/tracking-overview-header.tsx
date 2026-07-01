@@ -7,6 +7,7 @@ import {
   CardTitle,
   ContextRow,
   MetricTile,
+  Separator,
 } from "@saptm/ui";
 
 export type TrackingOverviewHeaderProps = {
@@ -16,52 +17,82 @@ export type TrackingOverviewHeaderProps = {
     delayedShipments: number;
     exceptionShipments: number;
   };
-  organizationId: string;
-  sessionId: string;
   generatedAt: string;
 };
 
-export function TrackingOverviewHeader({
-  totals,
-  organizationId,
-  sessionId,
-  generatedAt,
-}: TrackingOverviewHeaderProps) {
+export function TrackingOverviewHeader({ totals, generatedAt }: TrackingOverviewHeaderProps) {
+  const exceptionRate =
+    totals.shipments > 0
+      ? `${Math.round((totals.exceptionShipments / totals.shipments) * 100)}%`
+      : "—";
+  const delayRate =
+    totals.shipments > 0
+      ? `${Math.round((totals.delayedShipments / totals.shipments) * 100)}%`
+      : "—";
+
   return (
     <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
       <Card>
         <CardHeader className="gap-4">
           <BadgeGroup
             items={[
-              { label: "Primeira feature", variant: "success" },
-              { label: "Operational Tracking", variant: "outline" },
+              { label: "Activo", variant: "success" },
+              { label: "Tracking", variant: "outline" },
             ]}
           />
           <div className="flex flex-col gap-2">
-            <CardTitle className="text-3xl">Tracking operacional de cargas</CardTitle>
-            <CardDescription className="max-w-3xl text-base leading-7">
-              Visao governada de movimentos ferroviarios, portuarios e logisticos por tenant. Esta
-              etapa entrega leitura operacional segura antes de qualquer CRUD.
+            <CardTitle as="h1" className="text-2xl">
+              Tracking
+            </CardTitle>
+            <CardDescription className="max-w-3xl leading-6">
+              Acompanhamento de movimentos ferroviarios, portuarios e logisticos em tempo real.
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-4">
-          <MetricTile label="Cargas" value={totals.shipments.toString()} />
-          <MetricTile label="Ativas" value={totals.activeShipments.toString()} />
-          <MetricTile label="Atrasos" value={totals.delayedShipments.toString()} />
-          <MetricTile label="Excecoes" value={totals.exceptionShipments.toString()} />
+          <MetricTile label="Remessas" value={totals.shipments.toString()} />
+          <MetricTile label="Em transito" value={totals.activeShipments.toString()} />
+          <MetricTile
+            label="Atrasos"
+            value={totals.delayedShipments.toString()}
+            variant={totals.delayedShipments > 0 ? "warning" : "default"}
+            {...(totals.delayedShipments > 0 ? { badge: delayRate } : {})}
+          />
+          <MetricTile
+            label="Exceções"
+            value={totals.exceptionShipments.toString()}
+            variant={totals.exceptionShipments > 0 ? "destructive" : "default"}
+            {...(totals.exceptionShipments > 0 ? { badge: exceptionRate } : {})}
+          />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Contexto auditavel</CardTitle>
-          <CardDescription>Escopo resolvido por Better Auth, RBAC e organizacao.</CardDescription>
+          <CardTitle>Estado operacional</CardTitle>
+          <CardDescription>Metricas consolidadas do tracking actual.</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-3 text-sm">
-          <ContextRow label="Organization" value={organizationId} />
-          <ContextRow label="Session" value={sessionId} />
-          <ContextRow label="Gerado em" value={generatedAt} />
+        <CardContent className="flex flex-col gap-1">
+          <ContextRow
+            label="Taxa de exceções"
+            value={
+              <span className={totals.exceptionShipments > 0 ? "text-destructive" : ""}>
+                {exceptionRate}
+              </span>
+            }
+          />
+          <ContextRow
+            label="Atrasos"
+            value={
+              <span className={totals.delayedShipments > 0 ? "text-warning" : ""}>{delayRate}</span>
+            }
+          />
+          <ContextRow
+            label="Remessas activas"
+            value={`${totals.activeShipments}/${totals.shipments}`}
+          />
+          <Separator />
+          <ContextRow label="Actualizado em" value={generatedAt} muted={false} />
         </CardContent>
       </Card>
     </section>

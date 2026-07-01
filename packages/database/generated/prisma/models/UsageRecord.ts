@@ -46,6 +46,8 @@ export type UsageRecordMinAggregateOutputType = {
   periodEnd: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type UsageRecordMaxAggregateOutputType = {
@@ -58,6 +60,8 @@ export type UsageRecordMaxAggregateOutputType = {
   periodEnd: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type UsageRecordCountAggregateOutputType = {
@@ -70,6 +74,8 @@ export type UsageRecordCountAggregateOutputType = {
   periodEnd: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -94,6 +100,8 @@ export type UsageRecordMinAggregateInputType = {
   periodEnd?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type UsageRecordMaxAggregateInputType = {
@@ -106,6 +114,8 @@ export type UsageRecordMaxAggregateInputType = {
   periodEnd?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type UsageRecordCountAggregateInputType = {
@@ -118,6 +128,8 @@ export type UsageRecordCountAggregateInputType = {
   periodEnd?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -217,6 +229,8 @@ export type UsageRecordGroupByOutputType = {
   periodEnd: Date | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: UsageRecordCountAggregateOutputType | null
   _avg: UsageRecordAvgAggregateOutputType | null
   _sum: UsageRecordSumAggregateOutputType | null
@@ -252,6 +266,8 @@ export type UsageRecordWhereInput = {
   periodEnd?: Prisma.DateTimeNullableFilter<"UsageRecord"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"UsageRecord"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UsageRecord"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"UsageRecord"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"UsageRecord"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
 }
 
@@ -265,6 +281,8 @@ export type UsageRecordOrderByWithRelationInput = {
   periodEnd?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
 }
 
@@ -282,6 +300,8 @@ export type UsageRecordWhereUniqueInput = Prisma.AtLeast<{
   periodEnd?: Prisma.DateTimeNullableFilter<"UsageRecord"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"UsageRecord"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UsageRecord"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"UsageRecord"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"UsageRecord"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
 }, "id" | "organizationId_metric">
 
@@ -295,6 +315,8 @@ export type UsageRecordOrderByWithAggregationInput = {
   periodEnd?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UsageRecordCountOrderByAggregateInput
   _avg?: Prisma.UsageRecordAvgOrderByAggregateInput
   _max?: Prisma.UsageRecordMaxOrderByAggregateInput
@@ -315,6 +337,8 @@ export type UsageRecordScalarWhereWithAggregatesInput = {
   periodEnd?: Prisma.DateTimeNullableWithAggregatesFilter<"UsageRecord"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UsageRecord"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UsageRecord"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"UsageRecord"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"UsageRecord"> | string | null
 }
 
 export type UsageRecordCreateInput = {
@@ -326,6 +350,8 @@ export type UsageRecordCreateInput = {
   periodEnd?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutUsageRecordsInput
 }
 
@@ -339,6 +365,8 @@ export type UsageRecordUncheckedCreateInput = {
   periodEnd?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type UsageRecordUpdateInput = {
@@ -350,6 +378,8 @@ export type UsageRecordUpdateInput = {
   periodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsageRecordsNestedInput
 }
 
@@ -363,6 +393,8 @@ export type UsageRecordUncheckedUpdateInput = {
   periodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsageRecordCreateManyInput = {
@@ -375,6 +407,8 @@ export type UsageRecordCreateManyInput = {
   periodEnd?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type UsageRecordUpdateManyMutationInput = {
@@ -386,6 +420,8 @@ export type UsageRecordUpdateManyMutationInput = {
   periodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsageRecordUncheckedUpdateManyInput = {
@@ -398,6 +434,8 @@ export type UsageRecordUncheckedUpdateManyInput = {
   periodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsageRecordListRelationFilter = {
@@ -425,6 +463,8 @@ export type UsageRecordCountOrderByAggregateInput = {
   periodEnd?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type UsageRecordAvgOrderByAggregateInput = {
@@ -442,6 +482,8 @@ export type UsageRecordMaxOrderByAggregateInput = {
   periodEnd?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type UsageRecordMinOrderByAggregateInput = {
@@ -454,6 +496,8 @@ export type UsageRecordMinOrderByAggregateInput = {
   periodEnd?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type UsageRecordSumOrderByAggregateInput = {
@@ -512,6 +556,8 @@ export type UsageRecordCreateWithoutOrganizationInput = {
   periodEnd?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type UsageRecordUncheckedCreateWithoutOrganizationInput = {
@@ -523,6 +569,8 @@ export type UsageRecordUncheckedCreateWithoutOrganizationInput = {
   periodEnd?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type UsageRecordCreateOrConnectWithoutOrganizationInput = {
@@ -564,6 +612,8 @@ export type UsageRecordScalarWhereInput = {
   periodEnd?: Prisma.DateTimeNullableFilter<"UsageRecord"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"UsageRecord"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UsageRecord"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"UsageRecord"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"UsageRecord"> | string | null
 }
 
 export type UsageRecordCreateManyOrganizationInput = {
@@ -575,6 +625,8 @@ export type UsageRecordCreateManyOrganizationInput = {
   periodEnd?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type UsageRecordUpdateWithoutOrganizationInput = {
@@ -586,6 +638,8 @@ export type UsageRecordUpdateWithoutOrganizationInput = {
   periodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsageRecordUncheckedUpdateWithoutOrganizationInput = {
@@ -597,6 +651,8 @@ export type UsageRecordUncheckedUpdateWithoutOrganizationInput = {
   periodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsageRecordUncheckedUpdateManyWithoutOrganizationInput = {
@@ -608,6 +664,8 @@ export type UsageRecordUncheckedUpdateManyWithoutOrganizationInput = {
   periodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -622,6 +680,8 @@ export type UsageRecordSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   periodEnd?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usageRecord"]>
 
@@ -635,6 +695,8 @@ export type UsageRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   periodEnd?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usageRecord"]>
 
@@ -648,6 +710,8 @@ export type UsageRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   periodEnd?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usageRecord"]>
 
@@ -661,9 +725,11 @@ export type UsageRecordSelectScalar = {
   periodEnd?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type UsageRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "metric" | "current" | "limit" | "periodStart" | "periodEnd" | "createdAt" | "updatedAt", ExtArgs["result"]["usageRecord"]>
+export type UsageRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "metric" | "current" | "limit" | "periodStart" | "periodEnd" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["usageRecord"]>
 export type UsageRecordInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }
@@ -689,6 +755,8 @@ export type $UsageRecordPayload<ExtArgs extends runtime.Types.Extensions.Interna
     periodEnd: Date | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["usageRecord"]>
   composites: {}
 }
@@ -1122,6 +1190,8 @@ export interface UsageRecordFieldRefs {
   readonly periodEnd: Prisma.FieldRef<"UsageRecord", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"UsageRecord", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"UsageRecord", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"UsageRecord", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"UsageRecord", 'String'>
 }
     
 

@@ -3682,7 +3682,9 @@ export const OrganizationScalarFieldEnum = {
   slug: 'slug',
   status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
@@ -3693,9 +3695,11 @@ export const TeamScalarFieldEnum = {
   name: 'name',
   description: 'description',
   slug: 'slug',
-  orgId: 'orgId',
+  organizationId: 'organizationId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
@@ -3717,7 +3721,9 @@ export const MembershipScalarFieldEnum = {
   userId: 'userId',
   status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type MembershipScalarFieldEnum = (typeof MembershipScalarFieldEnum)[keyof typeof MembershipScalarFieldEnum]
@@ -3730,7 +3736,9 @@ export const RoleScalarFieldEnum = {
   name: 'name',
   description: 'description',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
@@ -3796,7 +3804,9 @@ export const ServiceAccountScalarFieldEnum = {
   provisionIdempotencyKey: 'provisionIdempotencyKey',
   lastRotatedAt: 'lastRotatedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type ServiceAccountScalarFieldEnum = (typeof ServiceAccountScalarFieldEnum)[keyof typeof ServiceAccountScalarFieldEnum]
@@ -3826,7 +3836,9 @@ export const IntegrationEventScalarFieldEnum = {
   eventType: 'eventType',
   payload: 'payload',
   receivedAt: 'receivedAt',
-  processedAt: 'processedAt'
+  processedAt: 'processedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type IntegrationEventScalarFieldEnum = (typeof IntegrationEventScalarFieldEnum)[keyof typeof IntegrationEventScalarFieldEnum]
@@ -3862,6 +3874,8 @@ export const NotificationScalarFieldEnum = {
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy',
   readAt: 'readAt',
   archivedAt: 'archivedAt'
 } as const
@@ -3923,7 +3937,9 @@ export const CargoScalarFieldEnum = {
   arrivedAt: 'arrivedAt',
   deliveredAt: 'deliveredAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type CargoScalarFieldEnum = (typeof CargoScalarFieldEnum)[keyof typeof CargoScalarFieldEnum]
@@ -3951,7 +3967,9 @@ export const CargoDeliveryExceptionScalarFieldEnum = {
   recordIdempotencyKey: 'recordIdempotencyKey',
   resolveIdempotencyKey: 'resolveIdempotencyKey',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type CargoDeliveryExceptionScalarFieldEnum = (typeof CargoDeliveryExceptionScalarFieldEnum)[keyof typeof CargoDeliveryExceptionScalarFieldEnum]
@@ -3975,7 +3993,9 @@ export const CargoClaimSettlementScalarFieldEnum = {
   sourceSystem: 'sourceSystem',
   recordIdempotencyKey: 'recordIdempotencyKey',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type CargoClaimSettlementScalarFieldEnum = (typeof CargoClaimSettlementScalarFieldEnum)[keyof typeof CargoClaimSettlementScalarFieldEnum]
@@ -3992,7 +4012,9 @@ export const CapacityResourceScalarFieldEnum = {
   sourceSystem: 'sourceSystem',
   recordIdempotencyKey: 'recordIdempotencyKey',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type CapacityResourceScalarFieldEnum = (typeof CapacityResourceScalarFieldEnum)[keyof typeof CapacityResourceScalarFieldEnum]
@@ -4011,7 +4033,9 @@ export const CapacitySlotScalarFieldEnum = {
   sourceSystem: 'sourceSystem',
   recordIdempotencyKey: 'recordIdempotencyKey',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type CapacitySlotScalarFieldEnum = (typeof CapacitySlotScalarFieldEnum)[keyof typeof CapacitySlotScalarFieldEnum]
@@ -4036,7 +4060,9 @@ export const CapacitySlotReservationScalarFieldEnum = {
   reserveIdempotencyKey: 'reserveIdempotencyKey',
   cancelIdempotencyKey: 'cancelIdempotencyKey',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type CapacitySlotReservationScalarFieldEnum = (typeof CapacitySlotReservationScalarFieldEnum)[keyof typeof CapacitySlotReservationScalarFieldEnum]
@@ -4058,7 +4084,9 @@ export const CapacityAdvisoryDecisionScalarFieldEnum = {
   decisionIdempotencyKey: 'decisionIdempotencyKey',
   decidedAt: 'decidedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type CapacityAdvisoryDecisionScalarFieldEnum = (typeof CapacityAdvisoryDecisionScalarFieldEnum)[keyof typeof CapacityAdvisoryDecisionScalarFieldEnum]
@@ -4090,7 +4118,9 @@ export const TransportOrderScalarFieldEnum = {
   cancelIdempotencyKey: 'cancelIdempotencyKey',
   cancelledAt: 'cancelledAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type TransportOrderScalarFieldEnum = (typeof TransportOrderScalarFieldEnum)[keyof typeof TransportOrderScalarFieldEnum]
@@ -4107,7 +4137,9 @@ export const TransportOrderDispatchScalarFieldEnum = {
   idempotencyKey: 'idempotencyKey',
   dispatchedAt: 'dispatchedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type TransportOrderDispatchScalarFieldEnum = (typeof TransportOrderDispatchScalarFieldEnum)[keyof typeof TransportOrderDispatchScalarFieldEnum]
@@ -4138,7 +4170,9 @@ export const TransportOrderScheduleRevisionScalarFieldEnum = {
   idempotencyKey: 'idempotencyKey',
   rescheduledAt: 'rescheduledAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type TransportOrderScheduleRevisionScalarFieldEnum = (typeof TransportOrderScheduleRevisionScalarFieldEnum)[keyof typeof TransportOrderScheduleRevisionScalarFieldEnum]
@@ -4156,7 +4190,9 @@ export const TariffRateCardScalarFieldEnum = {
   sourceSystem: 'sourceSystem',
   recordIdempotencyKey: 'recordIdempotencyKey',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type TariffRateCardScalarFieldEnum = (typeof TariffRateCardScalarFieldEnum)[keyof typeof TariffRateCardScalarFieldEnum]
@@ -4182,7 +4218,9 @@ export const TariffRateRuleScalarFieldEnum = {
   sourceSystem: 'sourceSystem',
   recordIdempotencyKey: 'recordIdempotencyKey',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type TariffRateRuleScalarFieldEnum = (typeof TariffRateRuleScalarFieldEnum)[keyof typeof TariffRateRuleScalarFieldEnum]
@@ -4208,7 +4246,9 @@ export const TariffQuoteScalarFieldEnum = {
   calculateIdempotencyKey: 'calculateIdempotencyKey',
   approveIdempotencyKey: 'approveIdempotencyKey',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type TariffQuoteScalarFieldEnum = (typeof TariffQuoteScalarFieldEnum)[keyof typeof TariffQuoteScalarFieldEnum]
@@ -4232,7 +4272,9 @@ export const CargoOperationalHandoffScalarFieldEnum = {
   sourceSystem: 'sourceSystem',
   recordIdempotencyKey: 'recordIdempotencyKey',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type CargoOperationalHandoffScalarFieldEnum = (typeof CargoOperationalHandoffScalarFieldEnum)[keyof typeof CargoOperationalHandoffScalarFieldEnum]
@@ -4262,7 +4304,9 @@ export const CargoComplianceEvidenceScalarFieldEnum = {
   reviewedByActorId: 'reviewedByActorId',
   recordedAt: 'recordedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type CargoComplianceEvidenceScalarFieldEnum = (typeof CargoComplianceEvidenceScalarFieldEnum)[keyof typeof CargoComplianceEvidenceScalarFieldEnum]
@@ -4283,7 +4327,9 @@ export const TrackingShipmentScalarFieldEnum = {
   estimatedArrivalAt: 'estimatedArrivalAt',
   actualArrivalAt: 'actualArrivalAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type TrackingShipmentScalarFieldEnum = (typeof TrackingShipmentScalarFieldEnum)[keyof typeof TrackingShipmentScalarFieldEnum]
@@ -4300,7 +4346,9 @@ export const WebhookEndpointScalarFieldEnum = {
   lastTriggeredAt: 'lastTriggeredAt',
   failureCount: 'failureCount',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type WebhookEndpointScalarFieldEnum = (typeof WebhookEndpointScalarFieldEnum)[keyof typeof WebhookEndpointScalarFieldEnum]
@@ -4317,7 +4365,9 @@ export const WebhookDeliveryScalarFieldEnum = {
   attemptCount: 'attemptCount',
   nextRetryAt: 'nextRetryAt',
   deliveredAt: 'deliveredAt',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type WebhookDeliveryScalarFieldEnum = (typeof WebhookDeliveryScalarFieldEnum)[keyof typeof WebhookDeliveryScalarFieldEnum]
@@ -4335,7 +4385,9 @@ export const TrackingEventScalarFieldEnum = {
   sourceSystem: 'sourceSystem',
   correlationId: 'correlationId',
   idempotencyKey: 'idempotencyKey',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type TrackingEventScalarFieldEnum = (typeof TrackingEventScalarFieldEnum)[keyof typeof TrackingEventScalarFieldEnum]
@@ -4353,7 +4405,9 @@ export const SubscriptionScalarFieldEnum = {
   cancelAtPeriodEnd: 'cancelAtPeriodEnd',
   trialEndsAt: 'trialEndsAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
@@ -4370,7 +4424,9 @@ export const InvoiceScalarFieldEnum = {
   periodEnd: 'periodEnd',
   paidAt: 'paidAt',
   downloadUrl: 'downloadUrl',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
@@ -4385,7 +4441,9 @@ export const UsageRecordScalarFieldEnum = {
   periodStart: 'periodStart',
   periodEnd: 'periodEnd',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
 } as const
 
 export type UsageRecordScalarFieldEnum = (typeof UsageRecordScalarFieldEnum)[keyof typeof UsageRecordScalarFieldEnum]

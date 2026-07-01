@@ -49,7 +49,7 @@ const actionByStatus = {
     label: "Monitorizar trajeto",
     variant: "success" as const,
     description:
-      "Carga em transito. Acompanhe eventos de localizacao e esteja atento a possiveis excecoes.",
+      "Carga em trânsito. Acompanhe eventos de localização e esteja atento a possíveis exceções.",
   },
   delayed: {
     label: "Resolver atraso",
@@ -60,12 +60,12 @@ const actionByStatus = {
   exception: {
     label: "Resolver excecao",
     variant: "destructive" as const,
-    description: "Excecao operacional ativa. Resolva o problema para retomar o fluxo normal.",
+    description: "Exceção operacional ativa. Resolva o problema para retomar o fluxo normal.",
   },
   arrived: {
     label: "Concluir entrega",
     variant: "success" as const,
-    description: "A carga chegou ao destino. Confirme a conclusao para encerrar o tracking.",
+    description: "A carga chegou ao destino. Confirme a conclusão para encerrar o tracking.",
   },
   completed: {
     label: "Concluido",
@@ -125,8 +125,7 @@ function computeNextAction(props: TrackingNextActionCardProps): NextAction {
       return {
         ...actionByStatus.exception,
         href: null,
-        description:
-          "Excecao ativa. Solicite a permissao tracking.exception.resolve para resolver.",
+        description: "Exceção ativa. Solicite autorização para resolver.",
       };
 
     case "arrived":
@@ -151,7 +150,6 @@ export function TrackingNextActionCard(props: TrackingNextActionCardProps) {
       <CardHeader className="gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={nextAction.variant}>Proxima acao</Badge>
-          <Badge variant="outline">tracking.shipment.detail</Badge>
         </div>
         <div className="flex flex-col gap-1">
           <CardTitle className="text-lg">{nextAction.label}</CardTitle>
@@ -173,13 +171,13 @@ export function TrackingNextActionCard(props: TrackingNextActionCardProps) {
 
         <div className="flex flex-wrap gap-2 pt-1">
           <Link
-            className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-[0.65rem] text-muted-foreground underline-offset-4 hover:bg-muted/40 hover:underline"
+            className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-2xs text-muted-foreground underline-offset-4 outline-none hover:bg-muted/40 hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
             href={`/app/tracking/${props.shipmentId}` as Route}
           >
             Recarregar detalhe
           </Link>
           <Link
-            className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-[0.65rem] text-muted-foreground underline-offset-4 hover:bg-muted/40 hover:underline"
+            className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-2xs text-muted-foreground underline-offset-4 outline-none hover:bg-muted/40 hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
             href={
               `/app/audit?subjectType=tracking.shipment&subjectId=${props.shipmentId}&limit=25` as Route
             }

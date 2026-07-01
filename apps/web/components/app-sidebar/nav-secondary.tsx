@@ -8,8 +8,8 @@ import {
   SidebarMenuItem,
 } from "@saptm/ui";
 import type { LucideIcon } from "lucide-react";
-import Link from "next/link";
 import type { Route } from "next";
+import Link from "next/link";
 
 export type SecondaryNavItem = {
   title: string;

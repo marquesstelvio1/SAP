@@ -9,11 +9,11 @@
     "pnpm": ">=10.0.0"
   },
   "scripts": {
-    "dev": "dotenvx run -- turbo run dev --parallel",
+    "dev": "turbo run dev --parallel",
     "build": "turbo run build --ui=stream",
     "typecheck": "turbo run typecheck --ui=stream",
-    "lint": "biome check package.json pnpm-workspace.yaml components.json turbo.json biome.json tsconfig.json tsconfig.base.json playwright.config.ts scripts/cluster-preflight.mjs scripts/render-cluster-baseline.mjs scripts/render-kubernetes-environment.mjs scripts/run-e2e.mjs scripts/run-local-production-validation.mjs scripts/generate-release-evidence.mjs scripts/patch-esm-dist-extensions.mjs scripts/validate-foundation.mjs scripts/validate-ui-foundation.mjs scripts/validate-tracking-foundation.mjs scripts/validate-cargo-foundation.mjs scripts/validate-capacity-foundation.mjs scripts/validate-capacity-advisory.mjs scripts/validate-tariff-foundation.mjs scripts/validate-migrations.mjs scripts/validate-env.ts scripts/validate-containers.mjs scripts/validate-docker-runtime.mjs scripts/validate-deploy.mjs scripts/validate-production-inputs.mjs scripts/validate-production-handoff.mjs scripts/validate-observability.mjs scripts/validate-alert-routing.mjs scripts/validate-dr.mjs scripts/validate-tls.mjs scripts/validate-security-runtime.mjs scripts/validate-secrets-network.mjs scripts/validate-supply-chain.mjs scripts/validate-resilience.mjs scripts/validate-resource-governance.mjs scripts/validate-cluster.mjs scripts/validate-cluster-baseline-inputs.mjs scripts/validate-local-readiness.mjs scripts/validate-evidence.mjs scripts/smoke-runtime.mjs scripts/smoke-local-runtime.mjs apps packages tests",
-    "format": "biome format --write package.json pnpm-workspace.yaml components.json turbo.json biome.json tsconfig.json tsconfig.base.json playwright.config.ts scripts/cluster-preflight.mjs scripts/render-cluster-baseline.mjs scripts/render-kubernetes-environment.mjs scripts/run-e2e.mjs scripts/run-local-production-validation.mjs scripts/generate-release-evidence.mjs scripts/patch-esm-dist-extensions.mjs scripts/validate-foundation.mjs scripts/validate-ui-foundation.mjs scripts/validate-tracking-foundation.mjs scripts/validate-cargo-foundation.mjs scripts/validate-capacity-foundation.mjs scripts/validate-capacity-advisory.mjs scripts/validate-tariff-foundation.mjs scripts/validate-migrations.mjs scripts/validate-env.ts scripts/validate-containers.mjs scripts/validate-docker-runtime.mjs scripts/validate-deploy.mjs scripts/validate-production-inputs.mjs scripts/validate-production-handoff.mjs scripts/validate-observability.mjs scripts/validate-alert-routing.mjs scripts/validate-dr.mjs scripts/validate-tls.mjs scripts/validate-security-runtime.mjs scripts/validate-secrets-network.mjs scripts/validate-supply-chain.mjs scripts/validate-resilience.mjs scripts/validate-resource-governance.mjs scripts/validate-cluster.mjs scripts/validate-cluster-baseline-inputs.mjs scripts/validate-local-readiness.mjs scripts/validate-evidence.mjs scripts/smoke-runtime.mjs scripts/smoke-local-runtime.mjs apps packages tests",
+    "lint": "biome check",
+    "format": "biome format --write",
     "validate:foundation": "node scripts/validate-foundation.mjs",
     "validate:ui-foundation": "node scripts/validate-ui-foundation.mjs",
     "validate:tracking-foundation": "node scripts/validate-tracking-foundation.mjs",
@@ -49,7 +49,7 @@
     "generate:openapi": "node scripts/generate-openapi.mjs",
     "smoke:runtime": "node scripts/smoke-runtime.mjs",
     "smoke:local-runtime": "node scripts/smoke-local-runtime.mjs",
-    "test": "turbo run test --filter @saptm/api --filter @saptm/rpc --ui=stream",
+    "test": "turbo run test --filter @saptm/api --filter @saptm/rpc --filter @saptm/ui --ui=stream",
     "test:coverage": "turbo run test:coverage --filter @saptm/api",
     "test:e2e": "node scripts/run-e2e.mjs",
     "test:load": "bash tests/load/run-load-tests.sh",
@@ -76,7 +76,7 @@
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@changesets/cli": "catalog:",
-    "@dotenvx/dotenvx": "catalog:",
+
     "@playwright/test": "catalog:",
     "@axe-core/playwright": "catalog:",
     "tsup": "catalog:",

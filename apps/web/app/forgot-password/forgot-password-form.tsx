@@ -91,7 +91,7 @@ export function ForgotPasswordForm() {
               <Input
                 autoComplete="email"
                 id="email"
-                placeholder="operador@saptm.local"
+                placeholder="operador@empresa.pt"
                 type="email"
                 {...register("email")}
               />
@@ -104,7 +104,7 @@ export function ForgotPasswordForm() {
           </Button>
           <p className="text-center text-muted-foreground text-sm">
             <Link
-              className="text-primary underline-offset-4 hover:underline"
+              className="rounded-sm text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
               href={"/sign-in" as Route}
             >
               Voltar para o login

@@ -36,9 +36,6 @@ export function getCurrentOrganizationId(): string | undefined {
  * });
  * ```
  */
-export function runWithTenantContext<T>(
-  value: TenantContextValue,
-  fn: () => T,
-): T {
+export function runWithTenantContext<T>(value: TenantContextValue, fn: () => T): T {
   return tenantContext.run(value, fn);
 }

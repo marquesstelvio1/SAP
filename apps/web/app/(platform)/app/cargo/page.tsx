@@ -1,10 +1,17 @@
 import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
+import type { Metadata } from "next";
 
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import { CargoOverviewClient } from "./CargoOverviewClient";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Cargas",
+  description:
+    "Gestão de cargas ferroviárias, portuárias e logísticas — registo, transporte, entrega e compliance.",
+};
 
 const readCargoPermission: PlatformPermission = "cargo.read";
 const registerCargoPermission: PlatformPermission = "cargo.register";
@@ -34,11 +41,11 @@ export default async function CargoOverviewPage(props: {
   if (!viewerPermissions.includes(readCargoPermission)) {
     return (
       <AccessState
-        badgeLabel="Gestao de Cargas"
-        message="A sessao esta autenticada, mas falta a permissao cargo.read para abrir o modulo."
+        badgeLabel="Gestão de Cargas"
+        description="O utilizador autenticado não tem acesso ao módulo de gestão de cargas."
         role="alert"
-        status="Sem grant"
-        title="Gestao de cargas bloqueada"
+        title="Gestão de cargas bloqueada"
+        variant="blocked"
       />
     );
   }
@@ -47,7 +54,6 @@ export default async function CargoOverviewPage(props: {
     <CargoOverviewClient
       offset={offset}
       limit={limit}
-      sessionId={platformSession.sessionId}
       canRegisterCargo={viewerPermissions.includes(registerCargoPermission)}
       canReleaseCargo={viewerPermissions.includes(releaseCargoPermission)}
       canPlanTransport={viewerPermissions.includes(planCargoTransportPermission)}

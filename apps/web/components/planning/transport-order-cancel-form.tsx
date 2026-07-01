@@ -18,7 +18,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
-
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TransportOrderCancelFormState } from "../../app/(platform)/app/planning/form-state";
 
 export type TransportOrderCancelFormProps = {
@@ -36,13 +37,15 @@ export function TransportOrderCancelForm({
   action,
 }: TransportOrderCancelFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("planning_cancel"),
+  );
   const defaultCancelledAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canCancelTransportOrder;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("planning_cancel"));
     }
   }, [state.status]);
 
@@ -51,7 +54,7 @@ export function TransportOrderCancelForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canCancelTransportOrder ? "warning" : "outline"}>
-            {canCancelTransportOrder ? "Cancelamento governado" : "Sem permissao"}
+            {canCancelTransportOrder ? "Cancelamento autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">planning.order.cancel</Badge>
         </div>
@@ -59,7 +62,7 @@ export function TransportOrderCancelForm({
           <CardTitle>Cancelar transport order</CardTitle>
           <CardDescription className="leading-6">
             Cancela somente ordens confirmadas antes da partida planeada, exigindo motivo
-            operacional, referencia unica, idempotencia, auditoria e evento de outbox.
+            operacional, referencia unica e registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -149,8 +152,8 @@ export function TransportOrderCancelForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canCancelTransportOrder
-              ? "Cancelamento grava audit/outbox e sinaliza capacidade/tracking ligados."
-              : "Requer planning.order.cancel."}
+              ? "Cancelamento gravado com registo de auditoria."
+              : "Requer cancelamento de transporte."}
           </span>
           <Button disabled={isDisabled} type="submit" variant="outline">
             {isPending ? "A cancelar..." : "Cancelar transport order"}
@@ -159,17 +162,4 @@ export function TransportOrderCancelForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `planning_cancel_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

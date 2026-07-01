@@ -18,6 +18,7 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CargoComplianceEvidenceRecordFormState } from "../../app/(platform)/app/cargo/form-state";
 
@@ -47,12 +48,12 @@ export function CargoComplianceEvidenceRecordForm({
   action,
 }: CargoComplianceEvidenceRecordFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_ev"));
   const isDisabled = isPending || !canRecordComplianceEvidence;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("cargo_ev"));
     }
   }, [state.status]);
 
@@ -61,15 +62,15 @@ export function CargoComplianceEvidenceRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordComplianceEvidence ? "success" : "warning"}>
-            {canRecordComplianceEvidence ? "Evidencia governada" : "Sem permissao"}
+            {canRecordComplianceEvidence ? "Evidencia autorizada" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">cargo.compliance.record</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar evidencia de compliance</CardTitle>
           <CardDescription className="leading-6">
-            Cria evidencia documental tenant-scoped para uma carga. O backend bloqueia evidencia
-            expirada, duplicada, inconsistente com carga perigosa ou carga cancelada.
+            Regista evidencia documental para uma carga. O sistema bloqueia evidencia expirada,
+            duplicada, inconsistente com carga perigosa ou carga cancelada.
           </CardDescription>
         </div>
       </CardHeader>
@@ -203,8 +204,8 @@ export function CargoComplianceEvidenceRecordForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canRecordComplianceEvidence
-              ? "Cria evidencia pendente de revisao, audit trail e outbox."
-              : "Requer cargo.compliance.record."}
+              ? "Cria evidencia pendente de revisao com auditoria."
+              : "Requer registo de evidencias."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A registar..." : "Registar evidencia"}
@@ -213,11 +214,4 @@ export function CargoComplianceEvidenceRecordForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `cargo_ev_${randomValue}`;
 }

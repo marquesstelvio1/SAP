@@ -56,7 +56,7 @@ test("MetricTile renders trend with up direction", () => {
   });
   const [, , trendElement] = element.props.children;
   assert.ok(trendElement != null);
-  assert.ok(trendElement.props.className.includes("text-emerald-600"));
+  assert.ok(trendElement.props.className.includes("text-success"));
   assert.equal(trendElement.props.children, "+10% vs last month");
 });
 
@@ -68,7 +68,7 @@ test("MetricTile renders trend with down direction", () => {
   });
   const [, , trendElement] = element.props.children;
   assert.ok(trendElement != null);
-  assert.ok(trendElement.props.className.includes("text-red-600"));
+  assert.ok(trendElement.props.className.includes("text-destructive"));
   assert.equal(trendElement.props.children, "-5% vs last month");
 });
 

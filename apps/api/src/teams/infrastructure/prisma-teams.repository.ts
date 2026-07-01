@@ -4,6 +4,8 @@ import { getPrismaClient, type PrismaTx, type SaptmPrismaClient } from "@saptm/d
 import type {
   CreateTeamData,
   CreateTeamMemberData,
+  PrismaAuditRecordCreateInput,
+  PrismaOutboxEventCreateInput,
   TeamMemberRecord,
   TeamMemberWithUserRecord,
   TeamRecord,
@@ -26,25 +28,28 @@ export class PrismaTeamsRepository implements TeamsRepository {
 
   // ── Team reads ──────────────────────────────────────────────
 
-  async findTeamBySlug(orgId: string, slug: string): Promise<{ id: string } | null> {
+  async findTeamBySlug(organizationId: string, slug: string): Promise<{ id: string } | null> {
     return this.database.team.findUnique({
-      where: { orgId_slug: { orgId, slug } },
+      where: { organizationId_slug: { organizationId, slug } },
       select: { id: true },
     });
   }
 
-  async findTeamById(orgId: string, teamId: string): Promise<TeamRecord | null> {
+  async findTeamById(organizationId: string, teamId: string): Promise<TeamRecord | null> {
     const record = await this.database.team.findFirst({
-      where: { id: teamId, orgId },
+      where: { id: teamId, organizationId },
       include: teamIncludeCount,
     });
 
     return record as unknown as TeamRecord | null;
   }
 
-  async findTeamWithMembers(orgId: string, teamId: string): Promise<TeamWithMembersRecord | null> {
+  async findTeamWithMembers(
+    organizationId: string,
+    teamId: string,
+  ): Promise<TeamWithMembersRecord | null> {
     const record = await this.database.team.findFirst({
-      where: { id: teamId, orgId },
+      where: { id: teamId, organizationId },
       include: {
         _count: { select: { members: true } },
         members: {
@@ -56,9 +61,9 @@ export class PrismaTeamsRepository implements TeamsRepository {
     return record as unknown as TeamWithMembersRecord | null;
   }
 
-  async findTeams(orgId: string, limit: number, offset: number): Promise<TeamRecord[]> {
+  async findTeams(organizationId: string, limit: number, offset: number): Promise<TeamRecord[]> {
     const records = await this.database.team.findMany({
-      where: { orgId },
+      where: { organizationId },
       include: teamIncludeCount,
       orderBy: { createdAt: "desc" },
       take: limit,
@@ -68,8 +73,8 @@ export class PrismaTeamsRepository implements TeamsRepository {
     return records as unknown as TeamRecord[];
   }
 
-  async countTeams(orgId: string): Promise<number> {
-    return this.database.team.count({ where: { orgId } });
+  async countTeams(organizationId: string): Promise<number> {
+    return this.database.team.count({ where: { organizationId } });
   }
 
   // ── User reads ──────────────────────────────────────────────
@@ -125,7 +130,10 @@ export class PrismaTeamsRepository implements TeamsRepository {
   }
 
   async deleteTeam(teamId: string): Promise<void> {
-    await this.database.team.delete({ where: { id: teamId } });
+    await this.database.team.update({
+      where: { id: teamId },
+      data: { deletedAt: new Date() },
+    });
   }
 
   // ── TeamMember writes ───────────────────────────────────────
@@ -151,6 +159,16 @@ export class PrismaTeamsRepository implements TeamsRepository {
 
   async deleteTeamMember(memberId: string): Promise<void> {
     await this.database.teamMember.delete({ where: { id: memberId } });
+  }
+
+  // ── Audit & outbox ───────────────────────────────────────────
+
+  async createAuditRecord(tx: PrismaTx, input: PrismaAuditRecordCreateInput): Promise<void> {
+    await tx.auditRecord.create({ data: input as never });
+  }
+
+  async createOutboxEvent(tx: PrismaTx, input: PrismaOutboxEventCreateInput): Promise<void> {
+    await tx.outboxEvent.create({ data: input as never });
   }
 
   // ── Transaction helper ──────────────────────────────────────

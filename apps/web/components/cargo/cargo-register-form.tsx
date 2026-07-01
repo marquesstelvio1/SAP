@@ -19,6 +19,8 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { addHours, createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CargoRegisterFormState } from "../../app/(platform)/app/cargo/form-state";
 
@@ -35,7 +37,7 @@ const cargoTypeOptions = [
   { value: "container", label: "Contentor" },
   { value: "bulk", label: "Granel" },
   { value: "break_bulk", label: "Carga solta" },
-  { value: "liquid_bulk", label: "Granel liquido" },
+  { value: "liquid_bulk", label: "Granel líquido" },
   { value: "refrigerated", label: "Refrigerada" },
   { value: "hazardous", label: "Perigosa" },
   { value: "vehicle", label: "Veiculo" },
@@ -51,7 +53,7 @@ const customsStatusOptions = [
 
 const conditionStatusOptions = [
   { value: "sound", label: "Integra" },
-  { value: "requires_inspection", label: "Requer inspecao" },
+  { value: "requires_inspection", label: "Requer inspeção" },
   { value: "damaged", label: "Danificada" },
 ] as const;
 
@@ -61,7 +63,7 @@ export function CargoRegisterForm({
   action,
 }: CargoRegisterFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_reg"));
   const defaultExpectedReadyAt = useMemo(
     () => createDatetimeLocalValue(addHours(new Date(), 24)),
     [],
@@ -70,7 +72,7 @@ export function CargoRegisterForm({
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("cargo_reg"));
     }
   }, [state.status]);
 
@@ -79,15 +81,15 @@ export function CargoRegisterForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRegisterCargo ? "success" : "warning"}>
-            {canRegisterCargo ? "Registo governado" : "Sem permissao"}
+            {canRegisterCargo ? "Registo autorizado" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">cargo.register</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar carga</CardTitle>
           <CardDescription className="leading-6">
-            Aplica regras de negocio antes do transporte: identidade unica, custodia, peso, volumes,
-            compliance aduaneiro, perigosidade, inspecao, idempotencia, audit e outbox.
+            Aplica regras de negócio antes do transporte: identidade única, custódia, peso, volumes,
+            compliance aduaneiro, perigosidade, inspecao e registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -98,7 +100,7 @@ export function CargoRegisterForm({
 
             <div className="grid gap-4 md:grid-cols-2">
               <Field data-disabled={!canRegisterCargo}>
-                <FieldLabel htmlFor="cargoReference">Referencia da carga</FieldLabel>
+                <FieldLabel htmlFor="cargoReference">Referência da carga</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="cargoReference"
@@ -108,7 +110,7 @@ export function CargoRegisterForm({
                 />
               </Field>
               <Field data-disabled={!canRegisterCargo}>
-                <FieldLabel htmlFor="externalReference">Referencia externa</FieldLabel>
+                <FieldLabel htmlFor="externalReference">Referência externa</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="externalReference"
@@ -119,7 +121,7 @@ export function CargoRegisterForm({
             </div>
 
             <Field data-disabled={!canRegisterCargo}>
-              <FieldLabel htmlFor="cargoDescription">Descricao</FieldLabel>
+              <FieldLabel htmlFor="cargoDescription">Descrição</FieldLabel>
               <Input
                 disabled={isDisabled}
                 id="cargoDescription"
@@ -173,7 +175,7 @@ export function CargoRegisterForm({
                 <Input disabled={isDisabled} id="shipperName" name="shipperName" required />
               </Field>
               <Field data-disabled={!canRegisterCargo}>
-                <FieldLabel htmlFor="consigneeName">Consignatario</FieldLabel>
+                <FieldLabel htmlFor="consigneeName">Consignatário</FieldLabel>
                 <Input disabled={isDisabled} id="consigneeName" name="consigneeName" required />
               </Field>
             </div>
@@ -191,7 +193,7 @@ export function CargoRegisterForm({
 
             <div className="grid gap-4 md:grid-cols-3">
               <Field data-disabled={!canRegisterCargo}>
-                <FieldLabel htmlFor="custodyOwnerName">Responsavel custodia</FieldLabel>
+                <FieldLabel htmlFor="custodyOwnerName">Responsável custódia</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="custodyOwnerName"
@@ -242,11 +244,11 @@ export function CargoRegisterForm({
                 </SelectNative>
               </Field>
               <Field data-disabled={!canRegisterCargo}>
-                <FieldLabel htmlFor="customsReference">Referencia aduaneira</FieldLabel>
+                <FieldLabel htmlFor="customsReference">Referência aduaneira</FieldLabel>
                 <Input disabled={isDisabled} id="customsReference" name="customsReference" />
               </Field>
               <Field data-disabled={!canRegisterCargo}>
-                <FieldLabel htmlFor="conditionStatus">Condicao</FieldLabel>
+                <FieldLabel htmlFor="conditionStatus">Condição</FieldLabel>
                 <SelectNative
                   defaultValue="sound"
                   disabled={isDisabled}
@@ -295,7 +297,7 @@ export function CargoRegisterForm({
                   name="requiresInspection"
                 />
                 <div className="flex flex-col gap-1">
-                  <FieldLabel htmlFor="requiresInspection">Requer inspecao</FieldLabel>
+                  <FieldLabel htmlFor="requiresInspection">Requer inspeção</FieldLabel>
                   <FieldDescription>Bloqueia movimento ate validacao operacional.</FieldDescription>
                 </div>
               </Field>
@@ -342,7 +344,7 @@ export function CargoRegisterForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canRegisterCargo ? "Registo cria audit trail e outbox." : "Requer cargo.register."}
+            {canRegisterCargo ? "Registo cria registo de auditoria." : "Requer registo de cargas."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A registar..." : "Registar carga"}
@@ -351,21 +353,4 @@ export function CargoRegisterForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `cargo_reg_${randomValue}`;
-}
-
-function addHours(date: Date, hours: number): Date {
-  return new Date(date.getTime() + hours * 60 * 60 * 1000);
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

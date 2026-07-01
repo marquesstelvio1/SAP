@@ -1,9 +1,10 @@
 "use client";
 
 import { AccessState, EmptyState } from "@saptm/ui";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
 import { LifecycleProgressIndicator } from "../../../../components/cargo/cargo-lifecycle-group";
-import { CargoLifecycleSections } from "../../../../components/cargo/cargo-lifecycle-sections";
 import { CargoOverviewHeader } from "../../../../components/cargo/cargo-overview-header";
 import {
   CargoRecentTable,
@@ -11,10 +12,17 @@ import {
 } from "../../../../components/cargo/cargo-status-tables";
 import { useCargoOverview } from "../../../../hooks/use-cargo-overview";
 
+const CargoLifecycleSections = dynamic(
+  () =>
+    import("../../../../components/cargo/cargo-lifecycle-sections").then(
+      (mod) => mod.CargoLifecycleSections,
+    ),
+  { ssr: false },
+);
+
 export function CargoOverviewClient({
   offset,
   limit,
-  sessionId,
   canRegisterCargo,
   canReleaseCargo,
   canPlanTransport,
@@ -30,7 +38,6 @@ export function CargoOverviewClient({
 }: {
   offset: number;
   limit: number;
-  sessionId: string;
   canRegisterCargo: boolean;
   canReleaseCargo: boolean;
   canPlanTransport: boolean;
@@ -50,10 +57,9 @@ export function CargoOverviewClient({
     return (
       <AccessState
         badgeLabel="Gestao de Cargas"
-        message="Aguarde enquanto os dados de cargas sao carregados."
+        description="Aguarde enquanto os dados de cargas sao carregados."
         role="alert"
-        status="Carregando"
-        title="Carregando gestao de cargas"
+        title="A carregar gestao de cargas"
       />
     );
   }
@@ -62,14 +68,14 @@ export function CargoOverviewClient({
     return (
       <AccessState
         badgeLabel="Gestao de Cargas"
-        message={
+        description={
           cargoQuery.error instanceof Error
             ? cargoQuery.error.message
             : "Erro ao carregar dados de cargas."
         }
         role="alert"
-        status="Erro"
         title="Gestao de cargas indisponivel"
+        variant="error"
       />
     );
   }
@@ -90,22 +96,7 @@ export function CargoOverviewClient({
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <CargoOverviewHeader
-        totals={overview.totals}
-        organizationId={overview.organizationId}
-        sessionId={sessionId}
-        permissions={{
-          readCargoPermission: "cargo.read",
-          registerCargoPermission: "cargo.register",
-          departCargoTransportPermission: "cargo.transport.depart",
-          arriveCargoTransportPermission: "cargo.transport.arrive",
-          recordCargoOperationalHandoffPermission: "cargo.handoff.record",
-          recordCargoClaimSettlementPermission: "cargo.claim.settle",
-          completeCargoDeliveryPermission: "cargo.delivery.complete",
-          recordCargoDeliveryExceptionPermission: "cargo.delivery.exception.record",
-          recordComplianceEvidencePermission: "cargo.compliance.record",
-        }}
-      />
+      <CargoOverviewHeader totals={overview.totals} />
 
       <LifecycleProgressIndicator cargoStatuses={overview.statusCounts} />
 
@@ -123,20 +114,30 @@ export function CargoOverviewClient({
         />
       </section>
 
-      <CargoLifecycleSections
-        canRegisterCargo={canRegisterCargo}
-        canReleaseCargo={canReleaseCargo}
-        canPlanTransport={canPlanTransport}
-        canDepartTransport={canDepartTransport}
-        canArriveTransport={canArriveTransport}
-        canRecordOperationalHandoff={canRecordOperationalHandoff}
-        canRecordClaimSettlement={canRecordClaimSettlement}
-        canCompleteDelivery={canCompleteDelivery}
-        canRecordDeliveryException={canRecordDeliveryException}
-        canResolveDeliveryException={canResolveDeliveryException}
-        canRecordComplianceEvidence={canRecordComplianceEvidence}
-        canVerifyComplianceEvidence={canVerifyComplianceEvidence}
-      />
+      <Suspense
+        fallback={
+          <AccessState
+            badgeLabel="Ciclo de Vida de Cargas"
+            description="A carregar formularios de ciclo de vida..."
+            title="A carregar ciclo de vida"
+          />
+        }
+      >
+        <CargoLifecycleSections
+          canRegisterCargo={canRegisterCargo}
+          canReleaseCargo={canReleaseCargo}
+          canPlanTransport={canPlanTransport}
+          canDepartTransport={canDepartTransport}
+          canArriveTransport={canArriveTransport}
+          canRecordOperationalHandoff={canRecordOperationalHandoff}
+          canRecordClaimSettlement={canRecordClaimSettlement}
+          canCompleteDelivery={canCompleteDelivery}
+          canRecordDeliveryException={canRecordDeliveryException}
+          canResolveDeliveryException={canResolveDeliveryException}
+          canRecordComplianceEvidence={canRecordComplianceEvidence}
+          canVerifyComplianceEvidence={canVerifyComplianceEvidence}
+        />
+      </Suspense>
     </div>
   );
 }

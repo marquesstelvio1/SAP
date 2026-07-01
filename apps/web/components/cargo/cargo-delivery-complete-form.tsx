@@ -19,6 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CargoDeliveryCompleteFormState } from "../../app/(platform)/app/cargo/form-state";
 
@@ -37,13 +39,13 @@ export function CargoDeliveryCompleteForm({
   action,
 }: CargoDeliveryCompleteFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_dlv"));
   const defaultDeliveredAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canCompleteDelivery;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("cargo_dlv"));
     }
   }, [state.status]);
 
@@ -52,15 +54,15 @@ export function CargoDeliveryCompleteForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canCompleteDelivery ? "success" : "warning"}>
-            {canCompleteDelivery ? "Entrega governada" : "Sem permissao"}
+            {canCompleteDelivery ? "Entrega autorizada" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">cargo.delivery.complete</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Concluir entrega final</CardTitle>
           <CardDescription className="leading-6">
-            Fecha o ciclo operacional apenas depois da chegada governada, movendo cargo para
-            delivered e shipment para completed.
+            Fecha o ciclo operacional apenas depois da chegada, movendo cargo para delivered e
+            shipment para completed.
           </CardDescription>
         </div>
       </CardHeader>
@@ -175,8 +177,8 @@ export function CargoDeliveryCompleteForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canCompleteDelivery
-              ? "Atualiza Cargo, TrackingShipment, handover event, audit e outbox."
-              : "Requer cargo.delivery.complete."}
+              ? "Atualiza carga, tracking e registo de auditoria."
+              : "Requer conclusao de entrega."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A concluir..." : "Concluir entrega"}
@@ -185,17 +187,4 @@ export function CargoDeliveryCompleteForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `cargo_dlv_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

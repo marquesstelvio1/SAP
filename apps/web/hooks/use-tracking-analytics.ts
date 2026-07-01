@@ -1,10 +1,10 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { getTrackingAnalytics } from "../lib/tracking-analytics";
+import { useRpcQuery } from "./use-rpc";
 
 export function useTrackingAnalytics(lookbackDays = 30) {
-  return useQuery({
+  return useRpcQuery({
     queryKey: ["tracking-analytics", lookbackDays],
     queryFn: async () => {
       const result = await getTrackingAnalytics(lookbackDays);
@@ -13,6 +13,5 @@ export function useTrackingAnalytics(lookbackDays = 30) {
       }
       return result.analytics;
     },
-    staleTime: 30_000,
   });
 }

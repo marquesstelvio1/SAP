@@ -19,6 +19,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { AdminMembershipStatusFormState } from "../../app/(platform)/app/admin/form-state";
 
 export type AdminMembershipLifecycleMemberOption = {
@@ -45,12 +46,14 @@ export function AdminMembershipStatusForm({
   members,
 }: AdminMembershipStatusFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("status"));
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("admin_membership_status"),
+  );
   const isDisabled = isPending || !canManageMemberships || members.length === 0;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey("status"));
+      setIdempotencyKey(createIdempotencyKey("admin_membership_status"));
     }
   }, [state.status]);
 
@@ -59,14 +62,14 @@ export function AdminMembershipStatusForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageMemberships ? "success" : "warning"}>
-            {canManageMemberships ? "Lifecycle" : "Sem permissao"}
+            {canManageMemberships ? "Lifecycle" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">active/suspended/removed</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Atualizar membership</CardTitle>
           <CardDescription className="leading-6">
-            Ativa, suspende ou remove acesso. Sessao removida perde permissoes porque o resolver so
+            Ativa, suspende ou remove acesso. Sessão removida perde permissões porque o resolver só
             aceita memberships `active`.
           </CardDescription>
         </div>
@@ -104,7 +107,7 @@ export function AdminMembershipStatusForm({
                 disabled={isDisabled}
                 id="adminMembershipStatusReason"
                 name="reason"
-                placeholder="Ex.: Revisao operacional aprovada pelo security admin."
+                placeholder="Ex.: Revisão operacional aprovada pelo security admin."
                 required
               />
             </Field>
@@ -128,13 +131,4 @@ export function AdminMembershipStatusForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(scope: string): string {
-  const randomValue =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2);
-
-  return `admin_membership_${scope}_${randomValue}`;
 }

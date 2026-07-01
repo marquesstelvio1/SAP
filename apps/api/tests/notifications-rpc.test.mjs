@@ -126,10 +126,16 @@ test("notifications markRead RPC passes actor and request metadata", async () =>
             readAt: "2026-06-06T00:01:00.000Z",
             archivedAt: null,
           },
+          idempotency: { key: "idem_abc123def456", replayed: false },
           audit: {
             action: "notification.marked_read",
             subjectType: "notification",
             subjectId: input.notificationId,
+          },
+          outbox: {
+            eventType: "notification.marked_read",
+            aggregateType: "notification",
+            aggregateId: input.notificationId,
           },
         };
       },
@@ -146,7 +152,10 @@ test("notifications markRead RPC passes actor and request metadata", async () =>
     },
   });
 
-  const result = await client.notifications.markRead({ notificationId: "notification_001" });
+  const result = await client.notifications.markRead({
+    notificationId: "notification_001",
+    idempotencyKey: "idem_abc123def456",
+  });
 
   assert.equal(result.notification.status, "read");
   assert.equal(acknowledgements.length, 1);

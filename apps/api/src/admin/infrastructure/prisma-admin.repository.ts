@@ -396,7 +396,10 @@ export class PrismaAdminRepository implements AdminRepository {
   }
 
   async deleteRole(tx: PrismaTx, roleId: string): Promise<void> {
-    await tx.role.delete({ where: { id: roleId } });
+    await tx.role.update({
+      where: { id: roleId },
+      data: { deletedAt: new Date() },
+    });
   }
 
   async deleteMembershipRoleByMembershipAndRole(

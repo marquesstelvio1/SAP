@@ -17,7 +17,7 @@ const settingsSections: readonly SettingsSection[] = [
   {
     label: "General",
     href: "/app/settings/general",
-    description: "Nome, slug e estado da organizacao",
+    description: "Nome, slug e estado da organização",
     status: "active",
   },
   {
@@ -28,32 +28,32 @@ const settingsSections: readonly SettingsSection[] = [
   },
   {
     label: "Membros",
-    href: "/app/admin",
-    description: "Gerir membros da organizacao",
+    href: "/app/admin/teams",
+    description: "Gerir membros da organização",
     status: "active",
   },
   {
-    label: "Roles",
+    label: "Funções",
     href: "/app/admin",
-    description: "Gerir roles e permissoes",
+    description: "Gerir roles e permissões",
     status: "active",
   },
   {
     label: "Equipas",
-    href: "#",
+    href: "/app/admin/teams",
     description: "Agrupar membros em equipas",
-    status: "coming-soon",
+    status: "active",
   },
   {
-    label: "Faturacao",
+    label: "Faturação",
     href: "/app/settings/billing",
-    description: "Planos, metodos de pagamento e faturas",
+    description: "Planos, métodos de pagamento e faturas",
     status: "active",
   },
   {
     label: "Webhooks",
     href: "/app/settings/webhooks",
-    description: "Notificacoes HTTP para eventos da organizacao",
+    description: "Notificações HTTP para eventos da organização",
     status: "active",
   },
 ];
@@ -67,11 +67,11 @@ export function SettingsShell({ children, organizationName }: SettingsShellProps
   const pathname = usePathname();
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)]">
-      <aside className="hidden w-64 shrink-0 border-r md:block">
+    <div className="flex min-h-full">
+      <aside className="hidden w-64 shrink-0 self-stretch border-r overflow-y-auto md:block">
         <div className="flex flex-col gap-1 p-4">
           <div className="mb-3 flex flex-col gap-0.5 px-3">
-            <span className="font-semibold text-sm tracking-tight">Configuracoes</span>
+            <span className="font-semibold text-sm tracking-tight">Configurações</span>
             <span className="truncate text-muted-foreground text-xs">{organizationName}</span>
           </div>
           <Separator className="mb-3" />
@@ -82,7 +82,7 @@ export function SettingsShell({ children, organizationName }: SettingsShellProps
           </nav>
         </div>
       </aside>
-      <div className="min-w-0 flex-1 p-4 md:p-6 lg:p-8">{children}</div>
+      <div className="min-w-0 flex-1 overflow-x-auto p-4 md:p-6 lg:p-8">{children}</div>
     </div>
   );
 }
@@ -109,7 +109,7 @@ function SettingsNavLink({ pathname, section }: { pathname: string; section: Set
   return (
     <Link
       href={section.href as Route}
-      className={`flex flex-col gap-0.5 rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+      className={`flex flex-col gap-0.5 rounded-lg px-3 py-2 text-left text-sm outline-none transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/50 ${
         isHighlighted
           ? "bg-accent text-accent-foreground"
           : "text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground"

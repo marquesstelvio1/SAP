@@ -33,13 +33,23 @@ async function checkAccountLockout(
   _path: string,
 ): Promise<boolean> {
   try {
-    const body = ctx.context.request ? await ctx.context.request.clone().json().catch(() => ({})) : {};
+    const body = ctx.context.request
+      ? await ctx.context.request
+          .clone()
+          .json()
+          .catch(() => ({}))
+      : {};
     const email = (body as { email?: string }).email;
     if (!email) return false;
 
-    const sessionResult = await (ctx.context.adapter as {
-      findOne?: (model: { modelName: string }, filter: { filter: Array<{ field: string; operator: string; value: string }> }) => Promise<{ lockedUntil: string | null } | null>;
-    })?.findOne?.(
+    const sessionResult = await (
+      ctx.context.adapter as {
+        findOne?: (
+          model: { modelName: string },
+          filter: { filter: Array<{ field: string; operator: string; value: string }> },
+        ) => Promise<{ lockedUntil: string | null } | null>;
+      }
+    )?.findOne?.(
       { modelName: "user" },
       { filter: [{ field: "email", operator: "eq", value: email }] },
     );
@@ -57,7 +67,13 @@ async function checkAccountLockout(
 }
 
 async function recordLoginAttempt(
-  ctx: { context: { adapter?: unknown; request?: Request; returned?: { session?: unknown; user?: { id?: string } } | null } },
+  ctx: {
+    context: {
+      adapter?: unknown;
+      request?: Request;
+      returned?: { session?: unknown; user?: { id?: string } } | null;
+    };
+  },
   _path: string,
 ): Promise<void> {
   try {
@@ -65,7 +81,10 @@ async function recordLoginAttempt(
     const request = ctx.context.request;
     if (!request) return;
 
-    const body = await request.clone().json().catch(() => ({})) as { email?: string };
+    const body = (await request
+      .clone()
+      .json()
+      .catch(() => ({}))) as { email?: string };
     const email = body.email;
     if (!email) return;
 
@@ -180,12 +199,11 @@ export function createSaptmAuthOptions({
     hooks: {
       before: createAuthMiddleware(async (ctx) => {
         if (ctx.path === "/sign-in/email") {
-          const isLocked = await checkAccountLockout(
-            ctx as never,
-            ctx.path,
-          );
+          const isLocked = await checkAccountLockout(ctx as never, ctx.path);
           if (isLocked) {
-            throw new Error("Conta temporariamente bloqueada devido a multiplas tentativas de login falhadas. Tente novamente mais tarde.");
+            throw new Error(
+              "Conta temporariamente bloqueada devido a multiplas tentativas de login falhadas. Tente novamente mais tarde.",
+            );
           }
         }
       }),

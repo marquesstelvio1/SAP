@@ -1,3 +1,5 @@
+import type { PrismaTx } from "@saptm/database";
+
 export const WEBHOOKS_REPOSITORY = Symbol("WebhooksRepository");
 
 export type WebhookEndpointRecord = {
@@ -58,6 +60,30 @@ export type CreateWebhookData = {
   events: string[];
 };
 
+export type PrismaAuditRecordCreateInput = {
+  organizationId: string;
+  actorType: string;
+  actorId: string;
+  action: string;
+  subjectType: string;
+  subjectId: string;
+  severity: string;
+  before?: Record<string, unknown> | undefined;
+  after?: Record<string, unknown> | undefined;
+  reason: string;
+  correlationId: string;
+  ipAddress?: string | undefined;
+  userAgent?: string | undefined;
+};
+
+export type PrismaOutboxEventCreateInput = {
+  organizationId: string;
+  eventType: string;
+  aggregateType: string;
+  aggregateId: string;
+  payload: Record<string, unknown>;
+};
+
 export interface WebhooksRepository {
   createWebhook(data: CreateWebhookData): Promise<WebhookEndpointRecord>;
   findWebhookByIdAndOrg(
@@ -85,4 +111,8 @@ export interface WebhooksRepository {
   createWebhookDelivery(data: CreateWebhookDeliveryInput): Promise<void>;
   updateEndpointSuccess(webhookId: string): Promise<void>;
   updateEndpointFailure(webhookId: string): Promise<void>;
+
+  transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T>;
+  createAuditRecord(tx: PrismaTx, input: PrismaAuditRecordCreateInput): Promise<void>;
+  createOutboxEvent(tx: PrismaTx, input: PrismaOutboxEventCreateInput): Promise<void>;
 }

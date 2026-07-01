@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-
 import { CargoService } from "../dist/cargo/cargo.service.js";
+import { assertRejectsWithMessage } from "./test-utils.mjs";
 
 const fixedNow = new Date("2026-06-04T00:00:00.000Z");
 
@@ -1399,23 +1399,4 @@ function nextId(state, entityName) {
   state.counters[entityName] += 1;
 
   return `${entityName}_${String(state.counters[entityName]).padStart(3, "0")}`;
-}
-
-async function assertRejectsWithMessage(action, expectedMessage) {
-  let rejectedError = null;
-
-  try {
-    await action();
-  } catch (error) {
-    rejectedError = error;
-  }
-
-  assert.ok(rejectedError, `Expected rejection with ${expectedMessage}`);
-
-  const response =
-    typeof rejectedError.getResponse === "function" ? rejectedError.getResponse() : undefined;
-  const message =
-    typeof response === "object" && response !== null ? response.message : rejectedError.message;
-
-  assert.equal(message, expectedMessage);
 }

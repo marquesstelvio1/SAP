@@ -89,6 +89,27 @@ export type CreateRpcErrorEnvelopeInput = {
   details?: unknown;
 };
 
+const httpStatusToRpcErrorCodeMap: Record<number, RpcErrorCode> = {
+  400: "VALIDATION_ERROR",
+  401: "UNAUTHENTICATED",
+  403: "FORBIDDEN",
+  404: "NOT_FOUND",
+  409: "CONFLICT",
+  422: "VALIDATION_ERROR",
+  429: "RATE_LIMITED",
+  500: "INTERNAL_ERROR",
+  502: "INTEGRATION_ERROR",
+  503: "INTERNAL_ERROR",
+};
+
+export function mapHttpStatusToRpcErrorCode(status: number): RpcErrorCode {
+  return httpStatusToRpcErrorCodeMap[status] ?? "INTERNAL_ERROR";
+}
+
+export function getHttpStatusFromRpcErrorCode(code: RpcErrorCode): number {
+  return rpcErrorCatalog[code].statusCode;
+}
+
 export function createRpcErrorEnvelope(input: CreateRpcErrorEnvelopeInput): RpcErrorEnvelope {
   const definition = getRpcErrorDefinition(input.code);
 

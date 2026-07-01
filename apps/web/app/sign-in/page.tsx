@@ -23,7 +23,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
   const nextPath = readSafeNextPath(params.next);
 
   return (
-    <main className="min-h-screen bg-sidebar text-sidebar-foreground">
+    <main className="min-h-screen bg-sidebar text-sidebar-foreground" id="main-content">
       <div className="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
         <section className="relative hidden overflow-hidden border-sidebar-border border-r p-10 lg:flex lg:flex-col lg:justify-between">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,var(--sidebar-accent)/0.26,transparent_32%),radial-gradient(circle_at_80%_10%,var(--sidebar-primary)/0.18,transparent_28%)]" />
@@ -33,25 +33,24 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
             </div>
             <div className="flex flex-col gap-0.5">
               <span className="font-semibold tracking-tight">SAPTM</span>
-              <span className="text-sidebar-foreground/65 text-sm">Enterprise Logistics OS</span>
+              <span className="text-sidebar-foreground/65 text-sm">Plataforma logística</span>
             </div>
           </div>
           <div className="relative flex max-w-xl flex-col gap-6">
             <div className="inline-flex w-fit rounded-full border border-sidebar-border bg-sidebar-accent/40 px-3 py-1 text-sidebar-foreground/72 text-xs">
-              Foundation before business features
+              Plataforma logística integrada
             </div>
             <div className="flex flex-col gap-4">
               <h1 className="font-semibold text-4xl tracking-tight">
                 Acesso seguro antes de qualquer operação logística.
               </h1>
               <p className="text-sidebar-foreground/70 text-lg leading-8">
-                O shell autenticado, RBAC, Design System e observabilidade local fecham a base antes
-                de tracking, cargas, portos ou analytics.
+                Acesso seguro à plataforma SAPTM para gestão de operações de carga, tracking, planeamento e capacidade.
               </p>
             </div>
           </div>
           <div className="relative grid grid-cols-3 gap-3 text-xs">
-            {["Better Auth", "RBAC/ABAC", "Audit-ready"].map((item) => (
+            {["Autenticação segura", "Logística", "Auditado"].map((item) => (
               <div
                 className="rounded-xl border border-sidebar-border bg-sidebar-accent/35 p-3"
                 key={item}

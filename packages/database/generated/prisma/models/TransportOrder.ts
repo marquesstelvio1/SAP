@@ -51,6 +51,8 @@ export type TransportOrderMinAggregateOutputType = {
   cancelledAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TransportOrderMaxAggregateOutputType = {
@@ -80,6 +82,8 @@ export type TransportOrderMaxAggregateOutputType = {
   cancelledAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TransportOrderCountAggregateOutputType = {
@@ -109,6 +113,8 @@ export type TransportOrderCountAggregateOutputType = {
   cancelledAt: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -140,6 +146,8 @@ export type TransportOrderMinAggregateInputType = {
   cancelledAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TransportOrderMaxAggregateInputType = {
@@ -169,6 +177,8 @@ export type TransportOrderMaxAggregateInputType = {
   cancelledAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TransportOrderCountAggregateInputType = {
@@ -198,6 +208,8 @@ export type TransportOrderCountAggregateInputType = {
   cancelledAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -300,6 +312,8 @@ export type TransportOrderGroupByOutputType = {
   cancelledAt: Date | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: TransportOrderCountAggregateOutputType | null
   _min: TransportOrderMinAggregateOutputType | null
   _max: TransportOrderMaxAggregateOutputType | null
@@ -350,6 +364,8 @@ export type TransportOrderWhereInput = {
   cancelledAt?: Prisma.DateTimeNullableFilter<"TransportOrder"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"TransportOrder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TransportOrder"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TransportOrder"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TransportOrder"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
   trackingShipment?: Prisma.XOR<Prisma.TrackingShipmentNullableScalarRelationFilter, Prisma.TrackingShipmentWhereInput> | null
@@ -385,6 +401,8 @@ export type TransportOrderOrderByWithRelationInput = {
   cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   cargo?: Prisma.CargoOrderByWithRelationInput
   trackingShipment?: Prisma.TrackingShipmentOrderByWithRelationInput
@@ -428,6 +446,8 @@ export type TransportOrderWhereUniqueInput = Prisma.AtLeast<{
   cancelledAt?: Prisma.DateTimeNullableFilter<"TransportOrder"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"TransportOrder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TransportOrder"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TransportOrder"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TransportOrder"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
   trackingShipment?: Prisma.XOR<Prisma.TrackingShipmentNullableScalarRelationFilter, Prisma.TrackingShipmentWhereInput> | null
@@ -463,6 +483,8 @@ export type TransportOrderOrderByWithAggregationInput = {
   cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TransportOrderCountOrderByAggregateInput
   _max?: Prisma.TransportOrderMaxOrderByAggregateInput
   _min?: Prisma.TransportOrderMinOrderByAggregateInput
@@ -498,6 +520,8 @@ export type TransportOrderScalarWhereWithAggregatesInput = {
   cancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"TransportOrder"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TransportOrder"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TransportOrder"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"TransportOrder"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"TransportOrder"> | string | null
 }
 
 export type TransportOrderCreateInput = {
@@ -523,6 +547,8 @@ export type TransportOrderCreateInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTransportOrdersInput
   cargo: Prisma.CargoCreateNestedOneWithoutTransportOrdersInput
   trackingShipment?: Prisma.TrackingShipmentCreateNestedOneWithoutTransportOrdersInput
@@ -558,6 +584,8 @@ export type TransportOrderUncheckedCreateInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedCreateNestedManyWithoutTransportOrderInput
   dispatches?: Prisma.TransportOrderDispatchUncheckedCreateNestedManyWithoutTransportOrderInput
 }
@@ -585,6 +613,8 @@ export type TransportOrderUpdateInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTransportOrdersNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutTransportOrdersNestedInput
   trackingShipment?: Prisma.TrackingShipmentUpdateOneWithoutTransportOrdersNestedInput
@@ -620,6 +650,8 @@ export type TransportOrderUncheckedUpdateInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedUpdateManyWithoutTransportOrderNestedInput
   dispatches?: Prisma.TransportOrderDispatchUncheckedUpdateManyWithoutTransportOrderNestedInput
 }
@@ -651,6 +683,8 @@ export type TransportOrderCreateManyInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderUpdateManyMutationInput = {
@@ -676,6 +710,8 @@ export type TransportOrderUpdateManyMutationInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderUncheckedUpdateManyInput = {
@@ -705,6 +741,8 @@ export type TransportOrderUncheckedUpdateManyInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderListRelationFilter = {
@@ -769,6 +807,8 @@ export type TransportOrderCountOrderByAggregateInput = {
   cancelledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TransportOrderMaxOrderByAggregateInput = {
@@ -798,6 +838,8 @@ export type TransportOrderMaxOrderByAggregateInput = {
   cancelledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TransportOrderMinOrderByAggregateInput = {
@@ -827,6 +869,8 @@ export type TransportOrderMinOrderByAggregateInput = {
   cancelledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TransportOrderScalarRelationFilter = {
@@ -1061,6 +1105,8 @@ export type TransportOrderCreateWithoutOrganizationInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   cargo: Prisma.CargoCreateNestedOneWithoutTransportOrdersInput
   trackingShipment?: Prisma.TrackingShipmentCreateNestedOneWithoutTransportOrdersInput
   capacityReservation?: Prisma.CapacitySlotReservationCreateNestedOneWithoutTransportOrdersInput
@@ -1094,6 +1140,8 @@ export type TransportOrderUncheckedCreateWithoutOrganizationInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedCreateNestedManyWithoutTransportOrderInput
   dispatches?: Prisma.TransportOrderDispatchUncheckedCreateNestedManyWithoutTransportOrderInput
 }
@@ -1154,6 +1202,8 @@ export type TransportOrderScalarWhereInput = {
   cancelledAt?: Prisma.DateTimeNullableFilter<"TransportOrder"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"TransportOrder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TransportOrder"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TransportOrder"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TransportOrder"> | string | null
 }
 
 export type TransportOrderCreateWithoutCargoInput = {
@@ -1179,6 +1229,8 @@ export type TransportOrderCreateWithoutCargoInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTransportOrdersInput
   trackingShipment?: Prisma.TrackingShipmentCreateNestedOneWithoutTransportOrdersInput
   capacityReservation?: Prisma.CapacitySlotReservationCreateNestedOneWithoutTransportOrdersInput
@@ -1212,6 +1264,8 @@ export type TransportOrderUncheckedCreateWithoutCargoInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedCreateNestedManyWithoutTransportOrderInput
   dispatches?: Prisma.TransportOrderDispatchUncheckedCreateNestedManyWithoutTransportOrderInput
 }
@@ -1265,6 +1319,8 @@ export type TransportOrderCreateWithoutCapacityReservationInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTransportOrdersInput
   cargo: Prisma.CargoCreateNestedOneWithoutTransportOrdersInput
   trackingShipment?: Prisma.TrackingShipmentCreateNestedOneWithoutTransportOrdersInput
@@ -1298,6 +1354,8 @@ export type TransportOrderUncheckedCreateWithoutCapacityReservationInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedCreateNestedManyWithoutTransportOrderInput
   dispatches?: Prisma.TransportOrderDispatchUncheckedCreateNestedManyWithoutTransportOrderInput
 }
@@ -1351,6 +1409,8 @@ export type TransportOrderCreateWithoutDispatchesInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTransportOrdersInput
   cargo: Prisma.CargoCreateNestedOneWithoutTransportOrdersInput
   trackingShipment?: Prisma.TrackingShipmentCreateNestedOneWithoutTransportOrdersInput
@@ -1385,6 +1445,8 @@ export type TransportOrderUncheckedCreateWithoutDispatchesInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedCreateNestedManyWithoutTransportOrderInput
 }
 
@@ -1427,6 +1489,8 @@ export type TransportOrderUpdateWithoutDispatchesInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTransportOrdersNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutTransportOrdersNestedInput
   trackingShipment?: Prisma.TrackingShipmentUpdateOneWithoutTransportOrdersNestedInput
@@ -1461,6 +1525,8 @@ export type TransportOrderUncheckedUpdateWithoutDispatchesInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedUpdateManyWithoutTransportOrderNestedInput
 }
 
@@ -1487,6 +1553,8 @@ export type TransportOrderCreateWithoutScheduleRevisionsInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTransportOrdersInput
   cargo: Prisma.CargoCreateNestedOneWithoutTransportOrdersInput
   trackingShipment?: Prisma.TrackingShipmentCreateNestedOneWithoutTransportOrdersInput
@@ -1521,6 +1589,8 @@ export type TransportOrderUncheckedCreateWithoutScheduleRevisionsInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   dispatches?: Prisma.TransportOrderDispatchUncheckedCreateNestedManyWithoutTransportOrderInput
 }
 
@@ -1563,6 +1633,8 @@ export type TransportOrderUpdateWithoutScheduleRevisionsInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTransportOrdersNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutTransportOrdersNestedInput
   trackingShipment?: Prisma.TrackingShipmentUpdateOneWithoutTransportOrdersNestedInput
@@ -1597,6 +1669,8 @@ export type TransportOrderUncheckedUpdateWithoutScheduleRevisionsInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dispatches?: Prisma.TransportOrderDispatchUncheckedUpdateManyWithoutTransportOrderNestedInput
 }
 
@@ -1623,6 +1697,8 @@ export type TransportOrderCreateWithoutTrackingShipmentInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTransportOrdersInput
   cargo: Prisma.CargoCreateNestedOneWithoutTransportOrdersInput
   capacityReservation?: Prisma.CapacitySlotReservationCreateNestedOneWithoutTransportOrdersInput
@@ -1656,6 +1732,8 @@ export type TransportOrderUncheckedCreateWithoutTrackingShipmentInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedCreateNestedManyWithoutTransportOrderInput
   dispatches?: Prisma.TransportOrderDispatchUncheckedCreateNestedManyWithoutTransportOrderInput
 }
@@ -1712,6 +1790,8 @@ export type TransportOrderCreateManyOrganizationInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderUpdateWithoutOrganizationInput = {
@@ -1737,6 +1817,8 @@ export type TransportOrderUpdateWithoutOrganizationInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargo?: Prisma.CargoUpdateOneRequiredWithoutTransportOrdersNestedInput
   trackingShipment?: Prisma.TrackingShipmentUpdateOneWithoutTransportOrdersNestedInput
   capacityReservation?: Prisma.CapacitySlotReservationUpdateOneWithoutTransportOrdersNestedInput
@@ -1770,6 +1852,8 @@ export type TransportOrderUncheckedUpdateWithoutOrganizationInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedUpdateManyWithoutTransportOrderNestedInput
   dispatches?: Prisma.TransportOrderDispatchUncheckedUpdateManyWithoutTransportOrderNestedInput
 }
@@ -1800,6 +1884,8 @@ export type TransportOrderUncheckedUpdateManyWithoutOrganizationInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderCreateManyCargoInput = {
@@ -1828,6 +1914,8 @@ export type TransportOrderCreateManyCargoInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderUpdateWithoutCargoInput = {
@@ -1853,6 +1941,8 @@ export type TransportOrderUpdateWithoutCargoInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTransportOrdersNestedInput
   trackingShipment?: Prisma.TrackingShipmentUpdateOneWithoutTransportOrdersNestedInput
   capacityReservation?: Prisma.CapacitySlotReservationUpdateOneWithoutTransportOrdersNestedInput
@@ -1886,6 +1976,8 @@ export type TransportOrderUncheckedUpdateWithoutCargoInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedUpdateManyWithoutTransportOrderNestedInput
   dispatches?: Prisma.TransportOrderDispatchUncheckedUpdateManyWithoutTransportOrderNestedInput
 }
@@ -1916,6 +2008,8 @@ export type TransportOrderUncheckedUpdateManyWithoutCargoInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderCreateManyCapacityReservationInput = {
@@ -1944,6 +2038,8 @@ export type TransportOrderCreateManyCapacityReservationInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderUpdateWithoutCapacityReservationInput = {
@@ -1969,6 +2065,8 @@ export type TransportOrderUpdateWithoutCapacityReservationInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTransportOrdersNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutTransportOrdersNestedInput
   trackingShipment?: Prisma.TrackingShipmentUpdateOneWithoutTransportOrdersNestedInput
@@ -2002,6 +2100,8 @@ export type TransportOrderUncheckedUpdateWithoutCapacityReservationInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedUpdateManyWithoutTransportOrderNestedInput
   dispatches?: Prisma.TransportOrderDispatchUncheckedUpdateManyWithoutTransportOrderNestedInput
 }
@@ -2032,6 +2132,8 @@ export type TransportOrderUncheckedUpdateManyWithoutCapacityReservationInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderCreateManyTrackingShipmentInput = {
@@ -2060,6 +2162,8 @@ export type TransportOrderCreateManyTrackingShipmentInput = {
   cancelledAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderUpdateWithoutTrackingShipmentInput = {
@@ -2085,6 +2189,8 @@ export type TransportOrderUpdateWithoutTrackingShipmentInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTransportOrdersNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutTransportOrdersNestedInput
   capacityReservation?: Prisma.CapacitySlotReservationUpdateOneWithoutTransportOrdersNestedInput
@@ -2118,6 +2224,8 @@ export type TransportOrderUncheckedUpdateWithoutTrackingShipmentInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedUpdateManyWithoutTransportOrderNestedInput
   dispatches?: Prisma.TransportOrderDispatchUncheckedUpdateManyWithoutTransportOrderNestedInput
 }
@@ -2148,6 +2256,8 @@ export type TransportOrderUncheckedUpdateManyWithoutTrackingShipmentInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -2217,6 +2327,8 @@ export type TransportOrderSelect<ExtArgs extends runtime.Types.Extensions.Intern
   cancelledAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   trackingShipment?: boolean | Prisma.TransportOrder$trackingShipmentArgs<ExtArgs>
@@ -2253,6 +2365,8 @@ export type TransportOrderSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   cancelledAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   trackingShipment?: boolean | Prisma.TransportOrder$trackingShipmentArgs<ExtArgs>
@@ -2286,6 +2400,8 @@ export type TransportOrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   cancelledAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   trackingShipment?: boolean | Prisma.TransportOrder$trackingShipmentArgs<ExtArgs>
@@ -2319,9 +2435,11 @@ export type TransportOrderSelectScalar = {
   cancelledAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type TransportOrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "trackingShipmentId" | "capacityReservationId" | "orderReference" | "status" | "mode" | "carrierName" | "routeSummary" | "originName" | "destinationName" | "plannedDepartureAt" | "plannedArrivalAt" | "responsiblePlannerName" | "confirmationReference" | "sourceSystem" | "confirmIdempotencyKey" | "confirmedAt" | "cancellationReference" | "cancelledByName" | "cancellationReason" | "cancelIdempotencyKey" | "cancelledAt" | "createdAt" | "updatedAt", ExtArgs["result"]["transportOrder"]>
+export type TransportOrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "trackingShipmentId" | "capacityReservationId" | "orderReference" | "status" | "mode" | "carrierName" | "routeSummary" | "originName" | "destinationName" | "plannedDepartureAt" | "plannedArrivalAt" | "responsiblePlannerName" | "confirmationReference" | "sourceSystem" | "confirmIdempotencyKey" | "confirmedAt" | "cancellationReference" | "cancelledByName" | "cancellationReason" | "cancelIdempotencyKey" | "cancelledAt" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["transportOrder"]>
 export type TransportOrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
@@ -2381,6 +2499,8 @@ export type $TransportOrderPayload<ExtArgs extends runtime.Types.Extensions.Inte
     cancelledAt: Date | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["transportOrder"]>
   composites: {}
 }
@@ -2836,6 +2956,8 @@ export interface TransportOrderFieldRefs {
   readonly cancelledAt: Prisma.FieldRef<"TransportOrder", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"TransportOrder", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TransportOrder", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"TransportOrder", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"TransportOrder", 'String'>
 }
     
 

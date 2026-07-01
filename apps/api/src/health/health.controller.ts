@@ -1,6 +1,7 @@
 import { Controller, Get, HttpCode, Inject, Res } from "@nestjs/common";
 import type { RuntimeHealthReport } from "@saptm/types";
 
+import { Public } from "../auth/public.decorator.js";
 import { HealthService } from "./health.service.js";
 
 type StatusAwareResponse = {
@@ -8,6 +9,7 @@ type StatusAwareResponse = {
 };
 
 @Controller("health")
+@Public()
 export class HealthController {
   constructor(@Inject(HealthService) private readonly health: HealthService) {}
 

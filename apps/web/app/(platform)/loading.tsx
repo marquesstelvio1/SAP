@@ -3,7 +3,7 @@ import { Skeleton } from "@saptm/ui";
 export default function PlatformLoading() {
   return (
     <div className="flex min-h-screen">
-      <aside className="hidden w-72 shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground lg:flex lg:flex-col">
+      <aside className="hidden w-64 shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground lg:flex lg:flex-col">
         <div className="flex h-20 items-center gap-3 border-b border-sidebar-border px-5">
           <Skeleton className="size-10 rounded-xl" />
           <div className="flex flex-col gap-1.5">

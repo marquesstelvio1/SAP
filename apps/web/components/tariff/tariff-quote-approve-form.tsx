@@ -19,6 +19,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TariffQuoteApproveFormState } from "../../app/(platform)/app/tariffs/form-state";
 
 export type TariffQuoteApproveFormProps = {
@@ -36,12 +37,14 @@ export function TariffQuoteApproveForm({
   action,
 }: TariffQuoteApproveFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("tariff_approve"),
+  );
   const isDisabled = isPending || !canApproveQuotes;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("tariff_approve"));
     }
   }, [state.status]);
 
@@ -50,14 +53,14 @@ export function TariffQuoteApproveForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canApproveQuotes ? "success" : "warning"}>
-            {canApproveQuotes ? "Aprovacao financeira" : "Sem permissao"}
+            {canApproveQuotes ? "Aprovação financeira" : "Sem permissão"}
           </Badge>
           <Badge variant="outline">tariff.quote.approve</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Aprovar cotacao</CardTitle>
+          <CardTitle>Aprovar cotação</CardTitle>
           <CardDescription className="leading-6">
-            Aprova somente cotacoes calculadas e exige referencia, responsavel e justificativa.
+            Aprova somente cotações calculadas e exige referência, responsável e justificativa.
           </CardDescription>
         </div>
       </CardHeader>
@@ -71,7 +74,7 @@ export function TariffQuoteApproveForm({
                 <Input disabled={isDisabled} id="quoteId" name="quoteId" required />
               </Field>
               <Field data-disabled={!canApproveQuotes}>
-                <FieldLabel htmlFor="approvalReference">Referencia aprovacao</FieldLabel>
+                <FieldLabel htmlFor="approvalReference">Referência aprovação</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="approvalReference"
@@ -113,7 +116,7 @@ export function TariffQuoteApproveForm({
               </Field>
             </div>
             <Field data-disabled={!canApproveQuotes}>
-              <FieldLabel htmlFor="approvalNotes">Notas de aprovacao</FieldLabel>
+              <FieldLabel htmlFor="approvalNotes">Notas de aprovação</FieldLabel>
               <Textarea
                 disabled={isDisabled}
                 id="approvalNotes"
@@ -140,20 +143,13 @@ export function TariffQuoteApproveForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canApproveQuotes ? "Exige estado calculated." : "Requer tariff.quote.approve."}
+            {canApproveQuotes ? "Exige estado calculado." : "Requer aprovacao de cotacao."}
           </span>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A aprovar..." : "Aprovar cotacao"}
+            {isPending ? "A aprovar..." : "Aprovar cotação"}
           </Button>
         </CardFooter>
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `tariff_approve_${randomValue}`;
 }

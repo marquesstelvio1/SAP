@@ -49,6 +49,8 @@ export type CargoComplianceEvidenceMinAggregateOutputType = {
   recordedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CargoComplianceEvidenceMaxAggregateOutputType = {
@@ -76,6 +78,8 @@ export type CargoComplianceEvidenceMaxAggregateOutputType = {
   recordedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CargoComplianceEvidenceCountAggregateOutputType = {
@@ -103,6 +107,8 @@ export type CargoComplianceEvidenceCountAggregateOutputType = {
   recordedAt: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -132,6 +138,8 @@ export type CargoComplianceEvidenceMinAggregateInputType = {
   recordedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CargoComplianceEvidenceMaxAggregateInputType = {
@@ -159,6 +167,8 @@ export type CargoComplianceEvidenceMaxAggregateInputType = {
   recordedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CargoComplianceEvidenceCountAggregateInputType = {
@@ -186,6 +196,8 @@ export type CargoComplianceEvidenceCountAggregateInputType = {
   recordedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -286,6 +298,8 @@ export type CargoComplianceEvidenceGroupByOutputType = {
   recordedAt: Date
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: CargoComplianceEvidenceCountAggregateOutputType | null
   _min: CargoComplianceEvidenceMinAggregateOutputType | null
   _max: CargoComplianceEvidenceMaxAggregateOutputType | null
@@ -334,6 +348,8 @@ export type CargoComplianceEvidenceWhereInput = {
   recordedAt?: Prisma.DateTimeFilter<"CargoComplianceEvidence"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"CargoComplianceEvidence"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoComplianceEvidence"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoComplianceEvidence"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoComplianceEvidence"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
 }
@@ -363,6 +379,8 @@ export type CargoComplianceEvidenceOrderByWithRelationInput = {
   recordedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   cargo?: Prisma.CargoOrderByWithRelationInput
 }
@@ -398,6 +416,8 @@ export type CargoComplianceEvidenceWhereUniqueInput = Prisma.AtLeast<{
   recordedAt?: Prisma.DateTimeFilter<"CargoComplianceEvidence"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"CargoComplianceEvidence"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoComplianceEvidence"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoComplianceEvidence"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoComplianceEvidence"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
 }, "id" | "organizationId_recordIdempotencyKey" | "organizationId_verifyIdempotencyKey" | "organizationId_cargoId_evidenceType_documentReference">
@@ -427,6 +447,8 @@ export type CargoComplianceEvidenceOrderByWithAggregationInput = {
   recordedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CargoComplianceEvidenceCountOrderByAggregateInput
   _max?: Prisma.CargoComplianceEvidenceMaxOrderByAggregateInput
   _min?: Prisma.CargoComplianceEvidenceMinOrderByAggregateInput
@@ -460,6 +482,8 @@ export type CargoComplianceEvidenceScalarWhereWithAggregatesInput = {
   recordedAt?: Prisma.DateTimeWithAggregatesFilter<"CargoComplianceEvidence"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CargoComplianceEvidence"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CargoComplianceEvidence"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CargoComplianceEvidence"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"CargoComplianceEvidence"> | string | null
 }
 
 export type CargoComplianceEvidenceCreateInput = {
@@ -485,6 +509,8 @@ export type CargoComplianceEvidenceCreateInput = {
   recordedAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoComplianceEvidencesInput
   cargo: Prisma.CargoCreateNestedOneWithoutComplianceEvidencesInput
 }
@@ -514,6 +540,8 @@ export type CargoComplianceEvidenceUncheckedCreateInput = {
   recordedAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoComplianceEvidenceUpdateInput = {
@@ -539,6 +567,8 @@ export type CargoComplianceEvidenceUpdateInput = {
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoComplianceEvidencesNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutComplianceEvidencesNestedInput
 }
@@ -568,6 +598,8 @@ export type CargoComplianceEvidenceUncheckedUpdateInput = {
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoComplianceEvidenceCreateManyInput = {
@@ -595,6 +627,8 @@ export type CargoComplianceEvidenceCreateManyInput = {
   recordedAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoComplianceEvidenceUpdateManyMutationInput = {
@@ -620,6 +654,8 @@ export type CargoComplianceEvidenceUpdateManyMutationInput = {
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoComplianceEvidenceUncheckedUpdateManyInput = {
@@ -647,6 +683,8 @@ export type CargoComplianceEvidenceUncheckedUpdateManyInput = {
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoComplianceEvidenceListRelationFilter = {
@@ -701,6 +739,8 @@ export type CargoComplianceEvidenceCountOrderByAggregateInput = {
   recordedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoComplianceEvidenceMaxOrderByAggregateInput = {
@@ -728,6 +768,8 @@ export type CargoComplianceEvidenceMaxOrderByAggregateInput = {
   recordedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoComplianceEvidenceMinOrderByAggregateInput = {
@@ -755,6 +797,8 @@ export type CargoComplianceEvidenceMinOrderByAggregateInput = {
   recordedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoComplianceEvidenceCreateNestedManyWithoutOrganizationInput = {
@@ -872,6 +916,8 @@ export type CargoComplianceEvidenceCreateWithoutOrganizationInput = {
   recordedAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   cargo: Prisma.CargoCreateNestedOneWithoutComplianceEvidencesInput
 }
 
@@ -899,6 +945,8 @@ export type CargoComplianceEvidenceUncheckedCreateWithoutOrganizationInput = {
   recordedAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoComplianceEvidenceCreateOrConnectWithoutOrganizationInput = {
@@ -955,6 +1003,8 @@ export type CargoComplianceEvidenceScalarWhereInput = {
   recordedAt?: Prisma.DateTimeFilter<"CargoComplianceEvidence"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"CargoComplianceEvidence"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoComplianceEvidence"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoComplianceEvidence"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoComplianceEvidence"> | string | null
 }
 
 export type CargoComplianceEvidenceCreateWithoutCargoInput = {
@@ -980,6 +1030,8 @@ export type CargoComplianceEvidenceCreateWithoutCargoInput = {
   recordedAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoComplianceEvidencesInput
 }
 
@@ -1007,6 +1059,8 @@ export type CargoComplianceEvidenceUncheckedCreateWithoutCargoInput = {
   recordedAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoComplianceEvidenceCreateOrConnectWithoutCargoInput = {
@@ -1059,6 +1113,8 @@ export type CargoComplianceEvidenceCreateManyOrganizationInput = {
   recordedAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoComplianceEvidenceUpdateWithoutOrganizationInput = {
@@ -1084,6 +1140,8 @@ export type CargoComplianceEvidenceUpdateWithoutOrganizationInput = {
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargo?: Prisma.CargoUpdateOneRequiredWithoutComplianceEvidencesNestedInput
 }
 
@@ -1111,6 +1169,8 @@ export type CargoComplianceEvidenceUncheckedUpdateWithoutOrganizationInput = {
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoComplianceEvidenceUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1137,6 +1197,8 @@ export type CargoComplianceEvidenceUncheckedUpdateManyWithoutOrganizationInput =
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoComplianceEvidenceCreateManyCargoInput = {
@@ -1163,6 +1225,8 @@ export type CargoComplianceEvidenceCreateManyCargoInput = {
   recordedAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoComplianceEvidenceUpdateWithoutCargoInput = {
@@ -1188,6 +1252,8 @@ export type CargoComplianceEvidenceUpdateWithoutCargoInput = {
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoComplianceEvidencesNestedInput
 }
 
@@ -1215,6 +1281,8 @@ export type CargoComplianceEvidenceUncheckedUpdateWithoutCargoInput = {
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoComplianceEvidenceUncheckedUpdateManyWithoutCargoInput = {
@@ -1241,6 +1309,8 @@ export type CargoComplianceEvidenceUncheckedUpdateManyWithoutCargoInput = {
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1270,6 +1340,8 @@ export type CargoComplianceEvidenceSelect<ExtArgs extends runtime.Types.Extensio
   recordedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cargoComplianceEvidence"]>
@@ -1299,6 +1371,8 @@ export type CargoComplianceEvidenceSelectCreateManyAndReturn<ExtArgs extends run
   recordedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cargoComplianceEvidence"]>
@@ -1328,6 +1402,8 @@ export type CargoComplianceEvidenceSelectUpdateManyAndReturn<ExtArgs extends run
   recordedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cargoComplianceEvidence"]>
@@ -1357,9 +1433,11 @@ export type CargoComplianceEvidenceSelectScalar = {
   recordedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type CargoComplianceEvidenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "evidenceType" | "documentReference" | "documentTitle" | "documentUri" | "issuerName" | "issuedAt" | "expiresAt" | "status" | "reviewerName" | "reviewReference" | "reviewSummary" | "rejectionReason" | "reviewedAt" | "sourceSystem" | "recordIdempotencyKey" | "verifyIdempotencyKey" | "recordedByActorId" | "reviewedByActorId" | "recordedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["cargoComplianceEvidence"]>
+export type CargoComplianceEvidenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "evidenceType" | "documentReference" | "documentTitle" | "documentUri" | "issuerName" | "issuedAt" | "expiresAt" | "status" | "reviewerName" | "reviewReference" | "reviewSummary" | "rejectionReason" | "reviewedAt" | "sourceSystem" | "recordIdempotencyKey" | "verifyIdempotencyKey" | "recordedByActorId" | "reviewedByActorId" | "recordedAt" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["cargoComplianceEvidence"]>
 export type CargoComplianceEvidenceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
@@ -1404,6 +1482,8 @@ export type $CargoComplianceEvidencePayload<ExtArgs extends runtime.Types.Extens
     recordedAt: Date
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["cargoComplianceEvidence"]>
   composites: {}
 }
@@ -1853,6 +1933,8 @@ export interface CargoComplianceEvidenceFieldRefs {
   readonly recordedAt: Prisma.FieldRef<"CargoComplianceEvidence", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"CargoComplianceEvidence", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CargoComplianceEvidence", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"CargoComplianceEvidence", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"CargoComplianceEvidence", 'String'>
 }
     
 

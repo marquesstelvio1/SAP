@@ -299,11 +299,13 @@ export type AdminInvitationLifecycleOutput = z.infer<typeof adminInvitationLifec
 export const adminOverviewMetadata = createRpcOperationMetadata({
   name: "admin.identity.overview.read",
   kind: "query",
+  auth: "session",
   permissions: ["tenant.manage", "identity.user.invite", "identity.role.assign"],
   permissionMode: "any",
   organizationRequired: true,
   audit: "sensitive",
   criticality: "high",
+  signals: ["log", "metric", "span"],
 });
 
 export const adminUserInviteMetadata = createRpcOperationMetadata({
@@ -315,6 +317,7 @@ export const adminUserInviteMetadata = createRpcOperationMetadata({
   audit: "critical",
   idempotency: "required",
   criticality: "critical",
+  signals: ["log", "metric", "span"],
 });
 
 export const adminRoleAssignMetadata = createRpcOperationMetadata({
@@ -326,6 +329,7 @@ export const adminRoleAssignMetadata = createRpcOperationMetadata({
   audit: "critical",
   idempotency: "required",
   criticality: "critical",
+  signals: ["log", "metric", "span"],
 });
 
 export const adminRoleCreateMetadata = createRpcOperationMetadata({
@@ -338,6 +342,7 @@ export const adminRoleCreateMetadata = createRpcOperationMetadata({
   audit: "critical",
   idempotency: "required",
   criticality: "critical",
+  signals: ["log", "metric", "span"],
 });
 
 export const adminRolePermissionsUpdateMetadata = createRpcOperationMetadata({
@@ -350,6 +355,7 @@ export const adminRolePermissionsUpdateMetadata = createRpcOperationMetadata({
   audit: "critical",
   idempotency: "required",
   criticality: "critical",
+  signals: ["log", "metric", "span"],
 });
 
 export const adminRoleDeleteMetadata = createRpcOperationMetadata({
@@ -362,6 +368,7 @@ export const adminRoleDeleteMetadata = createRpcOperationMetadata({
   audit: "critical",
   idempotency: "required",
   criticality: "critical",
+  signals: ["log", "metric", "span"],
 });
 
 export const adminRoleRevokeMetadata = createRpcOperationMetadata({
@@ -373,6 +380,7 @@ export const adminRoleRevokeMetadata = createRpcOperationMetadata({
   audit: "critical",
   idempotency: "required",
   criticality: "critical",
+  signals: ["log", "metric", "span"],
 });
 
 export const adminMembershipStatusUpdateMetadata = createRpcOperationMetadata({
@@ -385,6 +393,7 @@ export const adminMembershipStatusUpdateMetadata = createRpcOperationMetadata({
   audit: "critical",
   idempotency: "required",
   criticality: "critical",
+  signals: ["log", "metric", "span"],
 });
 
 export const adminInvitationResendMetadata = createRpcOperationMetadata({
@@ -396,6 +405,7 @@ export const adminInvitationResendMetadata = createRpcOperationMetadata({
   audit: "critical",
   idempotency: "required",
   criticality: "critical",
+  signals: ["log", "metric", "span"],
 });
 
 export const adminInvitationCancelMetadata = createRpcOperationMetadata({
@@ -407,4 +417,5 @@ export const adminInvitationCancelMetadata = createRpcOperationMetadata({
   audit: "critical",
   idempotency: "required",
   criticality: "critical",
+  signals: ["log", "metric", "span"],
 });

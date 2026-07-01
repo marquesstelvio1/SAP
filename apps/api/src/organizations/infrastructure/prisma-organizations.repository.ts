@@ -1,9 +1,11 @@
 import { Injectable } from "@nestjs/common";
-import { getPrismaClient } from "@saptm/database";
+import { getPrismaClient, type PrismaTx } from "@saptm/database";
 
 import type {
   OrganizationRecord,
   OrganizationsRepository,
+  PrismaAuditRecordCreateInput,
+  PrismaOutboxEventCreateInput,
   UpdateOrganizationStatusInput,
 } from "../domain/organizations.repository.js";
 
@@ -51,5 +53,13 @@ export class PrismaOrganizationsRepository implements OrganizationsRepository {
       createdAt: org.createdAt,
       updatedAt: org.updatedAt,
     };
+  }
+
+  async createAuditRecord(tx: PrismaTx, input: PrismaAuditRecordCreateInput): Promise<void> {
+    await tx.auditRecord.create({ data: input as never });
+  }
+
+  async createOutboxEvent(tx: PrismaTx, input: PrismaOutboxEventCreateInput): Promise<void> {
+    await tx.outboxEvent.create({ data: input as never });
   }
 }

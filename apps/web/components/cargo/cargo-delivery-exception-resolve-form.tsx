@@ -19,6 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CargoDeliveryExceptionResolveFormState } from "../../app/(platform)/app/cargo/form-state";
 
@@ -37,13 +39,13 @@ export function CargoDeliveryExceptionResolveForm({
   action,
 }: CargoDeliveryExceptionResolveFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_der"));
   const defaultResolvedAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canResolveDeliveryException;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("cargo_der"));
     }
   }, [state.status]);
 
@@ -52,7 +54,7 @@ export function CargoDeliveryExceptionResolveForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canResolveDeliveryException ? "success" : "warning"}>
-            {canResolveDeliveryException ? "Resolucao governada" : "Sem permissao"}
+            {canResolveDeliveryException ? "Resolucao autorizada" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">cargo.delivery.exception.resolve</Badge>
         </div>
@@ -179,7 +181,7 @@ export function CargoDeliveryExceptionResolveForm({
           <span className="text-muted-foreground text-xs">
             {canResolveDeliveryException
               ? "Restaura cargo e tracking para permitir cargo.delivery.complete."
-              : "Requer cargo.delivery.exception.resolve."}
+              : "Requer resolucao de excecao."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A resolver..." : "Resolver excecao"}
@@ -188,17 +190,4 @@ export function CargoDeliveryExceptionResolveForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `cargo_der_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

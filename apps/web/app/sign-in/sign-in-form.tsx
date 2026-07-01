@@ -81,13 +81,12 @@ export function SignInForm({ nextPath }: { nextPath: string }) {
     <Card className="w-full max-w-md border-border/80 shadow-overlay">
       <CardHeader className="gap-3">
         <div className="flex items-center justify-between gap-3">
-          <Badge variant="info">Better Auth</Badge>
-          <Badge variant="outline">Sessão real</Badge>
+          <Badge variant="outline">Sessão segura</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle className="text-2xl">Entrar na plataforma</CardTitle>
           <CardDescription>
-            Autenticação local com sessão HTTP-only e resolução RBAC no shell.
+            Autenticação local com sessão segura para acesso à plataforma.
           </CardDescription>
         </div>
       </CardHeader>
@@ -99,7 +98,7 @@ export function SignInForm({ nextPath }: { nextPath: string }) {
               <Input
                 autoComplete="email"
                 id="email"
-                placeholder="operador@saptm.local"
+                placeholder="operador@empresa.pt"
                 type="email"
                 {...register("email")}
               />
@@ -115,10 +114,10 @@ export function SignInForm({ nextPath }: { nextPath: string }) {
               />
               <div className="flex items-center justify-between">
                 <FieldDescription>
-                  Mínimo de 12 caracteres conforme política de auth.
+                  Mínimo de 12 caracteres conforme política de autenticação.
                 </FieldDescription>
                 <Link
-                  className="text-primary text-xs underline-offset-4 hover:underline"
+                  className="rounded-sm text-primary text-xs underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
                   href={"/forgot-password" as Route}
                 >
                   Esqueceu-se da password?
@@ -130,7 +129,7 @@ export function SignInForm({ nextPath }: { nextPath: string }) {
               <Checkbox className="mt-0.5" id="rememberMe" {...register("rememberMe")} />
               <div className="flex flex-col gap-1">
                 <FieldLabel htmlFor="rememberMe">Manter sessão ativa</FieldLabel>
-                <FieldDescription>Usa a estratégia de sessão do Better Auth.</FieldDescription>
+                <FieldDescription>Mantém a sessão ativa entre utilizações.</FieldDescription>
               </div>
             </Field>
           </FieldGroup>

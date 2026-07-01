@@ -1,5 +1,6 @@
 import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
+import type { Metadata } from "next";
 
 import { AdminInvitationLifecycleForm } from "../../../../components/admin/admin-invitation-lifecycle-form";
 import { AdminMembershipStatusForm } from "../../../../components/admin/admin-membership-status-form";
@@ -35,8 +36,12 @@ import {
   initialAdminRoleRevokeFormState,
   initialAdminUserInviteFormState,
 } from "./form-state";
-
+import { prepareAdminOptions } from "./logic";
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "Administração",
+  description: "Gestão de utilizadores, convites, roles e permissões da organização.",
+};
 
 const openAdminPermissions: readonly PlatformPermission[] = [
   "tenant.manage",
@@ -46,7 +51,6 @@ const openAdminPermissions: readonly PlatformPermission[] = [
 const inviteUserPermission: PlatformPermission = "identity.user.invite";
 const assignRolePermission: PlatformPermission = "identity.role.assign";
 const manageTenantPermission: PlatformPermission = "tenant.manage";
-
 export default async function AdminIdentityPage(props: {
   searchParams?: Promise<{ offset?: string; limit?: string }>;
 }) {
@@ -66,81 +70,45 @@ export default async function AdminIdentityPage(props: {
   const canManageMemberships =
     viewerPermissions.includes(inviteUserPermission) &&
     viewerPermissions.includes(assignRolePermission);
-
   if (!canOpenAdmin) {
     return (
       <AccessState
-        badgeLabel="Better Auth + RBAC"
-        message="A sessao esta autenticada, mas falta tenant.manage, identity.user.invite ou identity.role.assign."
+        badgeLabel="Administração"
+        description="O utilizador autenticado não tem acesso ao módulo de administração."
         role="alert"
-        status="Sem grant"
-        title="Administracao bloqueada"
-        variant="empty"
+        title="Administração bloqueada"
+        variant="blocked"
       />
     );
   }
-
-  const result = await getAdminOverview({ offset, limit });
+  let result;
+  try {
+    result = await getAdminOverview({ offset, limit });
+  } catch (error) {
+    return (
+      <AccessState
+        badgeLabel="Administração"
+        description="Ocorreu um erro inesperado ao carregar a administração."
+        role="alert"
+        title="Administração indisponível"
+        variant="error"
+      />
+    );
+  }
 
   if (result.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Better Auth + RBAC"
-        message={result.message}
+        badgeLabel="Administração"
+        description={result.message}
         role="alert"
-        status={result.status}
-        title="Administracao indisponivel"
-        variant="empty"
+        title="Administração indisponível"
+        variant="error"
       />
     );
   }
-
   const { overview } = result;
-  const roleInviteOptions = overview.roles.map((role) => ({
-    key: role.key,
-    name: role.name,
-  }));
-  const roleAssignOptions = overview.roles.map((role) => ({
-    id: role.id,
-    key: role.key,
-    name: role.name,
-  }));
-  const memberOptions = overview.users.map((user) => ({
-    membershipId: user.membership.id,
-    name: user.name,
-    email: user.email,
-  }));
-  const memberLifecycleOptions = overview.users.map((user) => ({
-    membershipId: user.membership.id,
-    name: user.name,
-    email: user.email,
-    status: user.membership.status,
-  }));
-  const memberRoleOptions = overview.users.map((user) => ({
-    membershipId: user.membership.id,
-    name: user.name,
-    email: user.email,
-    roles: user.membership.roles,
-  }));
-  const invitedMemberOptions = overview.users
-    .filter((user) => user.membership.status === "invited")
-    .map((user) => ({
-      membershipId: user.membership.id,
-      name: user.name,
-      email: user.email,
-    }));
-  const roleManagementOptions = overview.roles.map((role) => ({
-    id: role.id,
-    key: role.key,
-    name: role.name,
-    protected: role.protected,
-    permissions: role.permissions,
-    membershipCount: role.membershipCount,
-  }));
-  const permissionOptions = overview.permissions.map((permission) => ({
-    key: permission.key,
-    description: permission.description,
-  }));
+  const options = prepareAdminOptions(overview);
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
@@ -149,67 +117,63 @@ export default async function AdminIdentityPage(props: {
         organization={overview.organization}
         securityModel={overview.securityModel}
       />
-
       <section className="grid gap-4 xl:grid-cols-2">
         <AdminUserInviteForm
           action={inviteAdminUserAction}
           canInviteUser={canInviteUser}
           initialState={initialAdminUserInviteFormState}
-          roles={roleInviteOptions}
+          roles={options.roleInviteOptions}
         />
         <AdminRoleAssignForm
           action={assignAdminRoleAction}
           canAssignRole={canAssignRole}
           initialState={initialAdminRoleAssignFormState}
-          members={memberOptions}
-          roles={roleAssignOptions}
+          members={options.memberOptions}
+          roles={options.roleAssignOptions}
         />
       </section>
-
       <section className="grid gap-4 xl:grid-cols-3">
         <AdminRoleCreateForm
           action={createAdminRoleAction}
           canManageRoles={canManageRoles}
           initialState={initialAdminRoleCreateFormState}
-          permissions={permissionOptions}
+          permissions={options.permissionOptions}
         />
         <AdminRolePermissionsForm
           action={updateAdminRolePermissionsAction}
           canManageRoles={canManageRoles}
           initialState={initialAdminRolePermissionsFormState}
-          roles={roleManagementOptions}
+          roles={options.roleManagementOptions}
         />
         <AdminRoleDeleteForm
           action={deleteAdminRoleAction}
           canManageRoles={canManageRoles}
           initialState={initialAdminRoleDeleteFormState}
-          roles={roleManagementOptions}
+          roles={options.roleManagementOptions}
         />
       </section>
-
       <section className="grid gap-4 xl:grid-cols-2">
         <AdminRoleRevokeForm
           action={revokeAdminRoleAction}
           canAssignRole={canAssignRole}
           initialState={initialAdminRoleRevokeFormState}
-          members={memberRoleOptions}
+          members={options.memberRoleOptions}
         />
         <AdminMembershipStatusForm
           action={updateAdminMembershipStatusAction}
           canManageMemberships={canManageMemberships}
           initialState={initialAdminMembershipStatusFormState}
-          members={memberLifecycleOptions}
+          members={options.memberLifecycleOptions}
         />
       </section>
-
       <section className="grid gap-4 xl:grid-cols-2">
         <AdminInvitationLifecycleForm
           action={resendAdminInvitationAction}
           actionLabel="Reenviar convite"
           canManageInvitations={canInviteUser}
-          description="Reemite evento de outbox para convites ainda pendentes."
+          description="Reenvia notificacao de convite para utilizadores pendentes."
           initialState={initialAdminInvitationLifecycleFormState}
-          members={invitedMemberOptions}
+          members={options.invitedMemberOptions}
           title="Reenviar convite"
         />
         <AdminInvitationLifecycleForm
@@ -218,12 +182,11 @@ export default async function AdminIdentityPage(props: {
           canManageInvitations={canInviteUser}
           description="Cancela convite pendente, remove roles e fecha acesso antes de ativacao."
           initialState={initialAdminInvitationLifecycleFormState}
-          members={invitedMemberOptions}
+          members={options.invitedMemberOptions}
           requiresReason
           title="Cancelar convite"
         />
       </section>
-
       <AdminUsersTable
         users={overview.users}
         pagination={{
@@ -234,7 +197,6 @@ export default async function AdminIdentityPage(props: {
           currentPage: Math.floor(offset / limit) + 1,
         }}
       />
-
       <AdminRolesTables roles={overview.roles} permissions={overview.permissions} />
     </div>
   );

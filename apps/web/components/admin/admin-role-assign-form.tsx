@@ -18,6 +18,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { AdminRoleAssignFormState } from "../../app/(platform)/app/admin/form-state";
 
 export type AdminRoleAssignMemberOption = {
@@ -51,12 +52,12 @@ export function AdminRoleAssignForm({
   roles,
 }: AdminRoleAssignFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("admin_assign"));
   const isDisabled = isPending || !canAssignRole || members.length === 0 || roles.length === 0;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("admin_assign"));
     }
   }, [state.status]);
 
@@ -65,7 +66,7 @@ export function AdminRoleAssignForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canAssignRole ? "success" : "warning"}>
-            {canAssignRole ? "RBAC governado" : "Sem permissao"}
+            {canAssignRole ? "Atribuicao autorizada" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">identity.role.assign</Badge>
         </div>
@@ -73,7 +74,7 @@ export function AdminRoleAssignForm({
           <CardTitle>Atribuir role</CardTitle>
           <CardDescription className="leading-6">
             Liga um membership ativo ou convidado a uma role do tenant. A API impede escopo fora da
-            organizacao e registra audit/outbox.
+            organizacao com registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -106,7 +107,7 @@ export function AdminRoleAssignForm({
                 ))}
               </SelectNative>
               <FieldDescription>
-                Roles sao tenant-scoped e carregadas do contrato administrativo.
+                Roles sao carregadas do contrato administrativo da organizacao.
               </FieldDescription>
             </Field>
             <Field>
@@ -126,19 +127,10 @@ export function AdminRoleAssignForm({
             {isPending ? "A atribuir..." : "Atribuir role"}
           </Button>
           <span className="text-muted-foreground text-xs">
-            {canAssignRole ? "Atribuicao auditavel." : "Requer identity.role.assign."}
+            {canAssignRole ? "Atribuicao registada." : "Requer atribuicao de permissoes."}
           </span>
         </CardFooter>
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2);
-
-  return `admin_assign_${randomValue}`;
 }

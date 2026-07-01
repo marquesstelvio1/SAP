@@ -7,7 +7,12 @@ import {
   Logger,
 } from "@nestjs/common";
 import type { TraceContext } from "@saptm/observability";
-import { createRpcErrorEnvelope, type RpcErrorCode } from "@saptm/rpc";
+import {
+  createRpcErrorEnvelope,
+  getHttpStatusFromRpcErrorCode,
+  mapHttpStatusToRpcErrorCode,
+  type RpcErrorCode,
+} from "@saptm/rpc";
 
 type PrismaClientError = {
   code: string;
@@ -21,29 +26,8 @@ function isPrismaError(error: unknown): error is PrismaClientError {
     error !== null &&
     "code" in error &&
     typeof (error as PrismaClientError).code === "string" &&
-    ((error as PrismaClientError).code?.startsWith("P") ?? false)
+    (error as PrismaClientError).code.startsWith("P")
   );
-}
-
-function mapHttpStatusToErrorCode(status: number): RpcErrorCode {
-  switch (status) {
-    case HttpStatus.UNAUTHORIZED:
-      return "UNAUTHENTICATED";
-    case HttpStatus.FORBIDDEN:
-      return "FORBIDDEN";
-    case HttpStatus.BAD_REQUEST:
-      return "VALIDATION_ERROR";
-    case HttpStatus.CONFLICT:
-      return "CONFLICT";
-    case HttpStatus.NOT_FOUND:
-      return "NOT_FOUND";
-    case HttpStatus.TOO_MANY_REQUESTS:
-      return "RATE_LIMITED";
-    case HttpStatus.BAD_GATEWAY:
-      return "INTEGRATION_ERROR";
-    default:
-      return "INTERNAL_ERROR";
-  }
 }
 
 function mapPrismaCodeToErrorCode(prismaCode: string): RpcErrorCode {
@@ -55,18 +39,6 @@ function mapPrismaCodeToErrorCode(prismaCode: string): RpcErrorCode {
       return "NOT_FOUND";
     default:
       return "INTERNAL_ERROR";
-  }
-}
-
-function mapPrismaCodeToHttpStatus(prismaCode: string): number {
-  switch (prismaCode) {
-    case "P2002":
-    case "P2003":
-      return HttpStatus.CONFLICT;
-    case "P2025":
-      return HttpStatus.NOT_FOUND;
-    default:
-      return HttpStatus.INTERNAL_SERVER_ERROR;
   }
 }
 
@@ -94,7 +66,7 @@ export class RpcExceptionFilter implements ExceptionFilter {
     if (isPrismaError(exception)) {
       const prismaCode = exception.code;
       const errorCode = mapPrismaCodeToErrorCode(prismaCode);
-      const httpStatus = mapPrismaCodeToHttpStatus(prismaCode);
+      const httpStatus = getHttpStatusFromRpcErrorCode(errorCode);
 
       this.logger.warn(`Prisma error [${prismaCode}]: ${exception.message}`);
 
@@ -106,7 +78,6 @@ export class RpcExceptionFilter implements ExceptionFilter {
             : (exception.message ?? "A database error occurred."),
         ...(traceId ? { traceId } : {}),
         ...(requestId ? { requestId } : {}),
-        ...(exception.meta ? { details: exception.meta } : {}),
       });
 
       (response as { status: (code: number) => { json: (data: unknown) => void } })
@@ -117,7 +88,7 @@ export class RpcExceptionFilter implements ExceptionFilter {
 
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
-      const errorCode = mapHttpStatusToErrorCode(status);
+      const errorCode = mapHttpStatusToRpcErrorCode(status);
       const exceptionResponse = exception.getResponse();
       const details =
         typeof exceptionResponse === "object" && exceptionResponse !== null

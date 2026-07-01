@@ -89,7 +89,7 @@ export function OrganizationSwitcher() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
-          className="flex h-10 w-full items-center gap-3 rounded-lg px-2 text-left transition-colors hover:bg-sidebar-accent/60"
+          className="flex h-10 w-full items-center gap-3 rounded-lg px-2 text-left outline-none transition-colors hover:bg-sidebar-accent/60 focus-visible:ring-[3px] focus-visible:ring-ring/50"
           type="button"
           aria-label="Selecionar organização"
           aria-expanded={open}
@@ -118,7 +118,7 @@ export function OrganizationSwitcher() {
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-64 p-1" side="right" sideOffset={8}>
-        <div className="px-2 py-1.5 text-muted-foreground text-[0.65rem] uppercase tracking-widest">
+        <div className="px-2 py-1.5 text-muted-foreground text-2xs uppercase tracking-widest">
           Organizações
         </div>
         <div className="flex flex-col gap-0.5" id={`${id}-list`} role="listbox">
@@ -127,7 +127,7 @@ export function OrganizationSwitcher() {
             return (
               <button
                 key={org.id}
-                className="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left text-sm transition-colors hover:bg-accent aria-selected:bg-accent/60"
+                className="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left text-sm outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-selected:bg-accent/60"
                 onClick={() => handleSwitch(org.id)}
                 role="option"
                 aria-selected={isActive}

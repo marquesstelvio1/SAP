@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -29,7 +29,15 @@ function collectTypeOnlyImports(content) {
   let re = /^import\s+type\s+\{\s*([^}]+)\}\s*from/gm;
   let m;
   while ((m = re.exec(content)) !== null) {
-    for (const sym of m[1].split(",").map((s) => s.trim().replace(/\s+as\s+\w+$/, "").trim()).filter(Boolean)) {
+    for (const sym of m[1]
+      .split(",")
+      .map((s) =>
+        s
+          .trim()
+          .replace(/\s+as\s+\w+$/, "")
+          .trim(),
+      )
+      .filter(Boolean)) {
       if (sym[0] >= "A" && sym[0] <= "Z") typeOnly.add(sym);
     }
   }
@@ -96,10 +104,17 @@ function findInjectableConstructors(lines) {
     for (let l = ctorLine; l < lines.length; l++) {
       ctorLines.push({ line: l, text: lines[l] });
       for (const ch of lines[l]) {
-        if (ch === "(") { depth++; foundOpen = true; }
-        else if (ch === ")") { depth--; }
+        if (ch === "(") {
+          depth++;
+          foundOpen = true;
+        } else if (ch === ")") {
+          depth--;
+        }
       }
-      if (foundOpen && depth === 0) { ctorEndLine = l; break; }
+      if (foundOpen && depth === 0) {
+        ctorEndLine = l;
+        break;
+      }
     }
 
     // Build the full constructor text for parameter parsing
@@ -149,13 +164,25 @@ function splitTopLevelParams(block) {
   let current = "";
 
   for (const ch of block) {
-    if (ch === "(") { depth++; current += ch; }
-    else if (ch === ")") { depth--; current += ch; }
-    else if (ch === "{") { bracketDepth++; current += ch; }
-    else if (ch === "}") { bracketDepth--; current += ch; }
-    else if (ch === "<") { angleDepth++; current += ch; }
-    else if (ch === ">") { angleDepth--; current += ch; }
-    else if (ch === "," && depth === 0 && bracketDepth === 0 && angleDepth === 0) {
+    if (ch === "(") {
+      depth++;
+      current += ch;
+    } else if (ch === ")") {
+      depth--;
+      current += ch;
+    } else if (ch === "{") {
+      bracketDepth++;
+      current += ch;
+    } else if (ch === "}") {
+      bracketDepth--;
+      current += ch;
+    } else if (ch === "<") {
+      angleDepth++;
+      current += ch;
+    } else if (ch === ">") {
+      angleDepth--;
+      current += ch;
+    } else if (ch === "," && depth === 0 && bracketDepth === 0 && angleDepth === 0) {
       const trimmed = current.trim();
       if (trimmed) parts.push(trimmed);
       current = "";
@@ -195,7 +222,10 @@ function parseParam(rawText, ctorLines, ctorLine) {
   if (!baseType || baseType[0] < "A" || baseType[0] > "Z") return null;
 
   // Extract param name
-  const beforeColon = rawText.slice(0, colonIdx).replace(/\?\s*$/, "").trim();
+  const beforeColon = rawText
+    .slice(0, colonIdx)
+    .replace(/\?\s*$/, "")
+    .trim();
   const nameMatch = beforeColon.match(/(\w+)\s*$/);
   const name = nameMatch ? nameMatch[1] : "?";
 
@@ -231,8 +261,11 @@ function findParamStartLine(rawText, ctorLines, ctorLine) {
   for (let i = 1; i < ctorLines.length; i++) {
     const lineTrimmed = ctorLines[i].text.trim();
     // Match if the trimmed line starts with the declaration or vice versa
-    if (lineTrimmed === declTrimmed || lineTrimmed.startsWith(declTrimmed.replace(/,?\s*$/, "")) ||
-        declTrimmed.startsWith(lineTrimmed.replace(/,?\s*$/, ""))) {
+    if (
+      lineTrimmed === declTrimmed ||
+      lineTrimmed.startsWith(declTrimmed.replace(/,?\s*$/, "")) ||
+      declTrimmed.startsWith(lineTrimmed.replace(/,?\s*$/, ""))
+    ) {
       return ctorLines[i].line;
     }
   }
@@ -266,8 +299,11 @@ function ensureOptionalImport(lines) {
     const m = lines[i].match(/^import\s+\{([^}]*)\}\s*from\s+["']@nestjs\/common["']/);
     if (m) {
       const existing = m[1].split(",").map((s) => s.trim());
-      if (!existing.includes("Optional") && !existing.includes("type Optional") &&
-          !existing.some((s) => s.replace(/^type\s+/, "").trim() === "Optional")) {
+      if (
+        !existing.includes("Optional") &&
+        !existing.includes("type Optional") &&
+        !existing.some((s) => s.replace(/^type\s+/, "").trim() === "Optional")
+      ) {
         existing.push("Optional");
         lines[i] = lines[i].replace(/\{([^}]*)\}/, `{ ${existing.join(", ")} }`);
       }
@@ -314,7 +350,9 @@ for (const filePath of walk(API_SRC)) {
           const afterParen = ctorText.slice(openParenIdx + 1);
           const indent = ctorText.match(/^\s*/)[0];
           lines[ctor.ctorLine] = `${beforeParen}\n${indent}  @Optional()\n${indent}  ${afterParen}`;
-          console.log(`[FIXED]  ${fileRelativePath}:${ctor.ctorLine + 1} - Added @Optional() before optional type-only param "${param.name}: ${param.type}"`);
+          console.log(
+            `[FIXED]  ${fileRelativePath}:${ctor.ctorLine + 1} - Added @Optional() before optional type-only param "${param.name}: ${param.type}"`,
+          );
           fileModified = true;
         } else {
           const trimmed = lines[paramLine].trim();
@@ -327,11 +365,15 @@ for (const filePath of walk(API_SRC)) {
               nextLine++;
             }
             lines.splice(insertAfter + 1, 0, `${lineIndent}@Optional()`);
-            console.log(`[FIXED]  ${fileRelativePath}:${insertAfter + 2} - Added @Optional() before optional type-only param "${param.name}: ${param.type}"`);
+            console.log(
+              `[FIXED]  ${fileRelativePath}:${insertAfter + 2} - Added @Optional() before optional type-only param "${param.name}: ${param.type}"`,
+            );
             fileModified = true;
           } else {
             lines.splice(paramLine, 0, `${lineIndent}@Optional()`);
-            console.log(`[FIXED]  ${fileRelativePath}:${paramLine + 1} - Added @Optional() before optional type-only param "${param.name}: ${param.type}"`);
+            console.log(
+              `[FIXED]  ${fileRelativePath}:${paramLine + 1} - Added @Optional() before optional type-only param "${param.name}: ${param.type}"`,
+            );
             fileModified = true;
           }
         }
@@ -360,15 +402,19 @@ if (modifiedFiles.length === 0) {
 } else {
   console.log(`Modified ${modifiedFiles.length} file(s):`);
   for (const f of modifiedFiles) {
-    console.log("  " + f);
+    console.log(`  ${f}`);
   }
 }
 
 if (flaggedFiles.length > 0) {
   console.log(`\n=== FLAGGED (need manual intervention) ===`);
-  console.log(`${flaggedFiles.length} required parameter(s) with type-only imports missing @Inject():\n`);
+  console.log(
+    `${flaggedFiles.length} required parameter(s) with type-only imports missing @Inject():\n`,
+  );
   for (const f of flaggedFiles) {
-    console.log(`  ${f.file}:${f.line} - parameter "${f.name}" has type "${f.type}" from import type, needs @Inject() or architectural change`);
+    console.log(
+      `  ${f.file}:${f.line} - parameter "${f.name}" has type "${f.type}" from import type, needs @Inject() or architectural change`,
+    );
   }
 } else {
   console.log("\nNo required parameters with type-only imports missing @Inject().");

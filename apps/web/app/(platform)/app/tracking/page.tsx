@@ -1,10 +1,16 @@
 import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
+import type { Metadata } from "next";
 
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import { TrackingOverviewClient } from "./TrackingOverviewClient";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Tracking Operacional",
+  description: "Acompanhamento de remessas com eventos operacionais, exceções e SLA em tempo real.",
+};
 
 const readTrackingPermission: PlatformPermission = "tracking.shipment.read";
 const recordTrackingPermission: PlatformPermission = "tracking.event.record";
@@ -22,7 +28,8 @@ export default async function TrackingOverviewPage(props: {
   if (!viewerPermissions.includes(readTrackingPermission)) {
     return (
       <AccessState
-        description="A sessao esta autenticada, mas falta a permissao tracking.shipment.read para abrir o modulo."
+        badgeLabel="Tracking"
+        description="O utilizador autenticado nao tem acesso ao modulo de tracking."
         role="alert"
         title="Tracking operacional bloqueado"
         variant="blocked"
@@ -30,12 +37,5 @@ export default async function TrackingOverviewPage(props: {
     );
   }
 
-  return (
-    <TrackingOverviewClient
-      offset={offset}
-      limit={limit}
-      sessionId={platformSession.sessionId}
-      canRecordEvents={canRecordEvents}
-    />
-  );
+  return <TrackingOverviewClient offset={offset} limit={limit} canRecordEvents={canRecordEvents} />;
 }

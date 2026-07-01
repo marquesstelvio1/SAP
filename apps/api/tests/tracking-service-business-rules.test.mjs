@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-
 import { TrackingService } from "../dist/tracking/tracking.service.js";
+import { assertRejectsWithMessage } from "./test-utils.mjs";
 
 const fixedNow = new Date("2026-06-04T00:00:00.000Z");
 
@@ -224,12 +224,8 @@ test("tracking service manages exceptions with full workflow state and resolves 
     "tracking.exception_not_active",
   );
 
-  assert.ok(
-    state.outboxEvents.some((event) => event.eventType === "tracking.exception.managed"),
-  );
-  assert.ok(
-    state.outboxEvents.some((event) => event.eventType === "tracking.exception.resolved"),
-  );
+  assert.ok(state.outboxEvents.some((event) => event.eventType === "tracking.exception.managed"));
+  assert.ok(state.outboxEvents.some((event) => event.eventType === "tracking.exception.resolved"));
 });
 
 test("tracking service replays duplicate event submissions and returns replayed result", async () => {
@@ -514,7 +510,7 @@ function createTrackingDatabase() {
 
         state.trackingEvents.push(record);
 
-        let result = { ...record };
+        const result = { ...record };
 
         if (include?.shipment !== undefined) {
           const shipment = findMutableByWhere(state.trackingShipments, {
@@ -595,23 +591,4 @@ function nextId(state, entityName) {
   state.counters[entityName] += 1;
 
   return `${entityName}_${String(state.counters[entityName]).padStart(3, "0")}`;
-}
-
-async function assertRejectsWithMessage(action, expectedMessage) {
-  let rejectedError = null;
-
-  try {
-    await action();
-  } catch (error) {
-    rejectedError = error;
-  }
-
-  assert.ok(rejectedError, `Expected rejection with ${expectedMessage}`);
-
-  const response =
-    typeof rejectedError.getResponse === "function" ? rejectedError.getResponse() : undefined;
-  const message =
-    typeof response === "object" && response !== null ? response.message : rejectedError.message;
-
-  assert.equal(message, expectedMessage);
 }

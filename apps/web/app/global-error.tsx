@@ -13,7 +13,7 @@ export default function GlobalError({
         <main
           style={{
             alignItems: "center",
-            backgroundColor: "var(--background, #fafafa)",
+            backgroundColor: "var(--background)",
             display: "flex",
             fontFamily:
               'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -25,8 +25,8 @@ export default function GlobalError({
           <div style={{ maxWidth: "28rem", width: "100%" }}>
             <div
               style={{
-                background: "var(--card, #fff)",
-                border: "1px solid var(--border, #e5e7eb)",
+                background: "var(--card)",
+                border: "1px solid var(--border)",
                 borderRadius: "0.75rem",
                 padding: "2rem",
               }}
@@ -44,7 +44,7 @@ export default function GlobalError({
               </h1>
               <p
                 style={{
-                  color: "var(--muted-foreground, #6b7280)",
+                  color: "var(--muted-foreground)",
                   fontSize: "0.875rem",
                   lineHeight: 1.5,
                   margin: "0.5rem 0 1.5rem",
@@ -53,14 +53,21 @@ export default function GlobalError({
               >
                 {error.message}
               </p>
+              <style>{`
+                .ge-btn:focus-visible {
+                  outline: 2px solid var(--ring, #888);
+                  outline-offset: 2px;
+                }
+              `}</style>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                 <button
+                  className="ge-btn"
                   onClick={reset}
                   style={{
-                    background: "var(--foreground, #000)",
+                    background: "var(--foreground)",
                     border: "none",
                     borderRadius: "0.5rem",
-                    color: "var(--background, #fff)",
+                    color: "var(--background)",
                     cursor: "pointer",
                     fontSize: "0.875rem",
                     fontWeight: 500,
@@ -72,11 +79,12 @@ export default function GlobalError({
                   Tentar novamente
                 </button>
                 <a
+                  className="ge-btn"
                   href="/app"
                   style={{
-                    border: "1px solid var(--border, #e5e7eb)",
+                    border: "1px solid var(--border)",
                     borderRadius: "0.5rem",
-                    color: "var(--foreground, #000)",
+                    color: "var(--foreground)",
                     display: "block",
                     fontSize: "0.875rem",
                     fontWeight: 500,

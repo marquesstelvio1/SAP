@@ -15,7 +15,7 @@ export default async function AcceptInvitationPage({ searchParams }: AcceptInvit
   const token = readToken(params.token);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 text-foreground">
+    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 text-foreground" id="main-content">
       {token.length === 0 ? (
         <Card className="w-full max-w-lg">
           <CardHeader className="gap-3">
@@ -23,7 +23,7 @@ export default async function AcceptInvitationPage({ searchParams }: AcceptInvit
             <CardTitle>Convite indisponivel</CardTitle>
             <CardDescription>
               Abra o link completo recebido por convite. Se o link expirou, solicite reenvio ao
-              administrador do tenant.
+              administrador da organização.
             </CardDescription>
           </CardHeader>
         </Card>

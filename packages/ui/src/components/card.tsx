@@ -16,18 +16,21 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-header"
-      className={cn("flex flex-col", className)}
-      style={{ padding: "var(--space-6)", gap: "var(--space-1.5)" }}
+      className={cn("flex flex-col p-6 gap-1.5", className)}
       {...props}
     />
   );
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<"h3">) {
+function CardTitle({
+  className,
+  as: Component = "h3",
+  ...props
+}: React.ComponentProps<"h3"> & { as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" }) {
   return (
-    <h3
+    <Component
       data-slot="card-title"
-      className={cn("m-0 font-semibold leading-none tracking-tight", className)}
+      className={cn("m-0 font-semibold leading-none tracking-heading", className)}
       {...props}
     />
   );
@@ -44,33 +47,14 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-content"
-      className={cn(className)}
-      style={{
-        paddingLeft: "var(--space-6)",
-        paddingRight: "var(--space-6)",
-        paddingBottom: "var(--space-6)",
-        paddingTop: 0,
-      }}
-      {...props}
-    />
-  );
+  return <div data-slot="card-content" className={cn("px-6 pb-6 pt-0", className)} {...props} />;
 }
 
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-footer"
-      className={cn("flex items-center", className)}
-      style={{
-        paddingLeft: "var(--space-6)",
-        paddingRight: "var(--space-6)",
-        paddingBottom: "var(--space-6)",
-        paddingTop: 0,
-        gap: "var(--space-3)",
-      }}
+      className={cn("flex items-center px-6 pb-6 pt-0 gap-3", className)}
       {...props}
     />
   );

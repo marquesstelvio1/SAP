@@ -19,6 +19,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { AdminRoleCreateFormState } from "../../app/(platform)/app/admin/form-state";
 
 export type AdminPermissionOption = {
@@ -43,12 +44,14 @@ export function AdminRoleCreateForm({
   permissions,
 }: AdminRoleCreateFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("create"));
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("admin_role_create"),
+  );
   const isDisabled = isPending || !canManageRoles;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey("create"));
+      setIdempotencyKey(createIdempotencyKey("admin_role_create"));
     }
   }, [state.status]);
 
@@ -57,15 +60,14 @@ export function AdminRoleCreateForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageRoles ? "success" : "warning"}>
-            {canManageRoles ? "Roles custom" : "Sem permissao"}
+            {canManageRoles ? "Roles custom" : "Indisponivel"}
           </Badge>
-          <Badge variant="outline">tenant.manage + identity.role.assign</Badge>
+          <Badge variant="outline">Permissoes de administracao</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Criar role custom</CardTitle>
           <CardDescription className="leading-6">
-            Cria roles apenas com prefixo `tenant.custom.`. Templates bootstrap continuam protegidos
-            por regra de negocio.
+            Crie roles personalizadas com permissoes selecionadas.
           </CardDescription>
         </div>
       </CardHeader>
@@ -79,7 +81,7 @@ export function AdminRoleCreateForm({
                 disabled={isDisabled}
                 id="adminRoleCreateKey"
                 name="key"
-                placeholder="tenant.custom.yard_supervisor"
+                placeholder="ex.: supervisor_de_terminal"
                 required
               />
             </Field>
@@ -94,16 +96,16 @@ export function AdminRoleCreateForm({
               />
             </Field>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="adminRoleCreateDescription">Descricao</FieldLabel>
+              <FieldLabel htmlFor="adminRoleCreateDescription">Descrição</FieldLabel>
               <Textarea
                 disabled={isDisabled}
                 id="adminRoleCreateDescription"
                 name="description"
-                placeholder="Role custom para supervisores de patio e terminal."
+                placeholder="Role custom para supervisores de pátio e terminal."
               />
             </Field>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="adminRoleCreatePermissions">Permissoes</FieldLabel>
+              <FieldLabel htmlFor="adminRoleCreatePermissions">Permissões</FieldLabel>
               <Textarea
                 disabled={isDisabled}
                 id="adminRoleCreatePermissions"
@@ -112,7 +114,7 @@ export function AdminRoleCreateForm({
                 required
               />
               <FieldDescription>
-                Separe por virgula ou linha. Catalogo disponivel:{" "}
+                Separe por vírgula ou linha. Catálogo disponível:{" "}
                 {permissions.map((permission) => permission.key).join(", ")}
               </FieldDescription>
             </Field>
@@ -136,13 +138,4 @@ export function AdminRoleCreateForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(scope: string): string {
-  const randomValue =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2);
-
-  return `admin_role_${scope}_${randomValue}`;
 }

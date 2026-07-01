@@ -59,7 +59,7 @@ export function IntegrationWarehouseWmsActivityForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessWarehouseWms ? "success" : "warning"}>
-            {canProcessWarehouseWms ? "Adapter governado" : "Sem permissao"}
+            {canProcessWarehouseWms ? "Atividade autorizada" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">Warehouse/WMS</Badge>
           <Badge variant="outline">tracking.event.record</Badge>
@@ -68,7 +68,7 @@ export function IntegrationWarehouseWmsActivityForm({
           <CardTitle>Processar atividade Warehouse/WMS</CardTitle>
           <CardDescription className="leading-6">
             Converte atividades de armazem, doca e yard em eventos de tracking. A operacao valida
-            service account, tenant, idempotencia externa, audit trail e outbox.
+            processamento de atividade WMS com registo de evento.
           </CardDescription>
         </div>
       </CardHeader>
@@ -268,7 +268,7 @@ export function IntegrationWarehouseWmsActivityForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma service account com tracking.event.record."
+              ? "Crie uma conta de servico com permissoes de tracking."
               : "Adapter WMS local sem chamada externa."}
           </span>
         </CardFooter>

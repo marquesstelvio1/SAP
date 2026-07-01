@@ -22,6 +22,7 @@ import type {
   CapacitySlotReserveOutput,
 } from "@saptm/rpc";
 import { CacheService } from "../cache/cache.service.js";
+import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createCapacityAdvisoryDecisionAuditAfter,
   createCapacityAdvisoryDecisionAuditBefore,
@@ -59,7 +60,6 @@ import {
   normalizeLimit,
 } from "./domain/capacity.dto.js";
 import { CAPACITY_REPOSITORY, type CapacityRepository } from "./domain/capacity.repository.js";
-import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 
 export type GetCapacityOverviewInput = {
   organizationId: string;
@@ -129,8 +129,8 @@ export class CapacityService {
 
   constructor(
     @Inject(CAPACITY_REPOSITORY) private readonly capacityRepo: CapacityRepository,
-    private readonly eventBus: OutboxEventBusAdapter,
-    private readonly cacheService: CacheService,
+    @Inject(OutboxEventBusAdapter) private readonly eventBus: OutboxEventBusAdapter,
+    @Inject(CacheService) private readonly cacheService: CacheService,
   ) {}
 
   async getOverview(input: GetCapacityOverviewInput): Promise<CapacityOverviewOutput> {

@@ -18,6 +18,8 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CargoReleaseFormState } from "../../app/(platform)/app/cargo/form-state";
 
@@ -42,13 +44,13 @@ const inspectionOutcomeOptions = [
 
 export function CargoReleaseForm({ canReleaseCargo, initialState, action }: CargoReleaseFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_rel"));
   const defaultReleasedAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canReleaseCargo;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("cargo_rel"));
     }
   }, [state.status]);
 
@@ -57,7 +59,7 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canReleaseCargo ? "success" : "warning"}>
-            {canReleaseCargo ? "Liberacao governada" : "Sem permissao"}
+            {canReleaseCargo ? "Liberacao autorizada" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">cargo.release</Badge>
         </div>
@@ -65,7 +67,7 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
           <CardTitle>Liberar carga para transporte</CardTitle>
           <CardDescription className="leading-6">
             Aplica regras P1: estado liberavel, alfandega resolvida, inspecao aprovada quando
-            obrigatoria, compliance de carga perigosa, idempotencia, audit trail e outbox.
+            obrigatoria, compliance de carga perigosa e registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -85,7 +87,7 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
                   required
                 />
                 <FieldDescription>
-                  Use o ID exibido ou retornado no registo governado da carga.
+                  Use o ID exibido ou retornado no registo da carga.
                 </FieldDescription>
               </Field>
               <Field data-disabled={!canReleaseCargo}>
@@ -184,7 +186,9 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canReleaseCargo ? "Liberacao cria audit trail e outbox." : "Requer cargo.release."}
+            {canReleaseCargo
+              ? "Liberacao cria registo de auditoria."
+              : "Requer libertacao de cargas."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A liberar..." : "Liberar carga"}
@@ -193,17 +197,4 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `cargo_rel_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

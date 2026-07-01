@@ -19,6 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TrackingEventRecordFormState } from "../../app/(platform)/app/tracking/form-state";
 import { FormToast } from "../form-toast";
 
@@ -45,10 +47,10 @@ const eventTypeOptions = [
   { value: "arrived", label: "Chegada" },
   { value: "location_updated", label: "Local atualizado" },
   { value: "delayed", label: "Atraso" },
-  { value: "exception", label: "Excecao operacional" },
-  { value: "customs_hold", label: "Retencao alfandegaria" },
-  { value: "released", label: "Liberacao" },
-  { value: "handover_completed", label: "Handover concluido" },
+  { value: "exception", label: "Exceção operacional" },
+  { value: "customs_hold", label: "Retenção aduaneira" },
+  { value: "released", label: "Libertação" },
+  { value: "handover_completed", label: "Handover concluído" },
 ] as const;
 
 export function TrackingEventRecordForm({
@@ -58,14 +60,14 @@ export function TrackingEventRecordForm({
   action,
 }: TrackingEventRecordFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("trk_evt"));
   const defaultOccurredAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const selectedShipment = shipments.at(0);
   const isDisabled = isPending || !canRecordEvents || shipments.length === 0;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("trk_evt"));
     }
   }, [state.status]);
 
@@ -74,15 +76,14 @@ export function TrackingEventRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordEvents ? "success" : "warning"}>
-            {canRecordEvents ? "Escrita governada" : "Sem permissao"}
+            {canRecordEvents ? "Evento autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">tracking.event.record</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar evento operacional</CardTitle>
           <CardDescription className="leading-6">
-            Grava eventos com idempotencia, audit trail e outbox. A UI usa apenas o comando seguro
-            do backend; nao existe CRUD generico.
+            Grava eventos operacionais com protecao contra duplicacao e registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -149,7 +150,7 @@ export function TrackingEventRecordForm({
                   disabled={isDisabled}
                   id="locationName"
                   name="locationName"
-                  placeholder="Ex.: Terminal Ferroviario Norte"
+                  placeholder="Ex.: Terminal Ferroviário Norte"
                 />
               </Field>
 
@@ -170,7 +171,7 @@ export function TrackingEventRecordForm({
                 disabled={isDisabled}
                 id="notes"
                 name="notes"
-                placeholder="Resumo da ocorrencia, handover, atraso, retencao ou chegada."
+                placeholder="Resumo da ocorrência, handover, atraso, retenção ou chegada."
               />
             </Field>
 
@@ -184,7 +185,7 @@ export function TrackingEventRecordForm({
                 spellCheck={false}
               />
               <FieldDescription>
-                Deve ser um objeto JSON. Use apenas dados operacionais necessarios.
+                Deve ser um objeto JSON. Use apenas dados operacionais necessários.
               </FieldDescription>
             </Field>
 
@@ -208,8 +209,8 @@ export function TrackingEventRecordForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canRecordEvents
-              ? "Audit, outbox e status sao gravados no backend."
-              : "Requer tracking.event.record."}
+              ? "Evento gravado com registo de auditoria."
+              : "Requer registo de eventos."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A registar..." : "Registar evento"}
@@ -219,17 +220,4 @@ export function TrackingEventRecordForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `trk_evt_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

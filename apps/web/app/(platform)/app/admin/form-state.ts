@@ -12,7 +12,7 @@ export type AdminUserInviteFormState = {
 
 export const initialAdminUserInviteFormState: AdminUserInviteFormState = {
   status: "idle",
-  message: "Convide utilizadores para o tenant com roles governadas, audit e outbox.",
+  message: "Convide utilizadores para a organizacao com permissoes definidas.",
 };
 
 export type AdminRoleAssignFormState = {
@@ -27,7 +27,7 @@ export type AdminRoleAssignFormState = {
 
 export const initialAdminRoleAssignFormState: AdminRoleAssignFormState = {
   status: "idle",
-  message: "Atribua roles existentes a membros do tenant com trilha auditavel.",
+  message: "Atribua permissoes a membros da organizacao.",
 };
 
 export type AdminRoleCreateFormState = {
@@ -41,7 +41,7 @@ export type AdminRoleCreateFormState = {
 
 export const initialAdminRoleCreateFormState: AdminRoleCreateFormState = {
   status: "idle",
-  message: "Crie roles customizadas tenant-scoped com permissoes selecionadas.",
+  message: "Crie roles personalizadas com permissoes selecionadas.",
 };
 
 export type AdminRolePermissionsFormState = {
@@ -55,7 +55,7 @@ export type AdminRolePermissionsFormState = {
 
 export const initialAdminRolePermissionsFormState: AdminRolePermissionsFormState = {
   status: "idle",
-  message: "Atualize permissoes de roles customizadas sem alterar templates bootstrap.",
+  message: "Atualize permissoes de roles personalizadas.",
 };
 
 export type AdminRoleDeleteFormState = {
@@ -69,7 +69,7 @@ export type AdminRoleDeleteFormState = {
 
 export const initialAdminRoleDeleteFormState: AdminRoleDeleteFormState = {
   status: "idle",
-  message: "Elimine roles customizadas sem memberships associados.",
+  message: "Elimine roles personalizadas sem membros associados.",
 };
 
 export type AdminRoleRevokeFormState = {
@@ -84,7 +84,7 @@ export type AdminRoleRevokeFormState = {
 
 export const initialAdminRoleRevokeFormState: AdminRoleRevokeFormState = {
   status: "idle",
-  message: "Revogue uma role atribuida preservando regras anti-lockout.",
+  message: "Revogue uma role atribuida a um membro da organizacao.",
 };
 
 export type AdminMembershipStatusFormState = {
@@ -98,7 +98,7 @@ export type AdminMembershipStatusFormState = {
 
 export const initialAdminMembershipStatusFormState: AdminMembershipStatusFormState = {
   status: "idle",
-  message: "Ative, suspenda ou remova memberships com auditoria e outbox.",
+  message: "Ative, suspenda ou remova membros da organizacao.",
 };
 
 export type AdminInvitationLifecycleFormState = {
@@ -113,5 +113,5 @@ export type AdminInvitationLifecycleFormState = {
 
 export const initialAdminInvitationLifecycleFormState: AdminInvitationLifecycleFormState = {
   status: "idle",
-  message: "Reenvie ou cancele convites pendentes de forma auditavel.",
+  message: "Reenvie ou cancele convites pendentes.",
 };

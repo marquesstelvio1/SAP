@@ -1,7 +1,13 @@
+import path from "node:path";
 import nextBundleAnalyzer from "@next/bundle-analyzer";
 import { withSentryConfig } from "@sentry/nextjs";
+import dotenv from "dotenv";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+
+// Next.js auto-loads .env* from its project root (apps/web). Since .env
+// lives at the monorepo root, load it explicitly.
+dotenv.config({ path: path.resolve(import.meta.dirname, "../../.env") });
 
 const withBundleAnalyzer = nextBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
@@ -40,44 +46,31 @@ const staticHeaders = [
   },
 ] as const;
 
-function buildCsp(): string {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
-  const apiOrigin = apiUrl ? new URL(apiUrl).origin : "";
-
-  const connectSrc = apiOrigin && apiOrigin !== "http://localhost:3000" && apiOrigin !== "https://saptm.pt"
-    ? `connect-src 'self' ${apiOrigin}`
-    : "connect-src 'self'";
-
-  return [
-    "default-src 'self'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    "frame-ancestors 'none'",
-    "object-src 'none'",
-    "img-src 'self' data: blob:",
-    "font-src 'self' data:",
-    "script-src 'self' 'unsafe-eval'",
-    "style-src 'self'",
-    connectSrc,
-    "worker-src 'self' blob:",
-    "frame-src 'none'",
-    "upgrade-insecure-requests",
-  ].join("; ");
-}
-
 const nextConfig: NextConfig = {
   output: "standalone",
   reactStrictMode: true,
   serverExternalPackages: ["@better-auth/kysely-adapter", "better-auth", "kysely"],
   typedRoutes: true,
+  images: {
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 86_400,
+  },
+  // Next.js 16: Turbopack config is top-level, not experimental.turbopack.
+  // Empty object signals "use default Turbopack configuration".
+  turbopack: {},
+  experimental: {
+    staleTimes: {
+      dynamic: 30,
+      static: 180,
+    },
+  },
   async headers() {
     return [
       {
         source: "/(.*)",
-        headers: [
-          { key: "Content-Security-Policy", value: buildCsp() },
-          ...staticHeaders,
-        ],
+        headers: [...staticHeaders],
       },
     ];
   },

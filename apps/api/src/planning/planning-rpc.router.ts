@@ -2,6 +2,9 @@ import type { IncomingMessage } from "node:http";
 import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
+  dispatchOverviewInputSchema,
+  dispatchOverviewMetadata,
+  dispatchOverviewOutputSchema,
   planningOverviewInputSchema,
   planningOverviewMetadata,
   planningOverviewOutputSchema,
@@ -19,6 +22,7 @@ import {
   transportOrderRescheduleOutputSchema,
 } from "@saptm/rpc";
 
+import type { OverviewService } from "../overview/overview.service.js";
 import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
 import type { RpcContextService } from "../rpc/rpc-context.service.js";
 import type { PlanningService } from "./planning.service.js";
@@ -36,6 +40,7 @@ export type CreatePlanningRpcRouterInput = {
     | "getOverview"
     | "rescheduleTransportOrder"
   >;
+  overviewService: Pick<OverviewService, "getDispatchOverview">;
   rpcContextService: Pick<RpcContextService, "authorizeRequest">;
 };
 
@@ -63,6 +68,28 @@ export function createPlanningRpcRouter(deps: CreatePlanningRpcRouterInput) {
           return deps.planningService.getOverview({
             organizationId,
             limit: input.limit,
+          });
+        }),
+      dispatchOverview: planningRpc
+        .meta(dispatchOverviewMetadata)
+        .route({ method: "GET", path: "/planning/dispatchOverview" })
+        .input(dispatchOverviewInputSchema)
+        .output(dispatchOverviewOutputSchema)
+        .handler(async ({ context, input }) => {
+          const authorizedContext = await deps.rpcContextService.authorizeRequest(
+            context.request,
+            dispatchOverviewMetadata,
+          );
+          const organizationId = authorizedContext.authContext?.organizationId;
+
+          if (organizationId === undefined) {
+            throw new ForbiddenException("planning.organization_required");
+          }
+
+          return deps.overviewService.getDispatchOverview({
+            organizationId,
+            limit: input.limit,
+            offset: input.offset,
           });
         }),
       confirmTransportOrder: planningRpc

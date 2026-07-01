@@ -1,10 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { ThrottlerGuard } from "@nestjs/throttler";
 
+import { getAuthContextFromRequest } from "../auth/auth-context.js";
+
 @Injectable()
 export class TenantThrottlerGuard extends ThrottlerGuard {
   protected override async getTracker(req: Record<string, unknown>): Promise<string> {
-    const authContext = (req as any).authContext;
+    const authContext = getAuthContextFromRequest(req);
     if (authContext?.organizationId) {
       return `org:${authContext.organizationId}`;
     }
@@ -12,7 +14,7 @@ export class TenantThrottlerGuard extends ThrottlerGuard {
   }
 
   protected async getUserTracker(req: Record<string, unknown>): Promise<string> {
-    const authContext = (req as any).authContext;
+    const authContext = getAuthContextFromRequest(req);
     if (authContext?.userId) {
       return `user:${authContext.userId}`;
     }

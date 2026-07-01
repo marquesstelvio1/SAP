@@ -37,6 +37,12 @@
       "dependsOn": ["^build", "build"],
       "outputs": []
     },
+    "format": {
+      "dependsOn": [],
+      "outputs": [],
+      "inputs": ["$TURBO_DEFAULT$"],
+      "env": ["CI", "BIOME_LOG_DIR", "BIOME_CONFIG_PATH"]
+    },
     "lint": {
       "outputs": []
     },

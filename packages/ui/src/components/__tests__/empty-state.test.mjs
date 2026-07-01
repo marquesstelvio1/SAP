@@ -33,27 +33,21 @@ test("EmptyState renders icon when provided", () => {
   };
   const element = EmptyState({ title: "Empty", icon });
   const children = element.props.children;
-  const iconWrapper = children.find(
-    (c) => c != null && c.props && c.props.className?.includes("rounded-full"),
-  );
+  const iconWrapper = children.find((c) => c?.props?.className?.includes("rounded-full"));
   assert.ok(iconWrapper != null);
 });
 
 test("EmptyState renders without icon by default", () => {
   const element = EmptyState({ title: "Empty" });
   const children = element.props.children;
-  const iconSlot = children.filter(
-    (c) => c != null && c.props && c.props.className?.includes("rounded-full"),
-  );
+  const iconSlot = children.filter((c) => c?.props?.className?.includes("rounded-full"));
   assert.equal(iconSlot.length, 0);
 });
 
 test("EmptyState renders description when provided", () => {
   const element = EmptyState({ title: "Empty", description: "Add items to get started" });
   const children = element.props.children;
-  const descEl = children.find(
-    (c) => c != null && c.props && c.props.className?.includes("text-muted-foreground"),
-  );
+  const descEl = children.find((c) => c?.props?.className?.includes("text-muted-foreground"));
   assert.ok(descEl != null);
   assert.equal(descEl.props.children, "Add items to get started");
 });
@@ -72,7 +66,7 @@ test("EmptyState renders action when provided", () => {
   };
   const element = EmptyState({ title: "Empty", action });
   const children = element.props.children;
-  const actionWrapper = children.find((c) => c != null && c.props && c.props.className === "mt-2");
+  const actionWrapper = children.find((c) => c?.props && c.props.className === "mt-2");
   assert.ok(actionWrapper != null);
 });
 
@@ -122,9 +116,7 @@ test("ErrorCard renders custom title", () => {
 test("ErrorCard renders message when provided", () => {
   const element = ErrorCard.render({ message: "Something went wrong" });
   const children = element.props.children;
-  const messageEl = children.find(
-    (c) => c != null && c.props && c.props.className?.includes("text-muted-foreground"),
-  );
+  const messageEl = children.find((c) => c?.props?.className?.includes("text-muted-foreground"));
   assert.ok(messageEl != null);
   assert.equal(messageEl.props.children, "Something went wrong");
 });
@@ -132,17 +124,17 @@ test("ErrorCard renders message when provided", () => {
 test("ErrorCard renders without message by default", () => {
   const element = ErrorCard.render({});
   const children = element.props.children;
-  const messageSlot = children.filter(
-    (c) => c != null && c.props && c.props.className?.includes("text-muted-foreground"),
+  const messageSlot = children.filter((c) =>
+    c?.props?.className?.includes("text-muted-foreground"),
   );
   assert.equal(messageSlot.length, 0);
 });
 
 test("ErrorCard renders retry button when onRetry is provided", () => {
-  let called = false;
+  let _called = false;
   const element = ErrorCard.render({
     onRetry: () => {
-      called = true;
+      _called = true;
     },
   });
   const html = JSON.stringify(element.props.children);
@@ -152,9 +144,7 @@ test("ErrorCard renders retry button when onRetry is provided", () => {
 test("ErrorCard does not render retry button when onRetry is absent", () => {
   const element = ErrorCard.render({});
   const children = element.props.children;
-  const hasRetryButton = children.some(
-    (c) => c != null && c.props && c.props.children === "Tentar novamente",
-  );
+  const hasRetryButton = children.some((c) => c?.props && c.props.children === "Tentar novamente");
   assert.equal(hasRetryButton, false);
 });
 

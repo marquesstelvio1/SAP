@@ -1,5 +1,5 @@
 import type { ThrottlerStorage } from "@nestjs/throttler";
-import { Redis } from "ioredis";
+import type { Redis } from "ioredis";
 
 type ThrottlerStorageRecord = {
   totalHits: number;

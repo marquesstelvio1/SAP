@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../generated/prisma/client.js";
 import { getPrismaClient, seedRbacBootstrap } from "../src/index.js";
 
 const database = getPrismaClient();

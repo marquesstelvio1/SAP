@@ -100,11 +100,60 @@ All API communication goes through `@saptm/rpc` — no direct HTTP endpoints.
 ## Security
 
 - CSRF: double-submit cookie (csrf-csrf). Excluded paths: `/health`, `/api/auth`, `/billing/webhook`
-- CSP: nonce-based via `apps/web/src/middleware.ts` + `apps/web/src/proxy.ts` (both apply CSP with `crypto.randomUUID()` nonce)
+- CSP: nonce-based via `apps/web/src/proxy.ts` (Next.js 16 proxy convention); nonce is consumed in the root layout and passed to `ThemeProvider` and inline scripts/styles
 - CORS: restricted to trusted origins (configured via env)
 - Rate limiting: `@nestjs/throttler` with Redis storage — 3 tiers (api 200/min, org 1000/min, user 100/min)
 - OAuth tokens: encrypted via `encryptOAuthTokens: true` in Better Auth config
 - Security headers on all responses: HSTS, CSP, XFO, COOP, CORP, Referrer-Policy, Permissions-Policy
+
+## UX/UI & Design System Conventions
+
+### Linguagem operacional (PT-PT)
+- Toda a UI deve usar linguagem operacional/logística portuguesa (PT-PT), nunca developer-facing.
+- **Proibido expor** na UI: permission names (`cargo.register`, `tracking.shipment.read`), RPC endpoints (`POST /rpc/...`), sessionId, organizationId, terms like "RBAC", "governado", "CRUD".
+- Preferir termos operacionais: "Cargas" em vez de "Registo governado de cargas", "Dashboard" em vez de "Foundation Control Center".
+
+### Opção B — Context Panel
+- Governance cards (com permission names, RBAC info) substituídos por painéis de contexto operacional com KPIs, indicadores e totais.
+- Cada overview header tem um card de contexto operacional (ex.: taxa de actividade, bloqueadas, em inspecção).
+- Sempre que possível, apresentar dados agregados em `MetricTile` ou `ContextRow`.
+
+### AccessState API (unificada)
+- Usar `badgeLabel`, `title`, `description`, `variant` como props — **não usar `status` prop**.
+- Padrão loading: `<AccessState badgeLabel="..." title="A carregar ..." description="..." />`
+- Padrão erro: `<AccessState badgeLabel="..." title="... indisponivel" description="..." variant="error" />`
+- Padrão bloqueio: `<AccessState badgeLabel="..." title="... bloqueado" description="..." variant="blocked" />`
+
+### Form badges (autorização)
+- Em vez de `"governado"` / `"Sem permissao"`, usar `"autorizado"` / `"indisponivel"`.
+- Exemplo: `{canRegisterCargo ? "Registo autorizado" : "Registo indisponivel"}`
+
+### Tokens críticos (globals.css)
+- Sombras: `--shadow-panel`, `--shadow-overlay`, `--shadow-command`, `--shadow-sticky` mapeados no `@theme inline` (não apenas em `:root`).
+- Density: `--density-row-height: 3rem` definido em `:root` (tabelas usam `height: var(--density-row-height)` no `<th>`).
+- Tracking/duration: `--tracking-heading`, `--tracking-label`, `--duration-{fast,normal,slow}` mapeados no `@theme`.
+- Ver `packages/ui/src/styles/globals.css` para a fonte de verdade.
+
+### Error handling (server components)
+- **Sempre** usar try/catch em server components que fazem RPC calls. Nunca deixar o Next.js error boundary capturar.
+- Usar o componente `ErrorCard` de `@saptm/ui` para exibir erros gracefully.
+
+### Turbopack on Windows (known issue)
+- `next/font/google` fetch falha em ambientes com rede restrita (Windows).
+- Workaround: `--webpack` flag no dev script (ver `apps/web/package.json`).
+- Se o dev falhar, tentar com `pnpm dev:webpack`.
+
+### Design QA gate (obrigatório)
+- **Sempre** executar `@enterprise-design-qa` antes de entregar alterações de UI.
+- O Design QA é read-only (`edit: deny`) — auditoria final de consistência visual, tokens, acessibilidade.
+- Resultados vão para `audit/UX-UI-AUDIT.md` (quando aplicável).
+
+### Audit reports disponíveis
+- `audit/UX-UI-AUDIT.md` — auditoria completa de UX/UI (48 major findings)
+- `audit/CODE-AUDIT.md` — auditoria de código (padrões, duplicações, tokens)
+- `audit/DESIGN-SYSTEM.md` — auditoria do design system
+- `audit/ENTERPRISE-SCORECARD.md` — scorecard enterprise
+- `audit/GAP-ANALYSIS.md` — análise de gaps
 
 ## Multi-tenancy
 
@@ -126,3 +175,13 @@ All API communication goes through `@saptm/rpc` — no direct HTTP endpoints.
 - `apps/web` builds to `apps/web/.next/` (next build, standalone output)
 - Database package has ESM patch step after `build` (see `packages/database/package.json`)
 - Typecheck (`turbo run typecheck`) requires `^build` — run `pnpm build` first or `pnpm typecheck` will build deps
+
+## Enterprise Organization
+
+16 departamentos de desenvolvimento de produto definidos como subagentes em `.opencode/agents/enterprise-*.md`. Invoca qualquer departamento com `@enterprise-<nome>`. Usa `Tab` para alternar para o primary agent **Enterprise Executive** (orquestrador global em `~/.config/opencode/agents/enterprise-executive.md`).
+
+Departamentos: `product`, `ux-research`, `visual-design`, `learning-design`, `frontend`, `backend`, `database`, `architecture`, `security`, `devops`, `qa`, `performance`, `documentation`, `ai-engineering`, `design-qa`.
+
+Cada departamento carrega conhecimento profundo do skill correspondente em `~/.agents/skills/enterprise-*/SKILL.md`.
+
+**Design QA** é um quality gate read-only (`edit: deny`) — auditoria final obrigatória antes de entregar.

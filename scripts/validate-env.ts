@@ -16,6 +16,27 @@ const exampleEnv = parseEnvFile(readFileSync(envExamplePath, "utf8"));
 parseServerEnv(exampleEnv);
 parseClientEnv(exampleEnv);
 
+// Detect known placeholder values that should never reach production
+const PLACEHOLDER_PATTERNS = [/^replace-with-/i, /^re_xxxxx$/, /^CHANGE_ME$/i, /^your-/i];
+
+let hasPlaceholderWarning = false;
+
+for (const [key, value] of Object.entries(exampleEnv)) {
+  const isPlaceholder = PLACEHOLDER_PATTERNS.some((p) => p.test(value));
+  if (isPlaceholder) {
+    console.warn(`  ⚠️  ${key} contains placeholder value: "${value}"`);
+    console.warn(`     Replace with a real value before deploying to production.`);
+    hasPlaceholderWarning = true;
+  }
+}
+
+if (hasPlaceholderWarning) {
+  console.log("");
+  console.log(
+    "ℹ️  Placeholders are acceptable for local development, but must be replaced for CI/prod.",
+  );
+}
+
 console.log("SAPTM environment validation passed: .env.example matches runtime schemas.");
 
 function parseEnvFile(source: string): Record<string, string> {

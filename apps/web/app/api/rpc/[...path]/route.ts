@@ -22,9 +22,7 @@ async function proxy(request: NextRequest) {
     headers["content-type"] = contentType;
   }
 
-  const body = request.method === "GET" || request.method === "HEAD"
-    ? null
-    : await request.text();
+  const body = request.method === "GET" || request.method === "HEAD" ? null : await request.text();
 
   let response: Response;
   try {
@@ -43,6 +41,11 @@ async function proxy(request: NextRequest) {
   const responseHeaders: Record<string, string> = {};
   responseHeaders["content-type"] = response.headers.get("content-type") ?? "application/json";
   responseHeaders["x-csrf-token"] = response.headers.get("x-csrf-token") ?? "";
+
+  const setCookie = response.headers.get("set-cookie");
+  if (setCookie) {
+    responseHeaders["set-cookie"] = setCookie;
+  }
 
   return new NextResponse(response.body, {
     status: response.status,

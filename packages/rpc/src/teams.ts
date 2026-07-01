@@ -1,5 +1,5 @@
 import { z } from "zod";
-
+import { sharedAuditSchema, sharedOutboxSchema } from "./foundation.js";
 import { createRpcOperationMetadata } from "./metadata.js";
 
 export const teamRoles = ["admin", "member", "viewer"] as const;
@@ -91,7 +91,7 @@ export const teamSummarySchema = z.object({
   name: z.string(),
   description: z.string().nullable(),
   slug: z.string(),
-  orgId: z.string(),
+  organizationId: z.string(),
   memberCount: z.number().int().nonnegative(),
   createdAt: z.string(),
   updatedAt: z.string(),
@@ -108,6 +108,8 @@ export const createTeamOutputSchema = z.object({
     key: z.string(),
     replayed: z.boolean(),
   }),
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export const updateTeamOutputSchema = z.object({
@@ -117,6 +119,8 @@ export const updateTeamOutputSchema = z.object({
     key: z.string(),
     replayed: z.boolean(),
   }),
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export const deleteTeamOutputSchema = z.object({
@@ -125,6 +129,8 @@ export const deleteTeamOutputSchema = z.object({
     key: z.string(),
     replayed: z.boolean(),
   }),
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export const listTeamsOutputSchema = z.object({
@@ -147,6 +153,8 @@ export const addTeamMemberOutputSchema = z.object({
     key: z.string(),
     replayed: z.boolean(),
   }),
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export const removeTeamMemberOutputSchema = z.object({
@@ -156,6 +164,8 @@ export const removeTeamMemberOutputSchema = z.object({
     key: z.string(),
     replayed: z.boolean(),
   }),
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export const updateTeamMemberRoleOutputSchema = z.object({
@@ -165,6 +175,8 @@ export const updateTeamMemberRoleOutputSchema = z.object({
     key: z.string(),
     replayed: z.boolean(),
   }),
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export type CreateTeamInput = z.infer<typeof createTeamInputSchema>;
@@ -197,6 +209,7 @@ export const createTeamMetadata = createRpcOperationMetadata({
   audit: "sensitive",
   idempotency: "required",
   criticality: "medium",
+  signals: ["log", "metric", "span"],
 });
 
 export const updateTeamMetadata = createRpcOperationMetadata({
@@ -209,6 +222,7 @@ export const updateTeamMetadata = createRpcOperationMetadata({
   audit: "sensitive",
   idempotency: "required",
   criticality: "medium",
+  signals: ["log", "metric", "span"],
 });
 
 export const deleteTeamMetadata = createRpcOperationMetadata({
@@ -221,6 +235,7 @@ export const deleteTeamMetadata = createRpcOperationMetadata({
   audit: "sensitive",
   idempotency: "required",
   criticality: "medium",
+  signals: ["log", "metric", "span"],
 });
 
 export const listTeamsMetadata = createRpcOperationMetadata({
@@ -233,6 +248,7 @@ export const listTeamsMetadata = createRpcOperationMetadata({
   audit: "standard",
   idempotency: "none",
   criticality: "low",
+  signals: ["log", "metric", "span"],
 });
 
 export const getTeamMetadata = createRpcOperationMetadata({
@@ -245,6 +261,7 @@ export const getTeamMetadata = createRpcOperationMetadata({
   audit: "standard",
   idempotency: "none",
   criticality: "low",
+  signals: ["log", "metric", "span"],
 });
 
 export const addTeamMemberMetadata = createRpcOperationMetadata({
@@ -257,6 +274,7 @@ export const addTeamMemberMetadata = createRpcOperationMetadata({
   audit: "sensitive",
   idempotency: "required",
   criticality: "medium",
+  signals: ["log", "metric", "span"],
 });
 
 export const removeTeamMemberMetadata = createRpcOperationMetadata({
@@ -269,6 +287,7 @@ export const removeTeamMemberMetadata = createRpcOperationMetadata({
   audit: "sensitive",
   idempotency: "required",
   criticality: "medium",
+  signals: ["log", "metric", "span"],
 });
 
 export const updateTeamMemberRoleMetadata = createRpcOperationMetadata({
@@ -281,4 +300,5 @@ export const updateTeamMemberRoleMetadata = createRpcOperationMetadata({
   audit: "sensitive",
   idempotency: "required",
   criticality: "medium",
+  signals: ["log", "metric", "span"],
 });

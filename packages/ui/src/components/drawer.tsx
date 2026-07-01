@@ -93,7 +93,7 @@ function DrawerContent({
             className="absolute top-4 right-4 rounded-xs opacity-70 outline-none transition-opacity duration-[var(--motion-duration-fast)] hover:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4"
           >
             <XIcon aria-hidden="true" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">Fechar</span>
           </DrawerPrimitive.Close>
         ) : null}
       </DrawerPrimitive.Content>

@@ -42,15 +42,15 @@ export function SessionRevocationForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={hasOtherSessions ? "warning" : "success"}>
-            {hasOtherSessions ? `${otherSessions} outras sessoes` : "Sessao unica"}
+            {hasOtherSessions ? `${otherSessions} outras sessões` : "Sessão única"}
           </Badge>
           <Badge variant="outline">Better Auth Session</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Revogacao de sessoes</CardTitle>
+          <CardTitle>Revogação de sessões</CardTitle>
           <CardDescription>
-            Remove todas as sessoes do utilizador exceto a sessao atual e grava evento de seguranca
-            auditavel.
+            Remove todas as sessões do utilizador exceto a sessão atual e grava evento de segurança
+            auditável.
           </CardDescription>
         </div>
       </CardHeader>

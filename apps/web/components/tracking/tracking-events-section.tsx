@@ -5,6 +5,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  ContextRow,
   Table,
   TableBody,
   TableCell,
@@ -68,25 +69,22 @@ export function TrackingEventsSection({ analytics }: TrackingEventsSectionProps)
             Estados extraidos dos eventos de excecao e release para suporte a auditoria.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-3">
+        <CardContent className="flex flex-col gap-1">
           {analytics.workflowStateCounts.map((item) => (
-            <div key={item.state} className="flex justify-between text-sm">
-              <span className="text-muted-foreground">
-                {workflowStateLabels[item.state as keyof typeof workflowStateLabels]}
-              </span>
-              <span>{item.count.toString()}</span>
-            </div>
+            <ContextRow
+              key={item.state}
+              label={workflowStateLabels[item.state as keyof typeof workflowStateLabels]}
+              value={item.count.toString()}
+            />
           ))}
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Sem ETA ativo</span>
-            <span>{analytics.slaRisk.unscheduledActiveShipments.toString()}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Janela</span>
-            <span>
-              {analytics.window.startedAt} -&gt; {analytics.window.endedAt}
-            </span>
-          </div>
+          <ContextRow
+            label="Sem ETA ativo"
+            value={analytics.slaRisk.unscheduledActiveShipments.toString()}
+          />
+          <ContextRow
+            label="Janela"
+            value={`${analytics.window.startedAt} → ${analytics.window.endedAt}`}
+          />
         </CardContent>
       </Card>
     </section>

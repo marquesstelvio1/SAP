@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -28,7 +28,7 @@ const taskFiles = [];
 if (taskIdsArg) {
   const taskIds = taskIdsArg.split(",");
   for (const tid of taskIds) {
-    const glob = join(tasksDir, "**", `${tid}.md`);
+    const _glob = join(tasksDir, "**", `${tid}.md`);
     // use sync readdir approach
   }
 } else if (existsSync(tasksDir)) {

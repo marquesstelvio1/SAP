@@ -7,7 +7,7 @@ export type TrackingEventRecordFormState = {
 
 export const initialTrackingEventRecordFormState: TrackingEventRecordFormState = {
   status: "idle",
-  message: "Preencha o evento operacional para gravar uma movimentacao auditavel.",
+  message: "Preencha o evento para gravar a movimentacao operacional.",
 };
 
 export type TrackingExceptionManageFormState = {
@@ -23,7 +23,7 @@ export type TrackingExceptionManageFormState = {
 
 export const initialTrackingExceptionManageFormState: TrackingExceptionManageFormState = {
   status: "idle",
-  message: "Preencha a excecao operacional para acionar audit, outbox e plano de recuperacao.",
+  message: "Preencha a excecao operacional para acionar notificacao e plano de recuperacao.",
 };
 
 export type TrackingExceptionResolveFormState = {

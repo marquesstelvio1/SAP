@@ -1,14 +1,33 @@
 import { Injectable } from "@nestjs/common";
 import type { DomainEvent } from "@saptm/database";
+import { createConsoleLogger, createTraceContext } from "@saptm/observability";
 import { filter, Subject, type Subscription } from "rxjs";
 
 export type { DomainEvent };
 
 export type EventHandler<T extends DomainEvent = DomainEvent> = (event: T) => Promise<void>;
 
+function createEventBusLogger() {
+  return createConsoleLogger({
+    serviceName: "@saptm/api",
+    environment:
+      process.env.NODE_ENV === "production"
+        ? "production"
+        : process.env.NODE_ENV === "test"
+          ? "test"
+          : "development",
+    defaultContext: createTraceContext({
+      operationName: "event-bus",
+      sourceSystem: "apps/api",
+    }),
+    minimumLevel: "info",
+  });
+}
+
 @Injectable()
 export class EventBusService {
   private readonly subject = new Subject<DomainEvent>();
+  private readonly logger = createEventBusLogger();
 
   emit(event: DomainEvent): void {
     this.subject.next(event);
@@ -18,17 +37,17 @@ export class EventBusService {
     return this.subject.pipe(filter((e): e is T => e.eventType === eventType)).subscribe({
       next: (event) => {
         handler(event).catch((error: unknown) => {
-          console.error(
-            `[EventBus] Handler error for event ${eventType}:`,
-            error instanceof Error ? error.message : String(error),
-          );
+          this.logger.error(`EventBus handler error for event ${eventType}.`, {
+            attributes: { "event.type": eventType },
+            error,
+          });
         });
       },
       error: (error: unknown) => {
-        console.error(
-          `[EventBus] Stream error for event ${eventType}:`,
-          error instanceof Error ? error.message : String(error),
-        );
+        this.logger.error(`EventBus stream error for event ${eventType}.`, {
+          attributes: { "event.type": eventType },
+          error,
+        });
       },
     });
   }
@@ -37,17 +56,14 @@ export class EventBusService {
     return this.subject.subscribe({
       next: (event) => {
         handler(event).catch((error: unknown) => {
-          console.error(
-            `[EventBus] Global handler error for event ${event.eventType}:`,
-            error instanceof Error ? error.message : String(error),
-          );
+          this.logger.error(`EventBus global handler error for event ${event.eventType}.`, {
+            attributes: { "event.type": event.eventType },
+            error,
+          });
         });
       },
       error: (error: unknown) => {
-        console.error(
-          "[EventBus] Global stream error:",
-          error instanceof Error ? error.message : String(error),
-        );
+        this.logger.error("EventBus global stream error.", { error });
       },
     });
   }

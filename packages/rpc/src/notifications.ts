@@ -14,8 +14,11 @@ export const notificationInboxInputSchema = z
     limit: 25,
   });
 
+const notificationIdempotencyKeySchema = z.string().trim().min(12).max(128);
+
 export const notificationMarkReadInputSchema = z.object({
   notificationId: z.string().min(1),
+  idempotencyKey: notificationIdempotencyKeySchema,
 });
 
 export const notificationSummarySchema = z.object({
@@ -54,10 +57,19 @@ export const notificationInboxOutputSchema = z.object({
 export const notificationMarkReadOutputSchema = z.object({
   organizationId: z.string(),
   notification: notificationSummarySchema,
+  idempotency: z.object({
+    key: z.string(),
+    replayed: z.boolean(),
+  }),
   audit: z.object({
     action: z.literal("notification.marked_read"),
     subjectType: z.literal("notification"),
     subjectId: z.string(),
+  }),
+  outbox: z.object({
+    eventType: z.literal("notification.marked_read"),
+    aggregateType: z.literal("notification"),
+    aggregateId: z.string(),
   }),
 });
 
@@ -87,5 +99,6 @@ export const notificationMarkReadMetadata = createRpcOperationMetadata({
   organizationRequired: true,
   audit: "standard",
   criticality: "high",
+  idempotency: "required",
   signals: ["log", "metric", "span"],
 });

@@ -66,6 +66,9 @@ export function createSettingsRpcRouter(deps: CreateSettingsRpcRouterInput) {
           return deps.settingsService.updateSettings({
             ...input,
             organizationId,
+            actorId: authContext.actorId,
+            actorType: authContext.actorType,
+            correlationId: authContext.correlationId,
           });
         }),
     },

@@ -61,10 +61,30 @@ export interface CargoRepository {
     organizationId: string,
     cargoId: string,
   ): Promise<{ status: string; count: number }[]>;
+  getComplianceEvidenceOverview(
+    organizationId: string,
+    limit: number,
+    offset: number,
+  ): Promise<{
+    statusGroups: { status: string; count: number }[];
+    typeGroups: { evidenceType: string; count: number }[];
+    expiringCount: number;
+    expiredCount: number;
+    totalCount: number;
+    recentEvidence: CargoComplianceEvidenceRecord[];
+  }>;
   findOpenDeliveryExceptionForCargo(
     organizationId: string,
     cargoId: string,
   ): Promise<CargoDeliveryExceptionRecord | null>;
+  countDeliveryExceptionsByStatus(
+    organizationId: string,
+  ): Promise<{ status: string; count: number }[]>;
+  findRecentDeliveryExceptions(
+    organizationId: string,
+    limit: number,
+    offset: number,
+  ): Promise<CargoDeliveryExceptionRecord[]>;
   findOperationalHandoffByRecordIdempotencyKey(
     organizationId: string,
     key: string,

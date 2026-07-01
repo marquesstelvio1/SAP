@@ -50,6 +50,8 @@ export type TransportOrderScheduleRevisionMinAggregateOutputType = {
   rescheduledAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TransportOrderScheduleRevisionMaxAggregateOutputType = {
@@ -78,6 +80,8 @@ export type TransportOrderScheduleRevisionMaxAggregateOutputType = {
   rescheduledAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TransportOrderScheduleRevisionCountAggregateOutputType = {
@@ -106,6 +110,8 @@ export type TransportOrderScheduleRevisionCountAggregateOutputType = {
   rescheduledAt: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -136,6 +142,8 @@ export type TransportOrderScheduleRevisionMinAggregateInputType = {
   rescheduledAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TransportOrderScheduleRevisionMaxAggregateInputType = {
@@ -164,6 +172,8 @@ export type TransportOrderScheduleRevisionMaxAggregateInputType = {
   rescheduledAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TransportOrderScheduleRevisionCountAggregateInputType = {
@@ -192,6 +202,8 @@ export type TransportOrderScheduleRevisionCountAggregateInputType = {
   rescheduledAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -293,6 +305,8 @@ export type TransportOrderScheduleRevisionGroupByOutputType = {
   rescheduledAt: Date
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: TransportOrderScheduleRevisionCountAggregateOutputType | null
   _min: TransportOrderScheduleRevisionMinAggregateOutputType | null
   _max: TransportOrderScheduleRevisionMaxAggregateOutputType | null
@@ -342,6 +356,8 @@ export type TransportOrderScheduleRevisionWhereInput = {
   rescheduledAt?: Prisma.DateTimeFilter<"TransportOrderScheduleRevision"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"TransportOrderScheduleRevision"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TransportOrderScheduleRevision"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TransportOrderScheduleRevision"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TransportOrderScheduleRevision"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   transportOrder?: Prisma.XOR<Prisma.TransportOrderScalarRelationFilter, Prisma.TransportOrderWhereInput>
 }
@@ -372,6 +388,8 @@ export type TransportOrderScheduleRevisionOrderByWithRelationInput = {
   rescheduledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   transportOrder?: Prisma.TransportOrderOrderByWithRelationInput
 }
@@ -407,6 +425,8 @@ export type TransportOrderScheduleRevisionWhereUniqueInput = Prisma.AtLeast<{
   rescheduledAt?: Prisma.DateTimeFilter<"TransportOrderScheduleRevision"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"TransportOrderScheduleRevision"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TransportOrderScheduleRevision"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TransportOrderScheduleRevision"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TransportOrderScheduleRevision"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   transportOrder?: Prisma.XOR<Prisma.TransportOrderScalarRelationFilter, Prisma.TransportOrderWhereInput>
 }, "id" | "organizationId_revisionReference" | "organizationId_idempotencyKey">
@@ -437,6 +457,8 @@ export type TransportOrderScheduleRevisionOrderByWithAggregationInput = {
   rescheduledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TransportOrderScheduleRevisionCountOrderByAggregateInput
   _max?: Prisma.TransportOrderScheduleRevisionMaxOrderByAggregateInput
   _min?: Prisma.TransportOrderScheduleRevisionMinOrderByAggregateInput
@@ -471,6 +493,8 @@ export type TransportOrderScheduleRevisionScalarWhereWithAggregatesInput = {
   rescheduledAt?: Prisma.DateTimeWithAggregatesFilter<"TransportOrderScheduleRevision"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TransportOrderScheduleRevision"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TransportOrderScheduleRevision"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"TransportOrderScheduleRevision"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"TransportOrderScheduleRevision"> | string | null
 }
 
 export type TransportOrderScheduleRevisionCreateInput = {
@@ -497,6 +521,8 @@ export type TransportOrderScheduleRevisionCreateInput = {
   rescheduledAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTransportOrderScheduleRevisionsInput
   transportOrder: Prisma.TransportOrderCreateNestedOneWithoutScheduleRevisionsInput
 }
@@ -527,6 +553,8 @@ export type TransportOrderScheduleRevisionUncheckedCreateInput = {
   rescheduledAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderScheduleRevisionUpdateInput = {
@@ -553,6 +581,8 @@ export type TransportOrderScheduleRevisionUpdateInput = {
   rescheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTransportOrderScheduleRevisionsNestedInput
   transportOrder?: Prisma.TransportOrderUpdateOneRequiredWithoutScheduleRevisionsNestedInput
 }
@@ -583,6 +613,8 @@ export type TransportOrderScheduleRevisionUncheckedUpdateInput = {
   rescheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderScheduleRevisionCreateManyInput = {
@@ -611,6 +643,8 @@ export type TransportOrderScheduleRevisionCreateManyInput = {
   rescheduledAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderScheduleRevisionUpdateManyMutationInput = {
@@ -637,6 +671,8 @@ export type TransportOrderScheduleRevisionUpdateManyMutationInput = {
   rescheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderScheduleRevisionUncheckedUpdateManyInput = {
@@ -665,6 +701,8 @@ export type TransportOrderScheduleRevisionUncheckedUpdateManyInput = {
   rescheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderScheduleRevisionListRelationFilter = {
@@ -713,6 +751,8 @@ export type TransportOrderScheduleRevisionCountOrderByAggregateInput = {
   rescheduledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TransportOrderScheduleRevisionMaxOrderByAggregateInput = {
@@ -741,6 +781,8 @@ export type TransportOrderScheduleRevisionMaxOrderByAggregateInput = {
   rescheduledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TransportOrderScheduleRevisionMinOrderByAggregateInput = {
@@ -769,6 +811,8 @@ export type TransportOrderScheduleRevisionMinOrderByAggregateInput = {
   rescheduledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TransportOrderScheduleRevisionCreateNestedManyWithoutOrganizationInput = {
@@ -879,6 +923,8 @@ export type TransportOrderScheduleRevisionCreateWithoutOrganizationInput = {
   rescheduledAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   transportOrder: Prisma.TransportOrderCreateNestedOneWithoutScheduleRevisionsInput
 }
 
@@ -907,6 +953,8 @@ export type TransportOrderScheduleRevisionUncheckedCreateWithoutOrganizationInpu
   rescheduledAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderScheduleRevisionCreateOrConnectWithoutOrganizationInput = {
@@ -964,6 +1012,8 @@ export type TransportOrderScheduleRevisionScalarWhereInput = {
   rescheduledAt?: Prisma.DateTimeFilter<"TransportOrderScheduleRevision"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"TransportOrderScheduleRevision"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TransportOrderScheduleRevision"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TransportOrderScheduleRevision"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TransportOrderScheduleRevision"> | string | null
 }
 
 export type TransportOrderScheduleRevisionCreateWithoutTransportOrderInput = {
@@ -990,6 +1040,8 @@ export type TransportOrderScheduleRevisionCreateWithoutTransportOrderInput = {
   rescheduledAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTransportOrderScheduleRevisionsInput
 }
 
@@ -1018,6 +1070,8 @@ export type TransportOrderScheduleRevisionUncheckedCreateWithoutTransportOrderIn
   rescheduledAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderScheduleRevisionCreateOrConnectWithoutTransportOrderInput = {
@@ -1071,6 +1125,8 @@ export type TransportOrderScheduleRevisionCreateManyOrganizationInput = {
   rescheduledAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderScheduleRevisionUpdateWithoutOrganizationInput = {
@@ -1097,6 +1153,8 @@ export type TransportOrderScheduleRevisionUpdateWithoutOrganizationInput = {
   rescheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transportOrder?: Prisma.TransportOrderUpdateOneRequiredWithoutScheduleRevisionsNestedInput
 }
 
@@ -1125,6 +1183,8 @@ export type TransportOrderScheduleRevisionUncheckedUpdateWithoutOrganizationInpu
   rescheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderScheduleRevisionUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1152,6 +1212,8 @@ export type TransportOrderScheduleRevisionUncheckedUpdateManyWithoutOrganization
   rescheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderScheduleRevisionCreateManyTransportOrderInput = {
@@ -1179,6 +1241,8 @@ export type TransportOrderScheduleRevisionCreateManyTransportOrderInput = {
   rescheduledAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderScheduleRevisionUpdateWithoutTransportOrderInput = {
@@ -1205,6 +1269,8 @@ export type TransportOrderScheduleRevisionUpdateWithoutTransportOrderInput = {
   rescheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTransportOrderScheduleRevisionsNestedInput
 }
 
@@ -1233,6 +1299,8 @@ export type TransportOrderScheduleRevisionUncheckedUpdateWithoutTransportOrderIn
   rescheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderScheduleRevisionUncheckedUpdateManyWithoutTransportOrderInput = {
@@ -1260,6 +1328,8 @@ export type TransportOrderScheduleRevisionUncheckedUpdateManyWithoutTransportOrd
   rescheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1290,6 +1360,8 @@ export type TransportOrderScheduleRevisionSelect<ExtArgs extends runtime.Types.E
   rescheduledAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   transportOrder?: boolean | Prisma.TransportOrderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transportOrderScheduleRevision"]>
@@ -1320,6 +1392,8 @@ export type TransportOrderScheduleRevisionSelectCreateManyAndReturn<ExtArgs exte
   rescheduledAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   transportOrder?: boolean | Prisma.TransportOrderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transportOrderScheduleRevision"]>
@@ -1350,6 +1424,8 @@ export type TransportOrderScheduleRevisionSelectUpdateManyAndReturn<ExtArgs exte
   rescheduledAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   transportOrder?: boolean | Prisma.TransportOrderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transportOrderScheduleRevision"]>
@@ -1380,9 +1456,11 @@ export type TransportOrderScheduleRevisionSelectScalar = {
   rescheduledAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type TransportOrderScheduleRevisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "orderId" | "revisionReference" | "previousMode" | "newMode" | "previousCarrierName" | "newCarrierName" | "previousRouteSummary" | "newRouteSummary" | "previousOriginName" | "newOriginName" | "previousDestinationName" | "newDestinationName" | "previousPlannedDepartureAt" | "newPlannedDepartureAt" | "previousPlannedArrivalAt" | "newPlannedArrivalAt" | "rescheduledByName" | "rescheduleReason" | "sourceSystem" | "idempotencyKey" | "rescheduledAt" | "createdAt" | "updatedAt", ExtArgs["result"]["transportOrderScheduleRevision"]>
+export type TransportOrderScheduleRevisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "orderId" | "revisionReference" | "previousMode" | "newMode" | "previousCarrierName" | "newCarrierName" | "previousRouteSummary" | "newRouteSummary" | "previousOriginName" | "newOriginName" | "previousDestinationName" | "newDestinationName" | "previousPlannedDepartureAt" | "newPlannedDepartureAt" | "previousPlannedArrivalAt" | "newPlannedArrivalAt" | "rescheduledByName" | "rescheduleReason" | "sourceSystem" | "idempotencyKey" | "rescheduledAt" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["transportOrderScheduleRevision"]>
 export type TransportOrderScheduleRevisionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   transportOrder?: boolean | Prisma.TransportOrderDefaultArgs<ExtArgs>
@@ -1428,6 +1506,8 @@ export type $TransportOrderScheduleRevisionPayload<ExtArgs extends runtime.Types
     rescheduledAt: Date
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["transportOrderScheduleRevision"]>
   composites: {}
 }
@@ -1878,6 +1958,8 @@ export interface TransportOrderScheduleRevisionFieldRefs {
   readonly rescheduledAt: Prisma.FieldRef<"TransportOrderScheduleRevision", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"TransportOrderScheduleRevision", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TransportOrderScheduleRevision", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"TransportOrderScheduleRevision", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"TransportOrderScheduleRevision", 'String'>
 }
     
 

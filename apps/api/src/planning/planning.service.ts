@@ -16,6 +16,7 @@ import type {
   TransportOrderRescheduleInput,
   TransportOrderRescheduleOutput,
 } from "@saptm/rpc";
+import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createTransportOrderCancelAuditAfter,
   createTransportOrderCancelAuditBefore,
@@ -44,7 +45,6 @@ import {
   normalizePlanningCode,
 } from "./domain/planning.dto.js";
 import { PLANNING_REPOSITORY, type PlanningRepository } from "./domain/planning.repository.js";
-import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 
 export type GetPlanningOverviewInput = {
   organizationId: string;

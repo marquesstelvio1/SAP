@@ -18,6 +18,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TariffQuoteCalculateFormState } from "../../app/(platform)/app/tariffs/form-state";
 
 export type TariffQuoteCalculateFormProps = {
@@ -35,12 +36,12 @@ export function TariffQuoteCalculateForm({
   action,
 }: TariffQuoteCalculateFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("tariff_quote"));
   const isDisabled = isPending || !canCalculateQuotes;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("tariff_quote"));
     }
   }, [state.status]);
 
@@ -49,15 +50,15 @@ export function TariffQuoteCalculateForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canCalculateQuotes ? "success" : "warning"}>
-            {canCalculateQuotes ? "Cotacao governada" : "Sem permissao"}
+            {canCalculateQuotes ? "Cotação autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">tariff.quote.calculate</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Calcular cotacao</CardTitle>
+          <CardTitle>Calcular cotação</CardTitle>
           <CardDescription className="leading-6">
-            Calcula tarifa para carga elegivel usando rate card ativo, regras aplicaveis e metricas
-            obrigatorias.
+            Calcula tarifa para carga elegível usando rate card ativo, regras aplicáveis e métricas
+            obrigatórias.
           </CardDescription>
         </div>
       </CardHeader>
@@ -77,7 +78,7 @@ export function TariffQuoteCalculateForm({
             </div>
             <div className="grid gap-4 md:grid-cols-4">
               <Field data-disabled={!canCalculateQuotes}>
-                <FieldLabel htmlFor="quoteReference">Referencia</FieldLabel>
+                <FieldLabel htmlFor="quoteReference">Referência</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="quoteReference"
@@ -87,7 +88,7 @@ export function TariffQuoteCalculateForm({
                 />
               </Field>
               <Field data-disabled={!canCalculateQuotes}>
-                <FieldLabel htmlFor="distanceKm">Distancia km</FieldLabel>
+                <FieldLabel htmlFor="distanceKm">Distância km</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="distanceKm"
@@ -162,22 +163,15 @@ export function TariffQuoteCalculateForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canCalculateQuotes ? "Nao aprova automaticamente." : "Requer tariff.quote.calculate."}
+            {canCalculateQuotes ? "Nao aprova automaticamente." : "Requer calculo de cotacao."}
           </span>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A calcular..." : "Calcular cotacao"}
+            {isPending ? "A calcular..." : "Calcular cotação"}
           </Button>
         </CardFooter>
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `tariff_quote_${randomValue}`;
 }
 
 function formatOptionalAmount(value: number | undefined): string {

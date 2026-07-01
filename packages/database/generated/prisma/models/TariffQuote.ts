@@ -54,6 +54,8 @@ export type TariffQuoteMinAggregateOutputType = {
   approveIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TariffQuoteMaxAggregateOutputType = {
@@ -76,6 +78,8 @@ export type TariffQuoteMaxAggregateOutputType = {
   approveIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TariffQuoteCountAggregateOutputType = {
@@ -99,6 +103,8 @@ export type TariffQuoteCountAggregateOutputType = {
   approveIdempotencyKey: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -131,6 +137,8 @@ export type TariffQuoteMinAggregateInputType = {
   approveIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TariffQuoteMaxAggregateInputType = {
@@ -153,6 +161,8 @@ export type TariffQuoteMaxAggregateInputType = {
   approveIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TariffQuoteCountAggregateInputType = {
@@ -176,6 +186,8 @@ export type TariffQuoteCountAggregateInputType = {
   approveIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -286,6 +298,8 @@ export type TariffQuoteGroupByOutputType = {
   approveIdempotencyKey: string | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: TariffQuoteCountAggregateOutputType | null
   _avg: TariffQuoteAvgAggregateOutputType | null
   _sum: TariffQuoteSumAggregateOutputType | null
@@ -332,6 +346,8 @@ export type TariffQuoteWhereInput = {
   approveIdempotencyKey?: Prisma.StringNullableFilter<"TariffQuote"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TariffQuote"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TariffQuote"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TariffQuote"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TariffQuote"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
   rateCard?: Prisma.XOR<Prisma.TariffRateCardScalarRelationFilter, Prisma.TariffRateCardWhereInput>
@@ -358,6 +374,8 @@ export type TariffQuoteOrderByWithRelationInput = {
   approveIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   cargo?: Prisma.CargoOrderByWithRelationInput
   rateCard?: Prisma.TariffRateCardOrderByWithRelationInput
@@ -390,6 +408,8 @@ export type TariffQuoteWhereUniqueInput = Prisma.AtLeast<{
   approveIdempotencyKey?: Prisma.StringNullableFilter<"TariffQuote"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TariffQuote"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TariffQuote"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TariffQuote"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TariffQuote"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
   rateCard?: Prisma.XOR<Prisma.TariffRateCardScalarRelationFilter, Prisma.TariffRateCardWhereInput>
@@ -416,6 +436,8 @@ export type TariffQuoteOrderByWithAggregationInput = {
   approveIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TariffQuoteCountOrderByAggregateInput
   _avg?: Prisma.TariffQuoteAvgOrderByAggregateInput
   _max?: Prisma.TariffQuoteMaxOrderByAggregateInput
@@ -447,6 +469,8 @@ export type TariffQuoteScalarWhereWithAggregatesInput = {
   approveIdempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"TariffQuote"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TariffQuote"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TariffQuote"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"TariffQuote"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"TariffQuote"> | string | null
 }
 
 export type TariffQuoteCreateInput = {
@@ -467,6 +491,8 @@ export type TariffQuoteCreateInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTariffQuotesInput
   cargo: Prisma.CargoCreateNestedOneWithoutTariffQuotesInput
   rateCard: Prisma.TariffRateCardCreateNestedOneWithoutQuotesInput
@@ -493,6 +519,8 @@ export type TariffQuoteUncheckedCreateInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TariffQuoteUpdateInput = {
@@ -513,6 +541,8 @@ export type TariffQuoteUpdateInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTariffQuotesNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutTariffQuotesNestedInput
   rateCard?: Prisma.TariffRateCardUpdateOneRequiredWithoutQuotesNestedInput
@@ -539,6 +569,8 @@ export type TariffQuoteUncheckedUpdateInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TariffQuoteCreateManyInput = {
@@ -562,6 +594,8 @@ export type TariffQuoteCreateManyInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TariffQuoteUpdateManyMutationInput = {
@@ -582,6 +616,8 @@ export type TariffQuoteUpdateManyMutationInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TariffQuoteUncheckedUpdateManyInput = {
@@ -605,6 +641,8 @@ export type TariffQuoteUncheckedUpdateManyInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TariffQuoteListRelationFilter = {
@@ -653,6 +691,8 @@ export type TariffQuoteCountOrderByAggregateInput = {
   approveIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TariffQuoteAvgOrderByAggregateInput = {
@@ -679,6 +719,8 @@ export type TariffQuoteMaxOrderByAggregateInput = {
   approveIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TariffQuoteMinOrderByAggregateInput = {
@@ -701,6 +743,8 @@ export type TariffQuoteMinOrderByAggregateInput = {
   approveIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TariffQuoteSumOrderByAggregateInput = {
@@ -855,6 +899,8 @@ export type TariffQuoteCreateWithoutOrganizationInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   cargo: Prisma.CargoCreateNestedOneWithoutTariffQuotesInput
   rateCard: Prisma.TariffRateCardCreateNestedOneWithoutQuotesInput
 }
@@ -879,6 +925,8 @@ export type TariffQuoteUncheckedCreateWithoutOrganizationInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TariffQuoteCreateOrConnectWithoutOrganizationInput = {
@@ -931,6 +979,8 @@ export type TariffQuoteScalarWhereInput = {
   approveIdempotencyKey?: Prisma.StringNullableFilter<"TariffQuote"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TariffQuote"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TariffQuote"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TariffQuote"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TariffQuote"> | string | null
 }
 
 export type TariffQuoteCreateWithoutCargoInput = {
@@ -951,6 +1001,8 @@ export type TariffQuoteCreateWithoutCargoInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTariffQuotesInput
   rateCard: Prisma.TariffRateCardCreateNestedOneWithoutQuotesInput
 }
@@ -975,6 +1027,8 @@ export type TariffQuoteUncheckedCreateWithoutCargoInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TariffQuoteCreateOrConnectWithoutCargoInput = {
@@ -1021,6 +1075,8 @@ export type TariffQuoteCreateWithoutRateCardInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTariffQuotesInput
   cargo: Prisma.CargoCreateNestedOneWithoutTariffQuotesInput
 }
@@ -1045,6 +1101,8 @@ export type TariffQuoteUncheckedCreateWithoutRateCardInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TariffQuoteCreateOrConnectWithoutRateCardInput = {
@@ -1093,6 +1151,8 @@ export type TariffQuoteCreateManyOrganizationInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TariffQuoteUpdateWithoutOrganizationInput = {
@@ -1113,6 +1173,8 @@ export type TariffQuoteUpdateWithoutOrganizationInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargo?: Prisma.CargoUpdateOneRequiredWithoutTariffQuotesNestedInput
   rateCard?: Prisma.TariffRateCardUpdateOneRequiredWithoutQuotesNestedInput
 }
@@ -1137,6 +1199,8 @@ export type TariffQuoteUncheckedUpdateWithoutOrganizationInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TariffQuoteUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1159,6 +1223,8 @@ export type TariffQuoteUncheckedUpdateManyWithoutOrganizationInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TariffQuoteCreateManyCargoInput = {
@@ -1181,6 +1247,8 @@ export type TariffQuoteCreateManyCargoInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TariffQuoteUpdateWithoutCargoInput = {
@@ -1201,6 +1269,8 @@ export type TariffQuoteUpdateWithoutCargoInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTariffQuotesNestedInput
   rateCard?: Prisma.TariffRateCardUpdateOneRequiredWithoutQuotesNestedInput
 }
@@ -1225,6 +1295,8 @@ export type TariffQuoteUncheckedUpdateWithoutCargoInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TariffQuoteUncheckedUpdateManyWithoutCargoInput = {
@@ -1247,6 +1319,8 @@ export type TariffQuoteUncheckedUpdateManyWithoutCargoInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TariffQuoteCreateManyRateCardInput = {
@@ -1269,6 +1343,8 @@ export type TariffQuoteCreateManyRateCardInput = {
   approveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TariffQuoteUpdateWithoutRateCardInput = {
@@ -1289,6 +1365,8 @@ export type TariffQuoteUpdateWithoutRateCardInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTariffQuotesNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutTariffQuotesNestedInput
 }
@@ -1313,6 +1391,8 @@ export type TariffQuoteUncheckedUpdateWithoutRateCardInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TariffQuoteUncheckedUpdateManyWithoutRateCardInput = {
@@ -1335,6 +1415,8 @@ export type TariffQuoteUncheckedUpdateManyWithoutRateCardInput = {
   approveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1360,6 +1442,8 @@ export type TariffQuoteSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   approveIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   rateCard?: boolean | Prisma.TariffRateCardDefaultArgs<ExtArgs>
@@ -1386,6 +1470,8 @@ export type TariffQuoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   approveIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   rateCard?: boolean | Prisma.TariffRateCardDefaultArgs<ExtArgs>
@@ -1412,6 +1498,8 @@ export type TariffQuoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   approveIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   rateCard?: boolean | Prisma.TariffRateCardDefaultArgs<ExtArgs>
@@ -1438,9 +1526,11 @@ export type TariffQuoteSelectScalar = {
   approveIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type TariffQuoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "rateCardId" | "quoteReference" | "status" | "currencyCode" | "quotedAmount" | "calculationPayload" | "calculatedByName" | "calculatedAt" | "approvedByName" | "approvalReference" | "approvalNotes" | "approvedAt" | "sourceSystem" | "calculateIdempotencyKey" | "approveIdempotencyKey" | "createdAt" | "updatedAt", ExtArgs["result"]["tariffQuote"]>
+export type TariffQuoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "rateCardId" | "quoteReference" | "status" | "currencyCode" | "quotedAmount" | "calculationPayload" | "calculatedByName" | "calculatedAt" | "approvedByName" | "approvalReference" | "approvalNotes" | "approvedAt" | "sourceSystem" | "calculateIdempotencyKey" | "approveIdempotencyKey" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["tariffQuote"]>
 export type TariffQuoteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
@@ -1485,6 +1575,8 @@ export type $TariffQuotePayload<ExtArgs extends runtime.Types.Extensions.Interna
     approveIdempotencyKey: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["tariffQuote"]>
   composites: {}
 }
@@ -1931,6 +2023,8 @@ export interface TariffQuoteFieldRefs {
   readonly approveIdempotencyKey: Prisma.FieldRef<"TariffQuote", 'String'>
   readonly createdAt: Prisma.FieldRef<"TariffQuote", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TariffQuote", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"TariffQuote", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"TariffQuote", 'String'>
 }
     
 

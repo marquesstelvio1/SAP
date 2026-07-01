@@ -19,7 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
-
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TrackingExceptionManageFormState } from "../../app/(platform)/app/tracking/form-state";
 
 export type TrackingExceptionShipment = {
@@ -42,10 +43,10 @@ export type TrackingExceptionManageFormProps = {
 const exceptionCategoryOptions = [
   { value: "delay", label: "Atraso" },
   { value: "damage", label: "Dano de carga" },
-  { value: "customs_hold", label: "Retencao alfandegaria" },
-  { value: "security", label: "Seguranca" },
+  { value: "customs_hold", label: "Retenção aduaneira" },
+  { value: "security", label: "Segurança" },
   { value: "capacity", label: "Capacidade" },
-  { value: "documentation", label: "Documentacao" },
+  { value: "documentation", label: "Documentação" },
   { value: "weather", label: "Meteorologia" },
   { value: "infrastructure", label: "Infraestrutura" },
   { value: "other", label: "Outra" },
@@ -62,12 +63,12 @@ const evidenceTypeOptions = [
   { value: "photo", label: "Foto" },
   { value: "document", label: "Documento" },
   { value: "sensor", label: "Sensor" },
-  { value: "inspection", label: "Inspecao" },
+  { value: "inspection", label: "Inspeção" },
   { value: "external_reference", label: "Referencia externa" },
 ] as const;
 
 const approvalStatusOptions = [
-  { value: "pending_review", label: "Pendente de revisao" },
+  { value: "pending_review", label: "Pendente de revisão" },
   { value: "approved", label: "Aprovado" },
 ] as const;
 
@@ -78,7 +79,7 @@ export function TrackingExceptionManageForm({
   action,
 }: TrackingExceptionManageFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("trk_exc"));
   const defaultOccurredAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const defaultExpectedResolutionAt = useMemo(
     () => createDatetimeLocalValue(new Date(Date.now() + 24 * 60 * 60 * 1000)),
@@ -88,7 +89,7 @@ export function TrackingExceptionManageForm({
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("trk_exc"));
     }
   }, [state.status]);
 
@@ -97,15 +98,15 @@ export function TrackingExceptionManageForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageExceptions ? "warning" : "outline"}>
-            {canManageExceptions ? "Excecao governada" : "Sem permissao"}
+            {canManageExceptions ? "Exceção autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">tracking.exception.manage</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Gerir excecao operacional</CardTitle>
+          <CardTitle>Gerir exceção operacional</CardTitle>
           <CardDescription className="leading-6">
-            Abre uma excecao com plano de recuperacao, idempotencia, audit trail e outbox. A UI
-            executa apenas o comando autorizado do backend.
+            Abre uma exceção com plano de recuperação e registo de auditoria. A UI executa apenas o
+            comando autorizado do backend.
           </CardDescription>
         </div>
       </CardHeader>
@@ -213,7 +214,7 @@ export function TrackingExceptionManageForm({
                 disabled={isDisabled}
                 id="summary"
                 name="summary"
-                placeholder="Ex.: Carga retida por revisao documental."
+                placeholder="Ex.: Carga retida por revisão documental."
                 required
               />
             </Field>
@@ -230,10 +231,10 @@ export function TrackingExceptionManageForm({
             </Field>
 
             <Field data-disabled={!canManageExceptions}>
-              <FieldLabel>Evidencia e aprovacao</FieldLabel>
+              <FieldLabel>Evidência e aprovação</FieldLabel>
               <FieldDescription>
-                Toda mudanca de ciclo da excecao deve apontar operador, evidencia verificavel e
-                estado de aprovacao.
+                Toda mudança de ciclo da exceção deve apontar operador, evidência verificável e
+                estado de aprovação.
               </FieldDescription>
             </Field>
 
@@ -326,7 +327,7 @@ export function TrackingExceptionManageForm({
                   disabled={isDisabled}
                   id="approverName"
                   name="approverName"
-                  placeholder="Ex.: Supervisor de Operacoes"
+                  placeholder="Ex.: Supervisor de Operações"
                 />
                 <FieldDescription>Obrigatorio quando o estado for aprovado.</FieldDescription>
               </Field>
@@ -367,7 +368,7 @@ export function TrackingExceptionManageForm({
                   {state.status === "success"
                     ? `${state.message} Evento: ${state.eventId ?? "sem-id"} Status: ${
                         state.currentStatus ?? "sem-status"
-                      } Evidencia: ${state.evidenceReference ?? "sem-evidencia"} Aprovacao: ${
+                      } Evidência: ${state.evidenceReference ?? "sem-evidencia"} Aprovação: ${
                         state.approvalStatus ?? "sem-status"
                       } Workflow: ${state.workflowState ?? "sem-workflow"}`
                     : state.message}
@@ -379,27 +380,14 @@ export function TrackingExceptionManageForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canManageExceptions
-              ? "Excecoes gravam status, audit e outbox no backend."
-              : "Requer tracking.exception.manage."}
+              ? "Excecao gravada com registo de auditoria."
+              : "Requer gestao de excecoes."}
           </span>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A gerir..." : "Gerir excecao"}
+            {isPending ? "A gerir..." : "Gerir exceção"}
           </Button>
         </CardFooter>
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `trk_exc_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

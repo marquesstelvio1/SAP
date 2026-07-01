@@ -19,6 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CapacityAdvisoryDecisionFormState } from "../../app/(platform)/app/capacity/form-state";
 
@@ -32,11 +34,11 @@ export type CapacityAdvisoryDecisionFormProps = {
 };
 
 const recommendationTypeOptions = [
-  { value: "slot_saturation", label: "Saturacao de slot" },
+  { value: "slot_saturation", label: "Saturação de slot" },
   { value: "expiring_slot", label: "Janela a expirar" },
-  { value: "unused_capacity", label: "Baixa utilizacao" },
-  { value: "reservation_imbalance", label: "Desequilibrio de reservas" },
-  { value: "cancellation_review", label: "Revisao de cancelamentos" },
+  { value: "unused_capacity", label: "Baixa utilização" },
+  { value: "reservation_imbalance", label: "Desequilíbrio de reservas" },
+  { value: "cancellation_review", label: "Revisão de cancelamentos" },
 ] as const;
 
 const requiredPermissionOptions = [
@@ -51,13 +53,15 @@ export function CapacityAdvisoryDecisionForm({
   action,
 }: CapacityAdvisoryDecisionFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("capacity_advisory_decision"),
+  );
   const defaultDecidedAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canDecideCapacityAdvisory;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("capacity_advisory_decision"));
     }
   }, [state.status]);
 
@@ -66,14 +70,14 @@ export function CapacityAdvisoryDecisionForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canDecideCapacityAdvisory ? "success" : "warning"}>
-            {canDecideCapacityAdvisory ? "Decisao governada" : "Sem permissao"}
+            {canDecideCapacityAdvisory ? "Decisão autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">capacity.advisory.decide</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Registar decisao de advisory</CardTitle>
+          <CardTitle>Registar decisão de advisory</CardTitle>
           <CardDescription className="leading-6">
-            Regista aprovacao ou rejeicao humana da recomendacao. Esta acao nao executa abertura,
+            Regista aprovação ou rejeição humana da recomendação. Esta ação não executa abertura,
             reserva, cancelamento ou despacho automaticamente.
           </CardDescription>
         </div>
@@ -112,7 +116,7 @@ export function CapacityAdvisoryDecisionForm({
                 </SelectNative>
               </Field>
               <Field data-disabled={!canDecideCapacityAdvisory}>
-                <FieldLabel htmlFor="advisoryDecisionStatus">Decisao</FieldLabel>
+                <FieldLabel htmlFor="advisoryDecisionStatus">Decisão</FieldLabel>
                 <SelectNative
                   defaultValue="approved"
                   disabled={isDisabled}
@@ -125,7 +129,7 @@ export function CapacityAdvisoryDecisionForm({
                 </SelectNative>
               </Field>
               <Field data-disabled={!canDecideCapacityAdvisory}>
-                <FieldLabel htmlFor="advisoryRequiredPermission">Permissao de follow-up</FieldLabel>
+                <FieldLabel htmlFor="advisoryRequiredPermission">Permissão de follow-up</FieldLabel>
                 <SelectNative
                   defaultValue="capacity.manage"
                   disabled={isDisabled}
@@ -162,7 +166,7 @@ export function CapacityAdvisoryDecisionForm({
                 />
               </Field>
               <Field data-disabled={!canDecideCapacityAdvisory}>
-                <FieldLabel htmlFor="advisoryApprovalReference">Referencia aprovacao</FieldLabel>
+                <FieldLabel htmlFor="advisoryApprovalReference">Referência aprovação</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="advisoryApprovalReference"
@@ -210,7 +214,7 @@ export function CapacityAdvisoryDecisionForm({
                 disabled={isDisabled}
                 id="advisoryDecisionReason"
                 name="decisionReason"
-                placeholder="Explique a decisao operacional e a evidencia humana usada."
+                placeholder="                Explique a decisão operacional e a evidência humana usada."
                 required
                 rows={4}
               />
@@ -236,27 +240,14 @@ export function CapacityAdvisoryDecisionForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canDecideCapacityAdvisory
-              ? "Regista decisao; nao executa comandos operacionais."
-              : "Requer capacity.advisory.decide."}
+              ? "Regista decisão; não executa comandos operacionais."
+              : "Requer decisao de advisory."}
           </span>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A registar..." : "Registar decisao"}
+            {isPending ? "A registar..." : "Registar decisão"}
           </Button>
         </CardFooter>
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `capacity_advisory_decision_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

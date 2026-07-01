@@ -15,7 +15,8 @@ import type {
   TrackingOverviewOutput,
   TrackingShipmentDetailOutput,
 } from "@saptm/rpc";
-import { UsageService } from "../billing/usage.service.js";
+import type { UsageService } from "../billing/usage.service.js";
+import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createTrackingEventAuditAfter,
   createTrackingExceptionAuditAfter,
@@ -68,7 +69,6 @@ import {
   toTrackingEventPayloadOrNull,
 } from "./domain/tracking.dto.js";
 import { TRACKING_REPOSITORY, type TrackingRepository } from "./domain/tracking.repository.js";
-import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 
 export type GetTrackingOverviewInput = {
   organizationId: string;

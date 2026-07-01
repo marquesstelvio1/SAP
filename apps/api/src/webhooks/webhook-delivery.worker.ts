@@ -1,5 +1,6 @@
 import { createHmac } from "node:crypto";
 import { Inject, Injectable, type OnModuleDestroy, type OnModuleInit } from "@nestjs/common";
+import { createConsoleLogger, createTraceContext } from "@saptm/observability";
 import type { Subscription } from "rxjs";
 import { EventBusService } from "../event-bus/event-bus.service.js";
 
@@ -9,9 +10,27 @@ import { WEBHOOKS_REPOSITORY } from "./domain/webhooks.repository.js";
 const MAX_RETRIES = 3;
 const BASE_RETRY_DELAY_MS = 2_000;
 
+function createWebhookLogger() {
+  return createConsoleLogger({
+    serviceName: "@saptm/api",
+    environment:
+      process.env.NODE_ENV === "production"
+        ? "production"
+        : process.env.NODE_ENV === "test"
+          ? "test"
+          : "development",
+    defaultContext: createTraceContext({
+      operationName: "webhook.delivery",
+      sourceSystem: "apps/api",
+    }),
+    minimumLevel: "info",
+  });
+}
+
 @Injectable()
 export class WebhookDeliveryWorker implements OnModuleDestroy, OnModuleInit {
   private subscription: Subscription | null = null;
+  private readonly logger = createWebhookLogger();
 
   constructor(
     @Inject(EventBusService) private readonly eventBus: EventBusService,
@@ -23,10 +42,10 @@ export class WebhookDeliveryWorker implements OnModuleDestroy, OnModuleInit {
       try {
         await this.deliverToWebhooks(event);
       } catch (error) {
-        console.error(
-          "[WebhookDeliveryWorker] Error processing event:",
-          error instanceof Error ? error.message : String(error),
-        );
+        this.logger.error("WebhookDeliveryWorker error processing event.", {
+          attributes: { "event.type": event.eventType },
+          error,
+        });
       }
     });
   }

@@ -8,6 +8,7 @@ const apiContentSecurityPolicy = [
 export const apiSecurityHeaders = [
   ["Content-Security-Policy", apiContentSecurityPolicy],
   ["Cross-Origin-Opener-Policy", "same-origin"],
+  ["Cross-Origin-Embedder-Policy", "require-corp"],
   ["Cross-Origin-Resource-Policy", "same-origin"],
   ["Permissions-Policy", "camera=(), geolocation=(), microphone=(), payment=(), usb=()"],
   ["Referrer-Policy", "strict-origin-when-cross-origin"],

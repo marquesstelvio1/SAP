@@ -4,18 +4,22 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "dotenvx run -f ../../.env -- tsx watch src/main.ts",
+    "dev": "tsx watch src/main.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
     "test:coverage": "c8 node --test tests/*.test.mjs",
-    "test": "node --test tests/rpc-foundation.test.mjs tests/admin-rpc.test.mjs tests/audit-rpc.test.mjs tests/reports-rpc.test.mjs tests/notifications-rpc.test.mjs tests/integrations-rpc.test.mjs tests/cargo-rpc.test.mjs tests/cargo-service-business-rules.test.mjs tests/tracking-rpc.test.mjs tests/capacity-rpc.test.mjs tests/capacity-service-business-rules.test.mjs tests/evidence-services-business-rules.test.mjs tests/tariff-rpc.test.mjs tests/planning-rpc.test.mjs tests/organizations-service.test.mjs"
+    "test": "node --test tests/rpc-foundation.test.mjs tests/admin-rpc.test.mjs tests/audit-rpc.test.mjs tests/reports-rpc.test.mjs tests/notifications-rpc.test.mjs tests/integrations-rpc.test.mjs tests/cargo-rpc.test.mjs tests/cargo-service-business-rules.test.mjs tests/tracking-rpc.test.mjs tests/capacity-rpc.test.mjs tests/capacity-service-business-rules.test.mjs tests/evidence-services-business-rules.test.mjs tests/tariff-rpc.test.mjs tests/planning-rpc.test.mjs tests/organizations-service.test.mjs tests/outbox-worker.test.mjs"
   },
   "dependencies": {
     "@nestjs/cache-manager": "catalog:",
     "@nestjs/common": "catalog:",
     "@nestjs/core": "catalog:",
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/auto-instrumentations-node": "catalog:",
+    "@opentelemetry/exporter-trace-otlp-http": "catalog:",
+    "@opentelemetry/sdk-node": "catalog:",
     "@nestjs/platform-express": "catalog:",
     "@nestjs/throttler": "catalog:",
     "@orpc/server": "catalog:",
@@ -29,6 +33,7 @@
     "cache-manager-redis-yet": "catalog:",
     "cookie-parser": "catalog:",
     "csrf-csrf": "catalog:",
+    "dotenv": "catalog:",
     "ioredis": "catalog:",
     "stripe": "catalog:",
     "reflect-metadata": "catalog:",
@@ -42,6 +47,7 @@
     "@types/express": "catalog:",
     "@types/ioredis": "^5.0.0",
     "@types/node": "catalog:",
+    "c8": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:"
   }

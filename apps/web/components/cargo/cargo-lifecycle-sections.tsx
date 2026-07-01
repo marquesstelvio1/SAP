@@ -69,8 +69,8 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
     <>
       {/* Pre-Transport Stage */}
       <CargoLifecycleGroup
-        badge="cargo.register, cargo.release, cargo.compliance"
-        description="Registo, compliance aduaneiro, evidencias documentais e liberacao para transporte. Toda acao e governada por RBAC, idempotencia e audit trail."
+        badge="Registo, liberacao e compliance"
+        description="Registo, compliance aduaneiro, evidencias documentais e liberacao para transporte."
         stage="pre-transport"
         title="Pre-Transporte"
       >
@@ -84,26 +84,20 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
           <Card id="cargo-business-rules">
             <CardHeader>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">Regras P0</Badge>
                 <Badge variant={props.canRegisterCargo ? "success" : "warning"}>
-                  {props.canRegisterCargo ? "Pode registar" : "Somente leitura"}
+                  {props.canRegisterCargo ? "Registo autorizado" : "Registo indisponivel"}
                 </Badge>
               </div>
               <CardTitle>Modelo de negocio aplicado</CardTitle>
-              <CardDescription>
-                As regras sao aplicadas no contrato RPC e novamente no backend. A UI apenas envia o
-                comando governado.
-              </CardDescription>
+              <CardDescription>Regras de negocio aplicadas no registo da carga.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm">
               <ContextRow label="Identidade" value="cargoReference unico por tenant" />
-              <ContextRow label="Idempotencia" value="registrationIdempotencyKey obrigatoria" />
+              <ContextRow label="Idempotencia" value="chave obrigatoria" />
               <ContextRow label="Perigosidade" value="UN number + hazard class" />
-              <ContextRow label="Aduana" value="held exige customs reference" />
-              <ContextRow label="Danos" value="damaged exige inspecao" />
-              <ContextRow label="Transporte" value="bloqueado ate release governado" />
-              <ContextRow label="Operacao" value="cargo.register" />
-              <ContextRow label="Transporte RPC" value="POST /rpc/cargo/register" />
+              <ContextRow label="Aduana" value="retencao exige referencia aduaneira" />
+              <ContextRow label="Danos" value="carga danificada exige inspecao" />
+              <ContextRow label="Transporte" value="bloqueado ate liberacao" />
             </CardContent>
           </Card>
         </section>
@@ -118,15 +112,13 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
           <Card>
             <CardHeader>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">Regras P1</Badge>
                 <Badge variant={props.canReleaseCargo ? "success" : "warning"}>
-                  {props.canReleaseCargo ? "Pode liberar" : "Sem cargo.release"}
+                  {props.canReleaseCargo ? "Liberacao autorizada" : "Liberacao indisponivel"}
                 </Badge>
               </div>
-              <CardTitle>Liberacao governada</CardTitle>
+              <CardTitle>Liberacao de carga</CardTitle>
               <CardDescription>
-                Carga so entra em ready_for_transport depois das regras criticas passarem no
-                backend.
+                Carga liberada fica pronta para transporte apos validacao das regras de negocio.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm">
@@ -134,9 +126,7 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
               <ContextRow label="Aduana" value="pending/held exigem cleared" />
               <ContextRow label="Inspecao" value="danos/bloqueios exigem passed" />
               <ContextRow label="Perigosa" value="UN number + hazard class obrigatorios" />
-              <ContextRow label="Idempotencia" value="releaseIdempotencyKey obrigatoria" />
-              <ContextRow label="Operacao" value="cargo.release" />
-              <ContextRow label="Transporte RPC" value="POST /rpc/cargo/release" />
+              <ContextRow label="Idempotencia" value="chave obrigatoria" />
             </CardContent>
           </Card>
         </section>
@@ -158,7 +148,7 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
 
       {/* In-Transit Stage */}
       <CargoLifecycleGroup
-        badge="cargo.transport.plan, cargo.transport.depart, cargo.handoff.record"
+        badge="Planeamento, partida e transferencias"
         description="Planeamento de tracking, partida operacional e transferencias de custodia entre modais."
         stage="in-transit"
         title="Em Transito"
@@ -173,25 +163,19 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
           <Card>
             <CardHeader>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">Regras P2</Badge>
                 <Badge variant={props.canPlanTransport ? "success" : "warning"}>
-                  {props.canPlanTransport ? "Pode criar tracking" : "Sem cargo.transport.plan"}
+                  {props.canPlanTransport ? "Planeamento autorizado" : "Planeamento indisponivel"}
                 </Badge>
               </div>
               <CardTitle>Cargo para Tracking</CardTitle>
-              <CardDescription>
-                A ligacao cria shipment planeado no Operational Tracking sem CRUD e sem bypass de
-                seguranca.
-              </CardDescription>
+              <CardDescription>Cria o registo de tracking para a carga planeada.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm">
-              <ContextRow label="Prontidao" value="cargo status ready_for_transport" />
-              <ContextRow label="Release" value="releasedAt + releaseIdempotencyKey exigidos" />
-              <ContextRow label="Bloqueios" value="sem inspecao aberta e sem customs hold" />
-              <ContextRow label="Tracking" value="um shipment por carga" />
-              <ContextRow label="Evento inicial" value="tracking.created auditavel" />
-              <ContextRow label="Operacao" value="cargo.transport.plan" />
-              <ContextRow label="Transporte RPC" value="POST /rpc/cargo/planTransport" />
+              <ContextRow label="Prontidao" value="carga em ready_for_transport" />
+              <ContextRow label="Release" value="carga liberada" />
+              <ContextRow label="Bloqueios" value="sem inspecao aberta e sem retencao aduaneira" />
+              <ContextRow label="Tracking" value="um registo por carga" />
+              <ContextRow label="Evento inicial" value="tracking.created" />
             </CardContent>
           </Card>
         </section>
@@ -206,24 +190,21 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
           <Card>
             <CardHeader>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">Regras P4</Badge>
                 <Badge variant={props.canDepartTransport ? "success" : "warning"}>
-                  {props.canDepartTransport ? "Pode iniciar partida" : "Sem cargo.transport.depart"}
+                  {props.canDepartTransport ? "Partida autorizada" : "Partida indisponivel"}
                 </Badge>
               </div>
-              <CardTitle>Departure Lifecycle</CardTitle>
+              <CardTitle>Partida operacional</CardTitle>
               <CardDescription>
-                Partida operacional exige cadeia completa: release, tracking planeado e compliance
-                aprovado.
+                Partida exige cadeia completa: release, tracking planeado e compliance aprovado.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm">
               <ContextRow label="Cargo" value="status ready_for_transport" />
-              <ContextRow label="Tracking" value="shipment ainda planned" />
-              <ContextRow label="Compliance" value=">= 1 evidencia approved" />
-              <ContextRow label="Bloqueios" value="sem pending_review ou rejected" />
+              <ContextRow label="Tracking" value="registo em planned" />
+              <ContextRow label="Compliance" value=">= 1 evidencia aprovada" />
+              <ContextRow label="Bloqueios" value="sem revisao pendente ou rejeitada" />
               <ContextRow label="Evento" value="tracking.departed + in_transit" />
-              <ContextRow label="Transporte RPC" value="POST /rpc/cargo/departTransport" />
             </CardContent>
           </Card>
         </section>
@@ -238,14 +219,13 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
           <Card>
             <CardHeader>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">Regras P7</Badge>
                 <Badge variant={props.canRecordOperationalHandoff ? "success" : "warning"}>
                   {props.canRecordOperationalHandoff
-                    ? "Pode registar handoff"
-                    : "Sem cargo.handoff.record"}
+                    ? "Handoff autorizado"
+                    : "Handoff indisponivel"}
                 </Badge>
               </div>
-              <CardTitle>Port/Rail Operational Handoff</CardTitle>
+              <CardTitle>Transferencia operacional</CardTitle>
               <CardDescription>
                 Transfere custodia entre ferrovia, porto, terminal ou carrier sem fechar o
                 transporte.
@@ -253,13 +233,11 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
             </CardHeader>
             <CardContent className="grid gap-3 text-sm md:grid-cols-2">
               <ContextRow label="Cargo" value="status in_transport" />
-              <ContextRow label="Tracking" value="shipment in_transit" />
-              <ContextRow label="Custodia" value="from deve bater com owner atual" />
-              <ContextRow label="Transferencia" value="to deve ser diferente de from" />
-              <ContextRow label="Condicao" value="sound; excecoes usam fluxo proprio" />
+              <ContextRow label="Tracking" value="registo in_transit" />
+              <ContextRow label="Custodia" value="origem deve bater com custodia atual" />
+              <ContextRow label="Transferencia" value="destino deve ser diferente de origem" />
+              <ContextRow label="Condicao" value="sound; excecoes tem fluxo proprio" />
               <ContextRow label="Evento" value="tracking.location_updated" />
-              <ContextRow label="Audit" value="cargo.operational_handoff.recorded" />
-              <ContextRow label="RPC" value="POST /rpc/cargo/recordOperationalHandoff" />
             </CardContent>
           </Card>
         </section>
@@ -267,7 +245,7 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
 
       {/* Delivery Stage */}
       <CargoLifecycleGroup
-        badge="cargo.transport.arrive, cargo.delivery.complete, cargo.delivery.exception"
+        badge="Chegada, entrega e excecoes"
         description="Confirmacao de chegada, conclusao de entrega e gestao de excecoes de condicao ou documentacao."
         stage="delivery"
         title="Entrega"
@@ -290,34 +268,24 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
           <Card>
             <CardHeader>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">Regras P5</Badge>
                 <Badge variant={props.canArriveTransport ? "success" : "warning"}>
-                  {props.canArriveTransport
-                    ? "Pode confirmar chegada"
-                    : "Sem cargo.transport.arrive"}
+                  {props.canArriveTransport ? "Chegada autorizada" : "Chegada indisponivel"}
                 </Badge>
                 <Badge variant={props.canCompleteDelivery ? "success" : "warning"}>
-                  {props.canCompleteDelivery
-                    ? "Pode concluir entrega"
-                    : "Sem cargo.delivery.complete"}
+                  {props.canCompleteDelivery ? "Entrega autorizada" : "Entrega indisponivel"}
                 </Badge>
               </div>
-              <CardTitle>Arrival & Delivery Lifecycle</CardTitle>
+              <CardTitle>Chegada e entrega</CardTitle>
               <CardDescription>
-                Fecha o fluxo operacional sem CRUD: arrived no tracking, depois delivered/completed
-                com handover auditavel.
+                Confirma a chegada e conclui a entrega com registo de auditoria.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3 text-sm md:grid-cols-2">
-              <ContextRow label="Chegada" value="cargo in_transport + shipment in_transit" />
-              <ContextRow label="Timestamp" value="arrival >= departure" />
-              <ContextRow label="Entrega" value="cargo arrived + shipment arrived" />
+              <ContextRow label="Chegada" value="cargo in_transport + tracking in_transit" />
+              <ContextRow label="Timestamp" value="chegada >= partida" />
+              <ContextRow label="Entrega" value="cargo arrived + tracking arrived" />
               <ContextRow label="Condicao" value="sound; danos exigem excecao antes do fecho" />
               <ContextRow label="Eventos" value="tracking.arrived + handover_completed" />
-              <ContextRow
-                label="Transporte RPC"
-                value="/cargo/arriveTransport + /completeDelivery"
-              />
             </CardContent>
           </Card>
         </section>
@@ -340,31 +308,27 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
           <Card>
             <CardHeader>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">Regras P6</Badge>
                 <Badge variant={props.canRecordDeliveryException ? "success" : "warning"}>
-                  {props.canRecordDeliveryException
-                    ? "Pode abrir excecao"
-                    : "Sem cargo.delivery.exception.record"}
+                  {props.canRecordDeliveryException ? "Excecao autorizada" : "Excecao indisponivel"}
                 </Badge>
                 <Badge variant={props.canResolveDeliveryException ? "success" : "warning"}>
                   {props.canResolveDeliveryException
-                    ? "Pode resolver excecao"
-                    : "Sem cargo.delivery.exception.resolve"}
+                    ? "Resolucao autorizada"
+                    : "Resolucao indisponivel"}
                 </Badge>
               </div>
-              <CardTitle>Delivery Exception Lifecycle</CardTitle>
+              <CardTitle>Excecao de entrega</CardTitle>
               <CardDescription>
                 Captura dano, falta, temperatura, documentacao ou selo violado sem concluir a
                 entrega indevidamente.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3 text-sm md:grid-cols-2">
-              <ContextRow label="Entrada" value="cargo arrived + shipment arrived" />
-              <ContextRow label="Bloqueio" value="cargo held + shipment exception" />
-              <ContextRow label="Evidencia" value="reportedBy + evidenceReference obrigatorios" />
-              <ContextRow label="Resolucao" value="restaura condition sound" />
-              <ContextRow label="Retorno" value="shipment arrived para concluir entrega" />
-              <ContextRow label="RPC" value="/cargo/recordDeliveryException" />
+              <ContextRow label="Entrada" value="cargo arrived + tracking arrived" />
+              <ContextRow label="Bloqueio" value="cargo held + tracking exception" />
+              <ContextRow label="Evidencia" value="reportadoPor + referencia de evidencia" />
+              <ContextRow label="Resolucao" value="restaura condicao sound" />
+              <ContextRow label="Retorno" value="tracking arrived para concluir entrega" />
             </CardContent>
           </Card>
         </section>
@@ -372,7 +336,7 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
 
       {/* Completed Stage */}
       <CargoLifecycleGroup
-        badge="cargo.claim.settle"
+        badge="Liquidacao de claims"
         description="Liquidacao contabilistica de claims aceites apos resolucao de excecao."
         stage="completed"
         title="Concluido"
@@ -387,26 +351,21 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
           <Card>
             <CardHeader>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">Regras P8</Badge>
                 <Badge variant={props.canRecordClaimSettlement ? "success" : "warning"}>
                   {props.canRecordClaimSettlement
-                    ? "Pode liquidar claim"
-                    : "Sem cargo.claim.settle"}
+                    ? "Liquidacao autorizada"
+                    : "Liquidacao indisponivel"}
                 </Badge>
               </div>
-              <CardTitle>Claims Settlement Accounting</CardTitle>
-              <CardDescription>
-                Regista o impacto contabilistico de claims aceites sem alterar tracking ou fechar
-                fluxos operacionais fora de ordem.
-              </CardDescription>
+              <CardTitle>Liquidacao de claims</CardTitle>
+              <CardDescription>Regista o impacto contabilistico de claims aceites.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3 text-sm md:grid-cols-2">
-              <ContextRow label="Entrada" value="delivery exception resolved" />
+              <ContextRow label="Entrada" value="excecao de entrega resolvida" />
               <ContextRow label="Claim" value="claimReference obrigatoria e coincidente" />
               <ContextRow label="Resolucao" value="resolutionCode claim_accepted" />
-              <ContextRow label="Tempo" value="settledAt >= resolvedAt" />
-              <ContextRow label="Duplicidade" value="um settlement por exception/reference" />
-              <ContextRow label="RPC" value="POST /rpc/cargo/recordClaimSettlement" />
+              <ContextRow label="Tempo" value="liquidacao >= resolucao" />
+              <ContextRow label="Duplicidade" value="um registo por excecao/reference" />
             </CardContent>
           </Card>
         </section>
@@ -417,29 +376,25 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
         <Card>
           <CardHeader>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="outline">Regras P3</Badge>
               <Badge variant={props.canRecordComplianceEvidence ? "success" : "warning"}>
-                {props.canRecordComplianceEvidence ? "Pode registar evidencia" : "Sem record grant"}
+                {props.canRecordComplianceEvidence ? "Registo autorizado" : "Registo indisponivel"}
               </Badge>
               <Badge variant={props.canVerifyComplianceEvidence ? "success" : "warning"}>
                 {props.canVerifyComplianceEvidence
-                  ? "Pode verificar evidencia"
-                  : "Sem verify grant"}
+                  ? "Verificacao autorizada"
+                  : "Verificacao indisponivel"}
               </Badge>
             </div>
-            <CardTitle>Compliance Evidence</CardTitle>
+            <CardTitle>Evidencias de compliance</CardTitle>
             <CardDescription>
-              Evidencias documentais entram primeiro como pending_review e so viram decisao
-              operacional apos verificacao auditavel.
+              Evidencias documentais entram como revisao pendente e sao decididas apos verificacao.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3 text-sm md:grid-cols-2">
-            <ContextRow label="Record" value="tenant-scoped, idempotente e sem duplicidade" />
-            <ContextRow label="Verify" value="somente pending_review pode ser revisada" />
-            <ContextRow label="Expiracao" value="aprovacao bloqueia evidencia expirada" />
-            <ContextRow label="Perigosa" value="hazardous declaration exige carga perigosa" />
-            <ContextRow label="Operacao" value="cargo.compliance.evidence.record / verify" />
-            <ContextRow label="Transporte RPC" value="POST /rpc/cargo/recordComplianceEvidence" />
+            <ContextRow label="Registo" value="sem duplicidade por tenant" />
+            <ContextRow label="Verificacao" value="so pode rever registos pendentes" />
+            <ContextRow label="Expiracao" value="aprovacao bloqueada se expirada" />
+            <ContextRow label="Perigosa" value="declaracao hazardous exige carga perigosa" />
           </CardContent>
         </Card>
       </section>

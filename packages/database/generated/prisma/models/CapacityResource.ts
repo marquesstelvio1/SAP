@@ -46,6 +46,8 @@ export type CapacityResourceMinAggregateOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CapacityResourceMaxAggregateOutputType = {
@@ -60,6 +62,8 @@ export type CapacityResourceMaxAggregateOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CapacityResourceCountAggregateOutputType = {
@@ -74,6 +78,8 @@ export type CapacityResourceCountAggregateOutputType = {
   recordIdempotencyKey: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -98,6 +104,8 @@ export type CapacityResourceMinAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CapacityResourceMaxAggregateInputType = {
@@ -112,6 +120,8 @@ export type CapacityResourceMaxAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CapacityResourceCountAggregateInputType = {
@@ -126,6 +136,8 @@ export type CapacityResourceCountAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -227,6 +239,8 @@ export type CapacityResourceGroupByOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: CapacityResourceCountAggregateOutputType | null
   _avg: CapacityResourceAvgAggregateOutputType | null
   _sum: CapacityResourceSumAggregateOutputType | null
@@ -264,6 +278,8 @@ export type CapacityResourceWhereInput = {
   recordIdempotencyKey?: Prisma.StringNullableFilter<"CapacityResource"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CapacityResource"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CapacityResource"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CapacityResource"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CapacityResource"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   slots?: Prisma.CapacitySlotListRelationFilter
 }
@@ -280,6 +296,8 @@ export type CapacityResourceOrderByWithRelationInput = {
   recordIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   slots?: Prisma.CapacitySlotOrderByRelationAggregateInput
 }
@@ -301,6 +319,8 @@ export type CapacityResourceWhereUniqueInput = Prisma.AtLeast<{
   recordIdempotencyKey?: Prisma.StringNullableFilter<"CapacityResource"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CapacityResource"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CapacityResource"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CapacityResource"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CapacityResource"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   slots?: Prisma.CapacitySlotListRelationFilter
 }, "id" | "organizationId_recordIdempotencyKey" | "organizationId_resourceCode">
@@ -317,6 +337,8 @@ export type CapacityResourceOrderByWithAggregationInput = {
   recordIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CapacityResourceCountOrderByAggregateInput
   _avg?: Prisma.CapacityResourceAvgOrderByAggregateInput
   _max?: Prisma.CapacityResourceMaxOrderByAggregateInput
@@ -339,6 +361,8 @@ export type CapacityResourceScalarWhereWithAggregatesInput = {
   recordIdempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"CapacityResource"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CapacityResource"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CapacityResource"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CapacityResource"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"CapacityResource"> | string | null
 }
 
 export type CapacityResourceCreateInput = {
@@ -352,6 +376,8 @@ export type CapacityResourceCreateInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCapacityResourcesInput
   slots?: Prisma.CapacitySlotCreateNestedManyWithoutResourceInput
 }
@@ -368,6 +394,8 @@ export type CapacityResourceUncheckedCreateInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   slots?: Prisma.CapacitySlotUncheckedCreateNestedManyWithoutResourceInput
 }
 
@@ -382,6 +410,8 @@ export type CapacityResourceUpdateInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCapacityResourcesNestedInput
   slots?: Prisma.CapacitySlotUpdateManyWithoutResourceNestedInput
 }
@@ -398,6 +428,8 @@ export type CapacityResourceUncheckedUpdateInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slots?: Prisma.CapacitySlotUncheckedUpdateManyWithoutResourceNestedInput
 }
 
@@ -413,6 +445,8 @@ export type CapacityResourceCreateManyInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacityResourceUpdateManyMutationInput = {
@@ -426,6 +460,8 @@ export type CapacityResourceUpdateManyMutationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacityResourceUncheckedUpdateManyInput = {
@@ -440,6 +476,8 @@ export type CapacityResourceUncheckedUpdateManyInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacityResourceListRelationFilter = {
@@ -474,6 +512,8 @@ export type CapacityResourceCountOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CapacityResourceAvgOrderByAggregateInput = {
@@ -492,6 +532,8 @@ export type CapacityResourceMaxOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CapacityResourceMinOrderByAggregateInput = {
@@ -506,6 +548,8 @@ export type CapacityResourceMinOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CapacityResourceSumOrderByAggregateInput = {
@@ -588,6 +632,8 @@ export type CapacityResourceCreateWithoutOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   slots?: Prisma.CapacitySlotCreateNestedManyWithoutResourceInput
 }
 
@@ -602,6 +648,8 @@ export type CapacityResourceUncheckedCreateWithoutOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   slots?: Prisma.CapacitySlotUncheckedCreateNestedManyWithoutResourceInput
 }
 
@@ -646,6 +694,8 @@ export type CapacityResourceScalarWhereInput = {
   recordIdempotencyKey?: Prisma.StringNullableFilter<"CapacityResource"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CapacityResource"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CapacityResource"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CapacityResource"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CapacityResource"> | string | null
 }
 
 export type CapacityResourceCreateWithoutSlotsInput = {
@@ -659,6 +709,8 @@ export type CapacityResourceCreateWithoutSlotsInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCapacityResourcesInput
 }
 
@@ -674,6 +726,8 @@ export type CapacityResourceUncheckedCreateWithoutSlotsInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacityResourceCreateOrConnectWithoutSlotsInput = {
@@ -703,6 +757,8 @@ export type CapacityResourceUpdateWithoutSlotsInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCapacityResourcesNestedInput
 }
 
@@ -718,6 +774,8 @@ export type CapacityResourceUncheckedUpdateWithoutSlotsInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacityResourceCreateManyOrganizationInput = {
@@ -731,6 +789,8 @@ export type CapacityResourceCreateManyOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacityResourceUpdateWithoutOrganizationInput = {
@@ -744,6 +804,8 @@ export type CapacityResourceUpdateWithoutOrganizationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slots?: Prisma.CapacitySlotUpdateManyWithoutResourceNestedInput
 }
 
@@ -758,6 +820,8 @@ export type CapacityResourceUncheckedUpdateWithoutOrganizationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slots?: Prisma.CapacitySlotUncheckedUpdateManyWithoutResourceNestedInput
 }
 
@@ -772,6 +836,8 @@ export type CapacityResourceUncheckedUpdateManyWithoutOrganizationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -817,6 +883,8 @@ export type CapacityResourceSelect<ExtArgs extends runtime.Types.Extensions.Inte
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   slots?: boolean | Prisma.CapacityResource$slotsArgs<ExtArgs>
   _count?: boolean | Prisma.CapacityResourceCountOutputTypeDefaultArgs<ExtArgs>
@@ -834,6 +902,8 @@ export type CapacityResourceSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["capacityResource"]>
 
@@ -849,6 +919,8 @@ export type CapacityResourceSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["capacityResource"]>
 
@@ -864,9 +936,11 @@ export type CapacityResourceSelectScalar = {
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type CapacityResourceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "resourceCode" | "resourceName" | "resourceType" | "locationName" | "maxConcurrentBookings" | "sourceSystem" | "recordIdempotencyKey" | "createdAt" | "updatedAt", ExtArgs["result"]["capacityResource"]>
+export type CapacityResourceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "resourceCode" | "resourceName" | "resourceType" | "locationName" | "maxConcurrentBookings" | "sourceSystem" | "recordIdempotencyKey" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["capacityResource"]>
 export type CapacityResourceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   slots?: boolean | Prisma.CapacityResource$slotsArgs<ExtArgs>
@@ -897,6 +971,8 @@ export type $CapacityResourcePayload<ExtArgs extends runtime.Types.Extensions.In
     recordIdempotencyKey: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["capacityResource"]>
   composites: {}
 }
@@ -1333,6 +1409,8 @@ export interface CapacityResourceFieldRefs {
   readonly recordIdempotencyKey: Prisma.FieldRef<"CapacityResource", 'String'>
   readonly createdAt: Prisma.FieldRef<"CapacityResource", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CapacityResource", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"CapacityResource", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"CapacityResource", 'String'>
 }
     
 

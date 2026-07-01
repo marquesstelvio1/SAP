@@ -3,6 +3,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { seconds, ThrottlerModule } from "@nestjs/throttler";
 import type { Redis } from "ioredis";
 
+import { getAuthContextFromRequest } from "../auth/auth-context.js";
 import { REDIS_CLIENT } from "../cache/cache.constants.js";
 import { RedisThrottlerStorage } from "./redis-throttler-storage.js";
 import { TenantThrottlerGuard } from "./tenant-throttler.guard.js";
@@ -29,7 +30,7 @@ import { TenantThrottlerGuard } from "./tenant-throttler.guard.js";
             ttl: seconds(60),
             limit: 100,
             getTracker: (req) => {
-              const authContext = (req as any).authContext;
+              const authContext = getAuthContextFromRequest(req);
               if (authContext?.userId) {
                 return `user:${authContext.userId}`;
               }

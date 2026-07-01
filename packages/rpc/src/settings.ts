@@ -1,5 +1,10 @@
 import { z } from "zod";
-
+import {
+  sharedAuditSchema,
+  sharedIdempotencyKeySchema,
+  sharedIdempotencyResultSchema,
+  sharedOutboxSchema,
+} from "./foundation.js";
 import { createRpcOperationMetadata } from "./metadata.js";
 
 export type SettingsOrganizationUpdateInput = z.infer<typeof settingsOrganizationUpdateInputSchema>;
@@ -20,6 +25,7 @@ export const settingsOrganizationUpdateInputSchema = z.object({
       /^[a-z0-9][a-z0-9-]*[a-z0-9]$/,
       "Slug deve ser URL-safe, usando minusculas, numeros e hifens.",
     ),
+  idempotencyKey: sharedIdempotencyKeySchema,
 });
 
 export const settingsBrandingUpdateInputSchema = z.object({
@@ -30,11 +36,15 @@ export const settingsBrandingUpdateInputSchema = z.object({
     .regex(/^#[0-9a-fA-F]{6}$/, "Cor primaria deve ser um hex valido (ex: #FF6600).")
     .optional(),
   favicon: z.instanceof(File).optional(),
+  idempotencyKey: sharedIdempotencyKeySchema,
 });
 
 export const settingsMutationOutputSchema = z.object({
   organizationId: z.string(),
   updatedAt: z.string(),
+  idempotency: sharedIdempotencyResultSchema,
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export const settingsOverviewOutputSchema = z.object({

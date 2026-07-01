@@ -20,7 +20,7 @@ import type {
   AdminUserInviteInput,
   AdminUserInviteOutput,
 } from "@saptm/rpc";
-
+import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import { writeAdminAuditAndOutbox } from "./domain/admin.audit-trail.js";
 import {
   arraysEqualIgnoringOrder,
@@ -37,7 +37,6 @@ import {
   mapUserMembership,
 } from "./domain/admin.dto.js";
 import { ADMIN_REPOSITORY, type AdminRepository } from "./domain/admin.repository.js";
-import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 
 export type GetAdminOverviewInput = {
   organizationId: string;

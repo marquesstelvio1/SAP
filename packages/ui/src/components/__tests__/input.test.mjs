@@ -45,10 +45,9 @@ test("Input passes through additional HTML props", () => {
   assert.equal(element.props["aria-label"], "Name");
 });
 
-test("Input applies inputPadding via style prop", () => {
+test("Input applies inputPadding via class", () => {
   const element = Input({});
-  assert.equal(element.props.style.paddingLeft, "var(--space-3)");
-  assert.equal(element.props.style.paddingRight, "var(--space-3)");
+  assert.ok(element.props.className.includes("px-3"));
 });
 
 /* -------------------------------------------------------------------------- */

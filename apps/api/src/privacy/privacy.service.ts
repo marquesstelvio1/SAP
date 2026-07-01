@@ -1,23 +1,25 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Optional } from "@nestjs/common";
 import {
+  type DatabaseActorType,
   getPrismaClient,
+  type PrismaTx,
   type SaptmPrismaClient,
 } from "@saptm/database";
-import type {
-  PrivacyExportInput,
-  PrivacyExportOutput,
-} from "@saptm/rpc";
+import type { PrivacyExportInput, PrivacyExportOutput } from "@saptm/rpc";
 
 @Injectable()
 export class PrivacyService {
-  private prisma: SaptmPrismaClient;
+  constructor(
+    @Optional()
+    private readonly database?: SaptmPrismaClient,
+  ) {}
 
-  constructor() {
-    this.prisma = getPrismaClient();
+  private getDatabase(): SaptmPrismaClient {
+    return this.database ?? getPrismaClient();
   }
 
   async exportUserData(userId: string, input: PrivacyExportInput): Promise<PrivacyExportOutput> {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.getDatabase().user.findUnique({
       where: { id: userId },
       include: {
         accounts: {
@@ -59,12 +61,22 @@ export class PrivacyService {
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
       },
-      associatedAccounts: (user.accounts as Array<{ providerId: string; accountId: string; createdAt: Date }>).map((acc) => ({
+      associatedAccounts: (
+        user.accounts as Array<{ providerId: string; accountId: string; createdAt: Date }>
+      ).map((acc) => ({
         providerId: acc.providerId,
         accountId: acc.accountId,
         createdAt: acc.createdAt.toISOString(),
       })),
-      memberships: (user.memberships as Array<{ organizationId: string; organization: { name: string }; status: string; membershipRoles: Array<{ role: { key: string } }>; createdAt: Date }>).map((m) => ({
+      memberships: (
+        user.memberships as Array<{
+          organizationId: string;
+          organization: { name: string };
+          status: string;
+          membershipRoles: Array<{ role: { key: string } }>;
+          createdAt: Date;
+        }>
+      ).map((m) => ({
         organizationId: m.organizationId,
         organizationName: m.organization.name,
         status: m.status,
@@ -74,12 +86,9 @@ export class PrivacyService {
     };
 
     if (input.includeAuditLogs) {
-      const auditRecords = await this.prisma.auditRecord.findMany({
+      const auditRecords = await this.getDatabase().auditRecord.findMany({
         where: {
-          OR: [
-            { actorId: userId },
-            { actorType: "user", actorId: userId },
-          ],
+          OR: [{ actorId: userId }, { actorType: "user", actorId: userId }],
         },
         orderBy: { createdAt: "desc" },
         take: 1000,
@@ -93,7 +102,16 @@ export class PrivacyService {
         },
       });
 
-      result.auditRecords = (auditRecords as Array<{ id: string; action: string; subjectType: string; subjectId: string | null; severity: string; createdAt: Date }>).map((r) => ({
+      result.auditRecords = (
+        auditRecords as Array<{
+          id: string;
+          action: string;
+          subjectType: string;
+          subjectId: string | null;
+          severity: string;
+          createdAt: Date;
+        }>
+      ).map((r) => ({
         id: r.id,
         action: r.action,
         subjectType: r.subjectType,
@@ -104,7 +122,7 @@ export class PrivacyService {
     }
 
     if (input.includeSessions) {
-      const sessions = await this.prisma.session.findMany({
+      const sessions = await this.getDatabase().session.findMany({
         where: { userId },
         orderBy: { createdAt: "desc" },
         take: 100,
@@ -117,7 +135,15 @@ export class PrivacyService {
         },
       });
 
-      result.sessions = (sessions as Array<{ id: string; createdAt: Date; expiresAt: Date; ipAddress: string | null; userAgent: string | null }>).map((s) => ({
+      result.sessions = (
+        sessions as Array<{
+          id: string;
+          createdAt: Date;
+          expiresAt: Date;
+          ipAddress: string | null;
+          userAgent: string | null;
+        }>
+      ).map((s) => ({
         id: s.id,
         createdAt: s.createdAt.toISOString(),
         expiresAt: s.expiresAt.toISOString(),
@@ -129,8 +155,38 @@ export class PrivacyService {
     return result;
   }
 
-  async scheduleAccountDeletion(_userId: string): Promise<{ scheduledAt: string; message: string }> {
+  async scheduleAccountDeletion(
+    userId: string,
+    input: { actorType: DatabaseActorType; actorId: string; correlationId: string },
+  ): Promise<{ scheduledAt: string; message: string }> {
     const scheduledAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+    await this.getDatabase().$transaction(async (tx: PrismaTx) => {
+      await tx.auditRecord.create({
+        data: {
+          organizationId: undefined,
+          actorType: input.actorType,
+          actorId: input.actorId,
+          action: "account.deletion_scheduled",
+          subjectType: "user",
+          subjectId: userId,
+          severity: "high",
+          after: { scheduledAt: scheduledAt.toISOString() },
+          reason: "User requested account deletion. 30-day grace period started.",
+          correlationId: input.correlationId,
+        } as never,
+      });
+
+      await tx.outboxEvent.create({
+        data: {
+          organizationId: undefined,
+          eventType: "account.deletion_scheduled",
+          aggregateType: "user",
+          aggregateId: userId,
+          payload: { userId, scheduledAt: scheduledAt.toISOString() },
+        } as never,
+      });
+    });
 
     return {
       scheduledAt: scheduledAt.toISOString(),

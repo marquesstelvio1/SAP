@@ -238,6 +238,71 @@ export class PrismaCargoRepository implements CargoRepository {
     }));
   }
 
+  async getComplianceEvidenceOverview(
+    organizationId: string,
+    limit: number,
+    offset: number,
+  ): Promise<{
+    statusGroups: { status: string; count: number }[];
+    typeGroups: { evidenceType: string; count: number }[];
+    expiringCount: number;
+    expiredCount: number;
+    totalCount: number;
+    recentEvidence: CargoComplianceEvidenceRecord[];
+  }> {
+    const now = new Date();
+    const in7Days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const [statusGroups, typeGroups, expiringCount, expiredCount, totalCount, recentEvidence] =
+      await Promise.all([
+        this.database.cargoComplianceEvidence.groupBy({
+          by: ["status"],
+          where: { organizationId },
+          _count: { _all: true },
+        }),
+        this.database.cargoComplianceEvidence.groupBy({
+          by: ["evidenceType"],
+          where: { organizationId },
+          _count: { _all: true },
+        }),
+        this.database.cargoComplianceEvidence.count({
+          where: {
+            organizationId,
+            expiresAt: { gte: now, lte: in7Days },
+          },
+        }),
+        this.database.cargoComplianceEvidence.count({
+          where: {
+            organizationId,
+            expiresAt: { lt: now },
+          },
+        }),
+        this.database.cargoComplianceEvidence.count({
+          where: { organizationId },
+        }),
+        this.database.cargoComplianceEvidence.findMany({
+          where: { organizationId },
+          orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
+          skip: offset,
+          take: limit,
+        }),
+      ]);
+
+    return {
+      statusGroups: statusGroups.map((g: { status: string; _count: { _all: number } }) => ({
+        status: g.status,
+        count: g._count._all,
+      })),
+      typeGroups: typeGroups.map((g: { evidenceType: string; _count: { _all: number } }) => ({
+        evidenceType: g.evidenceType,
+        count: g._count._all,
+      })),
+      expiringCount,
+      expiredCount,
+      totalCount,
+      recentEvidence: recentEvidence as unknown as CargoComplianceEvidenceRecord[],
+    };
+  }
+
   async findOpenDeliveryExceptionForCargo(
     organizationId: string,
     cargoId: string,
@@ -291,6 +356,34 @@ export class PrismaCargoRepository implements CargoRepository {
       ...(raw as unknown as CargoDeliveryExceptionRecord),
       cargo: this.mapCargo((raw as Record<string, unknown>).cargo as Record<string, unknown>),
     };
+  }
+
+  async countDeliveryExceptionsByStatus(
+    organizationId: string,
+  ): Promise<{ status: string; count: number }[]> {
+    const groups = await this.database.cargoDeliveryException.groupBy({
+      by: ["status"],
+      where: { organizationId },
+      _count: { _all: true },
+    });
+    return groups.map((g: { status: string; _count: { _all: number } }) => ({
+      status: g.status,
+      count: g._count._all,
+    }));
+  }
+
+  async findRecentDeliveryExceptions(
+    organizationId: string,
+    limit: number,
+    offset: number,
+  ): Promise<CargoDeliveryExceptionRecord[]> {
+    const raws = await this.database.cargoDeliveryException.findMany({
+      where: { organizationId },
+      orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
+      skip: offset,
+      take: limit,
+    });
+    return raws as unknown as CargoDeliveryExceptionRecord[];
   }
 
   async findClaimSettlementByRecordIdempotencyKey(
@@ -716,6 +809,9 @@ export class PrismaCargoRepository implements CargoRepository {
   }
 
   async deleteCargoEntity(id: string): Promise<void> {
-    await this.database.cargo.delete({ where: { id } });
+    await this.database.cargo.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
   }
 }

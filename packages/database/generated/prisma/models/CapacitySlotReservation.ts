@@ -54,6 +54,8 @@ export type CapacitySlotReservationMinAggregateOutputType = {
   cancelIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CapacitySlotReservationMaxAggregateOutputType = {
@@ -76,6 +78,8 @@ export type CapacitySlotReservationMaxAggregateOutputType = {
   cancelIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CapacitySlotReservationCountAggregateOutputType = {
@@ -98,6 +102,8 @@ export type CapacitySlotReservationCountAggregateOutputType = {
   cancelIdempotencyKey: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -130,6 +136,8 @@ export type CapacitySlotReservationMinAggregateInputType = {
   cancelIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CapacitySlotReservationMaxAggregateInputType = {
@@ -152,6 +160,8 @@ export type CapacitySlotReservationMaxAggregateInputType = {
   cancelIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CapacitySlotReservationCountAggregateInputType = {
@@ -174,6 +184,8 @@ export type CapacitySlotReservationCountAggregateInputType = {
   cancelIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -283,6 +295,8 @@ export type CapacitySlotReservationGroupByOutputType = {
   cancelIdempotencyKey: string | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: CapacitySlotReservationCountAggregateOutputType | null
   _avg: CapacitySlotReservationAvgAggregateOutputType | null
   _sum: CapacitySlotReservationSumAggregateOutputType | null
@@ -328,6 +342,8 @@ export type CapacitySlotReservationWhereInput = {
   cancelIdempotencyKey?: Prisma.StringNullableFilter<"CapacitySlotReservation"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CapacitySlotReservation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CapacitySlotReservation"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CapacitySlotReservation"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CapacitySlotReservation"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
   slot?: Prisma.XOR<Prisma.CapacitySlotScalarRelationFilter, Prisma.CapacitySlotWhereInput>
@@ -355,6 +371,8 @@ export type CapacitySlotReservationOrderByWithRelationInput = {
   cancelIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   cargo?: Prisma.CargoOrderByWithRelationInput
   slot?: Prisma.CapacitySlotOrderByWithRelationInput
@@ -389,6 +407,8 @@ export type CapacitySlotReservationWhereUniqueInput = Prisma.AtLeast<{
   cancelIdempotencyKey?: Prisma.StringNullableFilter<"CapacitySlotReservation"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CapacitySlotReservation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CapacitySlotReservation"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CapacitySlotReservation"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CapacitySlotReservation"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
   slot?: Prisma.XOR<Prisma.CapacitySlotScalarRelationFilter, Prisma.CapacitySlotWhereInput>
@@ -416,6 +436,8 @@ export type CapacitySlotReservationOrderByWithAggregationInput = {
   cancelIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CapacitySlotReservationCountOrderByAggregateInput
   _avg?: Prisma.CapacitySlotReservationAvgOrderByAggregateInput
   _max?: Prisma.CapacitySlotReservationMaxOrderByAggregateInput
@@ -446,6 +468,8 @@ export type CapacitySlotReservationScalarWhereWithAggregatesInput = {
   cancelIdempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"CapacitySlotReservation"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CapacitySlotReservation"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CapacitySlotReservation"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CapacitySlotReservation"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"CapacitySlotReservation"> | string | null
 }
 
 export type CapacitySlotReservationCreateInput = {
@@ -465,6 +489,8 @@ export type CapacitySlotReservationCreateInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCapacityReservationsInput
   cargo: Prisma.CargoCreateNestedOneWithoutCapacityReservationsInput
   slot: Prisma.CapacitySlotCreateNestedOneWithoutReservationsInput
@@ -492,6 +518,8 @@ export type CapacitySlotReservationUncheckedCreateInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedCreateNestedManyWithoutReservationInput
   transportOrders?: Prisma.TransportOrderUncheckedCreateNestedManyWithoutCapacityReservationInput
 }
@@ -513,6 +541,8 @@ export type CapacitySlotReservationUpdateInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCapacityReservationsNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutCapacityReservationsNestedInput
   slot?: Prisma.CapacitySlotUpdateOneRequiredWithoutReservationsNestedInput
@@ -540,6 +570,8 @@ export type CapacitySlotReservationUncheckedUpdateInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedUpdateManyWithoutReservationNestedInput
   transportOrders?: Prisma.TransportOrderUncheckedUpdateManyWithoutCapacityReservationNestedInput
 }
@@ -564,6 +596,8 @@ export type CapacitySlotReservationCreateManyInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacitySlotReservationUpdateManyMutationInput = {
@@ -583,6 +617,8 @@ export type CapacitySlotReservationUpdateManyMutationInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacitySlotReservationUncheckedUpdateManyInput = {
@@ -605,6 +641,8 @@ export type CapacitySlotReservationUncheckedUpdateManyInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacitySlotReservationListRelationFilter = {
@@ -659,6 +697,8 @@ export type CapacitySlotReservationCountOrderByAggregateInput = {
   cancelIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CapacitySlotReservationAvgOrderByAggregateInput = {
@@ -685,6 +725,8 @@ export type CapacitySlotReservationMaxOrderByAggregateInput = {
   cancelIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CapacitySlotReservationMinOrderByAggregateInput = {
@@ -707,6 +749,8 @@ export type CapacitySlotReservationMinOrderByAggregateInput = {
   cancelIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CapacitySlotReservationSumOrderByAggregateInput = {
@@ -901,6 +945,8 @@ export type CapacitySlotReservationCreateWithoutOrganizationInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   cargo: Prisma.CargoCreateNestedOneWithoutCapacityReservationsInput
   slot: Prisma.CapacitySlotCreateNestedOneWithoutReservationsInput
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionCreateNestedManyWithoutReservationInput
@@ -926,6 +972,8 @@ export type CapacitySlotReservationUncheckedCreateWithoutOrganizationInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedCreateNestedManyWithoutReservationInput
   transportOrders?: Prisma.TransportOrderUncheckedCreateNestedManyWithoutCapacityReservationInput
 }
@@ -979,6 +1027,8 @@ export type CapacitySlotReservationScalarWhereInput = {
   cancelIdempotencyKey?: Prisma.StringNullableFilter<"CapacitySlotReservation"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CapacitySlotReservation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CapacitySlotReservation"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CapacitySlotReservation"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CapacitySlotReservation"> | string | null
 }
 
 export type CapacitySlotReservationCreateWithoutCargoInput = {
@@ -998,6 +1048,8 @@ export type CapacitySlotReservationCreateWithoutCargoInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCapacityReservationsInput
   slot: Prisma.CapacitySlotCreateNestedOneWithoutReservationsInput
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionCreateNestedManyWithoutReservationInput
@@ -1023,6 +1075,8 @@ export type CapacitySlotReservationUncheckedCreateWithoutCargoInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedCreateNestedManyWithoutReservationInput
   transportOrders?: Prisma.TransportOrderUncheckedCreateNestedManyWithoutCapacityReservationInput
 }
@@ -1070,6 +1124,8 @@ export type CapacitySlotReservationCreateWithoutSlotInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCapacityReservationsInput
   cargo: Prisma.CargoCreateNestedOneWithoutCapacityReservationsInput
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionCreateNestedManyWithoutReservationInput
@@ -1095,6 +1151,8 @@ export type CapacitySlotReservationUncheckedCreateWithoutSlotInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedCreateNestedManyWithoutReservationInput
   transportOrders?: Prisma.TransportOrderUncheckedCreateNestedManyWithoutCapacityReservationInput
 }
@@ -1142,6 +1200,8 @@ export type CapacitySlotReservationCreateWithoutAdvisoryDecisionsInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCapacityReservationsInput
   cargo: Prisma.CargoCreateNestedOneWithoutCapacityReservationsInput
   slot: Prisma.CapacitySlotCreateNestedOneWithoutReservationsInput
@@ -1168,6 +1228,8 @@ export type CapacitySlotReservationUncheckedCreateWithoutAdvisoryDecisionsInput 
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   transportOrders?: Prisma.TransportOrderUncheckedCreateNestedManyWithoutCapacityReservationInput
 }
 
@@ -1204,6 +1266,8 @@ export type CapacitySlotReservationUpdateWithoutAdvisoryDecisionsInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCapacityReservationsNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutCapacityReservationsNestedInput
   slot?: Prisma.CapacitySlotUpdateOneRequiredWithoutReservationsNestedInput
@@ -1230,6 +1294,8 @@ export type CapacitySlotReservationUncheckedUpdateWithoutAdvisoryDecisionsInput 
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transportOrders?: Prisma.TransportOrderUncheckedUpdateManyWithoutCapacityReservationNestedInput
 }
 
@@ -1250,6 +1316,8 @@ export type CapacitySlotReservationCreateWithoutTransportOrdersInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCapacityReservationsInput
   cargo: Prisma.CargoCreateNestedOneWithoutCapacityReservationsInput
   slot: Prisma.CapacitySlotCreateNestedOneWithoutReservationsInput
@@ -1276,6 +1344,8 @@ export type CapacitySlotReservationUncheckedCreateWithoutTransportOrdersInput = 
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedCreateNestedManyWithoutReservationInput
 }
 
@@ -1312,6 +1382,8 @@ export type CapacitySlotReservationUpdateWithoutTransportOrdersInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCapacityReservationsNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutCapacityReservationsNestedInput
   slot?: Prisma.CapacitySlotUpdateOneRequiredWithoutReservationsNestedInput
@@ -1338,6 +1410,8 @@ export type CapacitySlotReservationUncheckedUpdateWithoutTransportOrdersInput = 
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedUpdateManyWithoutReservationNestedInput
 }
 
@@ -1360,6 +1434,8 @@ export type CapacitySlotReservationCreateManyOrganizationInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacitySlotReservationUpdateWithoutOrganizationInput = {
@@ -1379,6 +1455,8 @@ export type CapacitySlotReservationUpdateWithoutOrganizationInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargo?: Prisma.CargoUpdateOneRequiredWithoutCapacityReservationsNestedInput
   slot?: Prisma.CapacitySlotUpdateOneRequiredWithoutReservationsNestedInput
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUpdateManyWithoutReservationNestedInput
@@ -1404,6 +1482,8 @@ export type CapacitySlotReservationUncheckedUpdateWithoutOrganizationInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedUpdateManyWithoutReservationNestedInput
   transportOrders?: Prisma.TransportOrderUncheckedUpdateManyWithoutCapacityReservationNestedInput
 }
@@ -1427,6 +1507,8 @@ export type CapacitySlotReservationUncheckedUpdateManyWithoutOrganizationInput =
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacitySlotReservationCreateManyCargoInput = {
@@ -1448,6 +1530,8 @@ export type CapacitySlotReservationCreateManyCargoInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacitySlotReservationUpdateWithoutCargoInput = {
@@ -1467,6 +1551,8 @@ export type CapacitySlotReservationUpdateWithoutCargoInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCapacityReservationsNestedInput
   slot?: Prisma.CapacitySlotUpdateOneRequiredWithoutReservationsNestedInput
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUpdateManyWithoutReservationNestedInput
@@ -1492,6 +1578,8 @@ export type CapacitySlotReservationUncheckedUpdateWithoutCargoInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedUpdateManyWithoutReservationNestedInput
   transportOrders?: Prisma.TransportOrderUncheckedUpdateManyWithoutCapacityReservationNestedInput
 }
@@ -1515,6 +1603,8 @@ export type CapacitySlotReservationUncheckedUpdateManyWithoutCargoInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacitySlotReservationCreateManySlotInput = {
@@ -1536,6 +1626,8 @@ export type CapacitySlotReservationCreateManySlotInput = {
   cancelIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacitySlotReservationUpdateWithoutSlotInput = {
@@ -1555,6 +1647,8 @@ export type CapacitySlotReservationUpdateWithoutSlotInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCapacityReservationsNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutCapacityReservationsNestedInput
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUpdateManyWithoutReservationNestedInput
@@ -1580,6 +1674,8 @@ export type CapacitySlotReservationUncheckedUpdateWithoutSlotInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   advisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedUpdateManyWithoutReservationNestedInput
   transportOrders?: Prisma.TransportOrderUncheckedUpdateManyWithoutCapacityReservationNestedInput
 }
@@ -1603,6 +1699,8 @@ export type CapacitySlotReservationUncheckedUpdateManyWithoutSlotInput = {
   cancelIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1665,6 +1763,8 @@ export type CapacitySlotReservationSelect<ExtArgs extends runtime.Types.Extensio
   cancelIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   slot?: boolean | Prisma.CapacitySlotDefaultArgs<ExtArgs>
@@ -1693,6 +1793,8 @@ export type CapacitySlotReservationSelectCreateManyAndReturn<ExtArgs extends run
   cancelIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   slot?: boolean | Prisma.CapacitySlotDefaultArgs<ExtArgs>
@@ -1718,6 +1820,8 @@ export type CapacitySlotReservationSelectUpdateManyAndReturn<ExtArgs extends run
   cancelIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   slot?: boolean | Prisma.CapacitySlotDefaultArgs<ExtArgs>
@@ -1743,9 +1847,11 @@ export type CapacitySlotReservationSelectScalar = {
   cancelIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type CapacitySlotReservationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "slotId" | "reservationReference" | "reservationPurpose" | "status" | "reservedUnits" | "reservedByName" | "reservedAt" | "cancellationReference" | "cancelledByName" | "cancellationReason" | "cancelledAt" | "sourceSystem" | "reserveIdempotencyKey" | "cancelIdempotencyKey" | "createdAt" | "updatedAt", ExtArgs["result"]["capacitySlotReservation"]>
+export type CapacitySlotReservationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "slotId" | "reservationReference" | "reservationPurpose" | "status" | "reservedUnits" | "reservedByName" | "reservedAt" | "cancellationReference" | "cancelledByName" | "cancellationReason" | "cancelledAt" | "sourceSystem" | "reserveIdempotencyKey" | "cancelIdempotencyKey" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["capacitySlotReservation"]>
 export type CapacitySlotReservationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
@@ -1794,6 +1900,8 @@ export type $CapacitySlotReservationPayload<ExtArgs extends runtime.Types.Extens
     cancelIdempotencyKey: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["capacitySlotReservation"]>
   composites: {}
 }
@@ -2241,6 +2349,8 @@ export interface CapacitySlotReservationFieldRefs {
   readonly cancelIdempotencyKey: Prisma.FieldRef<"CapacitySlotReservation", 'String'>
   readonly createdAt: Prisma.FieldRef<"CapacitySlotReservation", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CapacitySlotReservation", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"CapacitySlotReservation", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"CapacitySlotReservation", 'String'>
 }
     
 

@@ -1,10 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { getPrismaClient, type SaptmPrismaClient } from "@saptm/database";
+import { getPrismaClient, type PrismaTx, type SaptmPrismaClient } from "@saptm/database";
 
 import type {
   ActiveEndpointRecord,
   CreateWebhookData,
   CreateWebhookDeliveryInput,
+  PrismaAuditRecordCreateInput,
+  PrismaOutboxEventCreateInput,
   UpdateWebhookData,
   WebhookDeliveryRecord,
   WebhookEndpointRecord,
@@ -36,8 +38,9 @@ export class PrismaWebhooksRepository implements WebhooksRepository {
   }
 
   async deleteWebhook(webhookId: string): Promise<void> {
-    await this.database.webhookEndpoint.delete({
+    await this.database.webhookEndpoint.update({
       where: { id: webhookId },
+      data: { deletedAt: new Date() },
     });
   }
 
@@ -130,5 +133,17 @@ export class PrismaWebhooksRepository implements WebhooksRepository {
         failureCount: { increment: 1 },
       },
     });
+  }
+
+  async createAuditRecord(tx: PrismaTx, input: PrismaAuditRecordCreateInput): Promise<void> {
+    await tx.auditRecord.create({ data: input as never });
+  }
+
+  async createOutboxEvent(tx: PrismaTx, input: PrismaOutboxEventCreateInput): Promise<void> {
+    await tx.outboxEvent.create({ data: input as never });
+  }
+
+  async transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T> {
+    return this.database.$transaction(fn);
   }
 }

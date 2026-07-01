@@ -108,7 +108,7 @@ export function NextActionCell({ action }: { action: NextAction }) {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="inline-flex cursor-help items-center gap-1 rounded-md bg-warning/10 px-2 py-1 text-[0.65rem] text-warning">
+            <span className="inline-flex cursor-help items-center gap-1 rounded-md bg-warning/10 px-2 py-1 text-2xs text-warning">
               <span>Bloqueado</span>
             </span>
           </TooltipTrigger>
@@ -124,7 +124,7 @@ export function NextActionCell({ action }: { action: NextAction }) {
 
   return (
     <Link
-      className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-[0.65rem] text-primary underline-offset-4 hover:bg-primary/20 hover:underline"
+      className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-2xs text-primary underline-offset-4 outline-none hover:bg-primary/20 hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
       href={action.href}
     >
       {action.label}

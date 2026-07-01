@@ -10,7 +10,7 @@
 | **Turbo** | turbo 2.9.16 |
 | **Linter/Formatter** | Biome (spaces, 2 indent, 100 width, double quotes) |
 | **Apps** | 2 (`@saptm/api`, `@saptm/web`) |
-| **Packages** | 10 (auth, config, database, rpc, ui, types, testing, observability, email, tsconfig) |
+| **Packages** | 11 (auth, config, database, rpc, ui, form, types, testing, observability, email, tsconfig) |
 | **Validation scripts** | 30+ validate:* scripts + smoke tests |
 
 ---
@@ -136,11 +136,11 @@
 2. **Webpack fails** to resolve `@saptm/auth/client` subpath export when `--webpack` flag used
 3. **No frontend unit tests** (no Jest/Vitest configured)
 4. **No coverage tooling** configured
-5. **No Sentry or error tracking** integration
+5. **Sentry integration** exists but DSN is optional; verify error tracking is wired in production
 6. **No backup/restore scripts** for database
 7. **ui/hooks** directory is empty
 8. **Email templates** only in Portuguese
-9. **Web health endpoint** points to `/api/health` but web has no explicit health route
+9. **Web health endpoint** `/api/health` exists in `apps/web/app/api/health/route.ts`
 10. **No cache invalidation** strategy documented for RPC queries
 11. **PowerShell scripts** for AI workflows won't run on Linux CI
 12. **No migration rollback** strategy documented

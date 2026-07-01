@@ -59,7 +59,7 @@ export function IntegrationRailTmsMovementForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessRailTms ? "success" : "warning"}>
-            {canProcessRailTms ? "Adapter governado" : "Sem permissao"}
+            {canProcessRailTms ? "Movimento autorizado" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">Rail TMS</Badge>
           <Badge variant="outline">tracking.event.record</Badge>
@@ -68,7 +68,7 @@ export function IntegrationRailTmsMovementForm({
           <CardTitle>Processar movimento Rail TMS</CardTitle>
           <CardDescription className="leading-6">
             Converte movimentos ferroviarios locais em eventos de tracking. A operacao valida
-            service account, tenant, idempotencia externa, audit trail e outbox.
+            processamento de movimento Rail TMS com registo de evento.
           </CardDescription>
         </div>
       </CardHeader>
@@ -228,7 +228,7 @@ export function IntegrationRailTmsMovementForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma service account com tracking.event.record."
+              ? "Crie uma conta de servico com permissoes de tracking."
               : "Adapter ferroviario local sem chamada externa."}
           </span>
         </CardFooter>

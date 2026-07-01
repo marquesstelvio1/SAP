@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -42,7 +42,7 @@ const openApiDoc = {
   security: [{ session: [] }, { apiKey: [] }],
 };
 
-const metadataImports = {};
+const _metadataImports = {};
 
 function scanRouterFiles(dir) {
   const files = [];
@@ -136,7 +136,7 @@ for (const file of readdirSync(RPC_DIR)) {
 }
 
 const allContractSchemas = {};
-for (const [name, path] of Object.entries(contractFiles)) {
+for (const [_name, path] of Object.entries(contractFiles)) {
   Object.assign(allContractSchemas, parseContractSchemas(path));
 }
 
@@ -160,7 +160,7 @@ const moduleNameMap = {
 for (const filePath of routerFiles) {
   const fileName = basename(filePath).replace(/\.ts$/, "");
   const moduleTag = moduleNameMap[fileName] || fileName.replace("-rpc.router", "");
-  const moduleMetadata = extractMetadataFromContent(filePath);
+  const _moduleMetadata = extractMetadataFromContent(filePath);
   const operations = extractOperations(filePath);
 
   for (const op of operations) {

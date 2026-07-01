@@ -128,19 +128,34 @@ export function createBillingRpcRouter(deps: CreateBillingRpcRouterInput) {
             throw new ForbiddenException("billing.organization_required");
           }
 
-          return deps.billingService.createCheckoutSession(
+          const result = await deps.billingService.createCheckoutSession(
             organizationId,
             input.plan,
             input.successUrl,
             input.cancelUrl,
           );
+
+          return {
+            url: result.url,
+            idempotency: { key: input.idempotencyKey, replayed: false },
+            audit: {
+              action: "billing.checkout_session_created",
+              subjectType: "organization",
+              subjectId: organizationId,
+            },
+            outbox: {
+              eventType: "billing.checkout_session_created",
+              aggregateType: "billing",
+              aggregateId: organizationId,
+            },
+          };
         }),
       createPortalSession: billingRpc
         .meta(billingCreatePortalSessionMetadata)
         .route({ method: "POST", path: "/billing/createPortalSession" })
         .input(createPortalSessionInputSchema)
         .output(createPortalSessionOutputSchema)
-        .handler(async ({ context }) => {
+        .handler(async ({ context, input }) => {
           const authorizedContext = await deps.rpcContextService.authorizeRequest(
             context.request,
             billingCreatePortalSessionMetadata,
@@ -153,7 +168,20 @@ export function createBillingRpcRouter(deps: CreateBillingRpcRouterInput) {
 
           const result = await deps.billingService.createPortalSession(organizationId);
 
-          return { url: result.url };
+          return {
+            url: result.url,
+            idempotency: { key: input.idempotencyKey, replayed: false },
+            audit: {
+              action: "billing.portal_session_created",
+              subjectType: "organization",
+              subjectId: organizationId,
+            },
+            outbox: {
+              eventType: "billing.portal_session_created",
+              aggregateType: "billing",
+              aggregateId: organizationId,
+            },
+          };
         }),
     },
   });

@@ -5,16 +5,29 @@ import type * as React from "react";
 
 import { cn } from "../lib/utils.js";
 
+const densityHeightMap = {
+  comfortable: "h-[var(--density-comfortable-control-height)]",
+  compact: "h-[var(--density-compact-control-height)]",
+  operational: "h-[var(--density-operational-control-height)]",
+} as const;
+
 function Tabs({ ...props }: React.ComponentProps<typeof TabsPrimitive.Root>) {
   return <TabsPrimitive.Root data-slot="tabs" {...props} />;
 }
 
-function TabsList({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.List>) {
+function TabsList({
+  className,
+  density = "comfortable",
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.List> & {
+  density?: "comfortable" | "compact" | "operational";
+}) {
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
       className={cn(
-        "inline-flex h-[var(--density-control-height)] items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
+        "inline-flex items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
+        densityHeightMap[density],
         className,
       )}
       {...props}

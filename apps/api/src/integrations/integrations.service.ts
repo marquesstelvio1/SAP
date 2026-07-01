@@ -12,6 +12,7 @@ import type {
   IntegrationTelematicsGpsPositionOutput,
   IntegrationWarehouseWmsActivityOutput,
 } from "@saptm/rpc";
+import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createAdapterAuditBefore,
   createCarrierTmsAdapterAuditAfter,
@@ -73,7 +74,6 @@ import {
   INTEGRATIONS_REPOSITORY,
   type IntegrationsRepository,
 } from "./domain/integrations.repository.js";
-import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 
 @Injectable()
 export class IntegrationsService {

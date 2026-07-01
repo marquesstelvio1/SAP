@@ -18,6 +18,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { AdminRoleDeleteFormState } from "../../app/(platform)/app/admin/form-state";
 
 export type AdminRoleDeleteOption = {
@@ -46,12 +47,14 @@ export function AdminRoleDeleteForm({
 }: AdminRoleDeleteFormProps) {
   const deletableRoles = roles.filter((role) => !role.protected && role.membershipCount === 0);
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("delete"));
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("admin_role_delete"),
+  );
   const isDisabled = isPending || !canManageRoles || deletableRoles.length === 0;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey("delete"));
+      setIdempotencyKey(createIdempotencyKey("admin_role_delete"));
     }
   }, [state.status]);
 
@@ -60,7 +63,7 @@ export function AdminRoleDeleteForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageRoles ? "success" : "warning"}>
-            {canManageRoles ? "Delete custom" : "Sem permissao"}
+            {canManageRoles ? "Delete custom" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">sem membros</Badge>
         </div>
@@ -104,13 +107,4 @@ export function AdminRoleDeleteForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(scope: string): string {
-  const randomValue =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2);
-
-  return `admin_role_${scope}_${randomValue}`;
 }

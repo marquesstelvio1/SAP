@@ -19,7 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
-
+import { addHours, createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TransportOrderConfirmFormState } from "../../app/(platform)/app/planning/form-state";
 
 export type TransportOrderConfirmFormProps = {
@@ -45,7 +46,9 @@ export function TransportOrderConfirmForm({
   action,
 }: TransportOrderConfirmFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("planning_confirm"),
+  );
   const defaultConfirmedAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const defaultDepartureAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 6)), []);
   const defaultArrivalAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 18)), []);
@@ -53,7 +56,7 @@ export function TransportOrderConfirmForm({
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("planning_confirm"));
     }
   }, [state.status]);
 
@@ -62,7 +65,7 @@ export function TransportOrderConfirmForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canConfirmTransportOrder ? "success" : "warning"}>
-            {canConfirmTransportOrder ? "Confirmacao governada" : "Sem permissao"}
+            {canConfirmTransportOrder ? "Confirmação autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">planning.order.confirm</Badge>
         </div>
@@ -246,8 +249,8 @@ export function TransportOrderConfirmForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canConfirmTransportOrder
-              ? "Confirmacao grava audit/outbox e bloqueia duplicidades."
-              : "Requer planning.order.confirm."}
+              ? "Confirmacao gravada com registo de auditoria."
+              : "Requer confirmacao de transporte."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A confirmar..." : "Confirmar transport order"}
@@ -256,21 +259,4 @@ export function TransportOrderConfirmForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `planning_confirm_${randomValue}`;
-}
-
-function addHours(date: Date, hours: number): Date {
-  return new Date(date.getTime() + hours * 60 * 60 * 1000);
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

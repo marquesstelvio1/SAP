@@ -10,9 +10,7 @@ import { getCurrentOrganizationId } from "./tenant-context.js";
  * - `AuditRecord` — `organizationId` is optional, allows system-level audits
  * - `OutboxEvent` — `organizationId` is optional, allows system-level events
  * - `Organization` — the organizational entity itself (no self-reference)
- * - `User`, `Session`, `Account`, `Verification`, `TwoFactor` — auth models, no orgId
- * - `Team` — uses `orgId` field (different column name)
- * - `TeamMember` — no direct orgId, linked via team
+ * - `User`, `Session`, `Account`, `Verification`, `TwoFactor` — auth models, no organizationId
  * - `Role` — `organizationId` is optional
  * - `Permission`, `RolePermission`, `MembershipRole` — no orgId (join/permission tables)
  * - `ApiKey` — no direct orgId, linked via `ServiceAccount`
@@ -44,6 +42,8 @@ const TENANT_SCOPED_MODELS = new Set([
   "Invoice",
   "UsageRecord",
   "WebhookEndpoint",
+  "Team",
+  "TeamMember",
 ]);
 
 /**
@@ -174,10 +174,17 @@ export function createTenantScopingExtension() {
               const data = args.data;
               if (Array.isArray(data)) {
                 args.data = data.map(
-                  (d) => ({ ...(d as Record<string, unknown>), organizationId: orgId }) as Record<string, unknown>,
+                  (d) =>
+                    ({ ...(d as Record<string, unknown>), organizationId: orgId }) as Record<
+                      string,
+                      unknown
+                    >,
                 );
               } else if (typeof data === "object" && data !== null) {
-                args.data = { ...(data as Record<string, unknown>), organizationId: orgId } as Record<string, unknown>;
+                args.data = {
+                  ...(data as Record<string, unknown>),
+                  organizationId: orgId,
+                } as Record<string, unknown>;
               }
               break;
             }
@@ -185,9 +192,21 @@ export function createTenantScopingExtension() {
             case "skip": {
               // findUnique/findUniqueOrThrow cannot accept organizationId in where
               // because where is restricted to unique constraint fields.
-              // These operations are safe only when the caller provides sufficient
-              // context (e.g., a scoped ID that already includes org context).
-              break;
+              // Instead, verify the result belongs to the current organization.
+              const result = await query(args);
+
+              if (
+                result !== null &&
+                typeof result === "object" &&
+                "organizationId" in (result as Record<string, unknown>)
+              ) {
+                const recordOrgId = (result as Record<string, unknown>).organizationId;
+                if (recordOrgId !== orgId) {
+                  return null;
+                }
+              }
+
+              return result;
             }
           }
 

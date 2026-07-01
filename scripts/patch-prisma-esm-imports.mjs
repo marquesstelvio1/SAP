@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const prismaDir = resolve(process.cwd(), "dist/generated/prisma");
@@ -18,10 +18,10 @@ function patchFile(filePath) {
   let source = readFileSync(filePath, "utf8");
   const original = source;
 
-  source = source.replace(/from\s+"\.\/([^"]+?(?<!\.js))"/g, (match, specifier) => {
+  source = source.replace(/from\s+"\.\/([^"]+?(?<!\.js))"/g, (_match, specifier) => {
     return `from "./${specifier}.js"`;
   });
-  source = source.replace(/from\s+'\.\/([^']+?(?<!\.js))'/g, (match, specifier) => {
+  source = source.replace(/from\s+'\.\/([^']+?(?<!\.js))'/g, (_match, specifier) => {
     return `from './${specifier}.js'`;
   });
 

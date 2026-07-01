@@ -76,6 +76,9 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
           return deps.teamsService.createTeam({
             ...input,
             organizationId,
+            actorId: authContext.actorId,
+            actorType: authContext.actorType,
+            correlationId: authContext.correlationId,
           });
         }),
       update: teamsRpc
@@ -98,6 +101,9 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
           return deps.teamsService.updateTeam({
             ...input,
             organizationId,
+            actorId: authContext.actorId,
+            actorType: authContext.actorType,
+            correlationId: authContext.correlationId,
           });
         }),
       delete: teamsRpc
@@ -120,6 +126,9 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
           return deps.teamsService.deleteTeam({
             ...input,
             organizationId,
+            actorId: authContext.actorId,
+            actorType: authContext.actorType,
+            correlationId: authContext.correlationId,
           });
         }),
       list: teamsRpc
@@ -186,6 +195,9 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
           return deps.teamsService.addTeamMember({
             ...input,
             organizationId,
+            actorId: authContext.actorId,
+            actorType: authContext.actorType,
+            correlationId: authContext.correlationId,
           });
         }),
       removeMember: teamsRpc
@@ -208,6 +220,9 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
           return deps.teamsService.removeTeamMember({
             ...input,
             organizationId,
+            actorId: authContext.actorId,
+            actorType: authContext.actorType,
+            correlationId: authContext.correlationId,
           });
         }),
       updateMemberRole: teamsRpc
@@ -230,6 +245,9 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
           return deps.teamsService.updateTeamMemberRole({
             ...input,
             organizationId,
+            actorId: authContext.actorId,
+            actorType: authContext.actorType,
+            correlationId: authContext.correlationId,
           });
         }),
     },

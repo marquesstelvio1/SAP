@@ -78,7 +78,7 @@ export function CapacityPreCheck({
         {cargoEligibility !== null && cargoEligibility !== undefined ? (
           <div className="rounded-lg border bg-muted/20 p-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="text-xs uppercase tracking-uppercase text-muted-foreground">
                 Carga
               </span>
               <Badge
@@ -106,7 +106,7 @@ export function CapacityPreCheck({
 
         {/* Available slots */}
         <div className="flex flex-col gap-2">
-          <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="text-xs uppercase tracking-uppercase text-muted-foreground">
             Slots disponiveis ({slots.length})
           </span>
           {slots.length === 0 ? (
@@ -124,7 +124,7 @@ export function CapacityPreCheck({
 
                 return (
                   <button
-                    className={`flex cursor-pointer flex-col gap-2 rounded-lg border p-3 text-left transition-colors ${
+                    className={`flex cursor-pointer flex-col gap-2 rounded-lg border p-3 text-left outline-none transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/50 ${
                       isSelected
                         ? "border-primary bg-primary/5"
                         : slot.status === "open"
@@ -216,13 +216,13 @@ export function CapacityPreCheck({
         {/* Module links */}
         <div className="flex flex-wrap gap-2 pt-1">
           <Link
-            className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-[0.65rem] text-muted-foreground underline-offset-4 hover:bg-muted/40 hover:underline"
+            className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-2xs text-muted-foreground underline-offset-4 hover:bg-muted/40 hover:underline"
             href={"/app/capacity" as Route}
           >
             Ver todos os slots
           </Link>
           <Link
-            className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-[0.65rem] text-muted-foreground underline-offset-4 hover:bg-muted/40 hover:underline"
+            className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-2xs text-muted-foreground underline-offset-4 hover:bg-muted/40 hover:underline"
             href={"/app/audit?subjectType=capacity&limit=25" as Route}
           >
             Auditoria de capacidade

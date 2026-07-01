@@ -22,8 +22,8 @@ import {
 } from "@saptm/ui";
 import type { Route } from "next";
 import Link from "next/link";
+import { formatDateTime } from "@/lib/format";
 import {
-  formatDateTime,
   membershipStatusLabels,
   resolveMembershipStatusVariant,
 } from "../../app/(platform)/app/admin/logic";
@@ -43,11 +43,11 @@ export type AdminUsersTableProps = {
     email: string;
     emailVerified: boolean;
     createdAt: string;
-    membership: {
-      id: string;
-      status: string;
-      roles: Array<{ id: string; key: string }>;
-    };
+      membership: {
+        id: string;
+        status: string;
+        roles: Array<{ id: string; key: string; name: string }>;
+      };
   }>;
   pagination: PaginationState;
 };
@@ -74,7 +74,7 @@ export function AdminUsersTable({ users, pagination }: AdminUsersTableProps) {
       <CardHeader>
         <CardTitle>Utilizadores e memberships</CardTitle>
         <CardDescription>
-          Lista tenant-scoped com status, verificacao de email e roles atribuidas.
+          Lista de utilizadores com status, verificação de email e permissoes atribuidas.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -94,7 +94,6 @@ export function AdminUsersTable({ users, pagination }: AdminUsersTableProps) {
                 <TableCell>
                   <div className="flex flex-col gap-1">
                     <span className="font-medium">{user.name}</span>
-                    <span className="text-muted-foreground text-xs">{user.id}</span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -125,7 +124,7 @@ export function AdminUsersTable({ users, pagination }: AdminUsersTableProps) {
                     ) : (
                       user.membership.roles.map((role) => (
                         <Badge key={role.id} variant="outline">
-                          {role.key}
+                          {role.name ?? role.key}
                         </Badge>
                       ))
                     )}

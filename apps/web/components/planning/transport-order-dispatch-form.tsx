@@ -18,7 +18,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
-
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TransportOrderDispatchFormState } from "../../app/(platform)/app/planning/form-state";
 
 export type TransportOrderDispatchFormProps = {
@@ -36,13 +37,15 @@ export function TransportOrderDispatchForm({
   action,
 }: TransportOrderDispatchFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("planning_dispatch"),
+  );
   const defaultDispatchedAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canDispatchTransportOrder;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("planning_dispatch"));
     }
   }, [state.status]);
 
@@ -51,15 +54,15 @@ export function TransportOrderDispatchForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canDispatchTransportOrder ? "success" : "outline"}>
-            {canDispatchTransportOrder ? "Dispatch governado" : "Sem permissao"}
+            {canDispatchTransportOrder ? "Expedição autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">planning.order.dispatch</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Despachar transport order</CardTitle>
           <CardDescription className="leading-6">
-            Entrega a ordem confirmada para execucao operacional, exigindo referencia unica,
-            responsavel, instrucoes, idempotencia, auditoria e evento de outbox.
+            Entrega a ordem confirmada para execução operacional, exigindo referência única,
+            responsavel, instrucoes e registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -124,7 +127,7 @@ export function TransportOrderDispatchForm({
             </div>
 
             <Field data-disabled={!canDispatchTransportOrder}>
-              <FieldLabel htmlFor="dispatchInstructions">Instrucoes operacionais</FieldLabel>
+              <FieldLabel htmlFor="dispatchInstructions">Instruções operacionais</FieldLabel>
               <Textarea
                 disabled={isDisabled}
                 id="dispatchInstructions"
@@ -155,7 +158,7 @@ export function TransportOrderDispatchForm({
           <span className="text-muted-foreground text-xs">
             {canDispatchTransportOrder
               ? "Dispatch bloqueia duplicidade e sinaliza tracking quando ligado."
-              : "Requer planning.order.dispatch."}
+              : "Requer dispatch de transporte."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A despachar..." : "Despachar transport order"}
@@ -164,17 +167,4 @@ export function TransportOrderDispatchForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `planning_dispatch_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

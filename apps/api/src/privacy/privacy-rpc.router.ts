@@ -11,7 +11,7 @@ import {
 
 import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
 import type { RpcContextService } from "../rpc/rpc-context.service.js";
-import { PrivacyService } from "./privacy.service.js";
+import type { PrivacyService } from "./privacy.service.js";
 
 export type PrivacyRpcContext = {
   request: IncomingMessage & RpcRequestWithAuthContext;
@@ -54,7 +54,7 @@ export function createPrivacyRpcRouter(deps: CreatePrivacyRpcRouterInput) {
         .route({ method: "POST", path: "/privacy/delete" })
         .input(privacyDeleteInputSchema)
         .output(privacyDeleteOutputSchema)
-        .handler(async ({ context }) => {
+        .handler(async ({ context, input }) => {
           const authorizedContext = await deps.rpcContextService.authorizeRequest(
             context.request,
             privacyDeleteMetadata,
@@ -65,7 +65,27 @@ export function createPrivacyRpcRouter(deps: CreatePrivacyRpcRouterInput) {
             throw new Error("authentication_required");
           }
 
-          return deps.privacyService.scheduleAccountDeletion(authContext.actorId);
+          const result = await deps.privacyService.scheduleAccountDeletion(authContext.actorId, {
+            actorType: authContext.actorType,
+            actorId: authContext.actorId,
+            correlationId: authContext.correlationId,
+          });
+
+          return {
+            scheduledAt: result.scheduledAt,
+            message: result.message,
+            idempotency: { key: input.idempotencyKey, replayed: false },
+            audit: {
+              action: "account.deletion_scheduled",
+              subjectType: "user",
+              subjectId: authContext.actorId,
+            },
+            outbox: {
+              eventType: "account.deletion_scheduled",
+              aggregateType: "user",
+              aggregateId: authContext.actorId,
+            },
+          };
         }),
     },
   });

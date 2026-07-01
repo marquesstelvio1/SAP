@@ -18,6 +18,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CapacitySlotCancelFormState } from "../../app/(platform)/app/capacity/form-state";
 
@@ -36,13 +38,15 @@ export function CapacitySlotCancelForm({
   action,
 }: CapacitySlotCancelFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("capacity_cancel"),
+  );
   const defaultCancelledAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canCancelCapacity;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("capacity_cancel"));
     }
   }, [state.status]);
 
@@ -51,7 +55,7 @@ export function CapacitySlotCancelForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canCancelCapacity ? "success" : "warning"}>
-            {canCancelCapacity ? "Cancelamento governado" : "Sem permissao"}
+            {canCancelCapacity ? "Cancelamento autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">capacity.slot.cancel</Badge>
         </div>
@@ -59,7 +63,7 @@ export function CapacitySlotCancelForm({
           <CardTitle>Cancelar reserva de capacidade</CardTitle>
           <CardDescription className="leading-6">
             Cancela reserva ativa, liberta unidades do slot e preserva trilha de auditoria. O
-            cancelamento e idempotente e nao remove historico operacional.
+            cancelamento é idempotente e não remove histórico operacional.
           </CardDescription>
         </div>
       </CardHeader>
@@ -80,7 +84,7 @@ export function CapacitySlotCancelForm({
                 />
               </Field>
               <Field data-disabled={!canCancelCapacity}>
-                <FieldLabel htmlFor="cancellationReference">Referencia do cancelamento</FieldLabel>
+                <FieldLabel htmlFor="cancellationReference">Referência do cancelamento</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="cancellationReference"
@@ -93,7 +97,7 @@ export function CapacitySlotCancelForm({
 
             <div className="grid gap-4 md:grid-cols-2">
               <Field data-disabled={!canCancelCapacity}>
-                <FieldLabel htmlFor="cancelledByName">Responsavel</FieldLabel>
+                <FieldLabel htmlFor="cancelledByName">Responsável</FieldLabel>
                 <Input disabled={isDisabled} id="cancelledByName" name="cancelledByName" required />
               </Field>
               <Field data-disabled={!canCancelCapacity}>
@@ -149,7 +153,7 @@ export function CapacitySlotCancelForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canCancelCapacity ? "Nao apaga historico; apenas cancela." : "Requer cancel."}
+            {canCancelCapacity ? "Não apaga histórico; apenas cancela." : "Requer cancel."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A cancelar..." : "Cancelar reserva"}
@@ -158,17 +162,4 @@ export function CapacitySlotCancelForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `capacity_cancel_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

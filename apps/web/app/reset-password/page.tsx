@@ -24,13 +24,16 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
 
   if (token === undefined || token.length === 0) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground">
+      <main className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground" id="main-content">
         <div className="flex max-w-md flex-col items-center gap-4 text-center">
           <h1 className="font-semibold text-2xl tracking-tight">Link inválido</h1>
           <p className="text-muted-foreground text-sm">
             O link de redefinição de password é inválido ou está expirado. Solicite um novo link.
           </p>
-          <a className="text-primary underline-offset-4 hover:underline" href="/forgot-password">
+          <a
+            className="rounded-sm text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            href="/forgot-password"
+          >
             Solicitar novo link
           </a>
         </div>
@@ -39,7 +42,7 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
   }
 
   return (
-    <main className="min-h-screen bg-sidebar text-sidebar-foreground">
+    <main className="min-h-screen bg-sidebar text-sidebar-foreground" id="main-content">
       <div className="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
         <section className="relative hidden overflow-hidden border-sidebar-border border-r p-10 lg:flex lg:flex-col lg:justify-between">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,var(--sidebar-accent)/0.26,transparent_32%),radial-gradient(circle_at_80%_10%,var(--sidebar-primary)/0.18,transparent_28%)]" />
@@ -49,7 +52,7 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
             </div>
             <div className="flex flex-col gap-0.5">
               <span className="font-semibold tracking-tight">SAPTM</span>
-              <span className="text-sidebar-foreground/65 text-sm">Enterprise Logistics OS</span>
+              <span className="text-sidebar-foreground/65 text-sm">Plataforma logística</span>
             </div>
           </div>
           <div className="relative flex max-w-xl flex-col gap-6">

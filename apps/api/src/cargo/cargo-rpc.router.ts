@@ -41,8 +41,15 @@ import {
   cargoTransportPlanInputSchema,
   cargoTransportPlanMetadata,
   cargoTransportPlanOutputSchema,
+  complianceOverviewInputSchema,
+  complianceOverviewMetadata,
+  complianceOverviewOutputSchema,
+  deliveryOverviewInputSchema,
+  deliveryOverviewMetadata,
+  deliveryOverviewOutputSchema,
 } from "@saptm/rpc";
 
+import type { OverviewService } from "../overview/overview.service.js";
 import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
 import type { RpcContextService } from "../rpc/rpc-context.service.js";
 import type { CargoService } from "./cargo.service.js";
@@ -68,6 +75,7 @@ export type CreateCargoRpcRouterInput = {
     | "releaseCargo"
     | "verifyComplianceEvidence"
   >;
+  overviewService: Pick<OverviewService, "getComplianceOverview" | "getDeliveryOverview">;
   rpcContextService: Pick<RpcContextService, "authorizeRequest">;
 };
 
@@ -93,6 +101,50 @@ export function createCargoRpcRouter(deps: CreateCargoRpcRouterInput) {
           }
 
           return deps.cargoService.getOverview({
+            organizationId,
+            limit: input.limit,
+            offset: input.offset,
+          });
+        }),
+      complianceOverview: cargoRpc
+        .meta(complianceOverviewMetadata)
+        .route({ method: "GET", path: "/cargo/complianceOverview" })
+        .input(complianceOverviewInputSchema)
+        .output(complianceOverviewOutputSchema)
+        .handler(async ({ context, input }) => {
+          const authorizedContext = await deps.rpcContextService.authorizeRequest(
+            context.request,
+            complianceOverviewMetadata,
+          );
+          const organizationId = authorizedContext.authContext?.organizationId;
+
+          if (organizationId === undefined) {
+            throw new ForbiddenException("cargo.organization_required");
+          }
+
+          return deps.overviewService.getComplianceOverview({
+            organizationId,
+            limit: input.limit,
+            offset: input.offset,
+          });
+        }),
+      deliveryOverview: cargoRpc
+        .meta(deliveryOverviewMetadata)
+        .route({ method: "GET", path: "/cargo/deliveryOverview" })
+        .input(deliveryOverviewInputSchema)
+        .output(deliveryOverviewOutputSchema)
+        .handler(async ({ context, input }) => {
+          const authorizedContext = await deps.rpcContextService.authorizeRequest(
+            context.request,
+            deliveryOverviewMetadata,
+          );
+          const organizationId = authorizedContext.authContext?.organizationId;
+
+          if (organizationId === undefined) {
+            throw new ForbiddenException("cargo.organization_required");
+          }
+
+          return deps.overviewService.getDeliveryOverview({
             organizationId,
             limit: input.limit,
             offset: input.offset,

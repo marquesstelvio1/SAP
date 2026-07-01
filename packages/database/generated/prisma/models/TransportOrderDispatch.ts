@@ -36,6 +36,8 @@ export type TransportOrderDispatchMinAggregateOutputType = {
   dispatchedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TransportOrderDispatchMaxAggregateOutputType = {
@@ -50,6 +52,8 @@ export type TransportOrderDispatchMaxAggregateOutputType = {
   dispatchedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TransportOrderDispatchCountAggregateOutputType = {
@@ -64,6 +68,8 @@ export type TransportOrderDispatchCountAggregateOutputType = {
   dispatchedAt: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -80,6 +86,8 @@ export type TransportOrderDispatchMinAggregateInputType = {
   dispatchedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TransportOrderDispatchMaxAggregateInputType = {
@@ -94,6 +102,8 @@ export type TransportOrderDispatchMaxAggregateInputType = {
   dispatchedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TransportOrderDispatchCountAggregateInputType = {
@@ -108,6 +118,8 @@ export type TransportOrderDispatchCountAggregateInputType = {
   dispatchedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -195,6 +207,8 @@ export type TransportOrderDispatchGroupByOutputType = {
   dispatchedAt: Date
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: TransportOrderDispatchCountAggregateOutputType | null
   _min: TransportOrderDispatchMinAggregateOutputType | null
   _max: TransportOrderDispatchMaxAggregateOutputType | null
@@ -230,6 +244,8 @@ export type TransportOrderDispatchWhereInput = {
   dispatchedAt?: Prisma.DateTimeFilter<"TransportOrderDispatch"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"TransportOrderDispatch"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TransportOrderDispatch"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TransportOrderDispatch"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TransportOrderDispatch"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   transportOrder?: Prisma.XOR<Prisma.TransportOrderScalarRelationFilter, Prisma.TransportOrderWhereInput>
 }
@@ -246,6 +262,8 @@ export type TransportOrderDispatchOrderByWithRelationInput = {
   dispatchedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   transportOrder?: Prisma.TransportOrderOrderByWithRelationInput
 }
@@ -268,6 +286,8 @@ export type TransportOrderDispatchWhereUniqueInput = Prisma.AtLeast<{
   dispatchedAt?: Prisma.DateTimeFilter<"TransportOrderDispatch"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"TransportOrderDispatch"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TransportOrderDispatch"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TransportOrderDispatch"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TransportOrderDispatch"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   transportOrder?: Prisma.XOR<Prisma.TransportOrderScalarRelationFilter, Prisma.TransportOrderWhereInput>
 }, "id" | "organizationId_dispatchReference" | "organizationId_idempotencyKey" | "organizationId_orderId">
@@ -284,6 +304,8 @@ export type TransportOrderDispatchOrderByWithAggregationInput = {
   dispatchedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TransportOrderDispatchCountOrderByAggregateInput
   _max?: Prisma.TransportOrderDispatchMaxOrderByAggregateInput
   _min?: Prisma.TransportOrderDispatchMinOrderByAggregateInput
@@ -304,6 +326,8 @@ export type TransportOrderDispatchScalarWhereWithAggregatesInput = {
   dispatchedAt?: Prisma.DateTimeWithAggregatesFilter<"TransportOrderDispatch"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TransportOrderDispatch"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TransportOrderDispatch"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"TransportOrderDispatch"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"TransportOrderDispatch"> | string | null
 }
 
 export type TransportOrderDispatchCreateInput = {
@@ -316,6 +340,8 @@ export type TransportOrderDispatchCreateInput = {
   dispatchedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTransportOrderDispatchesInput
   transportOrder: Prisma.TransportOrderCreateNestedOneWithoutDispatchesInput
 }
@@ -332,6 +358,8 @@ export type TransportOrderDispatchUncheckedCreateInput = {
   dispatchedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderDispatchUpdateInput = {
@@ -344,6 +372,8 @@ export type TransportOrderDispatchUpdateInput = {
   dispatchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTransportOrderDispatchesNestedInput
   transportOrder?: Prisma.TransportOrderUpdateOneRequiredWithoutDispatchesNestedInput
 }
@@ -360,6 +390,8 @@ export type TransportOrderDispatchUncheckedUpdateInput = {
   dispatchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderDispatchCreateManyInput = {
@@ -374,6 +406,8 @@ export type TransportOrderDispatchCreateManyInput = {
   dispatchedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderDispatchUpdateManyMutationInput = {
@@ -386,6 +420,8 @@ export type TransportOrderDispatchUpdateManyMutationInput = {
   dispatchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderDispatchUncheckedUpdateManyInput = {
@@ -400,6 +436,8 @@ export type TransportOrderDispatchUncheckedUpdateManyInput = {
   dispatchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderDispatchListRelationFilter = {
@@ -439,6 +477,8 @@ export type TransportOrderDispatchCountOrderByAggregateInput = {
   dispatchedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TransportOrderDispatchMaxOrderByAggregateInput = {
@@ -453,6 +493,8 @@ export type TransportOrderDispatchMaxOrderByAggregateInput = {
   dispatchedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TransportOrderDispatchMinOrderByAggregateInput = {
@@ -467,6 +509,8 @@ export type TransportOrderDispatchMinOrderByAggregateInput = {
   dispatchedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TransportOrderDispatchCreateNestedManyWithoutOrganizationInput = {
@@ -563,6 +607,8 @@ export type TransportOrderDispatchCreateWithoutOrganizationInput = {
   dispatchedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   transportOrder: Prisma.TransportOrderCreateNestedOneWithoutDispatchesInput
 }
 
@@ -577,6 +623,8 @@ export type TransportOrderDispatchUncheckedCreateWithoutOrganizationInput = {
   dispatchedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderDispatchCreateOrConnectWithoutOrganizationInput = {
@@ -620,6 +668,8 @@ export type TransportOrderDispatchScalarWhereInput = {
   dispatchedAt?: Prisma.DateTimeFilter<"TransportOrderDispatch"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"TransportOrderDispatch"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TransportOrderDispatch"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TransportOrderDispatch"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TransportOrderDispatch"> | string | null
 }
 
 export type TransportOrderDispatchCreateWithoutTransportOrderInput = {
@@ -632,6 +682,8 @@ export type TransportOrderDispatchCreateWithoutTransportOrderInput = {
   dispatchedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTransportOrderDispatchesInput
 }
 
@@ -646,6 +698,8 @@ export type TransportOrderDispatchUncheckedCreateWithoutTransportOrderInput = {
   dispatchedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderDispatchCreateOrConnectWithoutTransportOrderInput = {
@@ -685,6 +739,8 @@ export type TransportOrderDispatchCreateManyOrganizationInput = {
   dispatchedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderDispatchUpdateWithoutOrganizationInput = {
@@ -697,6 +753,8 @@ export type TransportOrderDispatchUpdateWithoutOrganizationInput = {
   dispatchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transportOrder?: Prisma.TransportOrderUpdateOneRequiredWithoutDispatchesNestedInput
 }
 
@@ -711,6 +769,8 @@ export type TransportOrderDispatchUncheckedUpdateWithoutOrganizationInput = {
   dispatchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderDispatchUncheckedUpdateManyWithoutOrganizationInput = {
@@ -724,6 +784,8 @@ export type TransportOrderDispatchUncheckedUpdateManyWithoutOrganizationInput = 
   dispatchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderDispatchCreateManyTransportOrderInput = {
@@ -737,6 +799,8 @@ export type TransportOrderDispatchCreateManyTransportOrderInput = {
   dispatchedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TransportOrderDispatchUpdateWithoutTransportOrderInput = {
@@ -749,6 +813,8 @@ export type TransportOrderDispatchUpdateWithoutTransportOrderInput = {
   dispatchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTransportOrderDispatchesNestedInput
 }
 
@@ -763,6 +829,8 @@ export type TransportOrderDispatchUncheckedUpdateWithoutTransportOrderInput = {
   dispatchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransportOrderDispatchUncheckedUpdateManyWithoutTransportOrderInput = {
@@ -776,6 +844,8 @@ export type TransportOrderDispatchUncheckedUpdateManyWithoutTransportOrderInput 
   dispatchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -792,6 +862,8 @@ export type TransportOrderDispatchSelect<ExtArgs extends runtime.Types.Extension
   dispatchedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   transportOrder?: boolean | Prisma.TransportOrderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transportOrderDispatch"]>
@@ -808,6 +880,8 @@ export type TransportOrderDispatchSelectCreateManyAndReturn<ExtArgs extends runt
   dispatchedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   transportOrder?: boolean | Prisma.TransportOrderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transportOrderDispatch"]>
@@ -824,6 +898,8 @@ export type TransportOrderDispatchSelectUpdateManyAndReturn<ExtArgs extends runt
   dispatchedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   transportOrder?: boolean | Prisma.TransportOrderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transportOrderDispatch"]>
@@ -840,9 +916,11 @@ export type TransportOrderDispatchSelectScalar = {
   dispatchedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type TransportOrderDispatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "orderId" | "dispatchReference" | "dispatchedByName" | "dispatchInstructions" | "sourceSystem" | "idempotencyKey" | "dispatchedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["transportOrderDispatch"]>
+export type TransportOrderDispatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "orderId" | "dispatchReference" | "dispatchedByName" | "dispatchInstructions" | "sourceSystem" | "idempotencyKey" | "dispatchedAt" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["transportOrderDispatch"]>
 export type TransportOrderDispatchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   transportOrder?: boolean | Prisma.TransportOrderDefaultArgs<ExtArgs>
@@ -874,6 +952,8 @@ export type $TransportOrderDispatchPayload<ExtArgs extends runtime.Types.Extensi
     dispatchedAt: Date
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["transportOrderDispatch"]>
   composites: {}
 }
@@ -1310,6 +1390,8 @@ export interface TransportOrderDispatchFieldRefs {
   readonly dispatchedAt: Prisma.FieldRef<"TransportOrderDispatch", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"TransportOrderDispatch", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TransportOrderDispatch", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"TransportOrderDispatch", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"TransportOrderDispatch", 'String'>
 }
     
 

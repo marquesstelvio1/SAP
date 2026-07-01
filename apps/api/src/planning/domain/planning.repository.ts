@@ -101,9 +101,17 @@ export interface PlanningRepository {
   countLinkedCapacityReservations(organizationId: string): Promise<number>;
   countLinkedTrackingShipments(organizationId: string): Promise<number>;
   countDispatches(organizationId: string): Promise<number>;
+  countDispatchableOrders(organizationId: string, now: Date): Promise<number>;
+  countDispatchedOrders(organizationId: string): Promise<number>;
   findRecentOrders(
     organizationId: string,
     limit: number,
+  ): Promise<PlanningTransportOrderWithContext[]>;
+  findRecentDispatchableOrders(
+    organizationId: string,
+    limit: number,
+    offset: number,
+    now: Date,
   ): Promise<PlanningTransportOrderWithContext[]>;
 
   // Entity lookups

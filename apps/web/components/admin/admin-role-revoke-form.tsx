@@ -18,6 +18,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { AdminRoleRevokeFormState } from "../../app/(platform)/app/admin/form-state";
 
 export type AdminRoleRevokeMemberOption = {
@@ -55,12 +56,14 @@ export function AdminRoleRevokeForm({
     })),
   );
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("revoke"));
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("admin_role_revoke"),
+  );
   const isDisabled = isPending || !canAssignRole || assignedRoles.length === 0;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey("revoke"));
+      setIdempotencyKey(createIdempotencyKey("admin_role_revoke"));
     }
   }, [state.status]);
 
@@ -69,14 +72,14 @@ export function AdminRoleRevokeForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canAssignRole ? "success" : "warning"}>
-            {canAssignRole ? "Revogacao RBAC" : "Sem permissao"}
+            {canAssignRole ? "Revogação RBAC" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">anti-lockout</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Revogar role</CardTitle>
           <CardDescription className="leading-6">
-            Remove uma role atribuida. A API bloqueia a remocao do ultimo `tenant.admin` ativo.
+            Remove uma role atribuída. O sistema bloqueia a remoção do último administrador ativo.
           </CardDescription>
         </div>
       </CardHeader>
@@ -124,13 +127,4 @@ export function AdminRoleRevokeForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(scope: string): string {
-  const randomValue =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2);
-
-  return `admin_role_${scope}_${randomValue}`;
 }

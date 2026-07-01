@@ -19,6 +19,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { AdminUserInviteFormState } from "../../app/(platform)/app/admin/form-state";
 
 export type AdminUserInviteRoleOption = {
@@ -43,12 +44,12 @@ export function AdminUserInviteForm({
   roles,
 }: AdminUserInviteFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("admin_invite"));
   const isDisabled = isPending || !canInviteUser;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("admin_invite"));
     }
   }, [state.status]);
 
@@ -57,15 +58,15 @@ export function AdminUserInviteForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canInviteUser ? "success" : "warning"}>
-            {canInviteUser ? "Convite governado" : "Sem permissao"}
+            {canInviteUser ? "Convite autorizado" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">identity.user.invite</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Convidar utilizador</CardTitle>
           <CardDescription className="leading-6">
-            Cria ou reativa membership no tenant, associa uma role inicial opcional, grava audit
-            trail e emite evento de outbox para o fluxo de convite.
+            Cria ou reativa membership no tenant, associa uma role inicial opcional, grava audit e
+            notificacao para o fluxo de convite.
           </CardDescription>
         </div>
       </CardHeader>
@@ -105,7 +106,7 @@ export function AdminUserInviteForm({
                 ))}
               </SelectNative>
               <FieldDescription>
-                Use uma role bootstrap do tenant; novas roles entram por governanca RBAC.
+                Use uma role existente do tenant; novas roles são geridas pelo administrador.
               </FieldDescription>
             </Field>
             <Field>
@@ -123,8 +124,8 @@ export function AdminUserInviteForm({
                 <FieldLabel htmlFor="adminInviteAcceptUrl">Link de aceite</FieldLabel>
                 <Input id="adminInviteAcceptUrl" readOnly value={state.invitationAcceptUrl} />
                 <FieldDescription>
-                  Valido ate {state.invitationExpiresAt ?? "validade nao informada"}. Em dev, o
-                  mesmo link tambem segue no outbox/notificacoes.
+                  Válido até {state.invitationExpiresAt ?? "validade nao informada"}. Em dev, o
+                  mesmo link tambem segue nas notificacoes.
                 </FieldDescription>
               </Field>
             ) : null}
@@ -141,13 +142,4 @@ export function AdminUserInviteForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2);
-
-  return `admin_invite_${randomValue}`;
 }

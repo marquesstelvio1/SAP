@@ -2,7 +2,7 @@ import type { RawBodyRequest } from "@nestjs/common";
 import { Controller, Headers, HttpCode, HttpStatus, Post, Req } from "@nestjs/common";
 import type { Request } from "express";
 
-import { BillingService } from "./billing.service.js";
+import type { BillingService } from "./billing.service.js";
 
 @Controller("billing")
 export class BillingWebhookController {

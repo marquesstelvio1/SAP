@@ -19,6 +19,7 @@ import {
   Input,
 } from "@saptm/ui";
 import { useActionState } from "react";
+import { formatDateTime } from "@/lib/format";
 import { organizationStatusLabels } from "../../app/(platform)/app/admin/logic";
 import type { GeneralSettingsFormState } from "../../app/(platform)/app/settings/general/form-state";
 
@@ -53,9 +54,9 @@ export function GeneralSettingsForm({
     <div className="flex flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline">Configuracoes</Badge>
+          <Badge variant="outline">Configurações</Badge>
           <Badge variant={canManageTenant ? "success" : "warning"}>
-            {canManageTenant ? "tenant.manage" : "Sem permissao"}
+            {canManageTenant ? "Gerir organizacao" : "Indisponivel"}
           </Badge>
           <Badge variant={organization.status === "active" ? "success" : "destructive"}>
             {organizationStatusLabels[
@@ -64,10 +65,10 @@ export function GeneralSettingsForm({
           </Badge>
         </div>
         <div className="max-w-3xl">
-          <h1 className="font-semibold text-3xl tracking-tight">Configuracoes gerais</h1>
+          <h1 className="font-semibold text-3xl tracking-tight">Configurações gerais</h1>
           <p className="mt-2 text-muted-foreground">
-            Gerir nome, slug e estado da organizacao. As alteracoes sao auditaveis e propagadas para
-            todos os modulos.
+            Gerir nome, slug e estado da organização. As alterações são auditáveis e propagadas para
+            todos os módulos.
           </p>
         </div>
       </section>
@@ -75,8 +76,8 @@ export function GeneralSettingsForm({
       <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
         <Card>
           <CardHeader>
-            <CardTitle>Informacao da organizacao</CardTitle>
-            <CardDescription>Altere o nome publico ou o slug URL da organizacao.</CardDescription>
+            <CardTitle>Informação da organização</CardTitle>
+            <CardDescription>Altere o nome público ou o slug URL da organização.</CardDescription>
           </CardHeader>
           <form action={formAction}>
             <CardContent>
@@ -94,7 +95,7 @@ export function GeneralSettingsForm({
                       required
                       type="text"
                     />
-                    <FieldDescription>Nome visivel em toda a plataforma.</FieldDescription>
+                    <FieldDescription>Nome visível em toda a plataforma.</FieldDescription>
                   </FieldContent>
                 </Field>
 
@@ -113,7 +114,7 @@ export function GeneralSettingsForm({
                       type="text"
                     />
                     <FieldDescription>
-                      Identificador URL-safe: minusculas, numeros e hifens.
+                      Identificador URL-safe: minúsculas, números e hífens.
                     </FieldDescription>
                   </FieldContent>
                 </Field>
@@ -128,7 +129,7 @@ export function GeneralSettingsForm({
             </CardContent>
             <CardFooter>
               <Button disabled={isDisabled} type="submit">
-                {isPending ? "A guardar..." : "Guardar alteracoes"}
+                {isPending ? "A guardar..." : "Guardar alterações"}
               </Button>
             </CardFooter>
           </form>
@@ -157,11 +158,4 @@ export function GeneralSettingsForm({
       </div>
     </div>
   );
-}
-
-function formatDateTime(value: string): string {
-  return new Intl.DateTimeFormat("pt-PT", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
 }

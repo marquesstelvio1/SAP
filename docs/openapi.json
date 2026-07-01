@@ -21,9 +21,7 @@
   "paths": {
     "/rpc/admin/overview": {
       "get": {
-        "tags": [
-          "admin"
-        ],
+        "tags": ["admin"],
         "summary": "admin.overview",
         "description": "RPC operation: admin.overview",
         "operationId": "admin_overview",
@@ -106,9 +104,7 @@
     },
     "/rpc/admin/inviteUser": {
       "post": {
-        "tags": [
-          "admin"
-        ],
+        "tags": ["admin"],
         "summary": "admin.inviteUser",
         "description": "RPC operation: admin.inviteUser",
         "operationId": "admin_inviteUser",
@@ -193,9 +189,7 @@
     },
     "/rpc/admin/assignRole": {
       "post": {
-        "tags": [
-          "admin"
-        ],
+        "tags": ["admin"],
         "summary": "admin.assignRole",
         "description": "RPC operation: admin.assignRole",
         "operationId": "admin_assignRole",
@@ -280,9 +274,7 @@
     },
     "/rpc/admin/createRole": {
       "post": {
-        "tags": [
-          "admin"
-        ],
+        "tags": ["admin"],
         "summary": "admin.createRole",
         "description": "RPC operation: admin.createRole",
         "operationId": "admin_createRole",
@@ -367,9 +359,7 @@
     },
     "/rpc/admin/updateRolePermissions": {
       "post": {
-        "tags": [
-          "admin"
-        ],
+        "tags": ["admin"],
         "summary": "admin.updateRolePermissions",
         "description": "RPC operation: admin.updateRolePermissions",
         "operationId": "admin_updateRolePermissions",
@@ -454,9 +444,7 @@
     },
     "/rpc/admin/deleteRole": {
       "post": {
-        "tags": [
-          "admin"
-        ],
+        "tags": ["admin"],
         "summary": "admin.deleteRole",
         "description": "RPC operation: admin.deleteRole",
         "operationId": "admin_deleteRole",
@@ -541,9 +529,7 @@
     },
     "/rpc/admin/revokeRole": {
       "post": {
-        "tags": [
-          "admin"
-        ],
+        "tags": ["admin"],
         "summary": "admin.revokeRole",
         "description": "RPC operation: admin.revokeRole",
         "operationId": "admin_revokeRole",
@@ -628,9 +614,7 @@
     },
     "/rpc/admin/updateMembershipStatus": {
       "post": {
-        "tags": [
-          "admin"
-        ],
+        "tags": ["admin"],
         "summary": "admin.updateMembershipStatus",
         "description": "RPC operation: admin.updateMembershipStatus",
         "operationId": "admin_updateMembershipStatus",
@@ -715,9 +699,7 @@
     },
     "/rpc/admin/resendInvitation": {
       "post": {
-        "tags": [
-          "admin"
-        ],
+        "tags": ["admin"],
         "summary": "admin.resendInvitation",
         "description": "RPC operation: admin.resendInvitation",
         "operationId": "admin_resendInvitation",
@@ -802,9 +784,7 @@
     },
     "/rpc/admin/cancelInvitation": {
       "post": {
-        "tags": [
-          "admin"
-        ],
+        "tags": ["admin"],
         "summary": "admin.cancelInvitation",
         "description": "RPC operation: admin.cancelInvitation",
         "operationId": "admin_cancelInvitation",
@@ -889,9 +869,7 @@
     },
     "/rpc/audit/search": {
       "post": {
-        "tags": [
-          "audit"
-        ],
+        "tags": ["audit"],
         "summary": "audit.search",
         "description": "RPC operation: audit.search",
         "operationId": "audit_search",
@@ -976,9 +954,7 @@
     },
     "/rpc/audit/export": {
       "post": {
-        "tags": [
-          "audit"
-        ],
+        "tags": ["audit"],
         "summary": "audit.export",
         "description": "RPC operation: audit.export",
         "operationId": "audit_export",
@@ -1063,9 +1039,7 @@
     },
     "/rpc/billing/overview": {
       "get": {
-        "tags": [
-          "billing"
-        ],
+        "tags": ["billing"],
         "summary": "billing.overview",
         "description": "RPC operation: billing.overview",
         "operationId": "billing_overview",
@@ -1148,9 +1122,7 @@
     },
     "/rpc/billing/plans": {
       "get": {
-        "tags": [
-          "billing"
-        ],
+        "tags": ["billing"],
         "summary": "billing.plans",
         "description": "RPC operation: billing.plans",
         "operationId": "billing_plans",
@@ -1233,9 +1205,7 @@
     },
     "/rpc/billing/createCheckoutSession": {
       "post": {
-        "tags": [
-          "billing"
-        ],
+        "tags": ["billing"],
         "summary": "billing.createCheckoutSession",
         "description": "RPC operation: billing.createCheckoutSession",
         "operationId": "billing_createCheckoutSession",
@@ -1320,9 +1290,7 @@
     },
     "/rpc/billing/createPortalSession": {
       "post": {
-        "tags": [
-          "billing"
-        ],
+        "tags": ["billing"],
         "summary": "billing.createPortalSession",
         "description": "RPC operation: billing.createPortalSession",
         "operationId": "billing_createPortalSession",
@@ -1407,9 +1375,7 @@
     },
     "/rpc/capacity/overview": {
       "get": {
-        "tags": [
-          "capacity"
-        ],
+        "tags": ["capacity"],
         "summary": "capacity.overview",
         "description": "RPC operation: capacity.overview",
         "operationId": "capacity_overview",
@@ -1492,9 +1458,7 @@
     },
     "/rpc/capacity/advisory": {
       "get": {
-        "tags": [
-          "capacity"
-        ],
+        "tags": ["capacity"],
         "summary": "capacity.advisory",
         "description": "RPC operation: capacity.advisory",
         "operationId": "capacity_advisory",
@@ -1577,9 +1541,7 @@
     },
     "/rpc/capacity/advisoryDecisionAnalytics": {
       "get": {
-        "tags": [
-          "capacity"
-        ],
+        "tags": ["capacity"],
         "summary": "capacity.advisoryDecisionAnalytics",
         "description": "RPC operation: capacity.advisoryDecisionAnalytics",
         "operationId": "capacity_advisoryDecisionAnalytics",
@@ -1662,9 +1624,7 @@
     },
     "/rpc/capacity/registerResource": {
       "post": {
-        "tags": [
-          "capacity"
-        ],
+        "tags": ["capacity"],
         "summary": "capacity.registerResource",
         "description": "RPC operation: capacity.registerResource",
         "operationId": "capacity_registerResource",
@@ -1749,9 +1709,7 @@
     },
     "/rpc/capacity/openSlot": {
       "post": {
-        "tags": [
-          "capacity"
-        ],
+        "tags": ["capacity"],
         "summary": "capacity.openSlot",
         "description": "RPC operation: capacity.openSlot",
         "operationId": "capacity_openSlot",
@@ -1836,9 +1794,7 @@
     },
     "/rpc/capacity/reserveSlot": {
       "post": {
-        "tags": [
-          "capacity"
-        ],
+        "tags": ["capacity"],
         "summary": "capacity.reserveSlot",
         "description": "RPC operation: capacity.reserveSlot",
         "operationId": "capacity_reserveSlot",
@@ -1923,9 +1879,7 @@
     },
     "/rpc/capacity/cancelSlotReservation": {
       "post": {
-        "tags": [
-          "capacity"
-        ],
+        "tags": ["capacity"],
         "summary": "capacity.cancelSlotReservation",
         "description": "RPC operation: capacity.cancelSlotReservation",
         "operationId": "capacity_cancelSlotReservation",
@@ -2010,9 +1964,7 @@
     },
     "/rpc/capacity/recordAdvisoryDecision": {
       "post": {
-        "tags": [
-          "capacity"
-        ],
+        "tags": ["capacity"],
         "summary": "capacity.recordAdvisoryDecision",
         "description": "RPC operation: capacity.recordAdvisoryDecision",
         "operationId": "capacity_recordAdvisoryDecision",
@@ -2097,9 +2049,7 @@
     },
     "/rpc/cargo/overview": {
       "get": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.overview",
         "description": "RPC operation: cargo.overview",
         "operationId": "cargo_overview",
@@ -2182,9 +2132,7 @@
     },
     "/rpc/cargo/register": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.register",
         "description": "RPC operation: cargo.register",
         "operationId": "cargo_register",
@@ -2269,9 +2217,7 @@
     },
     "/rpc/cargo/release": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.release",
         "description": "RPC operation: cargo.release",
         "operationId": "cargo_release",
@@ -2356,9 +2302,7 @@
     },
     "/rpc/cargo/planTransport": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.planTransport",
         "description": "RPC operation: cargo.planTransport",
         "operationId": "cargo_planTransport",
@@ -2443,9 +2387,7 @@
     },
     "/rpc/cargo/departTransport": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.departTransport",
         "description": "RPC operation: cargo.departTransport",
         "operationId": "cargo_departTransport",
@@ -2530,9 +2472,7 @@
     },
     "/rpc/cargo/arriveTransport": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.arriveTransport",
         "description": "RPC operation: cargo.arriveTransport",
         "operationId": "cargo_arriveTransport",
@@ -2617,9 +2557,7 @@
     },
     "/rpc/cargo/completeDelivery": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.completeDelivery",
         "description": "RPC operation: cargo.completeDelivery",
         "operationId": "cargo_completeDelivery",
@@ -2704,9 +2642,7 @@
     },
     "/rpc/cargo/recordDeliveryException": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.recordDeliveryException",
         "description": "RPC operation: cargo.recordDeliveryException",
         "operationId": "cargo_recordDeliveryException",
@@ -2791,9 +2727,7 @@
     },
     "/rpc/cargo/resolveDeliveryException": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.resolveDeliveryException",
         "description": "RPC operation: cargo.resolveDeliveryException",
         "operationId": "cargo_resolveDeliveryException",
@@ -2878,9 +2812,7 @@
     },
     "/rpc/cargo/recordOperationalHandoff": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.recordOperationalHandoff",
         "description": "RPC operation: cargo.recordOperationalHandoff",
         "operationId": "cargo_recordOperationalHandoff",
@@ -2965,9 +2897,7 @@
     },
     "/rpc/cargo/recordClaimSettlement": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.recordClaimSettlement",
         "description": "RPC operation: cargo.recordClaimSettlement",
         "operationId": "cargo_recordClaimSettlement",
@@ -3052,9 +2982,7 @@
     },
     "/rpc/cargo/recordComplianceEvidence": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.recordComplianceEvidence",
         "description": "RPC operation: cargo.recordComplianceEvidence",
         "operationId": "cargo_recordComplianceEvidence",
@@ -3139,9 +3067,7 @@
     },
     "/rpc/cargo/verifyComplianceEvidence": {
       "post": {
-        "tags": [
-          "cargo"
-        ],
+        "tags": ["cargo"],
         "summary": "cargo.verifyComplianceEvidence",
         "description": "RPC operation: cargo.verifyComplianceEvidence",
         "operationId": "cargo_verifyComplianceEvidence",
@@ -3226,9 +3152,7 @@
     },
     "/rpc/documents/list": {
       "get": {
-        "tags": [
-          "documents"
-        ],
+        "tags": ["documents"],
         "summary": "documents.list",
         "description": "RPC operation: documents.list",
         "operationId": "documents_list",
@@ -3311,9 +3235,7 @@
     },
     "/rpc/documents/get": {
       "get": {
-        "tags": [
-          "documents"
-        ],
+        "tags": ["documents"],
         "summary": "documents.get",
         "description": "RPC operation: documents.get",
         "operationId": "documents_get",
@@ -3396,9 +3318,7 @@
     },
     "/rpc/integrations/overview": {
       "get": {
-        "tags": [
-          "integrations"
-        ],
+        "tags": ["integrations"],
         "summary": "integrations.overview",
         "description": "RPC operation: integrations.overview",
         "operationId": "integrations_overview",
@@ -3481,9 +3401,7 @@
     },
     "/rpc/integrations/createServiceAccount": {
       "post": {
-        "tags": [
-          "integrations"
-        ],
+        "tags": ["integrations"],
         "summary": "integrations.createServiceAccount",
         "description": "RPC operation: integrations.createServiceAccount",
         "operationId": "integrations_createServiceAccount",
@@ -3568,9 +3486,7 @@
     },
     "/rpc/integrations/recordEvent": {
       "post": {
-        "tags": [
-          "integrations"
-        ],
+        "tags": ["integrations"],
         "summary": "integrations.recordEvent",
         "description": "RPC operation: integrations.recordEvent",
         "operationId": "integrations_recordEvent",
@@ -3655,9 +3571,7 @@
     },
     "/rpc/integrations/processPortTosMovement": {
       "post": {
-        "tags": [
-          "integrations"
-        ],
+        "tags": ["integrations"],
         "summary": "integrations.processPortTosMovement",
         "description": "RPC operation: integrations.processPortTosMovement",
         "operationId": "integrations_processPortTosMovement",
@@ -3742,9 +3656,7 @@
     },
     "/rpc/integrations/processRailTmsMovement": {
       "post": {
-        "tags": [
-          "integrations"
-        ],
+        "tags": ["integrations"],
         "summary": "integrations.processRailTmsMovement",
         "description": "RPC operation: integrations.processRailTmsMovement",
         "operationId": "integrations_processRailTmsMovement",
@@ -3829,9 +3741,7 @@
     },
     "/rpc/integrations/processCarrierTmsMovement": {
       "post": {
-        "tags": [
-          "integrations"
-        ],
+        "tags": ["integrations"],
         "summary": "integrations.processCarrierTmsMovement",
         "description": "RPC operation: integrations.processCarrierTmsMovement",
         "operationId": "integrations_processCarrierTmsMovement",
@@ -3916,9 +3826,7 @@
     },
     "/rpc/integrations/processTelematicsGpsPosition": {
       "post": {
-        "tags": [
-          "integrations"
-        ],
+        "tags": ["integrations"],
         "summary": "integrations.processTelematicsGpsPosition",
         "description": "RPC operation: integrations.processTelematicsGpsPosition",
         "operationId": "integrations_processTelematicsGpsPosition",
@@ -4003,9 +3911,7 @@
     },
     "/rpc/integrations/processCustomsErpStatus": {
       "post": {
-        "tags": [
-          "integrations"
-        ],
+        "tags": ["integrations"],
         "summary": "integrations.processCustomsErpStatus",
         "description": "RPC operation: integrations.processCustomsErpStatus",
         "operationId": "integrations_processCustomsErpStatus",
@@ -4090,9 +3996,7 @@
     },
     "/rpc/integrations/processWarehouseWmsActivity": {
       "post": {
-        "tags": [
-          "integrations"
-        ],
+        "tags": ["integrations"],
         "summary": "integrations.processWarehouseWmsActivity",
         "description": "RPC operation: integrations.processWarehouseWmsActivity",
         "operationId": "integrations_processWarehouseWmsActivity",
@@ -4177,9 +4081,7 @@
     },
     "/rpc/notifications/inbox": {
       "post": {
-        "tags": [
-          "notifications"
-        ],
+        "tags": ["notifications"],
         "summary": "notifications.inbox",
         "description": "RPC operation: notifications.inbox",
         "operationId": "notifications_inbox",
@@ -4264,9 +4166,7 @@
     },
     "/rpc/notifications/markRead": {
       "post": {
-        "tags": [
-          "notifications"
-        ],
+        "tags": ["notifications"],
         "summary": "notifications.markRead",
         "description": "RPC operation: notifications.markRead",
         "operationId": "notifications_markRead",
@@ -4351,9 +4251,7 @@
     },
     "/rpc/organizations/profile": {
       "get": {
-        "tags": [
-          "organizations"
-        ],
+        "tags": ["organizations"],
         "summary": "organizations.profile",
         "description": "RPC operation: organizations.profile",
         "operationId": "organizations_profile",
@@ -4436,9 +4334,7 @@
     },
     "/rpc/organizations/updateStatus": {
       "post": {
-        "tags": [
-          "organizations"
-        ],
+        "tags": ["organizations"],
         "summary": "organizations.updateStatus",
         "description": "RPC operation: organizations.updateStatus",
         "operationId": "organizations_updateStatus",
@@ -4523,9 +4419,7 @@
     },
     "/rpc/planning/overview": {
       "get": {
-        "tags": [
-          "planning"
-        ],
+        "tags": ["planning"],
         "summary": "planning.overview",
         "description": "RPC operation: planning.overview",
         "operationId": "planning_overview",
@@ -4608,9 +4502,7 @@
     },
     "/rpc/planning/confirmTransportOrder": {
       "post": {
-        "tags": [
-          "planning"
-        ],
+        "tags": ["planning"],
         "summary": "planning.confirmTransportOrder",
         "description": "RPC operation: planning.confirmTransportOrder",
         "operationId": "planning_confirmTransportOrder",
@@ -4695,9 +4587,7 @@
     },
     "/rpc/planning/cancelTransportOrder": {
       "post": {
-        "tags": [
-          "planning"
-        ],
+        "tags": ["planning"],
         "summary": "planning.cancelTransportOrder",
         "description": "RPC operation: planning.cancelTransportOrder",
         "operationId": "planning_cancelTransportOrder",
@@ -4782,9 +4672,7 @@
     },
     "/rpc/planning/rescheduleTransportOrder": {
       "post": {
-        "tags": [
-          "planning"
-        ],
+        "tags": ["planning"],
         "summary": "planning.rescheduleTransportOrder",
         "description": "RPC operation: planning.rescheduleTransportOrder",
         "operationId": "planning_rescheduleTransportOrder",
@@ -4869,9 +4757,7 @@
     },
     "/rpc/planning/dispatchTransportOrder": {
       "post": {
-        "tags": [
-          "planning"
-        ],
+        "tags": ["planning"],
         "summary": "planning.dispatchTransportOrder",
         "description": "RPC operation: planning.dispatchTransportOrder",
         "operationId": "planning_dispatchTransportOrder",
@@ -4956,9 +4842,7 @@
     },
     "/rpc/reports/export": {
       "get": {
-        "tags": [
-          "reports"
-        ],
+        "tags": ["reports"],
         "summary": "reports.export",
         "description": "RPC operation: reports.export",
         "operationId": "reports_export",
@@ -5041,9 +4925,7 @@
     },
     "/rpc/system/health": {
       "get": {
-        "tags": [
-          "system"
-        ],
+        "tags": ["system"],
         "summary": "system.health",
         "description": "RPC operation: system.health",
         "operationId": "system_health",
@@ -5126,9 +5008,7 @@
     },
     "/rpc/settings/overview": {
       "get": {
-        "tags": [
-          "settings"
-        ],
+        "tags": ["settings"],
         "summary": "settings.overview",
         "description": "RPC operation: settings.overview",
         "operationId": "settings_overview",
@@ -5211,9 +5091,7 @@
     },
     "/rpc/settings/update": {
       "post": {
-        "tags": [
-          "settings"
-        ],
+        "tags": ["settings"],
         "summary": "settings.update",
         "description": "RPC operation: settings.update",
         "operationId": "settings_update",
@@ -5298,9 +5176,7 @@
     },
     "/rpc/tariff/overview": {
       "get": {
-        "tags": [
-          "tariff"
-        ],
+        "tags": ["tariff"],
         "summary": "tariff.overview",
         "description": "RPC operation: tariff.overview",
         "operationId": "tariff_overview",
@@ -5383,9 +5259,7 @@
     },
     "/rpc/tariff/registerRateCard": {
       "post": {
-        "tags": [
-          "tariff"
-        ],
+        "tags": ["tariff"],
         "summary": "tariff.registerRateCard",
         "description": "RPC operation: tariff.registerRateCard",
         "operationId": "tariff_registerRateCard",
@@ -5470,9 +5344,7 @@
     },
     "/rpc/tariff/addRateRule": {
       "post": {
-        "tags": [
-          "tariff"
-        ],
+        "tags": ["tariff"],
         "summary": "tariff.addRateRule",
         "description": "RPC operation: tariff.addRateRule",
         "operationId": "tariff_addRateRule",
@@ -5557,9 +5429,7 @@
     },
     "/rpc/tariff/calculateQuote": {
       "post": {
-        "tags": [
-          "tariff"
-        ],
+        "tags": ["tariff"],
         "summary": "tariff.calculateQuote",
         "description": "RPC operation: tariff.calculateQuote",
         "operationId": "tariff_calculateQuote",
@@ -5644,9 +5514,7 @@
     },
     "/rpc/tariff/approveQuote": {
       "post": {
-        "tags": [
-          "tariff"
-        ],
+        "tags": ["tariff"],
         "summary": "tariff.approveQuote",
         "description": "RPC operation: tariff.approveQuote",
         "operationId": "tariff_approveQuote",
@@ -5731,9 +5599,7 @@
     },
     "/rpc/teams/create": {
       "post": {
-        "tags": [
-          "teams"
-        ],
+        "tags": ["teams"],
         "summary": "teams.create",
         "description": "RPC operation: teams.create",
         "operationId": "teams_create",
@@ -5818,9 +5684,7 @@
     },
     "/rpc/teams/update": {
       "post": {
-        "tags": [
-          "teams"
-        ],
+        "tags": ["teams"],
         "summary": "teams.update",
         "description": "RPC operation: teams.update",
         "operationId": "teams_update",
@@ -5905,9 +5769,7 @@
     },
     "/rpc/teams/delete": {
       "post": {
-        "tags": [
-          "teams"
-        ],
+        "tags": ["teams"],
         "summary": "teams.delete",
         "description": "RPC operation: teams.delete",
         "operationId": "teams_delete",
@@ -5992,9 +5854,7 @@
     },
     "/rpc/teams/list": {
       "get": {
-        "tags": [
-          "teams"
-        ],
+        "tags": ["teams"],
         "summary": "teams.list",
         "description": "RPC operation: teams.list",
         "operationId": "teams_list",
@@ -6077,9 +5937,7 @@
     },
     "/rpc/teams/get": {
       "get": {
-        "tags": [
-          "teams"
-        ],
+        "tags": ["teams"],
         "summary": "teams.get",
         "description": "RPC operation: teams.get",
         "operationId": "teams_get",
@@ -6162,9 +6020,7 @@
     },
     "/rpc/teams/addMember": {
       "post": {
-        "tags": [
-          "teams"
-        ],
+        "tags": ["teams"],
         "summary": "teams.addMember",
         "description": "RPC operation: teams.addMember",
         "operationId": "teams_addMember",
@@ -6249,9 +6105,7 @@
     },
     "/rpc/teams/removeMember": {
       "post": {
-        "tags": [
-          "teams"
-        ],
+        "tags": ["teams"],
         "summary": "teams.removeMember",
         "description": "RPC operation: teams.removeMember",
         "operationId": "teams_removeMember",
@@ -6336,9 +6190,7 @@
     },
     "/rpc/teams/updateMemberRole": {
       "post": {
-        "tags": [
-          "teams"
-        ],
+        "tags": ["teams"],
         "summary": "teams.updateMemberRole",
         "description": "RPC operation: teams.updateMemberRole",
         "operationId": "teams_updateMemberRole",
@@ -6423,9 +6275,7 @@
     },
     "/rpc/tracking/overview": {
       "get": {
-        "tags": [
-          "tracking"
-        ],
+        "tags": ["tracking"],
         "summary": "tracking.overview",
         "description": "RPC operation: tracking.overview",
         "operationId": "tracking_overview",
@@ -6508,9 +6358,7 @@
     },
     "/rpc/tracking/analytics": {
       "get": {
-        "tags": [
-          "tracking"
-        ],
+        "tags": ["tracking"],
         "summary": "tracking.analytics",
         "description": "RPC operation: tracking.analytics",
         "operationId": "tracking_analytics",
@@ -6593,9 +6441,7 @@
     },
     "/rpc/tracking/advisory": {
       "get": {
-        "tags": [
-          "tracking"
-        ],
+        "tags": ["tracking"],
         "summary": "tracking.advisory",
         "description": "RPC operation: tracking.advisory",
         "operationId": "tracking_advisory",
@@ -6678,9 +6524,7 @@
     },
     "/rpc/tracking/events": {
       "post": {
-        "tags": [
-          "tracking"
-        ],
+        "tags": ["tracking"],
         "summary": "tracking.events",
         "description": "RPC operation: tracking.events",
         "operationId": "tracking_events",
@@ -6765,9 +6609,7 @@
     },
     "/rpc/tracking/shipmentDetail": {
       "get": {
-        "tags": [
-          "tracking"
-        ],
+        "tags": ["tracking"],
         "summary": "tracking.shipmentDetail",
         "description": "RPC operation: tracking.shipmentDetail",
         "operationId": "tracking_shipmentDetail",
@@ -6850,9 +6692,7 @@
     },
     "/rpc/tracking/exceptions": {
       "post": {
-        "tags": [
-          "tracking"
-        ],
+        "tags": ["tracking"],
         "summary": "tracking.exceptions",
         "description": "RPC operation: tracking.exceptions",
         "operationId": "tracking_exceptions",
@@ -6937,9 +6777,7 @@
     },
     "/rpc/tracking/exceptionResolution": {
       "post": {
-        "tags": [
-          "tracking"
-        ],
+        "tags": ["tracking"],
         "summary": "tracking.exceptionResolution",
         "description": "RPC operation: tracking.exceptionResolution",
         "operationId": "tracking_exceptionResolution",
@@ -7024,9 +6862,7 @@
     },
     "/rpc/webhooks/list": {
       "get": {
-        "tags": [
-          "webhooks"
-        ],
+        "tags": ["webhooks"],
         "summary": "webhooks.list",
         "description": "RPC operation: webhooks.list",
         "operationId": "webhooks_list",
@@ -7109,9 +6945,7 @@
     },
     "/rpc/webhooks/create": {
       "post": {
-        "tags": [
-          "webhooks"
-        ],
+        "tags": ["webhooks"],
         "summary": "webhooks.create",
         "description": "RPC operation: webhooks.create",
         "operationId": "webhooks_create",
@@ -7196,9 +7030,7 @@
     },
     "/rpc/webhooks/update": {
       "post": {
-        "tags": [
-          "webhooks"
-        ],
+        "tags": ["webhooks"],
         "summary": "webhooks.update",
         "description": "RPC operation: webhooks.update",
         "operationId": "webhooks_update",
@@ -7283,9 +7115,7 @@
     },
     "/rpc/webhooks/delete": {
       "post": {
-        "tags": [
-          "webhooks"
-        ],
+        "tags": ["webhooks"],
         "summary": "webhooks.delete",
         "description": "RPC operation: webhooks.delete",
         "operationId": "webhooks_delete",
@@ -7370,9 +7200,7 @@
     },
     "/rpc/webhooks/getDeliveryLog": {
       "get": {
-        "tags": [
-          "webhooks"
-        ],
+        "tags": ["webhooks"],
         "summary": "webhooks.getDeliveryLog",
         "description": "RPC operation: webhooks.getDeliveryLog",
         "operationId": "webhooks_getDeliveryLog",

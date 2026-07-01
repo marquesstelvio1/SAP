@@ -29,19 +29,17 @@ import {
   createOrganizationsRpcRouter,
   type OrganizationsRpcContext,
 } from "../organizations/organizations-rpc.router.js";
+import type { OverviewService } from "../overview/overview.service.js";
 import {
   createPlanningRpcRouter,
   type PlanningRpcContext,
 } from "../planning/planning-rpc.router.js";
+import { createPrivacyRpcRouter, type PrivacyRpcContext } from "../privacy/privacy-rpc.router.js";
 import { createReportsRpcRouter, type ReportsRpcContext } from "../reports/reports-rpc.router.js";
 import {
   createSettingsRpcRouter,
   type SettingsRpcContext,
 } from "../settings/settings-rpc.router.js";
-import {
-  createPrivacyRpcRouter,
-  type PrivacyRpcContext,
-} from "../privacy/privacy-rpc.router.js";
 import { createTariffRpcRouter, type TariffRpcContext } from "../tariff/tariff-rpc.router.js";
 import { createTeamsRpcRouter, type TeamsRpcContext } from "../teams/teams-rpc.router.js";
 import {
@@ -87,7 +85,15 @@ export type CreatePlatformRpcRouterInput = Parameters<typeof createAdminRpcRoute
   Parameters<typeof createTrackingRpcRouter>[0] &
   Parameters<typeof createTeamsRpcRouter>[0] &
   Parameters<typeof createWebhooksRpcRouter>[0] &
-  Parameters<typeof createPrivacyRpcRouter>[0];
+  Parameters<typeof createPrivacyRpcRouter>[0] & {
+    overviewService: Pick<
+      OverviewService,
+      | "getComplianceOverview"
+      | "getDeliveryOverview"
+      | "getDispatchOverview"
+      | "getExceptionOverview"
+    >;
+  };
 
 export function createPlatformRpcRouter(input: CreatePlatformRpcRouterInput) {
   const platformRpc = os.$context<PlatformRpcContext>();

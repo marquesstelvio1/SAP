@@ -43,6 +43,8 @@ export type CargoOperationalHandoffMinAggregateOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CargoOperationalHandoffMaxAggregateOutputType = {
@@ -64,6 +66,8 @@ export type CargoOperationalHandoffMaxAggregateOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CargoOperationalHandoffCountAggregateOutputType = {
@@ -85,6 +89,8 @@ export type CargoOperationalHandoffCountAggregateOutputType = {
   recordIdempotencyKey: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -108,6 +114,8 @@ export type CargoOperationalHandoffMinAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CargoOperationalHandoffMaxAggregateInputType = {
@@ -129,6 +137,8 @@ export type CargoOperationalHandoffMaxAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CargoOperationalHandoffCountAggregateInputType = {
@@ -150,6 +160,8 @@ export type CargoOperationalHandoffCountAggregateInputType = {
   recordIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -244,6 +256,8 @@ export type CargoOperationalHandoffGroupByOutputType = {
   recordIdempotencyKey: string | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: CargoOperationalHandoffCountAggregateOutputType | null
   _min: CargoOperationalHandoffMinAggregateOutputType | null
   _max: CargoOperationalHandoffMaxAggregateOutputType | null
@@ -286,6 +300,8 @@ export type CargoOperationalHandoffWhereInput = {
   recordIdempotencyKey?: Prisma.StringNullableFilter<"CargoOperationalHandoff"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CargoOperationalHandoff"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoOperationalHandoff"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoOperationalHandoff"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoOperationalHandoff"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
 }
@@ -309,6 +325,8 @@ export type CargoOperationalHandoffOrderByWithRelationInput = {
   recordIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   cargo?: Prisma.CargoOrderByWithRelationInput
 }
@@ -337,6 +355,8 @@ export type CargoOperationalHandoffWhereUniqueInput = Prisma.AtLeast<{
   recordIdempotencyKey?: Prisma.StringNullableFilter<"CargoOperationalHandoff"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CargoOperationalHandoff"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoOperationalHandoff"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoOperationalHandoff"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoOperationalHandoff"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
 }, "id" | "organizationId_recordIdempotencyKey" | "organizationId_handoffReference">
@@ -360,6 +380,8 @@ export type CargoOperationalHandoffOrderByWithAggregationInput = {
   recordIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CargoOperationalHandoffCountOrderByAggregateInput
   _max?: Prisma.CargoOperationalHandoffMaxOrderByAggregateInput
   _min?: Prisma.CargoOperationalHandoffMinOrderByAggregateInput
@@ -387,6 +409,8 @@ export type CargoOperationalHandoffScalarWhereWithAggregatesInput = {
   recordIdempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"CargoOperationalHandoff"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CargoOperationalHandoff"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CargoOperationalHandoff"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CargoOperationalHandoff"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"CargoOperationalHandoff"> | string | null
 }
 
 export type CargoOperationalHandoffCreateInput = {
@@ -406,6 +430,8 @@ export type CargoOperationalHandoffCreateInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoOperationalHandoffsInput
   cargo: Prisma.CargoCreateNestedOneWithoutOperationalHandoffsInput
 }
@@ -429,6 +455,8 @@ export type CargoOperationalHandoffUncheckedCreateInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoOperationalHandoffUpdateInput = {
@@ -448,6 +476,8 @@ export type CargoOperationalHandoffUpdateInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoOperationalHandoffsNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutOperationalHandoffsNestedInput
 }
@@ -471,6 +501,8 @@ export type CargoOperationalHandoffUncheckedUpdateInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoOperationalHandoffCreateManyInput = {
@@ -492,6 +524,8 @@ export type CargoOperationalHandoffCreateManyInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoOperationalHandoffUpdateManyMutationInput = {
@@ -511,6 +545,8 @@ export type CargoOperationalHandoffUpdateManyMutationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoOperationalHandoffUncheckedUpdateManyInput = {
@@ -532,6 +568,8 @@ export type CargoOperationalHandoffUncheckedUpdateManyInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoOperationalHandoffListRelationFilter = {
@@ -573,6 +611,8 @@ export type CargoOperationalHandoffCountOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoOperationalHandoffMaxOrderByAggregateInput = {
@@ -594,6 +634,8 @@ export type CargoOperationalHandoffMaxOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoOperationalHandoffMinOrderByAggregateInput = {
@@ -615,6 +657,8 @@ export type CargoOperationalHandoffMinOrderByAggregateInput = {
   recordIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoOperationalHandoffCreateNestedManyWithoutOrganizationInput = {
@@ -722,6 +766,8 @@ export type CargoOperationalHandoffCreateWithoutOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   cargo: Prisma.CargoCreateNestedOneWithoutOperationalHandoffsInput
 }
 
@@ -743,6 +789,8 @@ export type CargoOperationalHandoffUncheckedCreateWithoutOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoOperationalHandoffCreateOrConnectWithoutOrganizationInput = {
@@ -793,6 +841,8 @@ export type CargoOperationalHandoffScalarWhereInput = {
   recordIdempotencyKey?: Prisma.StringNullableFilter<"CargoOperationalHandoff"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CargoOperationalHandoff"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoOperationalHandoff"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoOperationalHandoff"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoOperationalHandoff"> | string | null
 }
 
 export type CargoOperationalHandoffCreateWithoutCargoInput = {
@@ -812,6 +862,8 @@ export type CargoOperationalHandoffCreateWithoutCargoInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoOperationalHandoffsInput
 }
 
@@ -833,6 +885,8 @@ export type CargoOperationalHandoffUncheckedCreateWithoutCargoInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoOperationalHandoffCreateOrConnectWithoutCargoInput = {
@@ -879,6 +933,8 @@ export type CargoOperationalHandoffCreateManyOrganizationInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoOperationalHandoffUpdateWithoutOrganizationInput = {
@@ -898,6 +954,8 @@ export type CargoOperationalHandoffUpdateWithoutOrganizationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargo?: Prisma.CargoUpdateOneRequiredWithoutOperationalHandoffsNestedInput
 }
 
@@ -919,6 +977,8 @@ export type CargoOperationalHandoffUncheckedUpdateWithoutOrganizationInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoOperationalHandoffUncheckedUpdateManyWithoutOrganizationInput = {
@@ -939,6 +999,8 @@ export type CargoOperationalHandoffUncheckedUpdateManyWithoutOrganizationInput =
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoOperationalHandoffCreateManyCargoInput = {
@@ -959,6 +1021,8 @@ export type CargoOperationalHandoffCreateManyCargoInput = {
   recordIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoOperationalHandoffUpdateWithoutCargoInput = {
@@ -978,6 +1042,8 @@ export type CargoOperationalHandoffUpdateWithoutCargoInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoOperationalHandoffsNestedInput
 }
 
@@ -999,6 +1065,8 @@ export type CargoOperationalHandoffUncheckedUpdateWithoutCargoInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoOperationalHandoffUncheckedUpdateManyWithoutCargoInput = {
@@ -1019,6 +1087,8 @@ export type CargoOperationalHandoffUncheckedUpdateManyWithoutCargoInput = {
   recordIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1042,6 +1112,8 @@ export type CargoOperationalHandoffSelect<ExtArgs extends runtime.Types.Extensio
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cargoOperationalHandoff"]>
@@ -1065,6 +1137,8 @@ export type CargoOperationalHandoffSelectCreateManyAndReturn<ExtArgs extends run
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cargoOperationalHandoff"]>
@@ -1088,6 +1162,8 @@ export type CargoOperationalHandoffSelectUpdateManyAndReturn<ExtArgs extends run
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cargoOperationalHandoff"]>
@@ -1111,9 +1187,11 @@ export type CargoOperationalHandoffSelectScalar = {
   recordIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type CargoOperationalHandoffOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "trackingShipmentId" | "handoffType" | "fromCustodyOwnerName" | "toCustodyOwnerName" | "handoffLocationName" | "operatorName" | "handoffReference" | "sealReference" | "conditionStatus" | "handoffNotes" | "handoffAt" | "sourceSystem" | "recordIdempotencyKey" | "createdAt" | "updatedAt", ExtArgs["result"]["cargoOperationalHandoff"]>
+export type CargoOperationalHandoffOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "trackingShipmentId" | "handoffType" | "fromCustodyOwnerName" | "toCustodyOwnerName" | "handoffLocationName" | "operatorName" | "handoffReference" | "sealReference" | "conditionStatus" | "handoffNotes" | "handoffAt" | "sourceSystem" | "recordIdempotencyKey" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["cargoOperationalHandoff"]>
 export type CargoOperationalHandoffInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
@@ -1152,6 +1230,8 @@ export type $CargoOperationalHandoffPayload<ExtArgs extends runtime.Types.Extens
     recordIdempotencyKey: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["cargoOperationalHandoff"]>
   composites: {}
 }
@@ -1595,6 +1675,8 @@ export interface CargoOperationalHandoffFieldRefs {
   readonly recordIdempotencyKey: Prisma.FieldRef<"CargoOperationalHandoff", 'String'>
   readonly createdAt: Prisma.FieldRef<"CargoOperationalHandoff", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CargoOperationalHandoff", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"CargoOperationalHandoff", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"CargoOperationalHandoff", 'String'>
 }
     
 

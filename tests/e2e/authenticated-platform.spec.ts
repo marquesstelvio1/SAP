@@ -121,7 +121,9 @@ test("authenticated operator can read seeded business modules", async ({ page })
   await expect(page.getByText("QUOTE-LOCAL-RAIL-001").first()).toBeVisible();
 
   await page.goto("/app/admin");
-  await expect(page.getByText("Administracao de identidade e RBAC", { exact: true }).first()).toBeVisible();
+  await expect(
+    page.getByText("Administracao de identidade e RBAC", { exact: true }).first(),
+  ).toBeVisible();
   await expect(page.getByText(localAdminEmail).first()).toBeVisible();
   await expect(page.getByRole("cell", { name: /tenant\.admin/ }).first()).toBeVisible();
   await expect(page.getByRole("cell", { name: /identity\.role\.assign/ }).first()).toBeVisible();

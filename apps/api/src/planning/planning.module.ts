@@ -11,6 +11,6 @@ import { PlanningService } from "./planning.service.js";
       useClass: PrismaPlanningRepository,
     },
   ],
-  exports: [PlanningService],
+  exports: [PlanningService, PLANNING_REPOSITORY],
 })
 export class PlanningModule {}

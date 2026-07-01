@@ -76,7 +76,7 @@ test("Button renders as Slot.Root when asChild is true", () => {
 
 test("Button uses sizeStyles via style prop", () => {
   const element = Button({ children: "Click", size: "lg" });
-  assert.equal(element.props.style.height, "var(--space-10)");
+  assert.equal(element.props.style.height, undefined);
   assert.equal(element.props.style.paddingLeft, "var(--space-6)");
 });
 
@@ -94,5 +94,5 @@ test("Button passes through additional HTML props", () => {
 
 test("Button resolves size default when only variant is provided", () => {
   const element = Button({ variant: "destructive", children: "Delete" });
-  assert.equal(element.props.style.height, "var(--space-9)");
+  assert.equal(element.props.style.height, undefined);
 });

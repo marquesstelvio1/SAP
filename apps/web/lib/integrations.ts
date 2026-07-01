@@ -1,4 +1,7 @@
-import { type IntegrationOverviewOutput, integrationOverviewOutputSchema } from "@saptm/rpc/integrations";
+import {
+  type IntegrationOverviewOutput,
+  integrationOverviewOutputSchema,
+} from "@saptm/rpc/integrations";
 
 import { type RpcFailure, rpcGet } from "./rpc-server";
 

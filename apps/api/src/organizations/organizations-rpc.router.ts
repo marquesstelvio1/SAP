@@ -56,15 +56,19 @@ export function createOrganizationsRpcRouter(deps: CreateOrganizationsRpcRouterI
             context.request,
             organizationStatusUpdateMetadata,
           );
-          const organizationId = authorizedContext.authContext?.organizationId;
+          const authContext = authorizedContext.authContext;
+          const organizationId = authContext?.organizationId;
 
-          if (organizationId === undefined) {
+          if (authContext === undefined || organizationId === undefined) {
             throw new ForbiddenException("organizations.organization_required");
           }
 
           return deps.organizationsService.updateStatus({
             ...input,
             organizationId,
+            actorId: authContext.actorId,
+            actorType: authContext.actorType,
+            correlationId: authContext.correlationId,
           });
         }),
     },

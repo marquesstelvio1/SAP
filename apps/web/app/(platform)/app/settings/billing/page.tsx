@@ -11,12 +11,11 @@ export default async function BillingSettingsPage() {
   if (!platformSession.viewer.permissions.includes("billing.read")) {
     return (
       <AccessState
-        badgeLabel="RBAC"
-        message="A sessao esta autenticada, mas falta billing.read para aceder a faturacao."
+        badgeLabel="Faturação"
+        description="O utilizador autenticado não tem acesso ao módulo de faturação."
         role="alert"
-        status="Sem grant"
-        title="Faturacao bloqueada"
-        variant="empty"
+        title="Faturação bloqueada"
+        variant="blocked"
       />
     );
   }
@@ -26,12 +25,11 @@ export default async function BillingSettingsPage() {
   if (result.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Faturacao"
-        message={result.message}
+        badgeLabel="Faturação"
+        description={result.message}
         role="alert"
-        status={result.status}
-        title="Dados indisponiveis"
-        variant="empty"
+        title="Dados indisponíveis"
+        variant="error"
       />
     );
   }

@@ -19,7 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
-
+import { addHours, createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TransportOrderRescheduleFormState } from "../../app/(platform)/app/planning/form-state";
 
 export type TransportOrderRescheduleFormProps = {
@@ -45,7 +46,9 @@ export function TransportOrderRescheduleForm({
   action,
 }: TransportOrderRescheduleFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("planning_reschedule"),
+  );
   const defaultRescheduledAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const defaultDepartureAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 8)), []);
   const defaultArrivalAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 20)), []);
@@ -53,7 +56,7 @@ export function TransportOrderRescheduleForm({
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("planning_reschedule"));
     }
   }, [state.status]);
 
@@ -62,7 +65,7 @@ export function TransportOrderRescheduleForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRescheduleTransportOrder ? "success" : "outline"}>
-            {canRescheduleTransportOrder ? "Replaneamento governado" : "Sem permissao"}
+            {canRescheduleTransportOrder ? "Replaneamento autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">planning.order.reschedule</Badge>
         </div>
@@ -70,7 +73,7 @@ export function TransportOrderRescheduleForm({
           <CardTitle>Replanear transport order</CardTitle>
           <CardDescription className="leading-6">
             Atualiza rota, modo, carrier e janela de uma ordem confirmada antes da partida,
-            preservando a revisao, idempotencia, auditoria e evento de outbox.
+            preservando a revisao com registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -238,8 +241,8 @@ export function TransportOrderRescheduleForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canRescheduleTransportOrder
-              ? "Replaneamento exige mudanca real, timing valido e referencia unica."
-              : "Requer planning.order.reschedule."}
+              ? "Replaneamento exige mudança real, timing válido e referência única."
+              : "Requer replaneamento de transporte."}
           </span>
           <Button disabled={isDisabled} type="submit" variant="secondary">
             {isPending ? "A replanear..." : "Replanear transport order"}
@@ -248,21 +251,4 @@ export function TransportOrderRescheduleForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `planning_reschedule_${randomValue}`;
-}
-
-function addHours(date: Date, hours: number): Date {
-  return new Date(date.getTime() + hours * 60 * 60 * 1000);
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

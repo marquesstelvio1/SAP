@@ -19,12 +19,11 @@ export default async function WebhooksSettingsPage(props: {
   if (!canManage) {
     return (
       <AccessState
-        badgeLabel="RBAC"
-        message="A sessao esta autenticada, mas falta tenant.manage para gerir webhooks."
+        badgeLabel="Webhooks"
+        description="O utilizador autenticado não tem acesso à gestão de webhooks."
         role="alert"
-        status="Sem grant"
-        title="Webhooks bloqueado"
-        variant="empty"
+        title="Webhooks bloqueados"
+        variant="blocked"
       />
     );
   }

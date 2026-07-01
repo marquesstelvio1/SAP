@@ -1,4 +1,7 @@
-import { type TrackingShipmentDetailOutput, trackingShipmentDetailOutputSchema } from "@saptm/rpc/tracking";
+import {
+  type TrackingShipmentDetailOutput,
+  trackingShipmentDetailOutputSchema,
+} from "@saptm/rpc/tracking";
 
 import { type RpcFailure, rpcGet } from "./rpc-client";
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { getTrackingOverview } from "../lib/tracking-overview";
+import { useRpcQuery } from "./use-rpc";
 
 export type DashboardStats = {
   shipments: number;
@@ -13,7 +13,7 @@ export type DashboardStats = {
 };
 
 export function useDashboardStats() {
-  return useQuery({
+  return useRpcQuery({
     queryKey: ["dashboard-stats"],
     queryFn: async () => {
       const result = await getTrackingOverview();
@@ -30,6 +30,5 @@ export function useDashboardStats() {
         generatedAt: overview.generatedAt,
       } satisfies DashboardStats;
     },
-    staleTime: 30_000,
   });
 }

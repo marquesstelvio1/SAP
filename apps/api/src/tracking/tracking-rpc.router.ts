@@ -2,6 +2,9 @@ import type { IncomingMessage } from "node:http";
 import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
+  exceptionOverviewInputSchema,
+  exceptionOverviewMetadata,
+  exceptionOverviewOutputSchema,
   trackingAdvisoryInputSchema,
   trackingAdvisoryMetadata,
   trackingAdvisoryOutputSchema,
@@ -25,6 +28,7 @@ import {
   trackingShipmentDetailOutputSchema,
 } from "@saptm/rpc";
 
+import type { OverviewService } from "../overview/overview.service.js";
 import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
 import type { RpcContextService } from "../rpc/rpc-context.service.js";
 import type { TrackingService } from "./tracking.service.js";
@@ -44,6 +48,7 @@ export type CreateTrackingRpcRouterInput = {
     | "recordEvent"
     | "resolveException"
   >;
+  overviewService: Pick<OverviewService, "getExceptionOverview">;
   rpcContextService: Pick<RpcContextService, "authorizeRequest">;
 };
 
@@ -69,6 +74,28 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
           }
 
           return deps.trackingService.getOverview({
+            organizationId,
+            limit: input.limit,
+            offset: input.offset,
+          });
+        }),
+      exceptionOverview: trackingRpc
+        .meta(exceptionOverviewMetadata)
+        .route({ method: "GET", path: "/tracking/exceptionOverview" })
+        .input(exceptionOverviewInputSchema)
+        .output(exceptionOverviewOutputSchema)
+        .handler(async ({ context, input }) => {
+          const authorizedContext = await deps.rpcContextService.authorizeRequest(
+            context.request,
+            exceptionOverviewMetadata,
+          );
+          const organizationId = authorizedContext.authContext?.organizationId;
+
+          if (organizationId === undefined) {
+            throw new ForbiddenException("tracking.organization_required");
+          }
+
+          return deps.overviewService.getExceptionOverview({
             organizationId,
             limit: input.limit,
             offset: input.offset,

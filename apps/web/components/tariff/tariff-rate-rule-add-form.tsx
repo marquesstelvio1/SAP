@@ -19,6 +19,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TariffRateRuleAddFormState } from "../../app/(platform)/app/tariffs/form-state";
 
 export type TariffRateRuleAddFormProps = {
@@ -36,12 +37,12 @@ export function TariffRateRuleAddForm({
   action,
 }: TariffRateRuleAddFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("tariff_rule"));
   const isDisabled = isPending || !canManageTariffs;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("tariff_rule"));
     }
   }, [state.status]);
 
@@ -50,14 +51,14 @@ export function TariffRateRuleAddForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageTariffs ? "success" : "warning"}>
-            {canManageTariffs ? "Regra controlada" : "Sem permissao"}
+            {canManageTariffs ? "Regra controlada" : "Sem permissão"}
           </Badge>
           <Badge variant="outline">tariff.manage</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Adicionar regra tarifaria</CardTitle>
+          <CardTitle>Adicionar regra tarifária</CardTitle>
           <CardDescription className="leading-6">
-            Cria uma linha de cobranca por peso, volume, unidade, distancia, flat ou percentagem.
+            Cria uma linha de cobrança por peso, volume, unidade, distância, flat ou percentagem.
           </CardDescription>
         </div>
       </CardHeader>
@@ -71,7 +72,7 @@ export function TariffRateRuleAddForm({
                 <Input disabled={isDisabled} id="rateCardId" name="rateCardId" required />
               </Field>
               <Field data-disabled={!canManageTariffs}>
-                <FieldLabel htmlFor="ruleCode">Codigo da regra</FieldLabel>
+                <FieldLabel htmlFor="ruleCode">Código da regra</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="ruleCode"
@@ -172,7 +173,7 @@ export function TariffRateRuleAddForm({
                 />
               </Field>
               <Field data-disabled={!canManageTariffs}>
-                <FieldLabel htmlFor="minimumCharge">Minimo</FieldLabel>
+                <FieldLabel htmlFor="minimumCharge">Mínimo</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="minimumCharge"
@@ -239,7 +240,7 @@ export function TariffRateRuleAddForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canManageTariffs ? "Bloqueia base tarifaria invalida." : "Requer tariff.manage."}
+            {canManageTariffs ? "Bloqueia base tarifaria invalida." : "Requer gestao tarifaria."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A adicionar..." : "Adicionar regra"}
@@ -248,11 +249,4 @@ export function TariffRateRuleAddForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `tariff_rule_${randomValue}`;
 }

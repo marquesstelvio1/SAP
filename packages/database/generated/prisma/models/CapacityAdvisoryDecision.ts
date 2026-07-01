@@ -41,6 +41,8 @@ export type CapacityAdvisoryDecisionMinAggregateOutputType = {
   decidedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CapacityAdvisoryDecisionMaxAggregateOutputType = {
@@ -60,6 +62,8 @@ export type CapacityAdvisoryDecisionMaxAggregateOutputType = {
   decidedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CapacityAdvisoryDecisionCountAggregateOutputType = {
@@ -79,6 +83,8 @@ export type CapacityAdvisoryDecisionCountAggregateOutputType = {
   decidedAt: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -100,6 +106,8 @@ export type CapacityAdvisoryDecisionMinAggregateInputType = {
   decidedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CapacityAdvisoryDecisionMaxAggregateInputType = {
@@ -119,6 +127,8 @@ export type CapacityAdvisoryDecisionMaxAggregateInputType = {
   decidedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CapacityAdvisoryDecisionCountAggregateInputType = {
@@ -138,6 +148,8 @@ export type CapacityAdvisoryDecisionCountAggregateInputType = {
   decidedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -230,6 +242,8 @@ export type CapacityAdvisoryDecisionGroupByOutputType = {
   decidedAt: Date
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: CapacityAdvisoryDecisionCountAggregateOutputType | null
   _min: CapacityAdvisoryDecisionMinAggregateOutputType | null
   _max: CapacityAdvisoryDecisionMaxAggregateOutputType | null
@@ -270,6 +284,8 @@ export type CapacityAdvisoryDecisionWhereInput = {
   decidedAt?: Prisma.DateTimeFilter<"CapacityAdvisoryDecision"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"CapacityAdvisoryDecision"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CapacityAdvisoryDecision"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CapacityAdvisoryDecision"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CapacityAdvisoryDecision"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   slot?: Prisma.XOR<Prisma.CapacitySlotNullableScalarRelationFilter, Prisma.CapacitySlotWhereInput> | null
   reservation?: Prisma.XOR<Prisma.CapacitySlotReservationNullableScalarRelationFilter, Prisma.CapacitySlotReservationWhereInput> | null
@@ -292,6 +308,8 @@ export type CapacityAdvisoryDecisionOrderByWithRelationInput = {
   decidedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   slot?: Prisma.CapacitySlotOrderByWithRelationInput
   reservation?: Prisma.CapacitySlotReservationOrderByWithRelationInput
@@ -319,6 +337,8 @@ export type CapacityAdvisoryDecisionWhereUniqueInput = Prisma.AtLeast<{
   decidedAt?: Prisma.DateTimeFilter<"CapacityAdvisoryDecision"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"CapacityAdvisoryDecision"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CapacityAdvisoryDecision"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CapacityAdvisoryDecision"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CapacityAdvisoryDecision"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   slot?: Prisma.XOR<Prisma.CapacitySlotNullableScalarRelationFilter, Prisma.CapacitySlotWhereInput> | null
   reservation?: Prisma.XOR<Prisma.CapacitySlotReservationNullableScalarRelationFilter, Prisma.CapacitySlotReservationWhereInput> | null
@@ -341,6 +361,8 @@ export type CapacityAdvisoryDecisionOrderByWithAggregationInput = {
   decidedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CapacityAdvisoryDecisionCountOrderByAggregateInput
   _max?: Prisma.CapacityAdvisoryDecisionMaxOrderByAggregateInput
   _min?: Prisma.CapacityAdvisoryDecisionMinOrderByAggregateInput
@@ -366,6 +388,8 @@ export type CapacityAdvisoryDecisionScalarWhereWithAggregatesInput = {
   decidedAt?: Prisma.DateTimeWithAggregatesFilter<"CapacityAdvisoryDecision"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CapacityAdvisoryDecision"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CapacityAdvisoryDecision"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CapacityAdvisoryDecision"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"CapacityAdvisoryDecision"> | string | null
 }
 
 export type CapacityAdvisoryDecisionCreateInput = {
@@ -382,6 +406,8 @@ export type CapacityAdvisoryDecisionCreateInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCapacityAdvisoryDecisionsInput
   slot?: Prisma.CapacitySlotCreateNestedOneWithoutAdvisoryDecisionsInput
   reservation?: Prisma.CapacitySlotReservationCreateNestedOneWithoutAdvisoryDecisionsInput
@@ -404,6 +430,8 @@ export type CapacityAdvisoryDecisionUncheckedCreateInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacityAdvisoryDecisionUpdateInput = {
@@ -420,6 +448,8 @@ export type CapacityAdvisoryDecisionUpdateInput = {
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCapacityAdvisoryDecisionsNestedInput
   slot?: Prisma.CapacitySlotUpdateOneWithoutAdvisoryDecisionsNestedInput
   reservation?: Prisma.CapacitySlotReservationUpdateOneWithoutAdvisoryDecisionsNestedInput
@@ -442,6 +472,8 @@ export type CapacityAdvisoryDecisionUncheckedUpdateInput = {
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacityAdvisoryDecisionCreateManyInput = {
@@ -461,6 +493,8 @@ export type CapacityAdvisoryDecisionCreateManyInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacityAdvisoryDecisionUpdateManyMutationInput = {
@@ -477,6 +511,8 @@ export type CapacityAdvisoryDecisionUpdateManyMutationInput = {
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacityAdvisoryDecisionUncheckedUpdateManyInput = {
@@ -496,6 +532,8 @@ export type CapacityAdvisoryDecisionUncheckedUpdateManyInput = {
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacityAdvisoryDecisionListRelationFilter = {
@@ -535,6 +573,8 @@ export type CapacityAdvisoryDecisionCountOrderByAggregateInput = {
   decidedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CapacityAdvisoryDecisionMaxOrderByAggregateInput = {
@@ -554,6 +594,8 @@ export type CapacityAdvisoryDecisionMaxOrderByAggregateInput = {
   decidedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CapacityAdvisoryDecisionMinOrderByAggregateInput = {
@@ -573,6 +615,8 @@ export type CapacityAdvisoryDecisionMinOrderByAggregateInput = {
   decidedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CapacityAdvisoryDecisionCreateNestedManyWithoutOrganizationInput = {
@@ -723,6 +767,8 @@ export type CapacityAdvisoryDecisionCreateWithoutOrganizationInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   slot?: Prisma.CapacitySlotCreateNestedOneWithoutAdvisoryDecisionsInput
   reservation?: Prisma.CapacitySlotReservationCreateNestedOneWithoutAdvisoryDecisionsInput
 }
@@ -743,6 +789,8 @@ export type CapacityAdvisoryDecisionUncheckedCreateWithoutOrganizationInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacityAdvisoryDecisionCreateOrConnectWithoutOrganizationInput = {
@@ -791,6 +839,8 @@ export type CapacityAdvisoryDecisionScalarWhereInput = {
   decidedAt?: Prisma.DateTimeFilter<"CapacityAdvisoryDecision"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"CapacityAdvisoryDecision"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CapacityAdvisoryDecision"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CapacityAdvisoryDecision"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CapacityAdvisoryDecision"> | string | null
 }
 
 export type CapacityAdvisoryDecisionCreateWithoutSlotInput = {
@@ -807,6 +857,8 @@ export type CapacityAdvisoryDecisionCreateWithoutSlotInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCapacityAdvisoryDecisionsInput
   reservation?: Prisma.CapacitySlotReservationCreateNestedOneWithoutAdvisoryDecisionsInput
 }
@@ -827,6 +879,8 @@ export type CapacityAdvisoryDecisionUncheckedCreateWithoutSlotInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacityAdvisoryDecisionCreateOrConnectWithoutSlotInput = {
@@ -869,6 +923,8 @@ export type CapacityAdvisoryDecisionCreateWithoutReservationInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCapacityAdvisoryDecisionsInput
   slot?: Prisma.CapacitySlotCreateNestedOneWithoutAdvisoryDecisionsInput
 }
@@ -889,6 +945,8 @@ export type CapacityAdvisoryDecisionUncheckedCreateWithoutReservationInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacityAdvisoryDecisionCreateOrConnectWithoutReservationInput = {
@@ -933,6 +991,8 @@ export type CapacityAdvisoryDecisionCreateManyOrganizationInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacityAdvisoryDecisionUpdateWithoutOrganizationInput = {
@@ -949,6 +1009,8 @@ export type CapacityAdvisoryDecisionUpdateWithoutOrganizationInput = {
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slot?: Prisma.CapacitySlotUpdateOneWithoutAdvisoryDecisionsNestedInput
   reservation?: Prisma.CapacitySlotReservationUpdateOneWithoutAdvisoryDecisionsNestedInput
 }
@@ -969,6 +1031,8 @@ export type CapacityAdvisoryDecisionUncheckedUpdateWithoutOrganizationInput = {
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacityAdvisoryDecisionUncheckedUpdateManyWithoutOrganizationInput = {
@@ -987,6 +1051,8 @@ export type CapacityAdvisoryDecisionUncheckedUpdateManyWithoutOrganizationInput 
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacityAdvisoryDecisionCreateManySlotInput = {
@@ -1005,6 +1071,8 @@ export type CapacityAdvisoryDecisionCreateManySlotInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacityAdvisoryDecisionUpdateWithoutSlotInput = {
@@ -1021,6 +1089,8 @@ export type CapacityAdvisoryDecisionUpdateWithoutSlotInput = {
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCapacityAdvisoryDecisionsNestedInput
   reservation?: Prisma.CapacitySlotReservationUpdateOneWithoutAdvisoryDecisionsNestedInput
 }
@@ -1041,6 +1111,8 @@ export type CapacityAdvisoryDecisionUncheckedUpdateWithoutSlotInput = {
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacityAdvisoryDecisionUncheckedUpdateManyWithoutSlotInput = {
@@ -1059,6 +1131,8 @@ export type CapacityAdvisoryDecisionUncheckedUpdateManyWithoutSlotInput = {
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacityAdvisoryDecisionCreateManyReservationInput = {
@@ -1077,6 +1151,8 @@ export type CapacityAdvisoryDecisionCreateManyReservationInput = {
   decidedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CapacityAdvisoryDecisionUpdateWithoutReservationInput = {
@@ -1093,6 +1169,8 @@ export type CapacityAdvisoryDecisionUpdateWithoutReservationInput = {
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCapacityAdvisoryDecisionsNestedInput
   slot?: Prisma.CapacitySlotUpdateOneWithoutAdvisoryDecisionsNestedInput
 }
@@ -1113,6 +1191,8 @@ export type CapacityAdvisoryDecisionUncheckedUpdateWithoutReservationInput = {
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CapacityAdvisoryDecisionUncheckedUpdateManyWithoutReservationInput = {
@@ -1131,6 +1211,8 @@ export type CapacityAdvisoryDecisionUncheckedUpdateManyWithoutReservationInput =
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1152,6 +1234,8 @@ export type CapacityAdvisoryDecisionSelect<ExtArgs extends runtime.Types.Extensi
   decidedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   slot?: boolean | Prisma.CapacityAdvisoryDecision$slotArgs<ExtArgs>
   reservation?: boolean | Prisma.CapacityAdvisoryDecision$reservationArgs<ExtArgs>
@@ -1174,6 +1258,8 @@ export type CapacityAdvisoryDecisionSelectCreateManyAndReturn<ExtArgs extends ru
   decidedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   slot?: boolean | Prisma.CapacityAdvisoryDecision$slotArgs<ExtArgs>
   reservation?: boolean | Prisma.CapacityAdvisoryDecision$reservationArgs<ExtArgs>
@@ -1196,6 +1282,8 @@ export type CapacityAdvisoryDecisionSelectUpdateManyAndReturn<ExtArgs extends ru
   decidedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   slot?: boolean | Prisma.CapacityAdvisoryDecision$slotArgs<ExtArgs>
   reservation?: boolean | Prisma.CapacityAdvisoryDecision$reservationArgs<ExtArgs>
@@ -1218,9 +1306,11 @@ export type CapacityAdvisoryDecisionSelectScalar = {
   decidedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type CapacityAdvisoryDecisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "recommendationId" | "recommendationType" | "decisionStatus" | "decidedByName" | "decisionReason" | "approvalReference" | "requiredPermission" | "slotId" | "reservationId" | "sourceSystem" | "decisionIdempotencyKey" | "decidedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["capacityAdvisoryDecision"]>
+export type CapacityAdvisoryDecisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "recommendationId" | "recommendationType" | "decisionStatus" | "decidedByName" | "decisionReason" | "approvalReference" | "requiredPermission" | "slotId" | "reservationId" | "sourceSystem" | "decisionIdempotencyKey" | "decidedAt" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["capacityAdvisoryDecision"]>
 export type CapacityAdvisoryDecisionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   slot?: boolean | Prisma.CapacityAdvisoryDecision$slotArgs<ExtArgs>
@@ -1261,6 +1351,8 @@ export type $CapacityAdvisoryDecisionPayload<ExtArgs extends runtime.Types.Exten
     decidedAt: Date
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["capacityAdvisoryDecision"]>
   composites: {}
 }
@@ -1703,6 +1795,8 @@ export interface CapacityAdvisoryDecisionFieldRefs {
   readonly decidedAt: Prisma.FieldRef<"CapacityAdvisoryDecision", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"CapacityAdvisoryDecision", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CapacityAdvisoryDecision", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"CapacityAdvisoryDecision", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"CapacityAdvisoryDecision", 'String'>
 }
     
 

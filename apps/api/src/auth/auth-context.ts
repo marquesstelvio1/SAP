@@ -9,7 +9,22 @@ export type RequestWithAuthContext = {
   authResolutionError?: unknown;
   headers?: Record<string, string | string[] | undefined>;
   traceContext?: TraceContext;
+  ip?: string;
 };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+export function getAuthContextFromRequest(
+  request: Record<string, unknown>,
+): AuthContext | undefined {
+  const authContext = request.authContext;
+  if (!isRecord(authContext)) {
+    return undefined;
+  }
+  return authContext as AuthContext;
+}
 
 export function getRequiredAuthContext(request: RequestWithAuthContext): AuthContext {
   if (!request.authContext) {

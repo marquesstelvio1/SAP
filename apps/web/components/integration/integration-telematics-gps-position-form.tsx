@@ -59,7 +59,7 @@ export function IntegrationTelematicsGpsPositionForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessTelematicsGps ? "success" : "warning"}>
-            {canProcessTelematicsGps ? "Adapter governado" : "Sem permissao"}
+            {canProcessTelematicsGps ? "GPS autorizado" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">Telematics/GPS</Badge>
           <Badge variant="outline">tracking.event.record</Badge>
@@ -68,7 +68,7 @@ export function IntegrationTelematicsGpsPositionForm({
           <CardTitle>Processar posicao Telematics/GPS</CardTitle>
           <CardDescription className="leading-6">
             Converte posicoes, geofences e alertas de telemetria em eventos de tracking. A operacao
-            valida service account, tenant, idempotencia externa, audit trail e outbox.
+            processamento de posicao GPS com registo de evento.
           </CardDescription>
         </div>
       </CardHeader>
@@ -274,7 +274,7 @@ export function IntegrationTelematicsGpsPositionForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma service account com tracking.event.record."
+              ? "Crie uma conta de servico com permissoes de tracking."
               : "Adapter telemetrico local sem chamada externa."}
           </span>
         </CardFooter>

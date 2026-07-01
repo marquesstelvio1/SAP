@@ -47,8 +47,8 @@ export function InvitationAcceptForm({ action, initialState, token }: Invitation
         <div className="flex flex-col gap-2">
           <CardTitle>Ativar acesso empresarial</CardTitle>
           <CardDescription className="leading-6">
-            O convite ativa a membership do tenant, verifica o email e cria credencial Better Auth
-            com password corporativa.
+            O convite ativa a adesão à organização, verifica o email e cria a credencial
+            de acesso com password corporativa.
           </CardDescription>
         </div>
       </CardHeader>
@@ -97,9 +97,7 @@ export function InvitationAcceptForm({ action, initialState, token }: Invitation
             <Field>
               <FieldDescription>
                 {isSuccess && state.email !== undefined
-                  ? `${state.message} Email: ${state.email} · Membership: ${
-                      state.membershipId ?? "sem-id"
-                    }`
+                  ? `${state.message} Email: ${state.email}`
                   : state.message}
               </FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}

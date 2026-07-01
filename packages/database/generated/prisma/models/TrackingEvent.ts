@@ -36,6 +36,8 @@ export type TrackingEventMinAggregateOutputType = {
   correlationId: string | null
   idempotencyKey: string | null
   createdAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TrackingEventMaxAggregateOutputType = {
@@ -50,6 +52,8 @@ export type TrackingEventMaxAggregateOutputType = {
   correlationId: string | null
   idempotencyKey: string | null
   createdAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type TrackingEventCountAggregateOutputType = {
@@ -65,6 +69,8 @@ export type TrackingEventCountAggregateOutputType = {
   correlationId: number
   idempotencyKey: number
   createdAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -81,6 +87,8 @@ export type TrackingEventMinAggregateInputType = {
   correlationId?: true
   idempotencyKey?: true
   createdAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TrackingEventMaxAggregateInputType = {
@@ -95,6 +103,8 @@ export type TrackingEventMaxAggregateInputType = {
   correlationId?: true
   idempotencyKey?: true
   createdAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type TrackingEventCountAggregateInputType = {
@@ -110,6 +120,8 @@ export type TrackingEventCountAggregateInputType = {
   correlationId?: true
   idempotencyKey?: true
   createdAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -198,6 +210,8 @@ export type TrackingEventGroupByOutputType = {
   correlationId: string
   idempotencyKey: string | null
   createdAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: TrackingEventCountAggregateOutputType | null
   _min: TrackingEventMinAggregateOutputType | null
   _max: TrackingEventMaxAggregateOutputType | null
@@ -234,6 +248,8 @@ export type TrackingEventWhereInput = {
   correlationId?: Prisma.StringFilter<"TrackingEvent"> | string
   idempotencyKey?: Prisma.StringNullableFilter<"TrackingEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TrackingEvent"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TrackingEvent"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TrackingEvent"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   shipment?: Prisma.XOR<Prisma.TrackingShipmentScalarRelationFilter, Prisma.TrackingShipmentWhereInput>
 }
@@ -251,6 +267,8 @@ export type TrackingEventOrderByWithRelationInput = {
   correlationId?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   shipment?: Prisma.TrackingShipmentOrderByWithRelationInput
 }
@@ -272,6 +290,8 @@ export type TrackingEventWhereUniqueInput = Prisma.AtLeast<{
   correlationId?: Prisma.StringFilter<"TrackingEvent"> | string
   idempotencyKey?: Prisma.StringNullableFilter<"TrackingEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TrackingEvent"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TrackingEvent"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TrackingEvent"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   shipment?: Prisma.XOR<Prisma.TrackingShipmentScalarRelationFilter, Prisma.TrackingShipmentWhereInput>
 }, "id" | "organizationId_idempotencyKey">
@@ -289,6 +309,8 @@ export type TrackingEventOrderByWithAggregationInput = {
   correlationId?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TrackingEventCountOrderByAggregateInput
   _max?: Prisma.TrackingEventMaxOrderByAggregateInput
   _min?: Prisma.TrackingEventMinOrderByAggregateInput
@@ -310,6 +332,8 @@ export type TrackingEventScalarWhereWithAggregatesInput = {
   correlationId?: Prisma.StringWithAggregatesFilter<"TrackingEvent"> | string
   idempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"TrackingEvent"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TrackingEvent"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"TrackingEvent"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"TrackingEvent"> | string | null
 }
 
 export type TrackingEventCreateInput = {
@@ -323,6 +347,8 @@ export type TrackingEventCreateInput = {
   correlationId: string
   idempotencyKey?: string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTrackingEventsInput
   shipment: Prisma.TrackingShipmentCreateNestedOneWithoutEventsInput
 }
@@ -340,6 +366,8 @@ export type TrackingEventUncheckedCreateInput = {
   correlationId: string
   idempotencyKey?: string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TrackingEventUpdateInput = {
@@ -353,6 +381,8 @@ export type TrackingEventUpdateInput = {
   correlationId?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTrackingEventsNestedInput
   shipment?: Prisma.TrackingShipmentUpdateOneRequiredWithoutEventsNestedInput
 }
@@ -370,6 +400,8 @@ export type TrackingEventUncheckedUpdateInput = {
   correlationId?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TrackingEventCreateManyInput = {
@@ -385,6 +417,8 @@ export type TrackingEventCreateManyInput = {
   correlationId: string
   idempotencyKey?: string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TrackingEventUpdateManyMutationInput = {
@@ -398,6 +432,8 @@ export type TrackingEventUpdateManyMutationInput = {
   correlationId?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TrackingEventUncheckedUpdateManyInput = {
@@ -413,6 +449,8 @@ export type TrackingEventUncheckedUpdateManyInput = {
   correlationId?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TrackingEventListRelationFilter = {
@@ -443,6 +481,8 @@ export type TrackingEventCountOrderByAggregateInput = {
   correlationId?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TrackingEventMaxOrderByAggregateInput = {
@@ -457,6 +497,8 @@ export type TrackingEventMaxOrderByAggregateInput = {
   correlationId?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TrackingEventMinOrderByAggregateInput = {
@@ -471,6 +513,8 @@ export type TrackingEventMinOrderByAggregateInput = {
   correlationId?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type TrackingEventCreateNestedManyWithoutOrganizationInput = {
@@ -572,6 +616,8 @@ export type TrackingEventCreateWithoutOrganizationInput = {
   correlationId: string
   idempotencyKey?: string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   shipment: Prisma.TrackingShipmentCreateNestedOneWithoutEventsInput
 }
 
@@ -587,6 +633,8 @@ export type TrackingEventUncheckedCreateWithoutOrganizationInput = {
   correlationId: string
   idempotencyKey?: string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TrackingEventCreateOrConnectWithoutOrganizationInput = {
@@ -631,6 +679,8 @@ export type TrackingEventScalarWhereInput = {
   correlationId?: Prisma.StringFilter<"TrackingEvent"> | string
   idempotencyKey?: Prisma.StringNullableFilter<"TrackingEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TrackingEvent"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"TrackingEvent"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"TrackingEvent"> | string | null
 }
 
 export type TrackingEventCreateWithoutShipmentInput = {
@@ -644,6 +694,8 @@ export type TrackingEventCreateWithoutShipmentInput = {
   correlationId: string
   idempotencyKey?: string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutTrackingEventsInput
 }
 
@@ -659,6 +711,8 @@ export type TrackingEventUncheckedCreateWithoutShipmentInput = {
   correlationId: string
   idempotencyKey?: string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TrackingEventCreateOrConnectWithoutShipmentInput = {
@@ -699,6 +753,8 @@ export type TrackingEventCreateManyOrganizationInput = {
   correlationId: string
   idempotencyKey?: string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TrackingEventUpdateWithoutOrganizationInput = {
@@ -712,6 +768,8 @@ export type TrackingEventUpdateWithoutOrganizationInput = {
   correlationId?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shipment?: Prisma.TrackingShipmentUpdateOneRequiredWithoutEventsNestedInput
 }
 
@@ -727,6 +785,8 @@ export type TrackingEventUncheckedUpdateWithoutOrganizationInput = {
   correlationId?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TrackingEventUncheckedUpdateManyWithoutOrganizationInput = {
@@ -741,6 +801,8 @@ export type TrackingEventUncheckedUpdateManyWithoutOrganizationInput = {
   correlationId?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TrackingEventCreateManyShipmentInput = {
@@ -755,6 +817,8 @@ export type TrackingEventCreateManyShipmentInput = {
   correlationId: string
   idempotencyKey?: string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type TrackingEventUpdateWithoutShipmentInput = {
@@ -768,6 +832,8 @@ export type TrackingEventUpdateWithoutShipmentInput = {
   correlationId?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTrackingEventsNestedInput
 }
 
@@ -783,6 +849,8 @@ export type TrackingEventUncheckedUpdateWithoutShipmentInput = {
   correlationId?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TrackingEventUncheckedUpdateManyWithoutShipmentInput = {
@@ -797,6 +865,8 @@ export type TrackingEventUncheckedUpdateManyWithoutShipmentInput = {
   correlationId?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -814,6 +884,8 @@ export type TrackingEventSelect<ExtArgs extends runtime.Types.Extensions.Interna
   correlationId?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   shipment?: boolean | Prisma.TrackingShipmentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["trackingEvent"]>
@@ -831,6 +903,8 @@ export type TrackingEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   correlationId?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   shipment?: boolean | Prisma.TrackingShipmentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["trackingEvent"]>
@@ -848,6 +922,8 @@ export type TrackingEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   correlationId?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   shipment?: boolean | Prisma.TrackingShipmentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["trackingEvent"]>
@@ -865,9 +941,11 @@ export type TrackingEventSelectScalar = {
   correlationId?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type TrackingEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "shipmentId" | "eventType" | "occurredAt" | "locationName" | "notes" | "payload" | "sourceSystem" | "correlationId" | "idempotencyKey" | "createdAt", ExtArgs["result"]["trackingEvent"]>
+export type TrackingEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "shipmentId" | "eventType" | "occurredAt" | "locationName" | "notes" | "payload" | "sourceSystem" | "correlationId" | "idempotencyKey" | "createdAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["trackingEvent"]>
 export type TrackingEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   shipment?: boolean | Prisma.TrackingShipmentDefaultArgs<ExtArgs>
@@ -900,6 +978,8 @@ export type $TrackingEventPayload<ExtArgs extends runtime.Types.Extensions.Inter
     correlationId: string
     idempotencyKey: string | null
     createdAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["trackingEvent"]>
   composites: {}
 }
@@ -1337,6 +1417,8 @@ export interface TrackingEventFieldRefs {
   readonly correlationId: Prisma.FieldRef<"TrackingEvent", 'String'>
   readonly idempotencyKey: Prisma.FieldRef<"TrackingEvent", 'String'>
   readonly createdAt: Prisma.FieldRef<"TrackingEvent", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"TrackingEvent", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"TrackingEvent", 'String'>
 }
     
 

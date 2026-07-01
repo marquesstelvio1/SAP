@@ -50,7 +50,7 @@ export function OperationalJourneyPanel({
         {currentStage !== undefined ? (
           <div className="rounded-lg border bg-muted/20 p-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="text-xs uppercase tracking-uppercase text-muted-foreground">
                 Proxima acao
               </span>
               <ModuleBadge module={currentStage.module} />
@@ -71,7 +71,7 @@ export function OperationalJourneyPanel({
               </div>
             ) : currentStage.actionLabel !== null && currentStage.actionHref !== null ? (
               <Link
-                className="mt-2 inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-primary text-sm font-medium underline-offset-4 hover:bg-primary/20 hover:underline"
+                className="mt-2 inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-primary text-sm font-medium underline-offset-4 outline-none hover:bg-primary/20 hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 href={currentStage.actionHref}
               >
                 {currentStage.actionLabel}
@@ -85,7 +85,7 @@ export function OperationalJourneyPanel({
         ) : null}
 
         <div className="flex flex-col gap-2">
-          <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="text-xs uppercase tracking-uppercase text-muted-foreground">
             Progresso
           </span>
           <div className="flex flex-wrap gap-2">
@@ -97,7 +97,7 @@ export function OperationalJourneyPanel({
 
         {blockedStages.length > 0 ? (
           <div className="flex flex-col gap-2">
-            <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="text-xs uppercase tracking-uppercase text-muted-foreground">
               Bloqueios ativos
             </span>
             {blockedStages.map((stage, index) => (
@@ -145,7 +145,7 @@ function StageStep({ stage, index }: { stage: StageInfo; index: number }) {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Badge variant={variantMap[stage.status]} className="cursor-default text-[0.65rem]">
+            <Badge variant={variantMap[stage.status]} className="cursor-default text-2xs">
               <span>{index + 1}</span>
             </Badge>
           </TooltipTrigger>
@@ -185,7 +185,7 @@ function ModuleLink({ module }: { module: string }) {
 
   return (
     <Link
-      className="inline-flex items-center rounded-md border bg-muted/20 px-2 py-1 text-[0.65rem] text-muted-foreground underline-offset-4 hover:bg-muted/40 hover:underline"
+      className="inline-flex items-center rounded-md border bg-muted/20 px-2 py-1 text-2xs text-muted-foreground underline-offset-4 outline-none hover:bg-muted/40 hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
       href={href}
     >
       {module}

@@ -8,14 +8,32 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  ContextRow,
   EmptyState,
 } from "@saptm/ui";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
-import { TrackingAnalyticsSection } from "../../../../components/tracking/tracking-analytics-section";
 import { TrackingEventRecordForm } from "../../../../components/tracking/tracking-event-record-form";
-import { TrackingEventsSection } from "../../../../components/tracking/tracking-events-section";
 import { TrackingOverviewHeader } from "../../../../components/tracking/tracking-overview-header";
 import { TrackingStatusTables } from "../../../../components/tracking/tracking-status-tables";
+
+const TrackingAnalyticsSection = dynamic(
+  () =>
+    import("../../../../components/tracking/tracking-analytics-section").then(
+      (mod) => mod.TrackingAnalyticsSection,
+    ),
+  { ssr: false },
+);
+
+const TrackingEventsSection = dynamic(
+  () =>
+    import("../../../../components/tracking/tracking-events-section").then(
+      (mod) => mod.TrackingEventsSection,
+    ),
+  { ssr: false },
+);
+
 import { useTrackingAdvisory } from "../../../../hooks/use-tracking-advisory";
 import { useTrackingAnalytics } from "../../../../hooks/use-tracking-analytics";
 import { useTrackingOverview } from "../../../../hooks/use-tracking-overview";
@@ -25,12 +43,10 @@ import { initialTrackingEventRecordFormState } from "./form-state";
 export function TrackingOverviewClient({
   offset,
   limit,
-  sessionId,
   canRecordEvents,
 }: {
   offset: number;
   limit: number;
-  sessionId: string;
   canRecordEvents: boolean;
 }) {
   const overviewQuery = useTrackingOverview({ offset, limit });
@@ -39,23 +55,18 @@ export function TrackingOverviewClient({
 
   if (overviewQuery.isLoading || analyticsQuery.isLoading || advisoryQuery.isLoading) {
     return (
-      <div className="mx-auto flex max-w-7xl flex-col gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Tracking operacional</CardTitle>
-            <CardDescription>Carregando dados de tracking...</CardDescription>
-          </CardHeader>
-          <CardContent className="text-muted-foreground text-sm">
-            Aguarde enquanto os dados operacionais sao carregados.
-          </CardContent>
-        </Card>
-      </div>
+      <AccessState
+        badgeLabel="Tracking Operacional"
+        description="Aguarde enquanto os dados de tracking sao carregados."
+        title="A carregar tracking operacional"
+      />
     );
   }
 
   if (overviewQuery.isError) {
     return (
       <AccessState
+        badgeLabel="Tracking Operacional"
         description={
           overviewQuery.error instanceof Error
             ? overviewQuery.error.message
@@ -71,13 +82,14 @@ export function TrackingOverviewClient({
   if (analyticsQuery.isError) {
     return (
       <AccessState
+        badgeLabel="Tracking Operacional"
         description={
           analyticsQuery.error instanceof Error
             ? analyticsQuery.error.message
             : "Erro ao carregar analytics."
         }
         role="alert"
-        title="Analytics operacional indisponivel"
+        title="Analytics indisponivel"
         variant="error"
       />
     );
@@ -86,13 +98,14 @@ export function TrackingOverviewClient({
   if (advisoryQuery.isError) {
     return (
       <AccessState
+        badgeLabel="Tracking Operacional"
         description={
           advisoryQuery.error instanceof Error
             ? advisoryQuery.error.message
             : "Erro ao carregar advisory."
         }
         role="alert"
-        title="Advisory operacional indisponivel"
+        title="Advisory indisponivel"
         variant="error"
       />
     );
@@ -116,16 +129,31 @@ export function TrackingOverviewClient({
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <TrackingOverviewHeader
-        totals={overview.totals}
-        organizationId={overview.organizationId}
-        sessionId={sessionId}
-        generatedAt={overview.generatedAt}
-      />
+      <TrackingOverviewHeader totals={overview.totals} generatedAt={overview.generatedAt} />
 
-      <TrackingAnalyticsSection analytics={analytics} advisory={advisory} />
+      <Suspense
+        fallback={
+          <AccessState
+            badgeLabel="Analytics Operacional"
+            description="A carregar analytics e advisory operacional..."
+            title="A carregar analytics"
+          />
+        }
+      >
+        <TrackingAnalyticsSection analytics={analytics} advisory={advisory} />
+      </Suspense>
 
-      <TrackingEventsSection analytics={analytics} />
+      <Suspense
+        fallback={
+          <AccessState
+            badgeLabel="Eventos"
+            description="A carregar eventos operacionais..."
+            title="A carregar eventos"
+          />
+        }
+      >
+        <TrackingEventsSection analytics={analytics} />
+      </Suspense>
 
       <TrackingStatusTables
         overview={overview}
@@ -156,36 +184,22 @@ export function TrackingOverviewClient({
           <CardHeader>
             <BadgeGroup
               items={[
-                { label: "Governanca", variant: "outline" },
+                { label: "Eventos", variant: "secondary" },
                 {
-                  label: canRecordEvents ? "Pode gravar" : "Somente leitura",
+                  label: canRecordEvents ? "Registo autorizado" : "Apenas leitura",
                   variant: canRecordEvents ? "success" : "warning",
                 },
               ]}
             />
-            <CardTitle>Controle da escrita operacional</CardTitle>
+            <CardTitle>Registo de eventos</CardTitle>
             <CardDescription>
-              A UI nao grava diretamente no banco. Ela chama o contrato RPC seguro e o backend
-              aplica sessao, organizacao, RBAC, idempotencia, audit trail e outbox.
+              Registos manuais de eventos operacionais (partidas, chegadas, atrasos, excepcoes).
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Permissao leitura</span>
-              <span>tracking.shipment.read</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Permissao escrita</span>
-              <span>tracking.event.record</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Operacao</span>
-              <span>tracking.event.record</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Transporte</span>
-              <span>POST /rpc/tracking/events</span>
-            </div>
+          <CardContent className="flex flex-col gap-1">
+            <ContextRow label="Total de remessas" value={overview.totals.shipments} />
+            <ContextRow label="Activas" value={overview.totals.activeShipments} />
+            <ContextRow label="Remessas recentes" value={overview.recentShipments.length} />
           </CardContent>
         </Card>
       </section>

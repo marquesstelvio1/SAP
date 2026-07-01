@@ -59,7 +59,7 @@ export function IntegrationCustomsErpStatusForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessCustomsErp ? "success" : "warning"}>
-            {canProcessCustomsErp ? "Adapter governado" : "Sem permissao"}
+            {canProcessCustomsErp ? "Status autorizado" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">Customs/ERP</Badge>
           <Badge variant="outline">tracking.event.record</Badge>
@@ -68,7 +68,7 @@ export function IntegrationCustomsErpStatusForm({
           <CardTitle>Processar status Customs/ERP</CardTitle>
           <CardDescription className="leading-6">
             Converte estados aduaneiros e ERP em eventos de tracking. A operacao valida service
-            account, tenant, idempotencia externa, audit trail e outbox.
+            estado Customs/ERP com registo de evento.
           </CardDescription>
         </div>
       </CardHeader>
@@ -235,7 +235,7 @@ export function IntegrationCustomsErpStatusForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma service account com tracking.event.record."
+              ? "Crie uma conta de servico com permissoes de tracking."
               : "Adapter aduaneiro local sem chamada externa."}
           </span>
         </CardFooter>

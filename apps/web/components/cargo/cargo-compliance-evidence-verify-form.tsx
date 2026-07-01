@@ -19,6 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CargoComplianceEvidenceVerifyFormState } from "../../app/(platform)/app/cargo/form-state";
 
@@ -42,13 +44,13 @@ export function CargoComplianceEvidenceVerifyForm({
   action,
 }: CargoComplianceEvidenceVerifyFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_ver"));
   const defaultReviewedAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canVerifyComplianceEvidence;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("cargo_ver"));
     }
   }, [state.status]);
 
@@ -57,7 +59,7 @@ export function CargoComplianceEvidenceVerifyForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canVerifyComplianceEvidence ? "success" : "warning"}>
-            {canVerifyComplianceEvidence ? "Revisao governada" : "Sem permissao"}
+            {canVerifyComplianceEvidence ? "Verificacao autorizada" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">cargo.compliance.verify</Badge>
         </div>
@@ -65,7 +67,7 @@ export function CargoComplianceEvidenceVerifyForm({
           <CardTitle>Verificar evidencia de compliance</CardTitle>
           <CardDescription className="leading-6">
             Aprova ou rejeita evidencia pendente. A aprovacao bloqueia documentos expirados e
-            qualquer revisao gera audit trail, idempotencia e evento de dominio.
+            qualquer revisao gera registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -192,8 +194,8 @@ export function CargoComplianceEvidenceVerifyForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canVerifyComplianceEvidence
-              ? "Revisao cria decisao terminal, audit trail e outbox."
-              : "Requer cargo.compliance.verify."}
+              ? "Revisao cria decisao final com auditoria."
+              : "Requer verificacao de evidencias."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A verificar..." : "Verificar evidencia"}
@@ -202,17 +204,4 @@ export function CargoComplianceEvidenceVerifyForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `cargo_ver_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

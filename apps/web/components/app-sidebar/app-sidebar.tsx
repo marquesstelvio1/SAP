@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from "@saptm/ui";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@saptm/ui";
+import type { LucideIcon } from "lucide-react";
 import {
   ActivityIcon,
   ContainerIcon,
-  CreditCardIcon,
   FileTextIcon,
   MapIcon,
   MapPinIcon,
@@ -24,104 +18,84 @@ import {
 } from "lucide-react";
 import type { PlatformViewer } from "../../lib/auth-session";
 import type { ResolvedPlatformNavigationGroup } from "../../lib/platform-navigation";
-import type { LucideIcon } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
-import { TeamSwitcher } from "./team-switcher";
+import { TeamSwitcher, type TeamSwitcherOrganization } from "./team-switcher";
 
 const iconMap: Record<string, LucideIcon> = {
-  cargo: ContainerIcon,
-  tracking: MapPinIcon,
-  capacity: ActivityIcon,
-  planning: RouteIcon,
-  tariffs: TrendingUpIcon,
-  admin: UsersIcon,
-  teams: UsersIcon,
-  audit: NotepadTextIcon,
-  reports: FileTextIcon,
-  notifications: TruckIcon,
-  integrations: MapIcon,
-  settings: SettingsIcon,
-  security: ShieldCheckIcon,
-  billing: CreditCardIcon,
+  dashboard: ActivityIcon,
+  "segurança da conta": ShieldCheckIcon,
+  configurações: SettingsIcon,
+  privacidade: MapPinIcon,
+  "gestão de cargas": ContainerIcon,
+  "tracking operacional": TruckIcon,
+  "capacidade operacional": ActivityIcon,
+  planeamento: RouteIcon,
+  tarifas: TrendingUpIcon,
+  relatórios: FileTextIcon,
+  notificações: NotepadTextIcon,
+  integrações: MapIcon,
+  "identidade e permissões": UsersIcon,
+  equipas: UsersIcon,
+  auditoria: NotepadTextIcon,
 };
 
 function findIcon(label: string): LucideIcon | undefined {
-  const key = label.toLowerCase().replace(/\s+/g, "");
-  for (const [k, icon] of Object.entries(iconMap)) {
-    if (key.includes(k)) return icon;
-  }
-  return undefined;
+  const key = label.toLowerCase().trim();
+  const match = Object.entries(iconMap).find(([k]) => key.startsWith(k));
+  return match?.[1];
+}
+
+type NavEntry = {
+  title: string;
+  url: string;
+  icon?: LucideIcon;
+};
+
+function toNavItems(group: ResolvedPlatformNavigationGroup): NavEntry[] {
+  return group.items
+    .filter((item) => item.allowed)
+    .map((item) => {
+      const icon = findIcon(item.label);
+      return icon !== undefined
+        ? { title: item.label, url: item.href, icon }
+        : { title: item.label, url: item.href };
+    });
 }
 
 export function AppSidebar({
   navigationGroups,
   viewer,
+  organizations,
+  activeOrganizationId,
 }: {
   navigationGroups: readonly ResolvedPlatformNavigationGroup[];
   viewer: PlatformViewer;
+  organizations: TeamSwitcherOrganization[];
+  activeOrganizationId: string | undefined;
 }) {
-  const navMainItems = navigationGroups.flatMap((group) => {
-    const groupIcon = findIcon(group.label);
-    const allItems = group.items;
-    if (allItems.length === 0) return [];
-    if (allItems.length === 1) {
-      const item = allItems[0]!;
-      const icon = findIcon(item.label) ?? groupIcon;
-      return [
-        <NavMain
-          key={group.label}
-          label={group.label}
-          items={[
-            {
-              title: item.label,
-              url: item.href,
-              ...(icon ? { icon } : {}),
-            },
-          ]}
-        />,
-      ];
-    }
-    const first = allItems[0]!;
-    const rest = allItems.slice(1);
-    const icon = findIcon(first.label) ?? groupIcon;
-    return [
-      <NavMain
-        key={group.label}
-        label={group.label}
-        items={[
-          {
-            title: first.label,
-            url: first.href,
-            ...(icon ? { icon } : {}),
-            items: rest.map((r) => ({
-              title: r.label,
-              url: r.href,
-            })),
-          },
-        ]}
-      />,
-    ];
-  });
+  const mainGroups = navigationGroups.filter((g) => !g.label.toLowerCase().includes("preparacao"));
+
+  const activeOrganization =
+    organizations.find((org) => org.id === activeOrganizationId) ?? organizations[0];
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <TeamSwitcher
-          organizations={[
-            { id: "1", name: "SAPTM", slug: "saptm", isActive: true },
-          ]}
-          activeOrganization={{
-            id: "1",
-            name: "SAPTM",
-            slug: "saptm",
-            isActive: true,
-          }}
-          onSwitch={() => {}}
+          organizations={organizations}
+          activeOrganization={
+            activeOrganization ??
+            organizations[0] ?? { id: "", name: "SAPTM", slug: "saptm", isActive: false }
+          }
         />
       </SidebarHeader>
       <SidebarContent>
-        {navMainItems}
+        {mainGroups.map((group) => {
+          const items = toNavItems(group);
+          if (items.length === 0) return null;
+          return <NavMain key={group.label} label={group.label} items={items} />;
+        })}
       </SidebarContent>
       <SidebarFooter>
         <NavUser

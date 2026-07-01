@@ -128,10 +128,16 @@ export class NotificationsService {
     return {
       organizationId: input.organizationId,
       notification: mapNotification(notification),
+      idempotency: { key: input.idempotencyKey, replayed: false },
       audit: {
         action: "notification.marked_read",
         subjectType: "notification",
         subjectId: notification.id,
+      },
+      outbox: {
+        eventType: "notification.marked_read",
+        aggregateType: "notification",
+        aggregateId: notification.id,
       },
     };
   }

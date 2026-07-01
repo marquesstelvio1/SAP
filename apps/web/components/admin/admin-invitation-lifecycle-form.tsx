@@ -19,6 +19,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { AdminInvitationLifecycleFormState } from "../../app/(platform)/app/admin/form-state";
 
 export type AdminInvitationMemberOption = {
@@ -52,12 +53,14 @@ export function AdminInvitationLifecycleForm({
   title,
 }: AdminInvitationLifecycleFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("invitation"));
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("admin_invitation"),
+  );
   const isDisabled = isPending || !canManageInvitations || members.length === 0;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey("invitation"));
+      setIdempotencyKey(createIdempotencyKey("admin_invitation"));
     }
   }, [state.status]);
 
@@ -66,7 +69,7 @@ export function AdminInvitationLifecycleForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageInvitations ? "success" : "warning"}>
-            {canManageInvitations ? "Convites" : "Sem permissao"}
+            {canManageInvitations ? "Convites" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">identity.user.invite</Badge>
         </div>
@@ -135,13 +138,4 @@ export function AdminInvitationLifecycleForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(scope: string): string {
-  const randomValue =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2);
-
-  return `admin_${scope}_${randomValue}`;
 }

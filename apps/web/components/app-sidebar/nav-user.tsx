@@ -15,6 +15,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@saptm/ui";
 import {
   ChevronsUpDownIcon,
@@ -40,6 +41,7 @@ export function NavUser({
     permissionsCount?: number;
   };
 }) {
+  const { isMobile } = useSidebar();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -68,15 +70,15 @@ export function NavUser({
                 )}
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs text-sidebar-foreground/60">{user.email}</span>
+                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate text-xs">{user.email}</span>
               </div>
-              <ChevronsUpDownIcon className="ml-auto size-4 shrink-0 text-sidebar-foreground/50" />
+              <ChevronsUpDownIcon className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side="bottom"
+            side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
@@ -110,7 +112,7 @@ export function NavUser({
               <DropdownMenuItem asChild>
                 <Link href="/app/settings/billing">
                   <CreditCardIcon className="size-4" />
-                  <span>Faturamento</span>
+                  <span>Faturação</span>
                   <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
                 </Link>
               </DropdownMenuItem>

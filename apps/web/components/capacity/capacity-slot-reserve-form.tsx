@@ -18,6 +18,8 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { addHours, createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CapacitySlotReserveFormState } from "../../app/(platform)/app/capacity/form-state";
 
@@ -45,13 +47,15 @@ export function CapacitySlotReserveForm({
   action,
 }: CapacitySlotReserveFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("capacity_reserve"),
+  );
   const defaultReservedAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 3)), []);
   const isDisabled = isPending || !canReserveCapacity;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("capacity_reserve"));
     }
   }, [state.status]);
 
@@ -60,7 +64,7 @@ export function CapacitySlotReserveForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canReserveCapacity ? "success" : "warning"}>
-            {canReserveCapacity ? "Reserva governada" : "Sem permissao"}
+            {canReserveCapacity ? "Reserva autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">capacity.slot.reserve</Badge>
         </div>
@@ -102,7 +106,7 @@ export function CapacitySlotReserveForm({
 
             <div className="grid gap-4 md:grid-cols-3">
               <Field data-disabled={!canReserveCapacity}>
-                <FieldLabel htmlFor="reservationReference">Referencia da reserva</FieldLabel>
+                <FieldLabel htmlFor="reservationReference">Referência da reserva</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="reservationReference"
@@ -143,7 +147,7 @@ export function CapacitySlotReserveForm({
 
             <div className="grid gap-4 md:grid-cols-3">
               <Field data-disabled={!canReserveCapacity}>
-                <FieldLabel htmlFor="reservedByName">Responsavel</FieldLabel>
+                <FieldLabel htmlFor="reservedByName">Responsável</FieldLabel>
                 <Input disabled={isDisabled} id="reservedByName" name="reservedByName" required />
               </Field>
               <Field data-disabled={!canReserveCapacity}>
@@ -198,21 +202,4 @@ export function CapacitySlotReserveForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `capacity_reserve_${randomValue}`;
-}
-
-function addHours(date: Date, hours: number): Date {
-  return new Date(date.getTime() + hours * 60 * 60 * 1000);
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

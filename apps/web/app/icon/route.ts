@@ -5,6 +5,9 @@ export async function GET(): Promise<Response> {
   </svg>`;
 
   return new Response(svg, {
-    headers: { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=31536000, immutable" },
+    headers: {
+      "Content-Type": "image/svg+xml",
+      "Cache-Control": "public, max-age=31536000, immutable",
+    },
   });
 }

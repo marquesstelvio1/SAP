@@ -19,6 +19,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { IntegrationServiceAccountCreateFormState } from "../../app/(platform)/app/integrations/form-state";
 
 export type IntegrationServiceAccountCreateFormProps = {
@@ -36,12 +37,14 @@ export function IntegrationServiceAccountCreateForm({
   initialState,
 }: IntegrationServiceAccountCreateFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("integration_service_account"),
+  );
   const isDisabled = isPending || !canManageApiKeys;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("integration_service_account"));
     }
   }, [state.status]);
 
@@ -50,16 +53,16 @@ export function IntegrationServiceAccountCreateForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageApiKeys ? "success" : "warning"}>
-            {canManageApiKeys ? "Credencial governada" : "Sem permissao"}
+            {canManageApiKeys ? "Conta autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">integration.api_key.manage</Badge>
           <Badge variant="outline">hash-only</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Criar service account</CardTitle>
+          <CardTitle>Criar conta de servico</CardTitle>
           <CardDescription className="leading-6">
-            Provisiona identidade tecnica para EDI/TOS/ERP com API key exibida uma unica vez. O
-            backend guarda apenas hash SHA-256, prefixo, audit trail e outbox.
+            Provisiona identidade técnica para EDI/TOS/ERP com API key exibida uma única vez. O
+            backend guarda apenas hash da chave e prefixo.
           </CardDescription>
         </div>
       </CardHeader>
@@ -86,7 +89,7 @@ export function IntegrationServiceAccountCreateForm({
                 <option value="cargo.transport.arrive">cargo.transport.arrive</option>
               </SelectNative>
               <FieldDescription>
-                O escopo `integration.event.ingest` e obrigatorio e sempre incluido.
+                O escopo `integration.event.ingest` é obrigatório e sempre incluído.
               </FieldDescription>
             </Field>
             <Field data-disabled={!canManageApiKeys}>
@@ -98,7 +101,7 @@ export function IntegrationServiceAccountCreateForm({
                 type="datetime-local"
               />
               <FieldDescription>
-                Opcional. Em producao deve seguir rotacao de secrets.
+                Opcional. Em produção deve seguir rotação de secrets.
               </FieldDescription>
             </Field>
             <Field>
@@ -120,7 +123,7 @@ export function IntegrationServiceAccountCreateForm({
         </CardContent>
         <CardFooter>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A provisionar..." : "Criar service account"}
+            {isPending ? "A provisionar..." : "Criar conta de servico"}
           </Button>
           <span className="text-muted-foreground text-xs">
             {canManageApiKeys ? "Segredo aparece apenas no sucesso inicial." : "Requer permissao."}
@@ -129,13 +132,4 @@ export function IntegrationServiceAccountCreateForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2);
-
-  return `integration_service_account_${randomValue}`;
 }

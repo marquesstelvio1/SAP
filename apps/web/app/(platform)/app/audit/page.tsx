@@ -32,6 +32,7 @@ import {
 import type { Route } from "next";
 import Link from "next/link";
 
+import { formatDateTime } from "@/lib/format";
 import { searchAuditRecords } from "../../../../lib/audit-records";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 
@@ -41,18 +42,18 @@ const readAuditPermission: PlatformPermission = "audit.read";
 const exportReportPermission: PlatformPermission = "report.export";
 
 const severityLabels = {
-  critical: "Critica",
+  critical: "Crítica",
   high: "Alta",
   low: "Baixa",
-  medium: "Media",
+  medium: "Média",
 } as const;
 
 const actorTypeLabels = {
-  ai_agent: "AI Agent",
-  anonymous: "Anonimo",
-  integration: "Integracao",
+  ai_agent: "Agente IA",
+  anonymous: "Anónimo",
+  integration: "Integração",
   platform: "Plataforma",
-  service_account: "Service Account",
+  service_account: "Conta de Serviço",
   user: "Utilizador",
 } as const;
 
@@ -71,11 +72,11 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
   if (!canReadAudit) {
     return (
       <AccessState
-        badgeLabel="Audit"
-        message="A sessao esta autenticada, mas falta audit.read para pesquisar auditoria."
+        badgeLabel="Auditoria"
+        description="O utilizador autenticado não tem acesso ao módulo de auditoria."
         role="alert"
-        status="Sem grant"
         title="Auditoria bloqueada"
+        variant="blocked"
       />
     );
   }
@@ -83,16 +84,30 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
   const rawSearchParams = await searchParams;
   const parsedFilters = parseAuditSearchParams(rawSearchParams);
   const auditInput = parsedFilters.input;
-  const result = await searchAuditRecords(auditInput);
+
+  let result;
+  try {
+    result = await searchAuditRecords(auditInput);
+  } catch (error) {
+    return (
+      <AccessState
+        badgeLabel="Auditoria"
+        description="Ocorreu um erro inesperado ao pesquisar registos de auditoria."
+        role="alert"
+        title="Auditoria indisponível"
+        variant="error"
+      />
+    );
+  }
 
   if (result.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Audit"
-        message={result.message}
+        badgeLabel="Auditoria"
+        description={result.message}
         role="alert"
-        status={result.status}
-        title="Auditoria indisponivel"
+        title="Auditoria indisponível"
+        variant="error"
       />
     );
   }
@@ -106,17 +121,16 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
         <Card>
           <CardHeader className="gap-4">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="success">Audit P1</Badge>
-              <Badge variant="outline">audit.read</Badge>
+              <Badge variant="success">Auditoria</Badge>
               <Badge variant={canExportAudit ? "success" : "warning"}>
-                {canExportAudit ? "report.export ativo" : "sem report.export"}
+                {canExportAudit ? "Exportação activa" : "Exportação indisponível"}
               </Badge>
             </div>
             <div className="flex flex-col gap-2">
-              <CardTitle className="text-3xl">Audit trail operacional</CardTitle>
+              <CardTitle className="text-3xl">Auditoria operacional</CardTitle>
               <CardDescription className="max-w-3xl text-base leading-7">
-                Pesquisa tenant-scoped de eventos criticos: ator, permissao, correlacao, sujeito,
-                severidade, payloads before/after e exportacao CSV auditada.
+                Pesquisa de eventos críticos: ator, permissão, correlação, sujeito, severidade,
+                payloads antes/depois e exportação CSV auditada.
               </CardDescription>
             </div>
           </CardHeader>
@@ -131,11 +145,10 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle>Exportacao</CardTitle>
-            <CardDescription>Exporta o snapshot filtrado e grava audit/outbox.</CardDescription>
+            <CardTitle>Exportação</CardTitle>
+            <CardDescription>Exporta a pesquisa filtrada e regista a operação.</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
-            <ContextRow label="Tenant" value={search.organizationId} />
             <ContextRow label="Gerado em" value={formatDateTime(search.generatedAt)} />
             <ContextRow label="Limite" value={search.filters.limit.toString()} />
             {canExportAudit ? (
@@ -149,8 +162,8 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
             )}
             <span className="text-muted-foreground text-xs">
               {canExportAudit
-                ? "A exportacao exige audit.read + report.export."
-                : "Requer report.export para exportar."}
+                ? "A exportação está disponível para este utilizador."
+                : "A exportação não está autorizada para este utilizador."}
             </span>
           </CardContent>
         </Card>
@@ -160,7 +173,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
         <CardHeader>
           <CardTitle>Pesquisa e filtros</CardTitle>
           <CardDescription>
-            Filtros sao enviados ao RPC de auditoria; sem filtros, retorna os eventos recentes.
+            Filtros são enviados ao serviço de auditoria; sem filtros, retorna os eventos recentes.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -178,39 +191,39 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
               <FieldGroup>
                 <div className="grid gap-4 md:grid-cols-4">
                   <Field>
-                    <FieldLabel htmlFor="auditAction">Acao</FieldLabel>
+                    <FieldLabel htmlFor="auditAction">Ação</FieldLabel>
                     <Input
                       defaultValue={auditInput.action ?? ""}
                       id="auditAction"
                       name="action"
-                      placeholder="cargo.registered"
+                      placeholder="ex.: registo de carga"
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="auditSubjectType">Subject type</FieldLabel>
+                    <FieldLabel htmlFor="auditSubjectType">Tipo de sujeito</FieldLabel>
                     <Input
                       defaultValue={auditInput.subjectType ?? ""}
                       id="auditSubjectType"
                       name="subjectType"
-                      placeholder="cargo"
+                      placeholder="carga"
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="auditSubjectId">Subject ID</FieldLabel>
+                    <FieldLabel htmlFor="auditSubjectId">ID do sujeito</FieldLabel>
                     <Input
                       defaultValue={auditInput.subjectId ?? ""}
                       id="auditSubjectId"
                       name="subjectId"
-                      placeholder="cargo_..."
+                      placeholder="CAR-001"
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="auditCorrelationId">Correlation ID</FieldLabel>
+                    <FieldLabel htmlFor="auditCorrelationId">ID de correlação</FieldLabel>
                     <Input
                       defaultValue={auditInput.correlationId ?? ""}
                       id="auditCorrelationId"
                       name="correlationId"
-                      placeholder="corr_..."
+                      placeholder="COR-001"
                     />
                   </Field>
                 </div>
@@ -246,12 +259,12 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
                     </SelectNative>
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="auditActorId">Actor ID</FieldLabel>
+                    <FieldLabel htmlFor="auditActorId">ID do ator</FieldLabel>
                     <Input
                       defaultValue={auditInput.actorId ?? ""}
                       id="auditActorId"
                       name="actorId"
-                      placeholder="user_..."
+                      placeholder="utilizador"
                     />
                   </Field>
                   <Field>
@@ -264,7 +277,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="auditCreatedTo">Ate</FieldLabel>
+                    <FieldLabel htmlFor="auditCreatedTo">Até</FieldLabel>
                     <Input
                       defaultValue={toDatetimeLocalValue(auditInput.createdTo)}
                       id="auditCreatedTo"
@@ -303,7 +316,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
         <CardHeader>
           <CardTitle>Registos auditados</CardTitle>
           <CardDescription>
-            Cada linha mostra detalhe operacional e payloads para investigacao.
+            Cada linha mostra detalhe operacional e payloads para investigação.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -312,7 +325,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
               <TableRow>
                 <TableHead>Quando</TableHead>
                 <TableHead>Severidade</TableHead>
-                <TableHead>Acao</TableHead>
+                <TableHead>Ação</TableHead>
                 <TableHead>Sujeito</TableHead>
                 <TableHead>Ator</TableHead>
                 <TableHead>Detalhe</TableHead>
@@ -337,9 +350,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
                     <TableCell>
                       <div className="flex flex-col gap-1">
                         <span className="font-medium">{record.action}</span>
-                        <span className="text-muted-foreground text-xs">
-                          Corr.: {record.correlationId}
-                        </span>
+                          {/* correlationId removido da UI operacional */}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -361,20 +372,20 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
                     <TableCell>
                       <details className="max-w-xl">
                         <summary
-                          className="cursor-pointer font-medium text-sm"
+                          className="cursor-pointer rounded-sm font-medium text-sm outline-none transition-colors hover:text-foreground/80 focus-visible:ring-[3px] focus-visible:ring-ring/50"
                           aria-label={`Detalhe do registo ${record.action}`}
                         >
                           Ver detalhe
                         </summary>
                         <div className="mt-3 flex flex-col gap-3 rounded-lg border bg-muted/35 p-3">
-                          <ContextRow label="Reason" value={record.reason ?? "Sem reason"} />
-                          <ContextRow label="IP" value={record.ipAddress ?? "Nao registado"} />
+                          <ContextRow label="Motivo" value={record.reason ?? "Sem motivo"} />
+                          <ContextRow label="IP" value={record.ipAddress ?? "Não registado"} />
                           <ContextRow
-                            label="User agent"
-                            value={record.userAgent ?? "Nao registado"}
+                            label="Navegador"
+                            value={record.userAgent ?? "Não registado"}
                           />
-                          <JsonBlock label="Before" value={record.before} />
-                          <JsonBlock label="After" value={record.after} />
+                          <JsonBlock label="Antes" value={record.before} />
+                          <JsonBlock label="Depois" value={record.after} />
                         </div>
                       </details>
                     </TableCell>
@@ -503,11 +514,4 @@ function resolveSeverityVariant(
   }
 
   return "outline";
-}
-
-function formatDateTime(value: string): string {
-  return new Intl.DateTimeFormat("pt-PT", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
 }

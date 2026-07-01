@@ -1,5 +1,10 @@
 import { z } from "zod";
-
+import {
+  sharedAuditSchema,
+  sharedIdempotencyKeySchema,
+  sharedIdempotencyResultSchema,
+  sharedOutboxSchema,
+} from "./foundation.js";
 import { createRpcOperationMetadata } from "./metadata.js";
 
 export const webhookUrlSchema = z.string().trim().url().max(2048);
@@ -10,6 +15,7 @@ export const createWebhookInputSchema = z.object({
   name: webhookNameSchema,
   url: webhookUrlSchema,
   events: webhookEventsSchema,
+  idempotencyKey: sharedIdempotencyKeySchema,
 });
 
 export const updateWebhookInputSchema = z.object({
@@ -18,10 +24,12 @@ export const updateWebhookInputSchema = z.object({
   url: webhookUrlSchema.optional(),
   events: webhookEventsSchema.optional(),
   isActive: z.boolean().optional(),
+  idempotencyKey: sharedIdempotencyKeySchema,
 });
 
 export const deleteWebhookInputSchema = z.object({
   webhookId: z.string().trim().min(1),
+  idempotencyKey: sharedIdempotencyKeySchema,
 });
 
 export const listWebhooksInputSchema = z
@@ -42,6 +50,7 @@ export const getWebhookDeliveryLogInputSchema = z.object({
 
 export const retryWebhookDeliveryInputSchema = z.object({
   deliveryId: z.string().trim().min(1),
+  idempotencyKey: sharedIdempotencyKeySchema,
 });
 
 export const webhookEndpointSummarySchema = z.object({
@@ -72,14 +81,23 @@ export const webhookDeliverySummarySchema = z.object({
 
 export const createWebhookOutputSchema = z.object({
   webhook: webhookEndpointSummarySchema,
+  idempotency: sharedIdempotencyResultSchema,
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export const updateWebhookOutputSchema = z.object({
   webhook: webhookEndpointSummarySchema,
+  idempotency: sharedIdempotencyResultSchema,
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export const deleteWebhookOutputSchema = z.object({
   webhookId: z.string(),
+  idempotency: sharedIdempotencyResultSchema,
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export const listWebhooksOutputSchema = z.object({
@@ -103,6 +121,9 @@ export const getWebhookDeliveryLogOutputSchema = z.object({
 export const retryWebhookDeliveryOutputSchema = z.object({
   deliveryId: z.string(),
   status: z.string(),
+  idempotency: sharedIdempotencyResultSchema,
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
 });
 
 export type CreateWebhookInput = z.infer<typeof createWebhookInputSchema>;
@@ -128,8 +149,9 @@ export const createWebhookMetadata = createRpcOperationMetadata({
   permissionMode: "all",
   organizationRequired: true,
   audit: "sensitive",
-  idempotency: "none",
+  idempotency: "required",
   criticality: "medium",
+  signals: ["log", "metric", "span"],
 });
 
 export const updateWebhookMetadata = createRpcOperationMetadata({
@@ -140,8 +162,9 @@ export const updateWebhookMetadata = createRpcOperationMetadata({
   permissionMode: "all",
   organizationRequired: true,
   audit: "sensitive",
-  idempotency: "none",
+  idempotency: "required",
   criticality: "medium",
+  signals: ["log", "metric", "span"],
 });
 
 export const deleteWebhookMetadata = createRpcOperationMetadata({
@@ -152,8 +175,9 @@ export const deleteWebhookMetadata = createRpcOperationMetadata({
   permissionMode: "all",
   organizationRequired: true,
   audit: "sensitive",
-  idempotency: "none",
+  idempotency: "required",
   criticality: "medium",
+  signals: ["log", "metric", "span"],
 });
 
 export const listWebhooksMetadata = createRpcOperationMetadata({
@@ -166,6 +190,7 @@ export const listWebhooksMetadata = createRpcOperationMetadata({
   audit: "standard",
   idempotency: "none",
   criticality: "low",
+  signals: ["log", "metric", "span"],
 });
 
 export const getWebhookDeliveryLogMetadata = createRpcOperationMetadata({
@@ -178,6 +203,7 @@ export const getWebhookDeliveryLogMetadata = createRpcOperationMetadata({
   audit: "standard",
   idempotency: "none",
   criticality: "low",
+  signals: ["log", "metric", "span"],
 });
 
 export const retryWebhookDeliveryMetadata = createRpcOperationMetadata({
@@ -188,6 +214,7 @@ export const retryWebhookDeliveryMetadata = createRpcOperationMetadata({
   permissionMode: "all",
   organizationRequired: true,
   audit: "sensitive",
-  idempotency: "none",
+  idempotency: "required",
   criticality: "medium",
+  signals: ["log", "metric", "span"],
 });

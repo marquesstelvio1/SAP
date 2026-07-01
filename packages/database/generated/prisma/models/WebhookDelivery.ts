@@ -47,6 +47,8 @@ export type WebhookDeliveryMinAggregateOutputType = {
   nextRetryAt: Date | null
   deliveredAt: Date | null
   createdAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type WebhookDeliveryMaxAggregateOutputType = {
@@ -60,6 +62,8 @@ export type WebhookDeliveryMaxAggregateOutputType = {
   nextRetryAt: Date | null
   deliveredAt: Date | null
   createdAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type WebhookDeliveryCountAggregateOutputType = {
@@ -74,6 +78,8 @@ export type WebhookDeliveryCountAggregateOutputType = {
   nextRetryAt: number
   deliveredAt: number
   createdAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -99,6 +105,8 @@ export type WebhookDeliveryMinAggregateInputType = {
   nextRetryAt?: true
   deliveredAt?: true
   createdAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type WebhookDeliveryMaxAggregateInputType = {
@@ -112,6 +120,8 @@ export type WebhookDeliveryMaxAggregateInputType = {
   nextRetryAt?: true
   deliveredAt?: true
   createdAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type WebhookDeliveryCountAggregateInputType = {
@@ -126,6 +136,8 @@ export type WebhookDeliveryCountAggregateInputType = {
   nextRetryAt?: true
   deliveredAt?: true
   createdAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -227,6 +239,8 @@ export type WebhookDeliveryGroupByOutputType = {
   nextRetryAt: Date | null
   deliveredAt: Date | null
   createdAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: WebhookDeliveryCountAggregateOutputType | null
   _avg: WebhookDeliveryAvgAggregateOutputType | null
   _sum: WebhookDeliverySumAggregateOutputType | null
@@ -264,6 +278,8 @@ export type WebhookDeliveryWhereInput = {
   nextRetryAt?: Prisma.DateTimeNullableFilter<"WebhookDelivery"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"WebhookDelivery"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WebhookDelivery"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"WebhookDelivery"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"WebhookDelivery"> | string | null
   webhook?: Prisma.XOR<Prisma.WebhookEndpointScalarRelationFilter, Prisma.WebhookEndpointWhereInput>
 }
 
@@ -279,6 +295,8 @@ export type WebhookDeliveryOrderByWithRelationInput = {
   nextRetryAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   webhook?: Prisma.WebhookEndpointOrderByWithRelationInput
 }
 
@@ -297,6 +315,8 @@ export type WebhookDeliveryWhereUniqueInput = Prisma.AtLeast<{
   nextRetryAt?: Prisma.DateTimeNullableFilter<"WebhookDelivery"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"WebhookDelivery"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WebhookDelivery"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"WebhookDelivery"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"WebhookDelivery"> | string | null
   webhook?: Prisma.XOR<Prisma.WebhookEndpointScalarRelationFilter, Prisma.WebhookEndpointWhereInput>
 }, "id">
 
@@ -312,6 +332,8 @@ export type WebhookDeliveryOrderByWithAggregationInput = {
   nextRetryAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.WebhookDeliveryCountOrderByAggregateInput
   _avg?: Prisma.WebhookDeliveryAvgOrderByAggregateInput
   _max?: Prisma.WebhookDeliveryMaxOrderByAggregateInput
@@ -334,6 +356,8 @@ export type WebhookDeliveryScalarWhereWithAggregatesInput = {
   nextRetryAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WebhookDelivery"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WebhookDelivery"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"WebhookDelivery"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WebhookDelivery"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"WebhookDelivery"> | string | null
 }
 
 export type WebhookDeliveryCreateInput = {
@@ -347,6 +371,8 @@ export type WebhookDeliveryCreateInput = {
   nextRetryAt?: Date | string | null
   deliveredAt?: Date | string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   webhook: Prisma.WebhookEndpointCreateNestedOneWithoutDeliveriesInput
 }
 
@@ -362,6 +388,8 @@ export type WebhookDeliveryUncheckedCreateInput = {
   nextRetryAt?: Date | string | null
   deliveredAt?: Date | string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type WebhookDeliveryUpdateInput = {
@@ -375,6 +403,8 @@ export type WebhookDeliveryUpdateInput = {
   nextRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   webhook?: Prisma.WebhookEndpointUpdateOneRequiredWithoutDeliveriesNestedInput
 }
 
@@ -390,6 +420,8 @@ export type WebhookDeliveryUncheckedUpdateInput = {
   nextRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type WebhookDeliveryCreateManyInput = {
@@ -404,6 +436,8 @@ export type WebhookDeliveryCreateManyInput = {
   nextRetryAt?: Date | string | null
   deliveredAt?: Date | string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type WebhookDeliveryUpdateManyMutationInput = {
@@ -417,6 +451,8 @@ export type WebhookDeliveryUpdateManyMutationInput = {
   nextRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type WebhookDeliveryUncheckedUpdateManyInput = {
@@ -431,6 +467,8 @@ export type WebhookDeliveryUncheckedUpdateManyInput = {
   nextRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type WebhookDeliveryListRelationFilter = {
@@ -455,6 +493,8 @@ export type WebhookDeliveryCountOrderByAggregateInput = {
   nextRetryAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type WebhookDeliveryAvgOrderByAggregateInput = {
@@ -473,6 +513,8 @@ export type WebhookDeliveryMaxOrderByAggregateInput = {
   nextRetryAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type WebhookDeliveryMinOrderByAggregateInput = {
@@ -486,6 +528,8 @@ export type WebhookDeliveryMinOrderByAggregateInput = {
   nextRetryAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type WebhookDeliverySumOrderByAggregateInput = {
@@ -554,6 +598,8 @@ export type WebhookDeliveryCreateWithoutWebhookInput = {
   nextRetryAt?: Date | string | null
   deliveredAt?: Date | string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type WebhookDeliveryUncheckedCreateWithoutWebhookInput = {
@@ -567,6 +613,8 @@ export type WebhookDeliveryUncheckedCreateWithoutWebhookInput = {
   nextRetryAt?: Date | string | null
   deliveredAt?: Date | string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type WebhookDeliveryCreateOrConnectWithoutWebhookInput = {
@@ -610,6 +658,8 @@ export type WebhookDeliveryScalarWhereInput = {
   nextRetryAt?: Prisma.DateTimeNullableFilter<"WebhookDelivery"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"WebhookDelivery"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WebhookDelivery"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"WebhookDelivery"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"WebhookDelivery"> | string | null
 }
 
 export type WebhookDeliveryCreateManyWebhookInput = {
@@ -623,6 +673,8 @@ export type WebhookDeliveryCreateManyWebhookInput = {
   nextRetryAt?: Date | string | null
   deliveredAt?: Date | string | null
   createdAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type WebhookDeliveryUpdateWithoutWebhookInput = {
@@ -636,6 +688,8 @@ export type WebhookDeliveryUpdateWithoutWebhookInput = {
   nextRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type WebhookDeliveryUncheckedUpdateWithoutWebhookInput = {
@@ -649,6 +703,8 @@ export type WebhookDeliveryUncheckedUpdateWithoutWebhookInput = {
   nextRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type WebhookDeliveryUncheckedUpdateManyWithoutWebhookInput = {
@@ -662,6 +718,8 @@ export type WebhookDeliveryUncheckedUpdateManyWithoutWebhookInput = {
   nextRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -678,6 +736,8 @@ export type WebhookDeliverySelect<ExtArgs extends runtime.Types.Extensions.Inter
   nextRetryAt?: boolean
   deliveredAt?: boolean
   createdAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   webhook?: boolean | Prisma.WebhookEndpointDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["webhookDelivery"]>
 
@@ -693,6 +753,8 @@ export type WebhookDeliverySelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   nextRetryAt?: boolean
   deliveredAt?: boolean
   createdAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   webhook?: boolean | Prisma.WebhookEndpointDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["webhookDelivery"]>
 
@@ -708,6 +770,8 @@ export type WebhookDeliverySelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   nextRetryAt?: boolean
   deliveredAt?: boolean
   createdAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   webhook?: boolean | Prisma.WebhookEndpointDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["webhookDelivery"]>
 
@@ -723,9 +787,11 @@ export type WebhookDeliverySelectScalar = {
   nextRetryAt?: boolean
   deliveredAt?: boolean
   createdAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type WebhookDeliveryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "webhookId" | "eventType" | "payload" | "status" | "statusCode" | "responseBody" | "attemptCount" | "nextRetryAt" | "deliveredAt" | "createdAt", ExtArgs["result"]["webhookDelivery"]>
+export type WebhookDeliveryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "webhookId" | "eventType" | "payload" | "status" | "statusCode" | "responseBody" | "attemptCount" | "nextRetryAt" | "deliveredAt" | "createdAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["webhookDelivery"]>
 export type WebhookDeliveryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   webhook?: boolean | Prisma.WebhookEndpointDefaultArgs<ExtArgs>
 }
@@ -753,6 +819,8 @@ export type $WebhookDeliveryPayload<ExtArgs extends runtime.Types.Extensions.Int
     nextRetryAt: Date | null
     deliveredAt: Date | null
     createdAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["webhookDelivery"]>
   composites: {}
 }
@@ -1188,6 +1256,8 @@ export interface WebhookDeliveryFieldRefs {
   readonly nextRetryAt: Prisma.FieldRef<"WebhookDelivery", 'DateTime'>
   readonly deliveredAt: Prisma.FieldRef<"WebhookDelivery", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"WebhookDelivery", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"WebhookDelivery", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"WebhookDelivery", 'String'>
 }
     
 

@@ -31,6 +31,8 @@ export type OrganizationMinAggregateOutputType = {
   status: $Enums.OrganizationStatus | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type OrganizationMaxAggregateOutputType = {
@@ -40,6 +42,8 @@ export type OrganizationMaxAggregateOutputType = {
   status: $Enums.OrganizationStatus | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type OrganizationCountAggregateOutputType = {
@@ -49,6 +53,8 @@ export type OrganizationCountAggregateOutputType = {
   status: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -60,6 +66,8 @@ export type OrganizationMinAggregateInputType = {
   status?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type OrganizationMaxAggregateInputType = {
@@ -69,6 +77,8 @@ export type OrganizationMaxAggregateInputType = {
   status?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type OrganizationCountAggregateInputType = {
@@ -78,6 +88,8 @@ export type OrganizationCountAggregateInputType = {
   status?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -160,6 +172,8 @@ export type OrganizationGroupByOutputType = {
   status: $Enums.OrganizationStatus
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: OrganizationCountAggregateOutputType | null
   _min: OrganizationMinAggregateOutputType | null
   _max: OrganizationMaxAggregateOutputType | null
@@ -190,6 +204,8 @@ export type OrganizationWhereInput = {
   status?: Prisma.EnumOrganizationStatusFilter<"Organization"> | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Organization"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"Organization"> | string | null
   memberships?: Prisma.MembershipListRelationFilter
   roles?: Prisma.RoleListRelationFilter
   auditRecords?: Prisma.AuditRecordListRelationFilter
@@ -228,6 +244,8 @@ export type OrganizationOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   memberships?: Prisma.MembershipOrderByRelationAggregateInput
   roles?: Prisma.RoleOrderByRelationAggregateInput
   auditRecords?: Prisma.AuditRecordOrderByRelationAggregateInput
@@ -269,6 +287,8 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumOrganizationStatusFilter<"Organization"> | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Organization"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"Organization"> | string | null
   memberships?: Prisma.MembershipListRelationFilter
   roles?: Prisma.RoleListRelationFilter
   auditRecords?: Prisma.AuditRecordListRelationFilter
@@ -307,6 +327,8 @@ export type OrganizationOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.OrganizationCountOrderByAggregateInput
   _max?: Prisma.OrganizationMaxOrderByAggregateInput
   _min?: Prisma.OrganizationMinOrderByAggregateInput
@@ -322,6 +344,8 @@ export type OrganizationScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumOrganizationStatusWithAggregatesFilter<"Organization"> | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Organization"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Organization"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"Organization"> | string | null
 }
 
 export type OrganizationCreateInput = {
@@ -331,6 +355,8 @@ export type OrganizationCreateInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -369,6 +395,8 @@ export type OrganizationUncheckedCreateInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -407,6 +435,8 @@ export type OrganizationUpdateInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -445,6 +475,8 @@ export type OrganizationUncheckedUpdateInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -483,6 +515,8 @@ export type OrganizationCreateManyInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type OrganizationUpdateManyMutationInput = {
@@ -492,6 +526,8 @@ export type OrganizationUpdateManyMutationInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type OrganizationUncheckedUpdateManyInput = {
@@ -501,6 +537,8 @@ export type OrganizationUncheckedUpdateManyInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type OrganizationCountOrderByAggregateInput = {
@@ -510,6 +548,8 @@ export type OrganizationCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type OrganizationMaxOrderByAggregateInput = {
@@ -519,6 +559,8 @@ export type OrganizationMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type OrganizationMinOrderByAggregateInput = {
@@ -528,6 +570,8 @@ export type OrganizationMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type OrganizationScalarRelationFilter = {
@@ -963,6 +1007,8 @@ export type OrganizationCreateWithoutTeamsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -1000,6 +1046,8 @@ export type OrganizationUncheckedCreateWithoutTeamsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1053,6 +1101,8 @@ export type OrganizationUpdateWithoutTeamsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -1090,6 +1140,8 @@ export type OrganizationUncheckedUpdateWithoutTeamsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1127,6 +1179,8 @@ export type OrganizationCreateWithoutMembershipsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
   outboxEvents?: Prisma.OutboxEventCreateNestedManyWithoutOrganizationInput
@@ -1164,6 +1218,8 @@ export type OrganizationUncheckedCreateWithoutMembershipsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
   outboxEvents?: Prisma.OutboxEventUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1217,6 +1273,8 @@ export type OrganizationUpdateWithoutMembershipsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
   outboxEvents?: Prisma.OutboxEventUpdateManyWithoutOrganizationNestedInput
@@ -1254,6 +1312,8 @@ export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   outboxEvents?: Prisma.OutboxEventUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1291,6 +1351,8 @@ export type OrganizationCreateWithoutRolesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
   outboxEvents?: Prisma.OutboxEventCreateNestedManyWithoutOrganizationInput
@@ -1328,6 +1390,8 @@ export type OrganizationUncheckedCreateWithoutRolesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
   outboxEvents?: Prisma.OutboxEventUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1381,6 +1445,8 @@ export type OrganizationUpdateWithoutRolesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
   outboxEvents?: Prisma.OutboxEventUpdateManyWithoutOrganizationNestedInput
@@ -1418,6 +1484,8 @@ export type OrganizationUncheckedUpdateWithoutRolesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   outboxEvents?: Prisma.OutboxEventUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1455,6 +1523,8 @@ export type OrganizationCreateWithoutAuditRecordsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   outboxEvents?: Prisma.OutboxEventCreateNestedManyWithoutOrganizationInput
@@ -1492,6 +1562,8 @@ export type OrganizationUncheckedCreateWithoutAuditRecordsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   outboxEvents?: Prisma.OutboxEventUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1545,6 +1617,8 @@ export type OrganizationUpdateWithoutAuditRecordsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   outboxEvents?: Prisma.OutboxEventUpdateManyWithoutOrganizationNestedInput
@@ -1582,6 +1656,8 @@ export type OrganizationUncheckedUpdateWithoutAuditRecordsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   outboxEvents?: Prisma.OutboxEventUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1619,6 +1695,8 @@ export type OrganizationCreateWithoutServiceAccountsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -1656,6 +1734,8 @@ export type OrganizationUncheckedCreateWithoutServiceAccountsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1709,6 +1789,8 @@ export type OrganizationUpdateWithoutServiceAccountsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -1746,6 +1828,8 @@ export type OrganizationUncheckedUpdateWithoutServiceAccountsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1783,6 +1867,8 @@ export type OrganizationCreateWithoutIntegrationEventsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -1820,6 +1906,8 @@ export type OrganizationUncheckedCreateWithoutIntegrationEventsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1873,6 +1961,8 @@ export type OrganizationUpdateWithoutIntegrationEventsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -1910,6 +2000,8 @@ export type OrganizationUncheckedUpdateWithoutIntegrationEventsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1947,6 +2039,8 @@ export type OrganizationCreateWithoutOutboxEventsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -1984,6 +2078,8 @@ export type OrganizationUncheckedCreateWithoutOutboxEventsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2037,6 +2133,8 @@ export type OrganizationUpdateWithoutOutboxEventsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -2074,6 +2172,8 @@ export type OrganizationUncheckedUpdateWithoutOutboxEventsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2111,6 +2211,8 @@ export type OrganizationCreateWithoutNotificationsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -2148,6 +2250,8 @@ export type OrganizationUncheckedCreateWithoutNotificationsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2201,6 +2305,8 @@ export type OrganizationUpdateWithoutNotificationsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -2238,6 +2344,8 @@ export type OrganizationUncheckedUpdateWithoutNotificationsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2275,6 +2383,8 @@ export type OrganizationCreateWithoutCargoRecordsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -2312,6 +2422,8 @@ export type OrganizationUncheckedCreateWithoutCargoRecordsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2365,6 +2477,8 @@ export type OrganizationUpdateWithoutCargoRecordsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -2402,6 +2516,8 @@ export type OrganizationUncheckedUpdateWithoutCargoRecordsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2439,6 +2555,8 @@ export type OrganizationCreateWithoutCargoDeliveryExceptionsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -2476,6 +2594,8 @@ export type OrganizationUncheckedCreateWithoutCargoDeliveryExceptionsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2529,6 +2649,8 @@ export type OrganizationUpdateWithoutCargoDeliveryExceptionsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -2566,6 +2688,8 @@ export type OrganizationUncheckedUpdateWithoutCargoDeliveryExceptionsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2603,6 +2727,8 @@ export type OrganizationCreateWithoutCargoClaimSettlementsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -2640,6 +2766,8 @@ export type OrganizationUncheckedCreateWithoutCargoClaimSettlementsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2693,6 +2821,8 @@ export type OrganizationUpdateWithoutCargoClaimSettlementsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -2730,6 +2860,8 @@ export type OrganizationUncheckedUpdateWithoutCargoClaimSettlementsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2767,6 +2899,8 @@ export type OrganizationCreateWithoutCapacityResourcesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -2804,6 +2938,8 @@ export type OrganizationUncheckedCreateWithoutCapacityResourcesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2857,6 +2993,8 @@ export type OrganizationUpdateWithoutCapacityResourcesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -2894,6 +3032,8 @@ export type OrganizationUncheckedUpdateWithoutCapacityResourcesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2931,6 +3071,8 @@ export type OrganizationCreateWithoutCapacitySlotsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -2968,6 +3110,8 @@ export type OrganizationUncheckedCreateWithoutCapacitySlotsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3021,6 +3165,8 @@ export type OrganizationUpdateWithoutCapacitySlotsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -3058,6 +3204,8 @@ export type OrganizationUncheckedUpdateWithoutCapacitySlotsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3095,6 +3243,8 @@ export type OrganizationCreateWithoutCapacityReservationsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -3132,6 +3282,8 @@ export type OrganizationUncheckedCreateWithoutCapacityReservationsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3185,6 +3337,8 @@ export type OrganizationUpdateWithoutCapacityReservationsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -3222,6 +3376,8 @@ export type OrganizationUncheckedUpdateWithoutCapacityReservationsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3259,6 +3415,8 @@ export type OrganizationCreateWithoutCapacityAdvisoryDecisionsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -3296,6 +3454,8 @@ export type OrganizationUncheckedCreateWithoutCapacityAdvisoryDecisionsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3349,6 +3509,8 @@ export type OrganizationUpdateWithoutCapacityAdvisoryDecisionsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -3386,6 +3548,8 @@ export type OrganizationUncheckedUpdateWithoutCapacityAdvisoryDecisionsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3423,6 +3587,8 @@ export type OrganizationCreateWithoutTransportOrdersInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -3460,6 +3626,8 @@ export type OrganizationUncheckedCreateWithoutTransportOrdersInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3513,6 +3681,8 @@ export type OrganizationUpdateWithoutTransportOrdersInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -3550,6 +3720,8 @@ export type OrganizationUncheckedUpdateWithoutTransportOrdersInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3587,6 +3759,8 @@ export type OrganizationCreateWithoutTransportOrderDispatchesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -3624,6 +3798,8 @@ export type OrganizationUncheckedCreateWithoutTransportOrderDispatchesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3677,6 +3853,8 @@ export type OrganizationUpdateWithoutTransportOrderDispatchesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -3714,6 +3892,8 @@ export type OrganizationUncheckedUpdateWithoutTransportOrderDispatchesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3751,6 +3931,8 @@ export type OrganizationCreateWithoutTransportOrderScheduleRevisionsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -3788,6 +3970,8 @@ export type OrganizationUncheckedCreateWithoutTransportOrderScheduleRevisionsInp
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3841,6 +4025,8 @@ export type OrganizationUpdateWithoutTransportOrderScheduleRevisionsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -3878,6 +4064,8 @@ export type OrganizationUncheckedUpdateWithoutTransportOrderScheduleRevisionsInp
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3915,6 +4103,8 @@ export type OrganizationCreateWithoutTariffRateCardsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -3952,6 +4142,8 @@ export type OrganizationUncheckedCreateWithoutTariffRateCardsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4005,6 +4197,8 @@ export type OrganizationUpdateWithoutTariffRateCardsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -4042,6 +4236,8 @@ export type OrganizationUncheckedUpdateWithoutTariffRateCardsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4079,6 +4275,8 @@ export type OrganizationCreateWithoutTariffRateRulesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -4116,6 +4314,8 @@ export type OrganizationUncheckedCreateWithoutTariffRateRulesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4169,6 +4369,8 @@ export type OrganizationUpdateWithoutTariffRateRulesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -4206,6 +4408,8 @@ export type OrganizationUncheckedUpdateWithoutTariffRateRulesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4243,6 +4447,8 @@ export type OrganizationCreateWithoutTariffQuotesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -4280,6 +4486,8 @@ export type OrganizationUncheckedCreateWithoutTariffQuotesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4333,6 +4541,8 @@ export type OrganizationUpdateWithoutTariffQuotesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -4370,6 +4580,8 @@ export type OrganizationUncheckedUpdateWithoutTariffQuotesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4407,6 +4619,8 @@ export type OrganizationCreateWithoutCargoOperationalHandoffsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -4444,6 +4658,8 @@ export type OrganizationUncheckedCreateWithoutCargoOperationalHandoffsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4497,6 +4713,8 @@ export type OrganizationUpdateWithoutCargoOperationalHandoffsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -4534,6 +4752,8 @@ export type OrganizationUncheckedUpdateWithoutCargoOperationalHandoffsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4571,6 +4791,8 @@ export type OrganizationCreateWithoutCargoComplianceEvidencesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -4608,6 +4830,8 @@ export type OrganizationUncheckedCreateWithoutCargoComplianceEvidencesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4661,6 +4885,8 @@ export type OrganizationUpdateWithoutCargoComplianceEvidencesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -4698,6 +4924,8 @@ export type OrganizationUncheckedUpdateWithoutCargoComplianceEvidencesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4735,6 +4963,8 @@ export type OrganizationCreateWithoutTrackingShipmentsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -4772,6 +5002,8 @@ export type OrganizationUncheckedCreateWithoutTrackingShipmentsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4825,6 +5057,8 @@ export type OrganizationUpdateWithoutTrackingShipmentsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -4862,6 +5096,8 @@ export type OrganizationUncheckedUpdateWithoutTrackingShipmentsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4899,6 +5135,8 @@ export type OrganizationCreateWithoutWebhookEndpointsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -4936,6 +5174,8 @@ export type OrganizationUncheckedCreateWithoutWebhookEndpointsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4989,6 +5229,8 @@ export type OrganizationUpdateWithoutWebhookEndpointsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -5026,6 +5268,8 @@ export type OrganizationUncheckedUpdateWithoutWebhookEndpointsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5063,6 +5307,8 @@ export type OrganizationCreateWithoutTrackingEventsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -5100,6 +5346,8 @@ export type OrganizationUncheckedCreateWithoutTrackingEventsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5153,6 +5401,8 @@ export type OrganizationUpdateWithoutTrackingEventsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -5190,6 +5440,8 @@ export type OrganizationUncheckedUpdateWithoutTrackingEventsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5227,6 +5479,8 @@ export type OrganizationCreateWithoutSubscriptionInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -5264,6 +5518,8 @@ export type OrganizationUncheckedCreateWithoutSubscriptionInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5317,6 +5573,8 @@ export type OrganizationUpdateWithoutSubscriptionInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -5354,6 +5612,8 @@ export type OrganizationUncheckedUpdateWithoutSubscriptionInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5391,6 +5651,8 @@ export type OrganizationCreateWithoutInvoicesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -5428,6 +5690,8 @@ export type OrganizationUncheckedCreateWithoutInvoicesInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5481,6 +5745,8 @@ export type OrganizationUpdateWithoutInvoicesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -5518,6 +5784,8 @@ export type OrganizationUncheckedUpdateWithoutInvoicesInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5555,6 +5823,8 @@ export type OrganizationCreateWithoutUsageRecordsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
@@ -5592,6 +5862,8 @@ export type OrganizationUncheckedCreateWithoutUsageRecordsInput = {
   status?: $Enums.OrganizationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5645,6 +5917,8 @@ export type OrganizationUpdateWithoutUsageRecordsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
@@ -5682,6 +5956,8 @@ export type OrganizationUncheckedUpdateWithoutUsageRecordsInput = {
   status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5993,6 +6269,8 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   memberships?: boolean | Prisma.Organization$membershipsArgs<ExtArgs>
   roles?: boolean | Prisma.Organization$rolesArgs<ExtArgs>
   auditRecords?: boolean | Prisma.Organization$auditRecordsArgs<ExtArgs>
@@ -6032,6 +6310,8 @@ export type OrganizationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }, ExtArgs["result"]["organization"]>
 
 export type OrganizationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -6041,6 +6321,8 @@ export type OrganizationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }, ExtArgs["result"]["organization"]>
 
 export type OrganizationSelectScalar = {
@@ -6050,9 +6332,11 @@ export type OrganizationSelectScalar = {
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "status" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["organization"]>
 export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   memberships?: boolean | Prisma.Organization$membershipsArgs<ExtArgs>
   roles?: boolean | Prisma.Organization$rolesArgs<ExtArgs>
@@ -6128,6 +6412,8 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     status: $Enums.OrganizationStatus
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["organization"]>
   composites: {}
 }
@@ -6586,6 +6872,8 @@ export interface OrganizationFieldRefs {
   readonly status: Prisma.FieldRef<"Organization", 'OrganizationStatus'>
   readonly createdAt: Prisma.FieldRef<"Organization", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Organization", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"Organization", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"Organization", 'String'>
 }
     
 

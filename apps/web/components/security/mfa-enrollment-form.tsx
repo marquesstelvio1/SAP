@@ -43,7 +43,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
   const [feedback, setFeedback] = useState<Feedback>({
     status: "idle",
     message: initialEnabled
-      ? "MFA TOTP esta ativo para este utilizador."
+      ? "MFA TOTP está ativo para este utilizador."
       : "Ative MFA para exigir codigo TOTP apos password.",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,7 +67,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
     if (response.error !== null) {
       setFeedback({
         status: "error",
-        message: response.error.message ?? "Nao foi possivel iniciar MFA.",
+        message: response.error.message ?? "Nao foi possível iniciar MFA.",
       });
       return;
     }
@@ -100,7 +100,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
     if (response.error !== null) {
       setFeedback({
         status: "error",
-        message: response.error.message ?? "Codigo TOTP invalido.",
+        message: response.error.message ?? "Código TOTP inválido.",
       });
       return;
     }
@@ -109,7 +109,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
     setSetup(undefined);
     setFeedback({
       status: "success",
-      message: "MFA TOTP ativado. A sessao foi atualizada pelo Better Auth.",
+      message: "MFA TOTP ativado. A sessão foi atualizada pelo Better Auth.",
     });
     event.currentTarget.reset();
     router.refresh();
@@ -129,7 +129,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
     if (response.error !== null) {
       setFeedback({
         status: "error",
-        message: response.error.message ?? "Nao foi possivel desativar MFA.",
+        message: response.error.message ?? "Nao foi possível desativar MFA.",
       });
       return;
     }
@@ -138,7 +138,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
     setSetup(undefined);
     setFeedback({
       status: "success",
-      message: "MFA desativado e dispositivos confiaveis revogados.",
+      message: "MFA desativado e dispositivos confiáveis revogados.",
     });
     event.currentTarget.reset();
     router.refresh();
@@ -156,7 +156,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
         <div className="flex flex-col gap-2">
           <CardTitle>Politica MFA</CardTitle>
           <CardDescription>
-            Enrollment TOTP real para {email}, com segredo persistido no schema oficial e codigos de
+            Enrollment TOTP real para {email}, com segredo persistido no schema oficial e códigos de
             backup criptografados.
           </CardDescription>
         </div>
@@ -181,7 +181,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
                   type="password"
                 />
                 <FieldDescription>
-                  Necessaria para desativar MFA e limpar dispositivos confiaveis.
+                  Necessária para desativar MFA e limpar dispositivos confiáveis.
                 </FieldDescription>
               </Field>
               <Button disabled={isSubmitting} type="submit" variant="outline">
@@ -216,14 +216,14 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
                 <FieldLabel htmlFor="totpUri">URI TOTP</FieldLabel>
                 <Textarea id="totpUri" readOnly rows={4} value={setup.totpURI} />
                 <FieldDescription>
-                  Cole este URI num autenticador compativel se o app nao conseguir ler QR code.
+                  Cole este URI num autenticador compatível se o app nao conseguir ler QR code.
                 </FieldDescription>
               </Field>
               <Field>
                 <FieldLabel htmlFor="backupCodes">Codigos de backup</FieldLabel>
                 <Textarea id="backupCodes" readOnly rows={6} value={setup.backupCodes.join("\n")} />
                 <FieldDescription>
-                  Guarde estes codigos agora; eles sao exibidos apenas durante o enrollment.
+                  Guarde estes códigos agora; eles são exibidos apenas durante o enrollment.
                 </FieldDescription>
               </Field>
               <form className="flex flex-col gap-4" onSubmit={handleVerify}>
@@ -248,8 +248,8 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
       </CardContent>
       <CardFooter>
         <FieldDescription>
-          Regra de producao: obrigatorio para tenant.admin, tenant.security_admin e donos de service
-          accounts.
+          Regra de produção: obrigatório para administradores da organização e donos de contas de
+          serviço.
         </FieldDescription>
       </CardFooter>
     </Card>

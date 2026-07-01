@@ -258,6 +258,29 @@ export {
   cargoTypes,
 } from "./cargo.js";
 export {
+  type ComplianceOverviewInput,
+  type ComplianceOverviewOutput,
+  complianceEvidenceTypeCountSchema,
+  complianceOverviewInputSchema,
+  complianceOverviewMetadata,
+  complianceOverviewOutputSchema,
+  complianceStatusCountSchema,
+} from "./compliance.js";
+export {
+  type DeliveryOverviewInput,
+  type DeliveryOverviewOutput,
+  deliveryOverviewInputSchema,
+  deliveryOverviewMetadata,
+  deliveryOverviewOutputSchema,
+} from "./delivery.js";
+export {
+  type DispatchOverviewInput,
+  type DispatchOverviewOutput,
+  dispatchOverviewInputSchema,
+  dispatchOverviewMetadata,
+  dispatchOverviewOutputSchema,
+} from "./dispatch.js";
+export {
   type DocumentEvidenceType,
   type DocumentSummary,
   type DocumentValidationStatus,
@@ -278,7 +301,9 @@ export {
 export {
   type CreateRpcErrorEnvelopeInput,
   createRpcErrorEnvelope,
+  getHttpStatusFromRpcErrorCode,
   getRpcErrorDefinition,
+  mapHttpStatusToRpcErrorCode,
   type RpcErrorCode,
   type RpcErrorDefinition,
   type RpcErrorEnvelope,
@@ -286,10 +311,25 @@ export {
   rpcErrorCodes,
 } from "./errors.js";
 export {
+  cargoDeliveryExceptionStatusCountSchema,
+  type ExceptionOverviewInput,
+  type ExceptionOverviewOutput,
+  exceptionOverviewInputSchema,
+  exceptionOverviewMetadata,
+  exceptionOverviewOutputSchema,
+  trackingExceptionStatusCountSchema,
+  trackingExceptionSummarySchema,
+} from "./exception-overview.js";
+export {
   createFoundationRpcHealthReport,
   type FoundationRpcHealthOutput,
   foundationRpcHealthMetadata,
   foundationRpcHealthOutputSchema,
+  sharedAuditSchema,
+  sharedIdempotencyKeySchema,
+  sharedIdempotencyResultSchema,
+  sharedMutationOutputSchema,
+  sharedOutboxSchema,
 } from "./foundation.js";
 export {
   type IntegrationCarrierTmsMovementInput,
@@ -350,28 +390,6 @@ export {
   integrationWarehouseWmsActivityOutputSchema,
   integrationWarehouseWmsActivityTypes,
 } from "./integrations.js";
-export {
-  type PrivacyAccountSummary,
-  type PrivacyAssociatedAccount,
-  type PrivacyAuditRecord,
-  type PrivacyDeleteInput,
-  type PrivacyDeleteOutput,
-  type PrivacyExportInput,
-  type PrivacyExportOutput,
-  type PrivacyMembership,
-  type PrivacySession,
-  privacyAccountSummarySchema,
-  privacyAssociatedAccountSchema,
-  privacyAuditRecordSchema,
-  privacyDeleteInputSchema,
-  privacyDeleteMetadata,
-  privacyDeleteOutputSchema,
-  privacyExportInputSchema,
-  privacyExportMetadata,
-  privacyExportOutputSchema,
-  privacyMembershipSchema,
-  privacySessionSchema,
-} from "./privacy.js";
 export {
   type CreateRpcOperationMetadataInput,
   createRpcOperationMetadata,
@@ -446,6 +464,28 @@ export {
   transportOrderStatuses,
   transportOrderSummarySchema,
 } from "./planning.js";
+export {
+  type PrivacyAccountSummary,
+  type PrivacyAssociatedAccount,
+  type PrivacyAuditRecord,
+  type PrivacyDeleteInput,
+  type PrivacyDeleteOutput,
+  type PrivacyExportInput,
+  type PrivacyExportOutput,
+  type PrivacyMembership,
+  type PrivacySession,
+  privacyAccountSummarySchema,
+  privacyAssociatedAccountSchema,
+  privacyAuditRecordSchema,
+  privacyDeleteInputSchema,
+  privacyDeleteMetadata,
+  privacyDeleteOutputSchema,
+  privacyExportInputSchema,
+  privacyExportMetadata,
+  privacyExportOutputSchema,
+  privacyMembershipSchema,
+  privacySessionSchema,
+} from "./privacy.js";
 export {
   type ReportExportDomain,
   type ReportExportFormat,

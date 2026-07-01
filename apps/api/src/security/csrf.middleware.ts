@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { getServerEnv } from "@saptm/config";
 import { doubleCsrf } from "csrf-csrf";
@@ -17,19 +18,38 @@ const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
  */
 const INTERNAL_REQUEST_HEADER = "x-internal-request";
 
+/**
+ * Pepper used to derive a CSRF-specific secret from the application
+ * secret. This ensures the CSRF token key is never the raw auth secret.
+ */
+const CSRF_SECRET_PEPPER = "saptm-csrf-v1";
+
+/**
+ * Stable identifier for unauthenticated sessions. It is derived from
+ * the CSRF-specific secret (not the raw auth secret) so tokens remain
+ * verifiable across generate/validate cycles without exposing the
+ * authentication credential.
+ */
+const ANONYMOUS_SESSION_ID = "anonymous";
+
+function deriveCsrfSecret(appSecret: string): string {
+  return createHash("sha256").update(`${appSecret}:${CSRF_SECRET_PEPPER}`, "utf-8").digest("hex");
+}
+
 export function createCsrfMiddleware(options: CsrfOptions = {}) {
   const env = getServerEnv();
+  const csrfSecret = deriveCsrfSecret(env.BETTER_AUTH_SECRET);
 
   const { generateCsrfToken, doubleCsrfProtection, invalidCsrfTokenError } = doubleCsrf({
-    getSecret: () => env.BETTER_AUTH_SECRET,
+    getSecret: () => csrfSecret,
     getSessionIdentifier: (req) => {
       const sessionCookie = readSessionCookie(req);
       if (sessionCookie !== undefined) {
         return deriveSessionId(sessionCookie);
       }
-      return deriveSessionId(env.BETTER_AUTH_SECRET);
+      return deriveSessionId(`${csrfSecret}:${ANONYMOUS_SESSION_ID}`);
     },
-    cookieName: "__Host-saptm-csrf",
+    cookieName: env.NODE_ENV === "production" ? "__Host-saptm-csrf" : "saptm-csrf",
     cookieOptions: {
       httpOnly: true,
       sameSite: "strict",
@@ -97,11 +117,6 @@ function readSessionCookie(req: IncomingMessage): string | undefined {
 }
 
 function deriveSessionId(value: string): string {
-  let hash = 0;
-  for (let i = 0; i < value.length; i++) {
-    const char = value.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash |= 0;
-  }
-  return `sid_${Math.abs(hash).toString(36)}`;
+  const hash = createHash("sha256").update(value, "utf-8").digest("hex");
+  return `sid_${hash.slice(0, 16)}`;
 }

@@ -29,8 +29,8 @@ interface SearchPaletteProps {
 
 function SearchPalette({
   items,
-  placeholder = "Search...",
-  emptyMessage = "No results found.",
+  placeholder = "Pesquisar...",
+  emptyMessage = "Nenhum resultado encontrado.",
   shortcut = ["meta", "k"],
 }: SearchPaletteProps) {
   const [open, setOpen] = useState(false);

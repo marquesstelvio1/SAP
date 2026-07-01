@@ -788,8 +788,8 @@ export default function DesignSystemPage() {
       <SectionHeading>29. Access State</SectionHeading>
       <Card className="p-6">
         <div className="flex flex-col gap-4">
-          <AccessState granted label="tracking.shipment.read" permission="tracking.shipment.read" />
-          <AccessState granted={false} label="cargo.write" permission="cargo.write" />
+          <AccessState granted label="Registo autorizado" />
+          <AccessState granted={false} label="Registo indisponivel" />
           <AccessState
             variant="blocked"
             title="Acesso Bloqueado"

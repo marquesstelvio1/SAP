@@ -46,13 +46,13 @@ export function CommandEvidencePanel({ evidence, title }: CommandEvidencePanelPr
           <CardDescription className="text-xs leading-5">
             {evidence.idempotencyReplayed
               ? "O comando ja tinha sido processado anteriormente. A resposta idempotente foi reaproveitada sem efeitos colaterais."
-              : "O comando foi aceite pelo backend com auditoria, outbox e regras de negocio aplicadas."}
+              : "O comando foi aceite com auditoria e regras de negocio aplicadas."}
           </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <div className="flex flex-col gap-2">
-          <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="text-xs uppercase tracking-uppercase text-muted-foreground">
             Registo de auditoria
           </span>
           <div className="grid gap-2 rounded-lg border bg-card/50 p-3 text-xs md:grid-cols-2">
@@ -64,7 +64,7 @@ export function CommandEvidencePanel({ evidence, title }: CommandEvidencePanelPr
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="text-xs uppercase tracking-uppercase text-muted-foreground">
             Evento outbox
           </span>
           <div className="grid gap-2 rounded-lg border bg-card/50 p-3 text-xs md:grid-cols-3">
@@ -77,7 +77,7 @@ export function CommandEvidencePanel({ evidence, title }: CommandEvidencePanelPr
         <Separator />
 
         <div className="flex flex-col gap-2">
-          <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="text-xs uppercase tracking-uppercase text-muted-foreground">
             Regras de negocio aplicadas ({evidence.businessRules.appliedRules.length})
           </span>
           <div className="flex flex-wrap gap-1.5">
@@ -87,7 +87,7 @@ export function CommandEvidencePanel({ evidence, title }: CommandEvidencePanelPr
               </span>
             ) : (
               evidence.businessRules.appliedRules.map((rule, index) => (
-                <Badge key={index} variant="outline" className="text-[0.65rem]">
+                <Badge key={index} variant="outline" className="text-2xs">
                   {rule}
                 </Badge>
               ))

@@ -1,9 +1,6 @@
 "use client";
 
 import {
-  Avatar,
-  AvatarFallback,
-  cn,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -14,11 +11,14 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@saptm/ui";
 import { CheckIcon, ChevronsUpDownIcon, PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
+import { setActiveOrganization } from "../../lib/org-actions";
 
-export type Organization = {
+export type TeamSwitcherOrganization = {
   id: string;
   name: string;
   slug: string;
@@ -28,13 +28,24 @@ export type Organization = {
 export function TeamSwitcher({
   organizations,
   activeOrganization,
-  onSwitch,
 }: {
-  organizations: Organization[];
-  activeOrganization: Organization;
-  onSwitch: (org: Organization) => void;
+  organizations: TeamSwitcherOrganization[];
+  activeOrganization: TeamSwitcherOrganization;
 }) {
+  const { isMobile } = useSidebar();
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  const handleSwitch = useCallback(
+    async (organizationId: string) => {
+      setOpen(false);
+      const formData = new FormData();
+      formData.set("organizationId", organizationId);
+      await setActiveOrganization(formData);
+      router.refresh();
+    },
+    [router],
+  );
 
   return (
     <SidebarMenu>
@@ -45,55 +56,47 @@ export function TeamSwitcher({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="size-8 rounded-lg">
-                <AvatarFallback className="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                <span className="text-sm font-semibold">
                   {activeOrganization.name.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{activeOrganization.name}</span>
-                <span className="truncate text-xs text-sidebar-foreground/60">
-                  {activeOrganization.slug}
                 </span>
               </div>
-              <ChevronsUpDownIcon className="ml-auto size-4 shrink-0 text-sidebar-foreground/50" />
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">{activeOrganization.name}</span>
+                <span className="truncate text-xs">{activeOrganization.slug}</span>
+              </div>
+              <ChevronsUpDownIcon className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             align="start"
-            side="bottom"
+            side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-xs text-muted-foreground uppercase tracking-wider">
+            <DropdownMenuLabel className="text-xs text-muted-foreground">
               Organizações
             </DropdownMenuLabel>
             {organizations.map((org) => (
               <DropdownMenuItem
                 key={org.id}
-                onClick={() => {
-                  onSwitch(org);
-                  setOpen(false);
-                }}
-                className={cn(
-                  "gap-2 p-2",
-                  org.id === activeOrganization.id && "bg-accent font-medium",
-                )}
+                onClick={() => handleSwitch(org.id)}
+                className="gap-2 p-2"
               >
-                <Avatar className="size-6 rounded-sm">
-                  <AvatarFallback className="rounded-sm bg-sidebar-primary/20 text-sidebar-primary text-[10px] font-medium">
-                    {org.name.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="flex size-6 items-center justify-center rounded-md border">
+                  <span className="text-xs font-medium">{org.name.slice(0, 2).toUpperCase()}</span>
+                </div>
                 <span className="flex-1">{org.name}</span>
-                {org.id === activeOrganization.id && <CheckIcon className="size-4" />}
+                {org.id === activeOrganization.id && <CheckIcon className="size-4 shrink-0" />}
                 <DropdownMenuShortcut>{org.slug}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
-              <PlusIcon className="size-4" />
-              <span>Criar organização</span>
+              <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                <PlusIcon className="size-4" />
+              </div>
+              <span className="font-medium text-muted-foreground">Criar organização</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -17,6 +17,8 @@ import {
   Input,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { addHours, createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CapacitySlotOpenFormState } from "../../app/(platform)/app/capacity/form-state";
 
@@ -35,14 +37,14 @@ export function CapacitySlotOpenForm({
   action,
 }: CapacitySlotOpenFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("capacity_slot"));
   const defaultWindowStartAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 2)), []);
   const defaultWindowEndAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 8)), []);
   const isDisabled = isPending || !canManageCapacity;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("capacity_slot"));
     }
   }, [state.status]);
 
@@ -51,15 +53,15 @@ export function CapacitySlotOpenForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageCapacity ? "success" : "warning"}>
-            {canManageCapacity ? "Slot governado" : "Sem permissao"}
+            {canManageCapacity ? "Slot autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">capacity.slot.open</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Abrir slot de capacidade</CardTitle>
           <CardDescription className="leading-6">
-            Define janela operacional com capacidade maxima inferior ou igual ao limite do recurso.
-            A referencia e unica por tenant e a abertura e auditavel.
+            Define janela operacional com capacidade máxima inferior ou igual ao limite do recurso.
+            A referência é única por tenant e a abertura é auditável.
           </CardDescription>
         </div>
       </CardHeader>
@@ -80,7 +82,7 @@ export function CapacitySlotOpenForm({
                 />
               </Field>
               <Field data-disabled={!canManageCapacity}>
-                <FieldLabel htmlFor="slotReference">Referencia do slot</FieldLabel>
+                <FieldLabel htmlFor="slotReference">Referência do slot</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="slotReference"
@@ -93,7 +95,7 @@ export function CapacitySlotOpenForm({
 
             <div className="grid gap-4 md:grid-cols-3">
               <Field data-disabled={!canManageCapacity}>
-                <FieldLabel htmlFor="windowStartAt">Inicio da janela</FieldLabel>
+                <FieldLabel htmlFor="windowStartAt">Início da janela</FieldLabel>
                 <Input
                   defaultValue={defaultWindowStartAt}
                   disabled={isDisabled}
@@ -115,7 +117,7 @@ export function CapacitySlotOpenForm({
                 />
               </Field>
               <Field data-disabled={!canManageCapacity}>
-                <FieldLabel htmlFor="capacityUnits">Unidades disponiveis</FieldLabel>
+                <FieldLabel htmlFor="capacityUnits">Unidades disponíveis</FieldLabel>
                 <Input
                   defaultValue="1"
                   disabled={isDisabled}
@@ -157,7 +159,7 @@ export function CapacitySlotOpenForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canManageCapacity ? "Impede janela invalida e limite excessivo." : "Requer manage."}
+            {canManageCapacity ? "Impede janela inválida e limite excessivo." : "Requer manage."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A abrir..." : "Abrir slot"}
@@ -166,21 +168,4 @@ export function CapacitySlotOpenForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `capacity_slot_${randomValue}`;
-}
-
-function addHours(date: Date, hours: number): Date {
-  return new Date(date.getTime() + hours * 60 * 60 * 1000);
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

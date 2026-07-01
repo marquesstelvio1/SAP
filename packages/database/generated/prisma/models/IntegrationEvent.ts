@@ -33,6 +33,8 @@ export type IntegrationEventMinAggregateOutputType = {
   eventType: string | null
   receivedAt: Date | null
   processedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type IntegrationEventMaxAggregateOutputType = {
@@ -44,6 +46,8 @@ export type IntegrationEventMaxAggregateOutputType = {
   eventType: string | null
   receivedAt: Date | null
   processedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type IntegrationEventCountAggregateOutputType = {
@@ -56,6 +60,8 @@ export type IntegrationEventCountAggregateOutputType = {
   payload: number
   receivedAt: number
   processedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -69,6 +75,8 @@ export type IntegrationEventMinAggregateInputType = {
   eventType?: true
   receivedAt?: true
   processedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type IntegrationEventMaxAggregateInputType = {
@@ -80,6 +88,8 @@ export type IntegrationEventMaxAggregateInputType = {
   eventType?: true
   receivedAt?: true
   processedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type IntegrationEventCountAggregateInputType = {
@@ -92,6 +102,8 @@ export type IntegrationEventCountAggregateInputType = {
   payload?: true
   receivedAt?: true
   processedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -177,6 +189,8 @@ export type IntegrationEventGroupByOutputType = {
   payload: runtime.JsonValue
   receivedAt: Date
   processedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: IntegrationEventCountAggregateOutputType | null
   _min: IntegrationEventMinAggregateOutputType | null
   _max: IntegrationEventMaxAggregateOutputType | null
@@ -210,6 +224,8 @@ export type IntegrationEventWhereInput = {
   payload?: Prisma.JsonFilter<"IntegrationEvent">
   receivedAt?: Prisma.DateTimeFilter<"IntegrationEvent"> | Date | string
   processedAt?: Prisma.DateTimeNullableFilter<"IntegrationEvent"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"IntegrationEvent"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"IntegrationEvent"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   serviceAccount?: Prisma.XOR<Prisma.ServiceAccountNullableScalarRelationFilter, Prisma.ServiceAccountWhereInput> | null
 }
@@ -224,6 +240,8 @@ export type IntegrationEventOrderByWithRelationInput = {
   payload?: Prisma.SortOrder
   receivedAt?: Prisma.SortOrder
   processedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   serviceAccount?: Prisma.ServiceAccountOrderByWithRelationInput
 }
@@ -242,6 +260,8 @@ export type IntegrationEventWhereUniqueInput = Prisma.AtLeast<{
   payload?: Prisma.JsonFilter<"IntegrationEvent">
   receivedAt?: Prisma.DateTimeFilter<"IntegrationEvent"> | Date | string
   processedAt?: Prisma.DateTimeNullableFilter<"IntegrationEvent"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"IntegrationEvent"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"IntegrationEvent"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   serviceAccount?: Prisma.XOR<Prisma.ServiceAccountNullableScalarRelationFilter, Prisma.ServiceAccountWhereInput> | null
 }, "id" | "organizationId_sourceSystem_externalId">
@@ -256,6 +276,8 @@ export type IntegrationEventOrderByWithAggregationInput = {
   payload?: Prisma.SortOrder
   receivedAt?: Prisma.SortOrder
   processedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.IntegrationEventCountOrderByAggregateInput
   _max?: Prisma.IntegrationEventMaxOrderByAggregateInput
   _min?: Prisma.IntegrationEventMinOrderByAggregateInput
@@ -274,6 +296,8 @@ export type IntegrationEventScalarWhereWithAggregatesInput = {
   payload?: Prisma.JsonWithAggregatesFilter<"IntegrationEvent">
   receivedAt?: Prisma.DateTimeWithAggregatesFilter<"IntegrationEvent"> | Date | string
   processedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"IntegrationEvent"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"IntegrationEvent"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"IntegrationEvent"> | string | null
 }
 
 export type IntegrationEventCreateInput = {
@@ -284,6 +308,8 @@ export type IntegrationEventCreateInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Date | string
   processedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutIntegrationEventsInput
   serviceAccount?: Prisma.ServiceAccountCreateNestedOneWithoutIntegrationEventsInput
 }
@@ -298,6 +324,8 @@ export type IntegrationEventUncheckedCreateInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Date | string
   processedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type IntegrationEventUpdateInput = {
@@ -308,6 +336,8 @@ export type IntegrationEventUpdateInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutIntegrationEventsNestedInput
   serviceAccount?: Prisma.ServiceAccountUpdateOneWithoutIntegrationEventsNestedInput
 }
@@ -322,6 +352,8 @@ export type IntegrationEventUncheckedUpdateInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type IntegrationEventCreateManyInput = {
@@ -334,6 +366,8 @@ export type IntegrationEventCreateManyInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Date | string
   processedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type IntegrationEventUpdateManyMutationInput = {
@@ -344,6 +378,8 @@ export type IntegrationEventUpdateManyMutationInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type IntegrationEventUncheckedUpdateManyInput = {
@@ -356,6 +392,8 @@ export type IntegrationEventUncheckedUpdateManyInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type IntegrationEventListRelationFilter = {
@@ -384,6 +422,8 @@ export type IntegrationEventCountOrderByAggregateInput = {
   payload?: Prisma.SortOrder
   receivedAt?: Prisma.SortOrder
   processedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type IntegrationEventMaxOrderByAggregateInput = {
@@ -395,6 +435,8 @@ export type IntegrationEventMaxOrderByAggregateInput = {
   eventType?: Prisma.SortOrder
   receivedAt?: Prisma.SortOrder
   processedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type IntegrationEventMinOrderByAggregateInput = {
@@ -406,6 +448,8 @@ export type IntegrationEventMinOrderByAggregateInput = {
   eventType?: Prisma.SortOrder
   receivedAt?: Prisma.SortOrder
   processedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type IntegrationEventCreateNestedManyWithoutOrganizationInput = {
@@ -500,6 +544,8 @@ export type IntegrationEventCreateWithoutOrganizationInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Date | string
   processedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   serviceAccount?: Prisma.ServiceAccountCreateNestedOneWithoutIntegrationEventsInput
 }
 
@@ -512,6 +558,8 @@ export type IntegrationEventUncheckedCreateWithoutOrganizationInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Date | string
   processedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type IntegrationEventCreateOrConnectWithoutOrganizationInput = {
@@ -553,6 +601,8 @@ export type IntegrationEventScalarWhereInput = {
   payload?: Prisma.JsonFilter<"IntegrationEvent">
   receivedAt?: Prisma.DateTimeFilter<"IntegrationEvent"> | Date | string
   processedAt?: Prisma.DateTimeNullableFilter<"IntegrationEvent"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"IntegrationEvent"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"IntegrationEvent"> | string | null
 }
 
 export type IntegrationEventCreateWithoutServiceAccountInput = {
@@ -563,6 +613,8 @@ export type IntegrationEventCreateWithoutServiceAccountInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Date | string
   processedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutIntegrationEventsInput
 }
 
@@ -575,6 +627,8 @@ export type IntegrationEventUncheckedCreateWithoutServiceAccountInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Date | string
   processedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type IntegrationEventCreateOrConnectWithoutServiceAccountInput = {
@@ -612,6 +666,8 @@ export type IntegrationEventCreateManyOrganizationInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Date | string
   processedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type IntegrationEventUpdateWithoutOrganizationInput = {
@@ -622,6 +678,8 @@ export type IntegrationEventUpdateWithoutOrganizationInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceAccount?: Prisma.ServiceAccountUpdateOneWithoutIntegrationEventsNestedInput
 }
 
@@ -634,6 +692,8 @@ export type IntegrationEventUncheckedUpdateWithoutOrganizationInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type IntegrationEventUncheckedUpdateManyWithoutOrganizationInput = {
@@ -645,6 +705,8 @@ export type IntegrationEventUncheckedUpdateManyWithoutOrganizationInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type IntegrationEventCreateManyServiceAccountInput = {
@@ -656,6 +718,8 @@ export type IntegrationEventCreateManyServiceAccountInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Date | string
   processedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type IntegrationEventUpdateWithoutServiceAccountInput = {
@@ -666,6 +730,8 @@ export type IntegrationEventUpdateWithoutServiceAccountInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutIntegrationEventsNestedInput
 }
 
@@ -678,6 +744,8 @@ export type IntegrationEventUncheckedUpdateWithoutServiceAccountInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type IntegrationEventUncheckedUpdateManyWithoutServiceAccountInput = {
@@ -689,6 +757,8 @@ export type IntegrationEventUncheckedUpdateManyWithoutServiceAccountInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -703,6 +773,8 @@ export type IntegrationEventSelect<ExtArgs extends runtime.Types.Extensions.Inte
   payload?: boolean
   receivedAt?: boolean
   processedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   serviceAccount?: boolean | Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs>
 }, ExtArgs["result"]["integrationEvent"]>
@@ -717,6 +789,8 @@ export type IntegrationEventSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   payload?: boolean
   receivedAt?: boolean
   processedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   serviceAccount?: boolean | Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs>
 }, ExtArgs["result"]["integrationEvent"]>
@@ -731,6 +805,8 @@ export type IntegrationEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   payload?: boolean
   receivedAt?: boolean
   processedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   serviceAccount?: boolean | Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs>
 }, ExtArgs["result"]["integrationEvent"]>
@@ -745,9 +821,11 @@ export type IntegrationEventSelectScalar = {
   payload?: boolean
   receivedAt?: boolean
   processedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type IntegrationEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "serviceAccountId" | "sourceSystem" | "externalId" | "eventType" | "payload" | "receivedAt" | "processedAt", ExtArgs["result"]["integrationEvent"]>
+export type IntegrationEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "serviceAccountId" | "sourceSystem" | "externalId" | "eventType" | "payload" | "receivedAt" | "processedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["integrationEvent"]>
 export type IntegrationEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   serviceAccount?: boolean | Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs>
@@ -777,6 +855,8 @@ export type $IntegrationEventPayload<ExtArgs extends runtime.Types.Extensions.In
     payload: runtime.JsonValue
     receivedAt: Date
     processedAt: Date | null
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["integrationEvent"]>
   composites: {}
 }
@@ -1211,6 +1291,8 @@ export interface IntegrationEventFieldRefs {
   readonly payload: Prisma.FieldRef<"IntegrationEvent", 'Json'>
   readonly receivedAt: Prisma.FieldRef<"IntegrationEvent", 'DateTime'>
   readonly processedAt: Prisma.FieldRef<"IntegrationEvent", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"IntegrationEvent", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"IntegrationEvent", 'String'>
 }
     
 

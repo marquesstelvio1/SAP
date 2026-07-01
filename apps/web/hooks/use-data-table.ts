@@ -1,8 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo } from "react";
+
+import { useRpcQuery } from "./use-rpc";
 
 interface UseDataTableProps<TData, TParams> {
   queryKey: string[];
@@ -23,10 +24,9 @@ export function useDataTable<TData, TParams = Record<string, unknown>>({
   const searchParams = useSearchParams();
   const offset = Number(searchParams.get("offset")) || 0;
   const limit = Number(searchParams.get("limit")) || defaultPageSize;
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useRpcQuery({
     queryKey: [...queryKey, { offset, limit, ...params }],
     queryFn: () => queryFn({ ...(params ?? ({} as TParams)), offset, limit }),
-    staleTime: 30_000,
   });
   const pageCount = useMemo(() => (data ? Math.ceil(data.totalCount / limit) : 0), [data, limit]);
   const handlePageChange = useCallback(

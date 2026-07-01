@@ -50,6 +50,36 @@ export function createFoundationRpcHealthReport(checkedAt = new Date()): Foundat
   };
 }
 
+export const sharedIdempotencyKeySchema = z.string().trim().min(12).max(128);
+
+export const sharedIdempotencyResultSchema = z.object({
+  key: z.string(),
+  replayed: z.boolean(),
+});
+
+export const sharedAuditSchema = z.object({
+  action: z.string(),
+  subjectType: z.string(),
+  subjectId: z.string(),
+});
+
+export const sharedOutboxSchema = z.object({
+  eventType: z.string(),
+  aggregateType: z.string(),
+  aggregateId: z.string(),
+});
+
+export const sharedAuditOutboxSchema = z.object({
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
+});
+
+export const sharedMutationOutputSchema = z.object({
+  idempotency: sharedIdempotencyResultSchema,
+  audit: sharedAuditSchema,
+  outbox: sharedOutboxSchema,
+});
+
 function readRuntimeEnvironment(): FoundationRpcHealthOutput["environment"] {
   const nodeEnv = (globalThis as RuntimeGlobal).process?.env?.NODE_ENV;
 

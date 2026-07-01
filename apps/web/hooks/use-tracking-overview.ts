@@ -1,13 +1,13 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { getTrackingOverview } from "../lib/tracking-overview";
+import { useRpcQuery } from "./use-rpc";
 
 export function useTrackingOverview(options?: { offset?: number; limit?: number }) {
   const offset = options?.offset ?? 0;
   const limit = options?.limit ?? 10;
 
-  return useQuery({
+  return useRpcQuery({
     queryKey: ["tracking-overview", offset, limit],
     queryFn: async () => {
       const result = await getTrackingOverview({ offset, limit });
@@ -16,6 +16,5 @@ export function useTrackingOverview(options?: { offset?: number; limit?: number 
       }
       return result.overview;
     },
-    staleTime: 30_000,
   });
 }

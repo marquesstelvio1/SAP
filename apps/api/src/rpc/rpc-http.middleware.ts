@@ -1,10 +1,11 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { Inject, Injectable, type NestMiddleware } from "@nestjs/common";
+import { HttpException, Inject, Injectable, type NestMiddleware } from "@nestjs/common";
+import { ORPCError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/node";
+import { mapHttpStatusToRpcErrorCode, type RpcErrorCode } from "@saptm/rpc";
 
 import { AdminService } from "../admin/admin.service.js";
 import { AuditService } from "../audit/audit.service.js";
-import { PrivacyService } from "../privacy/privacy.service.js";
 import { BillingService } from "../billing/billing.service.js";
 import { CapacityService } from "../capacity/capacity.service.js";
 import { CargoService } from "../cargo/cargo.service.js";
@@ -12,7 +13,9 @@ import { DocumentsService } from "../documents/documents.service.js";
 import { IntegrationsService } from "../integrations/integrations.service.js";
 import { NotificationsService } from "../notifications/notifications.service.js";
 import { OrganizationsService } from "../organizations/organizations.service.js";
+import { OverviewService } from "../overview/overview.service.js";
 import { PlanningService } from "../planning/planning.service.js";
+import { PrivacyService } from "../privacy/privacy.service.js";
 import { ReportsService } from "../reports/reports.service.js";
 import { SettingsService } from "../settings/settings.service.js";
 import { TariffService } from "../tariff/tariff.service.js";
@@ -22,6 +25,17 @@ import { WebhooksService } from "../webhooks/webhooks.service.js";
 import { createPlatformRpcRouter, type PlatformRpcContext } from "./platform-rpc.router.js";
 import type { RpcRequestWithAuthContext } from "./rpc-context.js";
 import { RpcContextService } from "./rpc-context.service.js";
+
+function castNestHttpExceptionToOrpcError(error: HttpException): ORPCError<RpcErrorCode, unknown> {
+  const httpStatus = error.getStatus();
+  const code = mapHttpStatusToRpcErrorCode(httpStatus);
+
+  return new ORPCError<RpcErrorCode, unknown>(code, {
+    message: error.message,
+    cause: error,
+    status: httpStatus,
+  });
+}
 
 @Injectable()
 export class RpcHttpMiddleware implements NestMiddleware {
@@ -48,6 +62,8 @@ export class RpcHttpMiddleware implements NestMiddleware {
     notificationsService: NotificationsService,
     @Inject(OrganizationsService)
     organizationsService: OrganizationsService,
+    @Inject(OverviewService)
+    overviewService: OverviewService,
     @Inject(PlanningService)
     planningService: PlanningService,
     @Inject(ReportsService)
@@ -77,6 +93,7 @@ export class RpcHttpMiddleware implements NestMiddleware {
         integrationsService,
         notificationsService,
         organizationsService,
+        overviewService,
         planningService,
         reportsService,
         settingsService,
@@ -86,6 +103,21 @@ export class RpcHttpMiddleware implements NestMiddleware {
         privacyService,
         rpcContextService,
       }),
+      {
+        interceptors: [
+          async (options) => {
+            try {
+              return await options.next();
+            } catch (error) {
+              if (error instanceof HttpException) {
+                throw castNestHttpExceptionToOrpcError(error);
+              }
+
+              throw error;
+            }
+          },
+        ],
+      },
     );
   }
 

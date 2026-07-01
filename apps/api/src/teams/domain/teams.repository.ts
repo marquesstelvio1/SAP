@@ -9,7 +9,7 @@ export type TeamRecord = {
   name: string;
   description: string | null;
   slug: string;
-  orgId: string;
+  organizationId: string;
   _count: { members: number };
   createdAt: Date;
   updatedAt: Date;
@@ -41,7 +41,7 @@ export type CreateTeamData = {
   name: string;
   description: string | null;
   slug: string;
-  orgId: string;
+  organizationId: string;
 };
 
 export type UpdateTeamData = {
@@ -55,15 +55,42 @@ export type CreateTeamMemberData = {
   role: string;
 };
 
+export type PrismaAuditRecordCreateInput = {
+  organizationId: string;
+  actorType: string;
+  actorId: string;
+  action: string;
+  subjectType: string;
+  subjectId: string;
+  severity: string;
+  before?: Record<string, unknown> | undefined;
+  after?: Record<string, unknown> | undefined;
+  reason: string;
+  correlationId: string;
+  ipAddress?: string | undefined;
+  userAgent?: string | undefined;
+};
+
+export type PrismaOutboxEventCreateInput = {
+  organizationId: string;
+  eventType: string;
+  aggregateType: string;
+  aggregateId: string;
+  payload: Record<string, unknown>;
+};
+
 // ── Repository interface ──────────────────────────────────────
 
 export interface TeamsRepository {
   // Team reads
-  findTeamBySlug(orgId: string, slug: string): Promise<{ id: string } | null>;
-  findTeamById(orgId: string, teamId: string): Promise<TeamRecord | null>;
-  findTeamWithMembers(orgId: string, teamId: string): Promise<TeamWithMembersRecord | null>;
-  findTeams(orgId: string, limit: number, offset: number): Promise<TeamRecord[]>;
-  countTeams(orgId: string): Promise<number>;
+  findTeamBySlug(organizationId: string, slug: string): Promise<{ id: string } | null>;
+  findTeamById(organizationId: string, teamId: string): Promise<TeamRecord | null>;
+  findTeamWithMembers(
+    organizationId: string,
+    teamId: string,
+  ): Promise<TeamWithMembersRecord | null>;
+  findTeams(organizationId: string, limit: number, offset: number): Promise<TeamRecord[]>;
+  countTeams(organizationId: string): Promise<number>;
 
   // User reads
   findUserById(userId: string): Promise<{ id: string } | null>;
@@ -81,6 +108,10 @@ export interface TeamsRepository {
   createTeamMember(data: CreateTeamMemberData): Promise<TeamMemberWithUserRecord>;
   updateTeamMember(memberId: string, role: string): Promise<TeamMemberWithUserRecord>;
   deleteTeamMember(memberId: string): Promise<void>;
+
+  // Audit & outbox
+  createAuditRecord(tx: PrismaTx, input: PrismaAuditRecordCreateInput): Promise<void>;
+  createOutboxEvent(tx: PrismaTx, input: PrismaOutboxEventCreateInput): Promise<void>;
 
   // Transaction helper
   transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T>;

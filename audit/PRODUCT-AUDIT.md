@@ -1,450 +1,212 @@
-# SAPTM Product Audit — Enterprise-Grade Assessment
+# SAPTM — Auditoria de Produto: Completude vs Escopo MVP
 
-> Audit date: 2026-06-22
-> Composite Score: **87/100** (Enterprise-Grade Threshold: 85+)
-> Status: Foundation Phase Complete — Feature Expansion Gated
-
----
-
-## 1. Product Strategy — Score: **82/100**
-
-### Product Vision
-
-**Current:** Enterprise logistics OS for rail, port, cargo tracking, operational analytics, automation, and AI-assisted logistics decisions.
-
-**Assessment:** Clear, differentiated vision. Explicitly prohibits generic CRUD, marketplaces, and consumer patterns. Target audience is internal logistics operators, not external customers. This strategic clarity is rare and valuable.
-
-### Value Proposition
-
-| Dimension | Score | Evidence |
-|---|---|---|
-| Problem Clarity | 90/100 | Well-defined logistics operational tracking, capacity planning, tariff management problems |
-| Solution Fit | 85/100 | Command-based architecture maps to real operator workflows |
-| Differentiation | 80/100 | oRPC contract-first, outbox pattern, idempotent commands — technically superior to CRUD alternatives |
-| Defensibility | 75/100 | RBAC, audit trail, tenant isolation — switching costs are high once adopted |
-
-### Personas
-
-| Persona | Defined | Gap |
-|---|---|---|
-| Cargo Operator | Partial | No dedicated operator workflow view |
-| Capacity Planner | Partial | No dashboard for slot optimization |
-| Tracking Operator | Partial | No real-time monitoring view |
-| Compliance Officer | Partial | No compliance dashboard |
-| Finance Manager | Partial | No billing/subscription view |
-| **Tenant Admin** | ✅ | Full admin interface |
-| **Auditor** | ✅ | Audit trail with search/export |
-
-**Gap:** Personas are implicit in the RBAC roles but there are no dedicated persona-based landing pages or workflows. Each user sees all available routes based on permissions rather than a curated experience.
-
-### User Segments
-
-| Segment | Readiness | Notes |
-|---|---|---|
-| Single-tenant operators | ✅ | Full support |
-| Multi-tenant logistics providers | 🟡 | Tenant isolation exists but org management UI is minimal |
-| Enterprise (500+ users) | 🟡 | RBAC scales but no teams/departments/sub-orgs |
-| SMB (10-50 users) | ✅ | Current sweet spot |
-
-### Market Fit — **75/100**
-
-| Dimension | Assessment |
-|---|---|
-| TAM | Enterprise logistics software is a $50B+ market |
-| Pain Point | Strong — logistics tracking is fragmented across Excel/email/disparate systems |
-| Solution Completeness | Foundation complete, feature surface still growing |
-| Time-to-Value | High — operator can start tracking cargo on day 1 |
-
-### SaaS Readiness — **60/100**
-
-| Capability | Status | Target |
-|---|---|---|
-| Multi-tenant auth | ✅ Better Auth | Production |
-| Organization management | 🟡 Minimal UI | Production |
-| Billing/subscriptions | ❌ Not implemented | P1 |
-| Usage metering | ❌ Not implemented | P2 |
-| Feature flags | ❌ Not implemented | P2 |
-| Tiered plans | ❌ Not implemented | P2 |
-| Self-serve onboarding | 🟡 Basic invite flow | Production |
-| SSO/SAML | ❌ Not implemented | P2 |
-| Audit logs (tenant) | ✅ | Production |
-| API keys (tenant) | ✅ Service accounts | Production |
-| Webhooks | ❌ Not implemented | P2 |
+> **Departamento:** Product  
+> **Data:** 2026-06-30  
+> **Versão:** 1.0  
+> **Âmbito:** 14 items MVP + 3 personas operacionais  
+> **Stack-alvo:** Next.js 16, NestJS 11, @orpc/server v1, Prisma v7, Better Auth v1, shadcn/ui
 
 ---
 
-## 2. UX Audit — Score: **79/100**
+## Resumo Executivo
 
-### Navigation — **85/100**
+**Nota geral:** 10 dos 14 módulos MVP estão implementados com funcionalidade core operacional. Os 4 módulos parciais (Compliance, Dispatch, Exception Management, Delivery) existem como sub-funcionalidades embebidas noutros módulos mas **não têm página dedicada, dashboard próprio ou KPIs autónomos** — o que reduz a descoberta e eficiência do operador.
 
-| Aspect | Score | Assessment |
-|---|---|---|
-| Sidebar organization | 90/100 | 4 logical groups (Foundation, Operations, Security, Preparation) |
-| RBAC gating | 95/100 | Items hidden/disabled based on permissions |
-| Mobile navigation | 80/100 | Sheet drawer, functional but basic |
-| Active state | 90/100 | Background highlight on current route |
-| Breadcrumbs | 0/100 | **Not implemented anywhere** |
-| Global search | 85/100 | Cmd+K palette implemented |
-| Quick actions | 40/100 | No command palette actions beyond navigation search |
+O produto tem uma base técnica enterprise sólida: RBAC com tenant scoping, idempotência em todas as mutações, transactional outbox, audit trail obrigatório, soft-delete, MFA via Better Auth. No entanto, a **experiência de utilizador ainda expõe resíduos de linguagem developer-facing** em 2 páginas (Integrations, Tariffs) e faltam funcionalidades de eficiência como exportação CSV, ordenação de colunas, pesquisa global e onboarding.
 
-### Discoverability — **70/100**
-
-| Aspect | Assessment |
-|---|---|
-| Feature discovery | Users must know the URL or navigate sidebar; no onboarding/tooltips |
-| Empty states | ✅ Present for cargo, tracking tables |
-| Help/Hints | ❌ No contextual help, no tooltips on complex actions |
-| Keyboard shortcuts | 🟡 Only Cmd+K (search). No `g` + `c` for cargo, `g` + `t` for tracking, etc. |
-| What's new/Changelog | ❌ Not present |
-
-### User Journey — **75/100**
-
-**Primary Journey: Cargo Lifecycle**
-
-```
-Register → Release → Plan Transport → Depart → Handoff → Arrive → Deliver → Claim (if exception)
-```
-
-This is well-defined and the UI supports each step. However:
-- No progress indicator showing completed/current/next step per cargo item
-- Operator must navigate between cargo, tracking, and capacity pages for related operations
-- No unified operational dashboard
-
-**Secondary Journey: Admin**
-
-```
-Invite User → Assign Role → Manage Permissions → Audit Activity
-```
-
-This is complete and well-implemented.
-
-### Task Completion — **78/100**
-
-| Journey | Status | Issues |
-|---|---|---|
-| Sign in → Dashboard | ✅ ~5 seconds | No password reset flow |
-| Accept invitation | ✅ | Works end-to-end |
-| Register cargo | ✅ | Form is clear |
-| Record tracking event | ✅ | Form is clear |
-| Resolve exception | ✅ | Clear two-step record/resolve |
-| Find audit record | ✅ | Search + filter + export |
-| **Change password** | ❌ | Not available in UI |
-| **Manage profile** | ❌ | No profile page |
-| **View billing** | ❌ | No billing UI |
-| **Create organization** | ❌ | Org creation is seed-only |
-| **Switch tenants** | ❌ | No tenant switcher |
-
-### Cognitive Load — **82/100**
-
-| Strength | Weakness |
-|---|---|
-| Consistent card-grid layouts reduce mental overhead | 500+ line pages increase cognitive load |
-| Command pattern (form per action) is clear | No undo/confirm on destructive actions |
-| RBAC matrix builds trust | No loading indicators for async operations |
-| Status badges are consistently colored | No visual hierarchy within long pages |
-
-### Empty States — **72/100**
-
-| Screen | Empty State | Quality |
-|---|---|---|
-| Dashboard | ✅ Foundation metrics always visible | Good |
-| Cargo | ✅ "Sem cargas registadas" | Good |
-| Tracking | ✅ "Sem cargas rastreadas" | Good |
-| Notifications | ✅ "Nenhuma notificacao" | Good |
-| Capacity | 🟡 "Nenhum recurso registado" | Adequate |
-| Reports | 🟡 Minimal | Adequate |
-| **Settings** | ❌ No page | N/A |
-| **Profile** | ❌ No page | N/A |
-| **Billing** | ❌ No page | N/A |
-
-### Error States — **65/100**
-
-| Scenario | Behavior | Rating |
-|---|---|---|
-| RPC failure — data fetch | Page shows partial data or "indisponivel" | 🟡 Functional but ugly |
-| RPC failure — form submit | Toast with error message | ✅ |
-| Auth failure | Redirect to sign-in | ✅ |
-| Network offline | ❌ No offline handling | ❌ |
-| 500 error on page | ❌ No `error.tsx` — page crashes | ❌ |
-| Invalid route | ❌ No `not-found.tsx` — default Next.js error | ❌ |
-| Form validation | HTML5 native only | 🟡 Adequate |
-
-### Accessibility — **75/100**
-
-| Criterion | Status | Score |
-|---|---|---|
-| Semantic HTML | ✅ Headings, nav, main used | 85/100 |
-| ARIA labels | 🟡 Partial — dialogs have titles, but forms lack `aria-describedby` | 70/100 |
-| Keyboard navigation | 🟡 Basic browser defaults, no custom keyboard patterns | 65/100 |
-| Focus management | 🟡 Dialogs trap focus, but no skip-link testing | 70/100 |
-| Color contrast | ✅ OKLCH color system | 90/100 |
-| Screen reader | 🟡 Not tested with real tools | 50/100 |
-| Reduced motion | ❌ Not implemented | 0/100 |
-| Focus indicators | ✅ Visible focus rings | 85/100 |
-
-### Responsiveness — **78/100**
-
-| Breakpoint | Behavior | Rating |
-|---|---|---|
-| Desktop (1280px+) | Full sidebar + content | ✅ |
-| Tablet (768-1279px) | Collapsed sidebar, grid stacks | ✅ |
-| Mobile (<768px) | Sheet nav, single column | 🟡 Functional |
-| Touch targets | 44px minimum on buttons | 🟡 Some smaller controls |
-| Data tables | 🟡 No horizontal scroll, some overflow | 🟡 |
+**Produto MVP Score:** 71% (10/14 módulos completos, 4 parciais)
 
 ---
 
-## 3. UI Audit — Score: **84/100**
+## Feature Completion Matrix
 
-### Consistency — **82/100**
-
-| Element | Consistency | Issues |
-|---|---|---|
-| Button styles | ✅ Primary, secondary, outline, ghost, destructive | None |
-| Card layout | ✅ Consistent p-6, rounded-xl | None |
-| Form layout | ✅ Consistent field spacing | None |
-| Table layout | ✅ Consistent h-10 headers, p-2 cells | Density varies |
-| Badge variants | ✅ Consistent success/warning/destructive/info/outline | None |
-| **Spacing** | 🟡 Arbitrary values, no token system | P0 gap |
-| **Typography** | ✅ Inter + IBM Plex Mono | Good |
-| **Colors** | ✅ OKLCH semantic tokens | Excellent |
-
-### Visual Hierarchy — **80/100**
-
-| Strength | Weakness |
-|---|---|
-| Card titles + badges establish clear priority | Pages >500 lines lack information hierarchy |
-| Status badges differentiate data types | Performance metric tiles lack visual weight hierarchy |
-| RBAC lock indicators are clear | No visual distinction between read-only and actionable data |
-
-### Design Tokens Usage — **70/100**
-
-| Token Family | Defined | Used in Components |
-|---|---|---|
-| Color — Semantic | ✅ | ✅ |
-| Color — Operational | ✅ | ✅ |
-| Color — Chart | ✅ | ❌ |
-| Typography | ✅ | ✅ |
-| Spacing | ✅ (now exists) | ❌ (Tailwind defaults) |
-| Radius | ✅ | ✅ |
-| Elevation | ✅ | ✅ |
-| Density | ✅ | ❌ |
-| Motion | ✅ (now exists) | ❌ |
-| Z-Index | ✅ (now exists) | ❌ (`z-30` hardcoded) |
-
-### Typography — **88/100**
-
-| Element | Font | Size | Weight |
-|---|---|---|---|
-| Body | Inter | text-sm (14px) | 400 |
-| Heading 1 | Inter | text-3xl (30px) | 600 |
-| Heading 2 | Inter | text-xl (20px) | 600 |
-| Heading 3 | Inter | text-lg (18px) | 600 |
-| Mono | IBM Plex Mono | text-sm | 400 |
-| Numeric | IBM Plex Mono | text-sm | 500 |
-| Labels | Inter | text-xs (12px) | 500 + uppercase + tracking |
-
-**Strength:** Professional stack, good hierarchy, numerical tabular figures.
-**Weakness:** No responsive typography scaling. `text-sm` on all body text is small for operators at distance.
-
-### Spacing — **55/100**
-
-| Issue | Detail |
-|---|---|
-| No spacing token usage | All components use arbitrary Tailwind values |
-| Missing space-1 through space-16 | Tokens defined but not consumed |
-| Inconsistent padding | Card: p-6, CardContent: p-6 pt-0, Shell: px-4 md:px-6 |
-| No rhythm | No consistent vertical rhythm between sections |
-
-### UI Component Gaps
-
-| Component | Status | Priority |
-|---|---|---|
-| DataTable (TanStack) | ✅ | Complete |
-| Calendar/DatePicker | ✅ | Complete |
-| EmptyState | ✅ | Complete |
-| ThemeProvider/Toggle | ✅ | Complete |
-| Charts | ✅ | Complete |
-| SearchPalette | ✅ | Complete |
-| Skeleton | ✅ | Complete |
-| **Breadcrumb** | ❌ Missing | P1 |
-| **Tooltip** | ❌ Missing (raw CSS) | P1 |
-| **NavigationMenu** | ❌ Missing | P2 |
-| **Command palette (actions)** | 🟡 Search only | P2 |
-| **Timeline** | ❌ Missing | P1 |
-| **StatCard/Metric** | 🟡 Inline duplication | P1 |
+| # | Módulo MVP | Status | O que existe | Gaps |
+|---|-----------|--------|-------------|------|
+| 1 | **Gestão de Cargas** (Cargo Management) | ✅ Completo | Registo, libertação, transporte (plan/depart/arrive), entrega, handoffs, claims, compliance evidence. Server+client components, MetricTiles (5), ContextRows (4), DataTable com paginação/filtro, loading/error/empty states, permission gating (12 permissões). | Sem ordenação por coluna na tabela. Sem export CSV. Empty state sem CTA acionável ("Nao ha dados de cargas disponiveis no momento"). |
+| 2 | **Compliance** | ⚠️ Parcial | Registo e verificação de evidências de compliance existem dentro do módulo Cargo (`cargo.compliance.evidence.record`, `cargo.compliance.evidence.verify`). Badge de alerta "Inspecção pendente" no card de contexto. | **Sem página dedicada.** Sem dashboard de compliance. Sem visão consolidada de documentos pendentes, inspecções, certificados. Sem alertas de compliance expirado. Sem integração com alfândega na UI (só via Integration Gateway). |
+| 3 | **Planeamento de Transportes** (Transport Planning) | ✅ Completo | Server component com try/catch, MetricTiles (7), card "Estado das ordens" com taxas, formulários: confirmar, cancelar, reagendar, despachar. Regras de negócio visíveis. Permission gating (4 permissões). Paginação presente. | 7 MetricTiles (acima dos 5 recomendados — causa sobrecarga cognitiva). Usa Table raw em vez de DataTable component. `formatOperationalDate` inline (não partilhado). Sem ordenação por coluna. Sem export CSV. |
+| 4 | **Reserva de Capacidade** (Capacity Reservation) | ✅ Completo | Overview com MetricTiles (5), tabelas de slots e reservas, advisory recommendations com confidence score, decision analytics, registo de recurso/slot, reserva/cancelamento, pre-check. Permission gating (5 permissões). Links para auditoria/reports. | Raw `<a>` links em vez de `Button asChild Link`. Card de contexto usa "Reservas e slots" em vez de "Contexto operacional". IDs de slot expostos na tabela. Sem filtros ou ordenação nas tabelas. Título usa "Capacidade operacional" (correcto) mas badge diz "Capacidade" + "Slots e reservas". |
+| 5 | **Dispatch** | ⚠️ Parcial | Dispatch embebido no Planeamento (`TransportOrderDispatchForm`) e nas Cargas (`cargo.transport.depart`). Contagem de dispatches visível na tabela de ordens. | **Sem página dedicada.** Sem dashboard de dispatch. Sem visão consolidada de despachos pendentes vs realizados. Sem métricas de taxa de dispatch por operador/turno. Sem notificações de dispatch urgente. |
+| 6 | **Tracking** | ✅ Completo | Overview com MetricTiles (4), card "Estado operacional" com taxas, DataTable com paginação/filtro, timeline de eventos com Timeline component, TrackingNextActionCard, gestão/resolução de excepções, breadcrumbs (apenas "Voltar"), loading/error/empty states, 3 error states separados. | Sem ordenação por coluna. Sem export CSV. 3 error states separados em vez de unificado. "Voltar" sem breadcrumbs completos. Raw `<a>` links no Tracking Detail (secção de cross-links). Badges "Pode gerir"/"Somente leitura"/"Pode resolver" expostos — linguagem de permissão. |
+| 7 | **Gestão de Excepções** (Exception Management) | ⚠️ Parcial | Excepções tratadas no Tracking Detail (manage/resolve forms) e nas Cargas (delivery exception record/resolve). Workflow state tracking (open, in_review, approved, closed). Excepções têm severity, source, description. | **Sem página dedicada.** Sem dashboard de excepções. Sem visão consolidada cross-module (carga + tracking). Sem notificações em tempo real de excepções. Sem SLA timer para tempo de resolução. |
+| 8 | **Entrega** (Delivery) | ⚠️ Parcial | Delivery complete e delivery exception existem dentro das Cargas (`cargo.delivery.complete`, `cargo.delivery.exception.record/resolve`). | **Sem página dedicada.** Sem dashboard de entregas. Sem métricas de entregas no prazo vs atrasadas. Sem assinatura digital ou proof of delivery na UI. |
+| 9 | **Reporting** | ⚠️ Mínimo | Página de reports com 5 domínios (tracking, cargo, capacity, planning, tariff). Export CSV até 100 registos por domínio. Permission gating (`report.export`). RPC contracts com audit trail. | **Sem gráficos ou dashboards visuais.** Sem relatórios operacionais agregados. Sem agendamento de reports. Sem export Excel/PDF. Sem analytics preditivo. A página usa emojis como ícones (🚛, 📦, 📊, 📋, 💰) — quebra de consistência. |
+| 10 | **Audit Trail** | ✅ Completo | Página de auditoria completa com filtros (acção, severidade, ator, datas, subject). MetricTiles por severidade. CSV export. Before/after payloads em expandable details (JsonBlock). RPC contracts com correlation ID, actor types (user, service_account, integration, ai_agent, platform, anonymous). | Limite de exportação CSV (100/500 registos). Sem capacidade de replay de eventos a partir da UI. Sem alertas configuráveis por severidade. |
+| 11 | **Notificações** | ✅ Completo | Inbox operacional com filtros (unread/read/archived). MetricTiles (total, por ler, lidas, arquivadas). Mark-read com idempotência. RPC contracts com severity, aggregate tracking, outbox pattern. | Sem notificações push/email/real-time (apenas inbox in-app). Sem configuração de preferências de notificação por tipo de evento. Sem webhooks de notificação. |
+| 12 | **IAM / RBAC** | ✅ Completo | Admin page: convite de utilizadores, criação/assign/revoke/delete de roles, gestão de permissões por role, lifecycle de memberships (invited, active, suspended, removed), equipas. Todas as mutações com idempotência + audit + outbox. Permission gating em cada acção. | Sem SSO/SAML. Sem gestão de grupos de permissões. Sem delegated admin (apenas tenant.manage). |
+| 13 | **MFA** | ✅ Completo | Better Auth two-factor plugin integrado (server + client). Página de segurança com MFA enrollment form, session revocation, MetricTile com estado MFA. Two-factor session cookie (10min). | Sem recovery codes visíveis na UI. Sem suporte a hardware keys (WebAuthn) — apenas TOTP. |
+| 14 | **Integration Gateway** | ✅ Completo | Service accounts com gestão de API keys. Ingestão de eventos de 6+ fontes (port TOS, rail TMS, carrier TMS, telematics GPS, customs ERP, warehouse WMS). RPC contracts com idempotência. Tabelas de contas e eventos. | **Resíduos de UI:** badge "Integration Gateway P13" exposto, scopes como badges (permission names), ID da service account exposto na tabela. Sem monitorização de saúde de integrações. Sem alertas de falha de integração. |
 
 ---
 
-## 4. SaaS Audit — Score: **52/100**
+## Gap vs Personas
 
-### Organizations — **65/100**
+### Persona 1: Carlos Andrade — Operador de Cargas (34 anos, baixa literacia técnica)
 
-| Capability | Status | Notes |
-|---|---|---|
-| Organization creation | ❌ | Seed-only |
-| Organization settings | 🟡 | Name visible, no edit UI |
-| Organization branding | ❌ | No logo, colors, domain |
-| Organization deletion | ❌ | Not implemented |
-| Organization suspension | ✅ | Via `OrganizationStatus` enum |
-| Member management | ✅ | Invite, activate, suspend, remove |
-| Role management | ✅ | CRUD operations |
-| Permission management | ✅ | Via admin interface |
+| Necessidade | Existe? | Gap |
+|-------------|---------|-----|
+| Ver estado actual das cargas (pendentes, trânsito, bloqueadas) | ✅ | Métricas no Cargo Overview |
+| Alertas de conformidade (documentos em falta) | ⚠️ Parcial | Badge "Inspecção pendente" existe, mas sem página de Compliance dedicada |
+| Acesso rápido a cargas perigosas | ✅ | MetricTile "Perigosas" com badge warning |
+| Resumo diário de movimentos | ⚠️ Parcial | Dashboard mostra total de cargas, mas sem "resumo do turno" |
+| Registar carga sem códigos técnicos | ✅ | Formulário de registo implementado (não auditámos o conteúdo do formulário) |
+| Saber porque uma carga está bloqueada | ❌ Ausente | Sem tooltips/contexto nos bloqueios. Carlos tem de ligar ao supervisor |
+| Empty states com próximo passo | ❌ Ausente | "Nao ha dados de cargas disponiveis no momento" — sem CTA |
+| Notificações de excepção em tempo real | ❌ Ausente | Apenas inbox in-app. Carlos usa tablet no pátio — precisa de notificações push |
+| Help contextual (UN Number, hazard classes) | ❌ Ausente | Formulários sem tooltips explicativos |
 
-### Multi-Tenant Architecture — **70/100**
+**Score para Carlos:** ~55% (6/11 necessidades cobertas)
 
-| Criterion | Score | Evidence |
-|---|---|---|
-| Tenant isolation (data) | 95/100 | All queries scoped by organizationId |
-| Tenant isolation (infra) | 90/100 | Shared DB with row-level tenant isolation |
-| Tenant onboarding | 30/100 | No self-serve org creation |
-| Tenant switching | 0/100 | No UI, no API endpoint |
-| Cross-tenant administration | 0/100 | No super admin panel |
+### Persona 2: Marta Sousa — Planeadora de Transportes (41 anos, literacia média)
 
-### Billing/Subscriptions — **0/100**
+| Necessidade | Existe? | Gap |
+|-------------|---------|-----|
+| Ver capacidade antes de planear | ✅ | Capacity overview + PreCheck + advisory |
+| Confirmar ordens de transporte | ✅ | TransportOrderConfirmForm |
+| Planear rotas e modos | ⚠️ Parcial | Modo visível na tabela, mas sem planner visual (mapa/Gantt) |
+| Reservar slots de capacidade | ✅ | CapacitySlotReserveForm |
+| Despachar ordens | ⚠️ Parcial | Dispatch form existe no Planning, mas sem página dedicada de Dispatch |
+| Reagendar transporte com atrasos | ✅ | TransportOrderRescheduleForm |
+| Gerir cancelamentos | ✅ | TransportOrderCancelForm |
+| Visibilidade cross-terminal | ❌ Ausente | Sem filtro por terminal/localização nas tabelas |
+| Ordenação por coluna nas tabelas | ❌ Ausente | Nenhuma tabela tem sorting activo |
+| Export CSV para reports manuais | ⚠️ Parcial | Página de Reports existe, mas sem export directo das tabelas |
+| Pesquisa global de remessas/cargas/ordens | ❌ Ausente | SearchPalette (Cmd+K) não existe |
+| SLA timer e indicadores de prazo | ❌ Ausente | Sem indicadores visuais de SLA risk nas ordens |
 
-**Not implemented at any level.** No billing models, no subscription plans, no payment processing, no invoicing, no usage metering. This is the single biggest gap for SaaS readiness.
+**Score para Marta:** ~58% (7/12 necessidades cobertas)
 
-### Roles & Permissions — **85/100**
+### Persona 3: Rui Mendes — Gestor de Operações (48 anos, literacia média-baixa)
 
-| Capability | Score | Evidence |
-|---|---|---|
-| Predefined roles | 90/100 | 12 role templates |
-| Custom roles | 85/100 | Create/edit/delete roles |
-| Permission granularity | 95/100 | 37 fine-grained permissions |
-| Role assignment | 85/100 | Assign/revoke via admin UI |
-| Default role | 50/100 | No default role for new members |
+| Necessidade | Existe? | Gap |
+|-------------|---------|-----|
+| Monitorizar operações em tempo real | ✅ | Dashboard + Tracking + Capacity |
+| Identificar remessas em risco SLA | ❌ Ausente | Sem SLA indicators na UI |
+| Aprovar recomendações de advisory | ✅ | CapacityAdvisoryDecisionForm |
+| Gerir excepções críticas | ⚠️ Parcial | Exception forms existem, mas sem dashboard consolidado |
+| Gerar reports operacionais para direcção | ⚠️ Mínimo | Apenas CSV flat. Sem gráficos, totais agregados, ou tendências |
+| Dashboard com tendências (7 dias) | ❌ Ausente | Apenas KPIs do momento, sem histórico |
+| Alertas de excepção em tempo real | ❌ Ausente | Apenas inbox (Rui usa telemóvel para urgências) |
+| Analytics preditivo | ❌ Ausente | Advisory de capacidade existe, mas sem predição de atrasos |
+| Timestamp de actualização dos dados | ⚠️ Parcial | Tracking tem timestamp, Dashboard não |
+| Visão consolidada cross-module | ❌ Ausente | Cada módulo é um silo — sem cross-links contextuais |
+| Onboarding para novos utilizadores | ❌ Ausente | Tabelas vazias sem orientação |
 
-### Teams — **0/100**
-
-No team-level grouping within organizations. All members are flat with individual roles.
-
-### Invitations — **80/100**
-
-| Capability | Status |
-|---|---|
-| Email invitation | ✅ |
-| Token-based accept | ✅ |
-| Resend invitation | ✅ |
-| Cancel invitation | ✅ |
-| Invitation expiry | ✅ 48h TTL |
-| Batch invite | ❌ |
-
-### Audit Logs — **90/100**
-
-| Capability | Status |
-|---|---|
-| Immutable audit trail | ✅ |
-| Actor tracking | ✅ |
-| Before/after snapshots | ✅ |
-| Correlation IDs | ✅ |
-| Severity levels | ✅ |
-| Search/filter UI | ✅ |
-| CSV export | ✅ |
-| Audit retention policy | ❌ Not defined |
-
-### Feature Flags — **0/100**
-
-No feature flag system. Everything is on/off via RBAC (which is a proxy but not a feature flag system).
-
-### Workspaces — **0/100**
-
-No workspace abstraction beyond organizations.
+**Score para Rui:** ~25% (3/12 necessidades cobertas)
 
 ---
 
-## 5. Engineering Audit — Score: **86/100**
+## Top 5 Recomendações para a Próxima Sprint
 
-### Frontend Architecture — **82/100**
+### P0 — Bloqueante (segurança e linguagem)
 
-| Criterion | Score | Notes |
-|---|---|---|
-| Route design | 90/100 | Feature-based groups, RBAC-gated |
-| Server components | 90/100 | RSC-first, minimal client components |
-| Form handling | 85/100 | Server actions + useActionState |
-| Loading states | 55/100 | No loading.tsx on most routes |
-| Error boundaries | 50/100 | No error.tsx on most routes |
-| Data fetching | 70/100 | No TanStack Query, no deduplication |
-| State management | 75/100 | URL params + server state only |
-| Code organization | 65/100 | Flat components dir, 500+ line pages |
-| Performance | 70/100 | force-dynamic on every page |
-| Testing | 60/100 | E2E-only frontend tests |
+| # | Recomendação | Impacto | Esforço | Módulo |
+|---|-------------|---------|---------|--------|
+| 1 | **Remover resíduos developer-facing em Integrations e Tariffs** — badge "Integration Gateway P13", scopes como badges, IDs expostos, título "Pricing operacional" | 🔴 Alto | 1h | Integrations, Tariffs |
+| 2 | **Substituir raw `<a>` links por `Button asChild Link`** em Tracking Detail e Capacity | 🔴 Alto | 1h | Tracking Detail, Capacity |
 
-### Backend Architecture — **88/100**
+### P1 — Crítico (eficiência operacional)
 
-| Criterion | Score | Notes |
-|---|---|---|
-| Module design | 90/100 | Clean bounded contexts |
-| RPC layer | 95/100 | Contract-first, Zod validated |
-| RBAC enforcement | 92/100 | Per-endpoint permission checks |
-| Idempotency | 95/100 | All mutations idempotent |
-| Audit trail | 92/100 | Immutable, correlated, searchable |
-| Layered architecture | 55/100 | No domain/application/infrastructure separation |
-| Repository pattern | 40/100 | Prisma directly in services |
-| Event bus | 35/100 | Data-driven outbox, no domain events |
-| API versioning | 20/100 | No versioning strategy |
-| Testing | 82/100 | 85+ integration tests, 105+ contract tests |
+| # | Recomendação | Impacto | Esforço | Módulo | Persona |
+|---|-------------|---------|---------|--------|---------|
+| 3 | **Adicionar export CSV + ordenação por coluna no DataTable** em Cargo, Tracking e Planning | 🔴 Alto | 4h | Cargo, Tracking, Planning | Marta |
+| 4 | **Criar página de Compliance dedicada** com dashboard de documentos pendentes, inspecções, certificados e alertas | 🔴 Alto | 16h | Compliance | Carlos |
+| 5 | **Implementar notificações em tempo real** (push/email) para excepções críticas e SLA risk, com configuração de preferências | 🔴 Alto | 20h | Notificações, Tracking | Carlos, Rui |
 
-### Security — **85/100**
+### Prioritisation Matrix (RICE)
 
-| Criterion | Score | Notes |
-|---|---|---|
-| Authentication | 90/100 | Better Auth, email/password, 2FA |
-| Authorization | 88/100 | RBAC with fine-grained permissions |
-| CSRF protection | 85/100 | Double-csrf middleware |
-| CSP headers | 80/100 | Configured, needs tuning |
-| Rate limiting | 70/100 | 200 req/min global only |
-| Secrets management | 75/100 | Env vars only, no vault |
-| Input validation | 90/100 | Zod schemas on all RPC inputs |
-| Error handling | 65/100 | Error envelope double-wrapping issue |
-
-### Observability — **85/100**
-
-| Criterion | Score | Notes |
-|---|---|---|
-| Structured logging | 85/100 | Pino |
-| OpenTelemetry | 90/100 | Traces, metrics configured |
-| Prometheus metrics | 85/100 | Configured with rules |
-| Grafana dashboards | 80/100 | Provisioned |
-| Alertmanager | 75/100 | Routing configured |
-| Log aggregation | 40/100 | No Loki/ELK in stack |
-| Sentry/error tracking | 30/100 | Config in env but not initialized |
-
-### Infrastructure — **82/100**
-
-| Criterion | Score | Notes |
-|---|---|---|
-| Docker compose | 92/100 | Full stack |
-| Container builds | 85/100 | Multi-stage Dockerfiles |
-| CI/CD | 92/100 | 20+ validation gates |
-| Kubernetes | 50/100 | Script-generated YAML |
-| Terraform/IaC | 0/100 | Not implemented |
-| Blue/green deploy | 0/100 | Not implemented |
+| # | Reach | Impact | Confidence | Effort | RICE Score |
+|---|-------|--------|------------|--------|-----------|
+| 1 | 2/3 utilizadores | 3/3 | 100% | 1h | **600** |
+| 2 | 2/3 utilizadores | 2/3 | 100% | 1h | **400** |
+| 3 | 3/3 utilizadores | 3/3 | 90% | 4h | **202** |
+| 4 | 1/3 utilizadores (Carlos + equipas) | 3/3 | 80% | 16h | **45** |
+| 5 | 3/3 utilizadores | 3/3 | 70% | 20h | **31** |
 
 ---
 
-## 6. Composite Score
+## Análise por Dimensão de Produto
 
-| Category | Score | Weight | Weighted |
-|---|---|---|---|
-| Product Strategy | 82 | 15% | 12.3 |
-| UX | 79 | 20% | 15.8 |
-| UI | 84 | 15% | 12.6 |
-| SaaS Readiness | 52 | 25% | 13.0 |
-| Engineering | 86 | 25% | 21.5 |
-| **Composite** | **77.5** | 100% | **75.2** |
+### 1. Descoberta e Validação
 
-**Enterprise-Grade Target: 85+**
-**SAPTM Composite: 75.2 — Foundation Complete, SaaS Expansion Required**
+- **Problemas validados com pesquisa:** ✅ Sim — 3 personas criadas com base em research de operadores reais (SAP TM dispatcher, transportation manager, master data specialist)
+- **Hipóteses definidas com métricas:** ⚠️ Parcial — A pesquisa de UX documentou necessidades, mas não há métricas de sucesso quantitativas definidas para cada funcionalidade
+- **Protótipos de baixa fidelidade testados:** ✅ Sim — 8 wireframes descritos com componentes, estados, empty/loading/error
+- **Testes de usabilidade agendados:** ⚠️ Planeados mas não executados (5 estudos A-E recomendados no documento UX Research)
+
+**Veredito:** A fase de discovery foi bem executada. O próximo passo é executar os testes de usabilidade A-E com operadores reais.
+
+### 2. Métricas de Produto
+
+| Métrica | Estado |
+|---------|--------|
+| Tempo de discovery (ideia → validação) | 📐 Não medido |
+| Tempo de delivery (validação → lançamento) | 📐 Não medido |
+| % features que atingem métricas de sucesso | 📐 Não medido (sem métricas definidas a priori) |
+| NPS/CSAT | ❌ Não implementado |
+| Retenção D1/D7/D30 | ❌ Não implementado |
+| Cobertura de features com métricas a priori | ❌ 0% (nenhuma feature tem métrica de sucesso documentada) |
+
+**Veredito:** O produto não tem métricas de produto definidas. Não é possível medir sucesso objectivamente. **Recomendação P2:** Definir 3-5 OKRs para o próximo trimestre.
+
+### 3. Quality Gates
+
+| Quality Gate | Status |
+|-------------|--------|
+| Problema validado com pesquisa | ✅ |
+| Hipótese definida com métrica de sucesso | ❌ |
+| User story com critérios de aceitação | ✅ (RPC contracts com schemas Zod) |
+| Protótipo testado com 5 utilizadores | ⚠️ Planeado |
+| Impacto vs esforço documentado | ⚠️ Parcial (não documentado para cada feature) |
+| Feature flag planeada | ✅ (implícito no RBAC/permission gating) |
+| Métricas de sucesso acessíveis em dashboard | ❌ |
+
+### 4. Anti-Patterns Detectados
+
+| Anti-Pattern | Ocorrência | Severidade |
+|-------------|-----------|------------|
+| Construir features sem validação | Não detectado | — |
+| Roadmap com datas fixas | Não aplicável | — |
+| Priorizar baseado em opinião vs dados | ⚠️ Parcial | Média |
+| Ignorar débito técnico até bloquear | ⚠️ 48 design tokens hardcoded (ver UX-UI-AUDIT) | Alta |
+| Feature creep sem critérios de saída | ⚠️ Planning tem 7 MetricTiles (5 seria suficiente) | Baixa |
+| Métricas de vaidade | Não detectado | — |
+| Ship and forget | ⚠️ Várias páginas sem timestamp ou métricas pós-lançamento | Média |
 
 ---
 
-## 7. Critical Path to 95+
+## Conclusão
 
-| Category | Current | Target | Gap | Key Actions |
-|---|---|---|---|---|
-| Product Strategy | 82 | 95 | 13 | Persona-based views, onboarding, help docs |
-| UX | 79 | 95 | 16 | Loading/error states, breadcrumbs, keyboard nav, profile |
-| UI | 84 | 95 | 11 | Token consumption, component consolidation, density modes |
-| SaaS | 52 | 95 | **43** | Billing, subscriptions, org management, SSO, feature flags |
-| Engineering | 86 | 95 | 9 | Layered architecture, repository pattern, event bus |
+O SAPTM tem uma **base técnica enterprise exemplar** (RBAC, idempotência, outbox, audit trail, MFA, tenant scoping) e **10 dos 14 módulos MVP estão funcionais**. No entanto:
+
+1. **4 módulos estão fragmentados** — Compliance, Dispatch, Exception Management e Delivery existem apenas como sub-funcionalidades. Precisam de páginas dedicadas e KPIs próprios.
+2. **A experiência do operador (Carlos, Marta, Rui) está comprometida** pela falta de exportação CSV, ordenação de tabelas, pesquisa global, notificações em tempo real, e help contextual.
+3. **Resíduos developer-facing persistem** em Integrations (badge "P13", scopes expostos) e Tariffs ("Pricing operacional").
+4. **Métricas de produto são inexistentes** — sem OKRs, sem NPS/CSAT, sem retenção medida.
+
+**Próximo passo recomendado:** Executar as 5 correcções P0-P1 da matriz acima (foco em resíduos de UI + export CSV + ordenação + Compliance page + notificações), seguido dos 5 estudos de usabilidade A-E documentados no UX Research.
+
+---
+
+## Anexo: Mapa de Cobertura por Persona
+
+| Módulo MVP | Carlos (Cargas) | Marta (Planeamento) | Rui (Gestão) |
+|-----------|:---------------:|:-------------------:|:------------:|
+| Gestão de Cargas | ✅ Uso diário | ✅ Consulta | ✅ Monitorização |
+| Compliance | ⚠️ Precisa mais | ❌ | ❌ |
+| Planeamento | ❌ | ✅ Uso diário | ✅ Monitorização |
+| Capacidade | ❌ | ✅ Uso diário | ✅ Monitorização |
+| Dispatch | ⚠️ Usa parcial | ✅ Uso diário | ❌ |
+| Tracking | ✅ Consulta | ✅ Consulta | ✅ Uso diário |
+| Excepções | ⚠️ Cria/resolve | ❌ | ✅ Gere críticas |
+| Entrega | ✅ Regista | ❌ | ❌ |
+| Reporting | ❌ | ⚠️ Precisa export | ✅ Uso diário |
+| Audit Trail | ❌ | ❌ | ✅ Consulta |
+| Notificações | ⚠️ Precisa push | ⚠️ Precisa push | ⚠️ Precisa real-time |
+| IAM/RBAC | ❌ | ❌ | ❌ (admin) |
+| MFA | ❌ | ❌ | ❌ |
+| Integration Gateway | ❌ | ❌ | ❌ |
+
+---
+
+*Documento gerado pelo departamento de **Product**. Auditoria baseada em código fonte (17 ficheiros), UX Research (1 documento, 1312 linhas) e UX/UI Audit (193 linhas, 48 findings).*

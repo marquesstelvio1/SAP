@@ -14,27 +14,38 @@ export default async function GeneralSettingsPage() {
   if (!canManageTenant) {
     return (
       <AccessState
-        badgeLabel="RBAC"
-        message="A sessao esta autenticada, mas falta tenant.manage para aceder as configuracoes."
+        badgeLabel="Configurações gerais"
+        description="O utilizador autenticado não tem acesso as configuracoes gerais."
         role="alert"
-        status="Sem grant"
-        title="Configuracoes bloqueadas"
-        variant="empty"
+        title="Configurações bloqueadas"
+        variant="blocked"
       />
     );
   }
 
-  const result = await getSettingsOrganizationData();
+  let result: Awaited<ReturnType<typeof getSettingsOrganizationData>>;
+  try {
+    result = await getSettingsOrganizationData();
+  } catch {
+    return (
+      <AccessState
+        badgeLabel="Configurações gerais"
+        description="Não foi possível carregar os dados da organização. Tente novamente."
+        role="alert"
+        title="Erro ao carregar dados"
+        variant="error"
+      />
+    );
+  }
 
   if (result.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Configuracoes"
-        message={result.message}
+        badgeLabel="Configurações gerais"
+        description={result.message}
         role="alert"
-        status={result.status}
-        title="Dados indisponiveis"
-        variant="empty"
+        title="Dados indisponíveis"
+        variant="error"
       />
     );
   }

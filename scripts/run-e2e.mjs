@@ -44,11 +44,8 @@ for (const spec of specs) {
 }
 
 async function assertApiBuild() {
-  const pnpmCmd = process.platform === "win32"
-    ? ["cmd.exe", "/d", "/s", "/c", "pnpm"]
-    : ["pnpm"];
-  const runPnpm = (...args) =>
-    captureProcessOutput(pnpmCmd[0], [...pnpmCmd.slice(1), ...args]);
+  const pnpmCmd = process.platform === "win32" ? ["cmd.exe", "/d", "/s", "/c", "pnpm"] : ["pnpm"];
+  const runPnpm = (...args) => captureProcessOutput(pnpmCmd[0], [...pnpmCmd.slice(1), ...args]);
 
   console.log("Building API dependencies...");
   await runPnpm("--filter", "@saptm/database", "db:generate");

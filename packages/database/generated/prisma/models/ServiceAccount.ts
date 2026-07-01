@@ -34,6 +34,8 @@ export type ServiceAccountMinAggregateOutputType = {
   lastRotatedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type ServiceAccountMaxAggregateOutputType = {
@@ -46,6 +48,8 @@ export type ServiceAccountMaxAggregateOutputType = {
   lastRotatedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type ServiceAccountCountAggregateOutputType = {
@@ -59,6 +63,8 @@ export type ServiceAccountCountAggregateOutputType = {
   lastRotatedAt: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -73,6 +79,8 @@ export type ServiceAccountMinAggregateInputType = {
   lastRotatedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type ServiceAccountMaxAggregateInputType = {
@@ -85,6 +93,8 @@ export type ServiceAccountMaxAggregateInputType = {
   lastRotatedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type ServiceAccountCountAggregateInputType = {
@@ -98,6 +108,8 @@ export type ServiceAccountCountAggregateInputType = {
   lastRotatedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -184,6 +196,8 @@ export type ServiceAccountGroupByOutputType = {
   lastRotatedAt: Date | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: ServiceAccountCountAggregateOutputType | null
   _min: ServiceAccountMinAggregateOutputType | null
   _max: ServiceAccountMaxAggregateOutputType | null
@@ -218,6 +232,8 @@ export type ServiceAccountWhereInput = {
   lastRotatedAt?: Prisma.DateTimeNullableFilter<"ServiceAccount"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceAccount"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceAccount"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"ServiceAccount"> | string | null
   apiKeys?: Prisma.ApiKeyListRelationFilter
   integrationEvents?: Prisma.IntegrationEventListRelationFilter
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -234,6 +250,8 @@ export type ServiceAccountOrderByWithRelationInput = {
   lastRotatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   apiKeys?: Prisma.ApiKeyOrderByRelationAggregateInput
   integrationEvents?: Prisma.IntegrationEventOrderByRelationAggregateInput
   organization?: Prisma.OrganizationOrderByWithRelationInput
@@ -255,6 +273,8 @@ export type ServiceAccountWhereUniqueInput = Prisma.AtLeast<{
   lastRotatedAt?: Prisma.DateTimeNullableFilter<"ServiceAccount"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceAccount"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceAccount"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"ServiceAccount"> | string | null
   apiKeys?: Prisma.ApiKeyListRelationFilter
   integrationEvents?: Prisma.IntegrationEventListRelationFilter
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -271,6 +291,8 @@ export type ServiceAccountOrderByWithAggregationInput = {
   lastRotatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ServiceAccountCountOrderByAggregateInput
   _max?: Prisma.ServiceAccountMaxOrderByAggregateInput
   _min?: Prisma.ServiceAccountMinOrderByAggregateInput
@@ -290,6 +312,8 @@ export type ServiceAccountScalarWhereWithAggregatesInput = {
   lastRotatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ServiceAccount"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceAccount"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceAccount"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ServiceAccount"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"ServiceAccount"> | string | null
 }
 
 export type ServiceAccountCreateInput = {
@@ -302,6 +326,8 @@ export type ServiceAccountCreateInput = {
   lastRotatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutServiceAccountInput
   integrationEvents?: Prisma.IntegrationEventCreateNestedManyWithoutServiceAccountInput
   organization: Prisma.OrganizationCreateNestedOneWithoutServiceAccountsInput
@@ -318,6 +344,8 @@ export type ServiceAccountUncheckedCreateInput = {
   lastRotatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutServiceAccountInput
   integrationEvents?: Prisma.IntegrationEventUncheckedCreateNestedManyWithoutServiceAccountInput
 }
@@ -332,6 +360,8 @@ export type ServiceAccountUpdateInput = {
   lastRotatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutServiceAccountNestedInput
   integrationEvents?: Prisma.IntegrationEventUpdateManyWithoutServiceAccountNestedInput
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutServiceAccountsNestedInput
@@ -348,6 +378,8 @@ export type ServiceAccountUncheckedUpdateInput = {
   lastRotatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutServiceAccountNestedInput
   integrationEvents?: Prisma.IntegrationEventUncheckedUpdateManyWithoutServiceAccountNestedInput
 }
@@ -363,6 +395,8 @@ export type ServiceAccountCreateManyInput = {
   lastRotatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type ServiceAccountUpdateManyMutationInput = {
@@ -375,6 +409,8 @@ export type ServiceAccountUpdateManyMutationInput = {
   lastRotatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ServiceAccountUncheckedUpdateManyInput = {
@@ -388,6 +424,8 @@ export type ServiceAccountUncheckedUpdateManyInput = {
   lastRotatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ServiceAccountListRelationFilter = {
@@ -429,6 +467,8 @@ export type ServiceAccountCountOrderByAggregateInput = {
   lastRotatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type ServiceAccountMaxOrderByAggregateInput = {
@@ -441,6 +481,8 @@ export type ServiceAccountMaxOrderByAggregateInput = {
   lastRotatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type ServiceAccountMinOrderByAggregateInput = {
@@ -453,6 +495,8 @@ export type ServiceAccountMinOrderByAggregateInput = {
   lastRotatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type ServiceAccountScalarRelationFilter = {
@@ -556,6 +600,8 @@ export type ServiceAccountCreateWithoutOrganizationInput = {
   lastRotatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutServiceAccountInput
   integrationEvents?: Prisma.IntegrationEventCreateNestedManyWithoutServiceAccountInput
 }
@@ -570,6 +616,8 @@ export type ServiceAccountUncheckedCreateWithoutOrganizationInput = {
   lastRotatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutServiceAccountInput
   integrationEvents?: Prisma.IntegrationEventUncheckedCreateNestedManyWithoutServiceAccountInput
 }
@@ -614,6 +662,8 @@ export type ServiceAccountScalarWhereInput = {
   lastRotatedAt?: Prisma.DateTimeNullableFilter<"ServiceAccount"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceAccount"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceAccount"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"ServiceAccount"> | string | null
 }
 
 export type ServiceAccountCreateWithoutApiKeysInput = {
@@ -626,6 +676,8 @@ export type ServiceAccountCreateWithoutApiKeysInput = {
   lastRotatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   integrationEvents?: Prisma.IntegrationEventCreateNestedManyWithoutServiceAccountInput
   organization: Prisma.OrganizationCreateNestedOneWithoutServiceAccountsInput
 }
@@ -641,6 +693,8 @@ export type ServiceAccountUncheckedCreateWithoutApiKeysInput = {
   lastRotatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   integrationEvents?: Prisma.IntegrationEventUncheckedCreateNestedManyWithoutServiceAccountInput
 }
 
@@ -670,6 +724,8 @@ export type ServiceAccountUpdateWithoutApiKeysInput = {
   lastRotatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   integrationEvents?: Prisma.IntegrationEventUpdateManyWithoutServiceAccountNestedInput
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutServiceAccountsNestedInput
 }
@@ -685,6 +741,8 @@ export type ServiceAccountUncheckedUpdateWithoutApiKeysInput = {
   lastRotatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   integrationEvents?: Prisma.IntegrationEventUncheckedUpdateManyWithoutServiceAccountNestedInput
 }
 
@@ -698,6 +756,8 @@ export type ServiceAccountCreateWithoutIntegrationEventsInput = {
   lastRotatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutServiceAccountInput
   organization: Prisma.OrganizationCreateNestedOneWithoutServiceAccountsInput
 }
@@ -713,6 +773,8 @@ export type ServiceAccountUncheckedCreateWithoutIntegrationEventsInput = {
   lastRotatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutServiceAccountInput
 }
 
@@ -742,6 +804,8 @@ export type ServiceAccountUpdateWithoutIntegrationEventsInput = {
   lastRotatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutServiceAccountNestedInput
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutServiceAccountsNestedInput
 }
@@ -757,6 +821,8 @@ export type ServiceAccountUncheckedUpdateWithoutIntegrationEventsInput = {
   lastRotatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutServiceAccountNestedInput
 }
 
@@ -770,6 +836,8 @@ export type ServiceAccountCreateManyOrganizationInput = {
   lastRotatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type ServiceAccountUpdateWithoutOrganizationInput = {
@@ -782,6 +850,8 @@ export type ServiceAccountUpdateWithoutOrganizationInput = {
   lastRotatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutServiceAccountNestedInput
   integrationEvents?: Prisma.IntegrationEventUpdateManyWithoutServiceAccountNestedInput
 }
@@ -796,6 +866,8 @@ export type ServiceAccountUncheckedUpdateWithoutOrganizationInput = {
   lastRotatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutServiceAccountNestedInput
   integrationEvents?: Prisma.IntegrationEventUncheckedUpdateManyWithoutServiceAccountNestedInput
 }
@@ -810,6 +882,8 @@ export type ServiceAccountUncheckedUpdateManyWithoutOrganizationInput = {
   lastRotatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -863,6 +937,8 @@ export type ServiceAccountSelect<ExtArgs extends runtime.Types.Extensions.Intern
   lastRotatedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   apiKeys?: boolean | Prisma.ServiceAccount$apiKeysArgs<ExtArgs>
   integrationEvents?: boolean | Prisma.ServiceAccount$integrationEventsArgs<ExtArgs>
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -880,6 +956,8 @@ export type ServiceAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   lastRotatedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceAccount"]>
 
@@ -894,6 +972,8 @@ export type ServiceAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   lastRotatedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceAccount"]>
 
@@ -908,9 +988,11 @@ export type ServiceAccountSelectScalar = {
   lastRotatedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type ServiceAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "name" | "scopes" | "active" | "createdByActorId" | "provisionIdempotencyKey" | "lastRotatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceAccount"]>
+export type ServiceAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "name" | "scopes" | "active" | "createdByActorId" | "provisionIdempotencyKey" | "lastRotatedAt" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["serviceAccount"]>
 export type ServiceAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   apiKeys?: boolean | Prisma.ServiceAccount$apiKeysArgs<ExtArgs>
   integrationEvents?: boolean | Prisma.ServiceAccount$integrationEventsArgs<ExtArgs>
@@ -942,6 +1024,8 @@ export type $ServiceAccountPayload<ExtArgs extends runtime.Types.Extensions.Inte
     lastRotatedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["serviceAccount"]>
   composites: {}
 }
@@ -1378,6 +1462,8 @@ export interface ServiceAccountFieldRefs {
   readonly lastRotatedAt: Prisma.FieldRef<"ServiceAccount", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ServiceAccount", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ServiceAccount", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"ServiceAccount", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"ServiceAccount", 'String'>
 }
     
 

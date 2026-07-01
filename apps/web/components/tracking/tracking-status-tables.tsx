@@ -82,7 +82,7 @@ export function TrackingStatusTables({ overview, pagination }: TrackingStatusTab
       cell: ({ row }) => (
         <div className="flex flex-col gap-1">
           <Link
-            className="underline-offset-4 hover:underline"
+            className="rounded-sm underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
             href={createTrackingShipmentRoute(row.original.id)}
           >
             {row.original.referenceCode}
@@ -128,11 +128,11 @@ export function TrackingStatusTables({ overview, pagination }: TrackingStatusTab
     <section className="grid gap-4 xl:grid-cols-[0.8fr_1.2fr]">
       <Card>
         <CardHeader>
-          <CardTitle>Distribuicao por status</CardTitle>
-          <CardDescription>Base para SLA, excecoes e alertas operacionais.</CardDescription>
+          <CardTitle>Distribuição por status</CardTitle>
+          <CardDescription>Base para SLA, exceções e alertas operacionais.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table aria-label="Distribuicao por status">
+          <Table aria-label="Distribuição por status">
             <TableHeader>
               <TableRow>
                 <TableHead>Status</TableHead>
@@ -159,7 +159,7 @@ export function TrackingStatusTables({ overview, pagination }: TrackingStatusTab
         <CardHeader>
           <CardTitle>Movimentos recentes</CardTitle>
           <CardDescription>
-            Ultimas cargas atualizadas no tenant. Eventos sao registados pelo comando auditavel.
+            Últimas cargas atualizadas no tenant. Eventos são registados pelo comando auditável.
           </CardDescription>
         </CardHeader>
         <CardContent>

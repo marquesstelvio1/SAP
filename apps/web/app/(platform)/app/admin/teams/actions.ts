@@ -14,6 +14,7 @@ import {
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import { requirePlatformSession } from "../../../../../lib/auth-session";
 import type { CreateTeamFormState } from "./create-team-dialog";
 import type { TeamMembersFormState } from "./team-members-dialog";
@@ -39,7 +40,7 @@ export async function createTeamAction(
     name: readRequiredFormString(formData, "name"),
     slug: readRequiredFormString(formData, "slug"),
     description: readOptionalFormString(formData, "description"),
-    idempotencyKey: crypto.randomUUID(),
+    idempotencyKey: createIdempotencyKey("admin_teams"),
     sourceSystem: "saptm",
   });
 
@@ -87,7 +88,7 @@ export async function addTeamMemberAction(
     teamId: readRequiredFormString(formData, "teamId"),
     userId: readRequiredFormString(formData, "userId"),
     role: readRequiredFormString(formData, "role"),
-    idempotencyKey: crypto.randomUUID(),
+    idempotencyKey: createIdempotencyKey("admin_teams"),
     sourceSystem: "saptm",
   });
 
@@ -134,7 +135,7 @@ export async function removeTeamMemberAction(
   const parsedInput = removeTeamMemberInputSchema.safeParse({
     teamId: readRequiredFormString(formData, "teamId"),
     userId: readRequiredFormString(formData, "userId"),
-    idempotencyKey: crypto.randomUUID(),
+    idempotencyKey: createIdempotencyKey("admin_teams"),
     sourceSystem: "saptm",
   });
 
@@ -182,7 +183,7 @@ export async function updateTeamMemberRoleAction(
     teamId: readRequiredFormString(formData, "teamId"),
     userId: readRequiredFormString(formData, "userId"),
     role: readRequiredFormString(formData, "role"),
-    idempotencyKey: crypto.randomUUID(),
+    idempotencyKey: createIdempotencyKey("admin_teams"),
     sourceSystem: "saptm",
   });
 

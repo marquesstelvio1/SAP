@@ -41,13 +41,6 @@ export {
   type SaptmPrismaClient,
 } from "./prisma/factory.js";
 export {
-  getCurrentOrganizationId,
-  runWithTenantContext,
-  type TenantContextValue,
-  tenantContext,
-} from "./tenant-context.js";
-export { createTenantScopingExtension } from "./tenant-scoping.js";
-export {
   type PrismaTransaction,
   type TransactionCallback,
   withTransactionRetry,
@@ -62,3 +55,11 @@ export {
   type SeedRbacBootstrapResult,
   seedRbacBootstrap,
 } from "./rbac-bootstrap.js";
+export { createSoftDeleteExtension } from "./soft-delete.js";
+export {
+  getCurrentOrganizationId,
+  runWithTenantContext,
+  type TenantContextValue,
+  tenantContext,
+} from "./tenant-context.js";
+export { createTenantScopingExtension } from "./tenant-scoping.js";

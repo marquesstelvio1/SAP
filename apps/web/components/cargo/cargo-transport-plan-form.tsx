@@ -18,6 +18,8 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { addHours, createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CargoTransportPlanFormState } from "../../app/(platform)/app/cargo/form-state";
 
@@ -43,14 +45,14 @@ export function CargoTransportPlanForm({
   action,
 }: CargoTransportPlanFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_plan"));
   const defaultDepartureAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 2)), []);
   const defaultArrivalAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 26)), []);
   const isDisabled = isPending || !canPlanTransport;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("cargo_plan"));
     }
   }, [state.status]);
 
@@ -59,7 +61,7 @@ export function CargoTransportPlanForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canPlanTransport ? "success" : "warning"}>
-            {canPlanTransport ? "Tracking governado" : "Sem permissao"}
+            {canPlanTransport ? "Tracking autorizado" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">cargo.transport.plan</Badge>
         </div>
@@ -67,7 +69,7 @@ export function CargoTransportPlanForm({
           <CardTitle>Planear transporte e criar tracking</CardTitle>
           <CardDescription className="leading-6">
             Liga uma carga liberada ao Operational Tracking criando shipment, evento inicial, audit
-            trail e outbox. A carga precisa estar em ready_for_transport.
+            e registo de auditoria. A carga precisa estar em ready_for_transport.
           </CardDescription>
         </div>
       </CardHeader>
@@ -205,8 +207,8 @@ export function CargoTransportPlanForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canPlanTransport
-              ? "Cria shipment, evento inicial, audit trail e outbox."
-              : "Requer cargo.transport.plan."}
+              ? "Cria shipment e evento inicial com auditoria."
+              : "Requer plano de transporte."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A planear..." : "Criar tracking"}
@@ -215,21 +217,4 @@ export function CargoTransportPlanForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `cargo_plan_${randomValue}`;
-}
-
-function addHours(date: Date, hours: number): Date {
-  return new Date(date.getTime() + hours * 60 * 60 * 1000);
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

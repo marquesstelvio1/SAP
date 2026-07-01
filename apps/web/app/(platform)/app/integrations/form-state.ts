@@ -10,7 +10,7 @@ export type IntegrationServiceAccountCreateFormState = {
 export const initialIntegrationServiceAccountCreateFormState: IntegrationServiceAccountCreateFormState =
   {
     status: "idle",
-    message: "Crie service accounts com escopo minimo, API key hash-only, audit e outbox.",
+    message: "Crie contas de servico com permissoes minimas e chave de API.",
   };
 
 export type IntegrationEventRecordFormState = {
@@ -23,7 +23,7 @@ export type IntegrationEventRecordFormState = {
 
 export const initialIntegrationEventRecordFormState: IntegrationEventRecordFormState = {
   status: "idle",
-  message: "Registe eventos externos por sourceSystem + externalId sem duplicar processamento.",
+  message: "Registe eventos externos por sistema de origem e identificador unico.",
 };
 
 export type IntegrationPortTosMovementFormState = {
@@ -37,7 +37,7 @@ export type IntegrationPortTosMovementFormState = {
 
 export const initialIntegrationPortTosMovementFormState: IntegrationPortTosMovementFormState = {
   status: "idle",
-  message: "Processe movimentos Port TOS locais em eventos de tracking com audit e outbox.",
+  message: "Processe movimentos Port TOS locais em eventos de tracking.",
 };
 
 export type IntegrationRailTmsMovementFormState = {
@@ -51,7 +51,7 @@ export type IntegrationRailTmsMovementFormState = {
 
 export const initialIntegrationRailTmsMovementFormState: IntegrationRailTmsMovementFormState = {
   status: "idle",
-  message: "Processe movimentos Rail TMS locais em eventos de tracking com audit e outbox.",
+  message: "Processe movimentos Rail TMS locais em eventos de tracking.",
 };
 
 export type IntegrationCarrierTmsMovementFormState = {
@@ -66,7 +66,7 @@ export type IntegrationCarrierTmsMovementFormState = {
 export const initialIntegrationCarrierTmsMovementFormState: IntegrationCarrierTmsMovementFormState =
   {
     status: "idle",
-    message: "Processe movimentos Carrier TMS locais em eventos de tracking com audit e outbox.",
+    message: "Processe movimentos Carrier TMS locais em eventos de tracking.",
   };
 
 export type IntegrationTelematicsGpsPositionFormState = {
@@ -81,7 +81,7 @@ export type IntegrationTelematicsGpsPositionFormState = {
 export const initialIntegrationTelematicsGpsPositionFormState: IntegrationTelematicsGpsPositionFormState =
   {
     status: "idle",
-    message: "Processe posicoes Telematics/GPS locais em eventos de tracking com audit e outbox.",
+    message: "Processe posicoes Telematics/GPS locais em eventos de tracking.",
   };
 
 export type IntegrationCustomsErpStatusFormState = {
@@ -95,7 +95,7 @@ export type IntegrationCustomsErpStatusFormState = {
 
 export const initialIntegrationCustomsErpStatusFormState: IntegrationCustomsErpStatusFormState = {
   status: "idle",
-  message: "Processe estados Customs/ERP locais em eventos de tracking com audit e outbox.",
+  message: "Processe estados Customs/ERP locais em eventos de tracking.",
 };
 
 export type IntegrationWarehouseWmsActivityFormState = {
@@ -110,5 +110,5 @@ export type IntegrationWarehouseWmsActivityFormState = {
 export const initialIntegrationWarehouseWmsActivityFormState: IntegrationWarehouseWmsActivityFormState =
   {
     status: "idle",
-    message: "Processe atividades Warehouse/WMS locais em eventos de tracking com audit e outbox.",
+    message: "Processe atividades Warehouse/WMS locais em eventos de tracking.",
   };

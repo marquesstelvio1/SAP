@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { getServerEnv } from "@saptm/config";
 import { getPrismaClient } from "@saptm/database";
+import { createConsoleLogger, createTraceContext } from "@saptm/observability";
 import type {
   RuntimeEnvironment,
   RuntimeHealthCheck,
@@ -8,9 +9,24 @@ import type {
   RuntimeHealthReport,
   RuntimeHealthStatus,
 } from "@saptm/types";
-import { CacheService } from "../cache/cache.service.js";
+import type { CacheService } from "../cache/cache.service.js";
 
 const serviceName = "@saptm/api";
+
+const healthLogger = createConsoleLogger({
+  serviceName,
+  environment:
+    process.env.NODE_ENV === "production"
+      ? "production"
+      : process.env.NODE_ENV === "test"
+        ? "test"
+        : "development",
+  defaultContext: createTraceContext({
+    operationName: "health.check",
+    sourceSystem: "apps/api",
+  }),
+  minimumLevel: "info",
+});
 
 type HealthCheckInput = {
   name: string;
@@ -121,7 +137,7 @@ export class HealthService {
       });
     } catch (e) {
       const message = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
-      console.error("Health check cache error:", message);
+      healthLogger.error("Health check cache error.", { attributes: { message } });
       return createHealthCheck({
         name: "cache",
         status: "degraded",

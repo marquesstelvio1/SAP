@@ -15,7 +15,7 @@ import {
   Timeline,
   TimelineItem,
 } from "@saptm/ui";
-import type { Route } from "next";
+import type { Metadata, Route } from "next";
 import Link from "next/link";
 
 import { TrackingExceptionManageForm } from "../../../../../components/tracking/tracking-exception-manage-form";
@@ -42,6 +42,11 @@ import {
 
 export const dynamic = "force-dynamic";
 
+export const metadata: Metadata = {
+  title: "Detalhe de Tracking",
+  description: "Eventos operacionais, exceções e timeline detalhada de uma remessa de carga.",
+};
+
 const readTrackingPermission: PlatformPermission = "tracking.shipment.read";
 const manageTrackingExceptionPermission: PlatformPermission = "tracking.exception.manage";
 const resolveTrackingExceptionPermission: PlatformPermission = "tracking.exception.resolve";
@@ -66,12 +71,11 @@ export default async function TrackingShipmentDetailPage({
           <Link href="/app/tracking">Voltar ao tracking</Link>
         </Button>
         <AccessState
-          badgeLabel="Operational Tracking"
-          message="A sessao esta autenticada, mas falta a permissao tracking.shipment.read para abrir o detalhe."
+          badgeLabel="Tracking"
+          description="O utilizador autenticado nao tem acesso ao detalhe de tracking."
           role="alert"
-          status="Sem grant"
           title="Detalhe de tracking bloqueado"
-          variant="error"
+          variant="blocked"
         />
       </div>
     );
@@ -86,11 +90,10 @@ export default async function TrackingShipmentDetailPage({
           <Link href="/app/tracking">Voltar ao tracking</Link>
         </Button>
         <AccessState
-          badgeLabel="Operational Tracking"
-          message={result.message}
+          badgeLabel="Tracking"
+          description={result.message}
           role="alert"
-          status={result.status}
-          title="Detalhe de tracking indisponivel"
+          title="Detalhe de tracking indisponível"
           variant="error"
         />
       </div>
@@ -118,20 +121,10 @@ export default async function TrackingShipmentDetailPage({
   );
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex items-center gap-3">
         <Button asChild variant="outline">
           <Link href="/app/tracking">Voltar ao tracking</Link>
         </Button>
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline">tracking.shipment.detail.read</Badge>
-          <Badge variant={canManageExceptions ? "warning" : "outline"}>
-            tracking.exception.manage
-          </Badge>
-          <Badge variant={canResolveExceptions ? "success" : "outline"}>
-            tracking.exception.resolve
-          </Badge>
-          <Badge variant="success">Leitura governada</Badge>
-        </div>
       </div>
 
       <section className="grid gap-4 xl:grid-cols-[0.7fr_1.3fr]">
@@ -154,10 +147,12 @@ export default async function TrackingShipmentDetailPage({
                 <Badge variant="outline">{shipment.referenceCode}</Badge>
               </div>
               <div className="flex flex-col gap-2">
-                <CardTitle className="text-3xl">{shipment.cargoDescription}</CardTitle>
+                <CardTitle as="h1" className="text-3xl">
+                  {shipment.cargoDescription}
+                </CardTitle>
                 <CardDescription className="max-w-3xl text-base leading-7">
-                  Timeline operacional isolada por organizacao. Eventos exibem origem, local,
-                  correlacao e payload para rastreabilidade sem abrir CRUD generico.
+                  Eventos da remessa por ordem cronológica com origem, localização e estado
+                  operacional.
                 </CardDescription>
               </div>
             </CardHeader>
@@ -229,40 +224,40 @@ export default async function TrackingShipmentDetailPage({
           <Card>
             <CardHeader className="gap-3">
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="destructive">Cross-link P1</Badge>
-                <Badge variant="outline">Tracking → Cargo</Badge>
+                <Badge variant="destructive">Vinculo operacional</Badge>
+                <Badge variant="outline">Tracking · Carga</Badge>
               </div>
               <div className="flex flex-col gap-1">
-                <CardTitle className="text-lg">Excecao operacional vinculada a carga</CardTitle>
+                <CardTitle className="text-lg">Exceção operacional vinculada a carga</CardTitle>
                 <CardDescription className="text-sm leading-6">
-                  Excecoes no tracking podem refletir problemas na entrega da carga. Consulte o
-                  modulo Cargo para verificar excecoes de delivery, compliance ou documentacao
+                  Exceções no tracking podem refletir problemas na entrega da carga. Consulte o
+                  módulo Cargo para verificar exceções de delivery, compliance ou documentação
                   pendente.
                 </CardDescription>
               </div>
             </CardHeader>
             <CardContent className="flex flex-wrap items-center gap-2">
               <Link
-                className="inline-flex items-center gap-1.5 rounded-md border bg-muted/20 px-3 py-1.5 text-xs font-medium underline-offset-4 hover:bg-muted/40 hover:underline"
+                className="inline-flex items-center gap-1.5 rounded-md border bg-muted/20 px-3 py-1.5 text-xs font-medium underline-offset-4 outline-none hover:bg-muted/40 hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 href={"/app/cargo" as Route}
               >
                 Modulo Cargo
               </Link>
               {hasCustomsException ? (
                 <Link
-                  className="inline-flex items-center gap-1.5 rounded-md border bg-muted/20 px-3 py-1.5 text-xs font-medium underline-offset-4 hover:bg-muted/40 hover:underline"
+                  className="inline-flex items-center gap-1.5 rounded-md border bg-muted/20 px-3 py-1.5 text-xs font-medium underline-offset-4 outline-none hover:bg-muted/40 hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
                   href={"/app/cargo#cargo-compliance-evidence" as Route}
                 >
                   Compliance aduaneiro
                 </Link>
               ) : null}
               <Link
-                className="inline-flex items-center gap-1.5 rounded-md border bg-muted/20 px-3 py-1.5 text-xs font-medium underline-offset-4 hover:bg-muted/40 hover:underline"
+                className="inline-flex items-center gap-1.5 rounded-md border bg-muted/20 px-3 py-1.5 text-xs font-medium underline-offset-4 outline-none hover:bg-muted/40 hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 href={
                   `/app/audit?subjectType=tracking.shipment&subjectId=${shipment.id}&limit=25` as Route
                 }
               >
-                Auditoria de excecoes
+                Auditoria de exceções
               </Link>
             </CardContent>
           </Card>
@@ -273,7 +268,7 @@ export default async function TrackingShipmentDetailPage({
         <Card>
           <CardHeader>
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="outline">Excecoes</Badge>
+              <Badge variant="outline">Exceções</Badge>
               <Badge variant={canManageExceptions ? "warning" : "outline"}>
                 {canManageExceptions ? "Pode gerir" : "Somente leitura"}
               </Badge>
@@ -283,33 +278,17 @@ export default async function TrackingShipmentDetailPage({
                   : "Resolucao bloqueada"}
               </Badge>
             </div>
-            <CardTitle>Protocolo de recuperacao e resolucao</CardTitle>
+            <CardTitle>Resolucao de excecoes</CardTitle>
             <CardDescription>
-              Excecoes alteram estado operacional e sempre passam por permissao, idempotencia, audit
-              trail e outbox antes de aparecerem na timeline. Resolucao so e aceite para cargas em
-              atraso ou excecao e exige aprovacao explicita.
+              Excecoes operacionais alteram o estado da remessa. A resolucao exige aprovacao e
+              registo de auditoria.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3 text-sm md:grid-cols-2">
-            <ContextRow label="Permissao abrir" value={manageTrackingExceptionPermission} />
-            <ContextRow label="Permissao resolver" value={resolveTrackingExceptionPermission} />
-            <ContextRow label="Operacao abrir" value="tracking.exception.manage" />
-            <ContextRow label="Operacao resolver" value="tracking.exception.resolve" />
-            <ContextRow label="Transporte abrir" value="POST /rpc/tracking/exceptions" />
-            <ContextRow
-              label="Transporte resolver"
-              value="POST /rpc/tracking/exceptionResolution"
-            />
             <ContextRow label="Status atual" value={statusLabels[shipment.status]} />
             <ContextRow label="Resolucao permitida" value={isResolutionAllowed ? "Sim" : "Nao"} />
             <ContextRow label="Evidencia" value="Operador + referencia + resumo" />
             <ContextRow label="Aprovacao" value="Obrigatoria para resolver" />
-            <ContextRow label="Workflow final" value="closed apos release aprovado" />
-            <div className="md:col-span-2">
-              <Separator />
-            </div>
-            <ContextRow label="Sem CRUD" value="Comandos governados" />
-            <ContextRow label="Efeito" value="Evento, status, audit e outbox" />
           </CardContent>
         </Card>
       </section>
@@ -329,36 +308,28 @@ export default async function TrackingShipmentDetailPage({
 
         <Card>
           <CardHeader>
-            <CardTitle>Governanca do detalhe</CardTitle>
-            <CardDescription>
-              A rota usa a sessao Better Auth e o backend filtra por organizacao antes de retornar
-              qualquer dado operacional.
-            </CardDescription>
+            <CardTitle>Informacao da remessa</CardTitle>
+            <CardDescription>Referencias e dados complementares do envio.</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-3 text-sm">
-            <ContextRow label="Organization" value={detail.organizationId} />
-            <ContextRow label="Session" value={platformSession.sessionId} />
-            <ContextRow label="Permissao" value={readTrackingPermission} />
-            <ContextRow label="Operacao" value="tracking.shipment.detail.read" />
-            <ContextRow label="Transporte" value="GET /rpc/tracking/shipmentDetail" />
-            <Separator />
-            <ContextRow label="Gerado em" value={formatDateTime(detail.generatedAt)} />
-            <ContextRow label="Shipment ID" value={shipment.id} />
+            <ContextRow label="Referencia" value={shipment.referenceCode} />
             <ContextRow
               label="Referencia externa"
               value={shipment.externalReference ?? "Nao informada"}
             />
+            <ContextRow label="Ultima actualizacao" value={formatDateTime(detail.generatedAt)} />
+            <Separator />
             <div className="flex flex-wrap gap-2 pt-1">
               <Link
-                className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-[0.65rem] text-muted-foreground underline-offset-4 hover:bg-muted/40 hover:underline"
+                className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-2xs text-muted-foreground underline-offset-4 outline-none hover:bg-muted/40 hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 href={
                   `/app/audit?subjectType=tracking.shipment&subjectId=${shipment.id}&limit=25` as Route
                 }
               >
-                Auditoria do shipment
+                Auditoria
               </Link>
               <Link
-                className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-[0.65rem] text-muted-foreground underline-offset-4 hover:bg-muted/40 hover:underline"
+                className="inline-flex items-center gap-1 rounded-md border bg-muted/20 px-2 py-1 text-2xs text-muted-foreground underline-offset-4 outline-none hover:bg-muted/40 hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 href={"/app/reports" as Route}
               >
                 Reports
@@ -418,10 +389,9 @@ function TrackingTimeline({ detail }: { detail: TrackingShipmentDetailOutput }) 
                 </Badge>
               )}
               <Badge variant="outline">{event.sourceSystem}</Badge>
-              <span className="text-muted-foreground text-[0.65rem]">{event.correlationId}</span>
             </div>
             {event.payload !== null ? (
-              <pre className="mt-2 max-h-20 overflow-auto rounded-md border bg-muted/30 p-2 text-[0.65rem]">
+              <pre className="mt-2 max-h-20 overflow-auto rounded-md border bg-muted/30 p-2 text-2xs">
                 {JSON.stringify(event.payload, null, 2)}
               </pre>
             ) : null}

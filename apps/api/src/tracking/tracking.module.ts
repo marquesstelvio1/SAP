@@ -13,6 +13,6 @@ import { TrackingService } from "./tracking.service.js";
       useClass: PrismaTrackingRepository,
     },
   ],
-  exports: [TrackingService],
+  exports: [TrackingService, TRACKING_REPOSITORY],
 })
 export class TrackingModule {}

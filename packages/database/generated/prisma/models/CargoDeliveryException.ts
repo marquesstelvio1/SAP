@@ -47,6 +47,8 @@ export type CargoDeliveryExceptionMinAggregateOutputType = {
   resolveIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CargoDeliveryExceptionMaxAggregateOutputType = {
@@ -72,6 +74,8 @@ export type CargoDeliveryExceptionMaxAggregateOutputType = {
   resolveIdempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type CargoDeliveryExceptionCountAggregateOutputType = {
@@ -97,6 +101,8 @@ export type CargoDeliveryExceptionCountAggregateOutputType = {
   resolveIdempotencyKey: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -124,6 +130,8 @@ export type CargoDeliveryExceptionMinAggregateInputType = {
   resolveIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CargoDeliveryExceptionMaxAggregateInputType = {
@@ -149,6 +157,8 @@ export type CargoDeliveryExceptionMaxAggregateInputType = {
   resolveIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type CargoDeliveryExceptionCountAggregateInputType = {
@@ -174,6 +184,8 @@ export type CargoDeliveryExceptionCountAggregateInputType = {
   resolveIdempotencyKey?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -272,6 +284,8 @@ export type CargoDeliveryExceptionGroupByOutputType = {
   resolveIdempotencyKey: string | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: CargoDeliveryExceptionCountAggregateOutputType | null
   _min: CargoDeliveryExceptionMinAggregateOutputType | null
   _max: CargoDeliveryExceptionMaxAggregateOutputType | null
@@ -318,6 +332,8 @@ export type CargoDeliveryExceptionWhereInput = {
   resolveIdempotencyKey?: Prisma.StringNullableFilter<"CargoDeliveryException"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CargoDeliveryException"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoDeliveryException"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoDeliveryException"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoDeliveryException"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
   claimSettlement?: Prisma.XOR<Prisma.CargoClaimSettlementNullableScalarRelationFilter, Prisma.CargoClaimSettlementWhereInput> | null
@@ -346,6 +362,8 @@ export type CargoDeliveryExceptionOrderByWithRelationInput = {
   resolveIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   cargo?: Prisma.CargoOrderByWithRelationInput
   claimSettlement?: Prisma.CargoClaimSettlementOrderByWithRelationInput
@@ -379,6 +397,8 @@ export type CargoDeliveryExceptionWhereUniqueInput = Prisma.AtLeast<{
   resolveIdempotencyKey?: Prisma.StringNullableFilter<"CargoDeliveryException"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CargoDeliveryException"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoDeliveryException"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoDeliveryException"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoDeliveryException"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   cargo?: Prisma.XOR<Prisma.CargoScalarRelationFilter, Prisma.CargoWhereInput>
   claimSettlement?: Prisma.XOR<Prisma.CargoClaimSettlementNullableScalarRelationFilter, Prisma.CargoClaimSettlementWhereInput> | null
@@ -407,6 +427,8 @@ export type CargoDeliveryExceptionOrderByWithAggregationInput = {
   resolveIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CargoDeliveryExceptionCountOrderByAggregateInput
   _max?: Prisma.CargoDeliveryExceptionMaxOrderByAggregateInput
   _min?: Prisma.CargoDeliveryExceptionMinOrderByAggregateInput
@@ -438,6 +460,8 @@ export type CargoDeliveryExceptionScalarWhereWithAggregatesInput = {
   resolveIdempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"CargoDeliveryException"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CargoDeliveryException"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CargoDeliveryException"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CargoDeliveryException"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"CargoDeliveryException"> | string | null
 }
 
 export type CargoDeliveryExceptionCreateInput = {
@@ -461,6 +485,8 @@ export type CargoDeliveryExceptionCreateInput = {
   resolveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoDeliveryExceptionsInput
   cargo: Prisma.CargoCreateNestedOneWithoutDeliveryExceptionsInput
   claimSettlement?: Prisma.CargoClaimSettlementCreateNestedOneWithoutDeliveryExceptionInput
@@ -489,6 +515,8 @@ export type CargoDeliveryExceptionUncheckedCreateInput = {
   resolveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   claimSettlement?: Prisma.CargoClaimSettlementUncheckedCreateNestedOneWithoutDeliveryExceptionInput
 }
 
@@ -513,6 +541,8 @@ export type CargoDeliveryExceptionUpdateInput = {
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoDeliveryExceptionsNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutDeliveryExceptionsNestedInput
   claimSettlement?: Prisma.CargoClaimSettlementUpdateOneWithoutDeliveryExceptionNestedInput
@@ -541,6 +571,8 @@ export type CargoDeliveryExceptionUncheckedUpdateInput = {
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimSettlement?: Prisma.CargoClaimSettlementUncheckedUpdateOneWithoutDeliveryExceptionNestedInput
 }
 
@@ -567,6 +599,8 @@ export type CargoDeliveryExceptionCreateManyInput = {
   resolveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoDeliveryExceptionUpdateManyMutationInput = {
@@ -590,6 +624,8 @@ export type CargoDeliveryExceptionUpdateManyMutationInput = {
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoDeliveryExceptionUncheckedUpdateManyInput = {
@@ -615,6 +651,8 @@ export type CargoDeliveryExceptionUncheckedUpdateManyInput = {
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoDeliveryExceptionListRelationFilter = {
@@ -660,6 +698,8 @@ export type CargoDeliveryExceptionCountOrderByAggregateInput = {
   resolveIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoDeliveryExceptionMaxOrderByAggregateInput = {
@@ -685,6 +725,8 @@ export type CargoDeliveryExceptionMaxOrderByAggregateInput = {
   resolveIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoDeliveryExceptionMinOrderByAggregateInput = {
@@ -710,6 +752,8 @@ export type CargoDeliveryExceptionMinOrderByAggregateInput = {
   resolveIdempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type CargoDeliveryExceptionScalarRelationFilter = {
@@ -848,6 +892,8 @@ export type CargoDeliveryExceptionCreateWithoutOrganizationInput = {
   resolveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   cargo: Prisma.CargoCreateNestedOneWithoutDeliveryExceptionsInput
   claimSettlement?: Prisma.CargoClaimSettlementCreateNestedOneWithoutDeliveryExceptionInput
 }
@@ -874,6 +920,8 @@ export type CargoDeliveryExceptionUncheckedCreateWithoutOrganizationInput = {
   resolveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   claimSettlement?: Prisma.CargoClaimSettlementUncheckedCreateNestedOneWithoutDeliveryExceptionInput
 }
 
@@ -929,6 +977,8 @@ export type CargoDeliveryExceptionScalarWhereInput = {
   resolveIdempotencyKey?: Prisma.StringNullableFilter<"CargoDeliveryException"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CargoDeliveryException"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CargoDeliveryException"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CargoDeliveryException"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"CargoDeliveryException"> | string | null
 }
 
 export type CargoDeliveryExceptionCreateWithoutCargoInput = {
@@ -952,6 +1002,8 @@ export type CargoDeliveryExceptionCreateWithoutCargoInput = {
   resolveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoDeliveryExceptionsInput
   claimSettlement?: Prisma.CargoClaimSettlementCreateNestedOneWithoutDeliveryExceptionInput
 }
@@ -978,6 +1030,8 @@ export type CargoDeliveryExceptionUncheckedCreateWithoutCargoInput = {
   resolveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   claimSettlement?: Prisma.CargoClaimSettlementUncheckedCreateNestedOneWithoutDeliveryExceptionInput
 }
 
@@ -1028,6 +1082,8 @@ export type CargoDeliveryExceptionCreateWithoutClaimSettlementInput = {
   resolveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoDeliveryExceptionsInput
   cargo: Prisma.CargoCreateNestedOneWithoutDeliveryExceptionsInput
 }
@@ -1055,6 +1111,8 @@ export type CargoDeliveryExceptionUncheckedCreateWithoutClaimSettlementInput = {
   resolveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoDeliveryExceptionCreateOrConnectWithoutClaimSettlementInput = {
@@ -1094,6 +1152,8 @@ export type CargoDeliveryExceptionUpdateWithoutClaimSettlementInput = {
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoDeliveryExceptionsNestedInput
   cargo?: Prisma.CargoUpdateOneRequiredWithoutDeliveryExceptionsNestedInput
 }
@@ -1121,6 +1181,8 @@ export type CargoDeliveryExceptionUncheckedUpdateWithoutClaimSettlementInput = {
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoDeliveryExceptionCreateManyOrganizationInput = {
@@ -1145,6 +1207,8 @@ export type CargoDeliveryExceptionCreateManyOrganizationInput = {
   resolveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoDeliveryExceptionUpdateWithoutOrganizationInput = {
@@ -1168,6 +1232,8 @@ export type CargoDeliveryExceptionUpdateWithoutOrganizationInput = {
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargo?: Prisma.CargoUpdateOneRequiredWithoutDeliveryExceptionsNestedInput
   claimSettlement?: Prisma.CargoClaimSettlementUpdateOneWithoutDeliveryExceptionNestedInput
 }
@@ -1194,6 +1260,8 @@ export type CargoDeliveryExceptionUncheckedUpdateWithoutOrganizationInput = {
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimSettlement?: Prisma.CargoClaimSettlementUncheckedUpdateOneWithoutDeliveryExceptionNestedInput
 }
 
@@ -1219,6 +1287,8 @@ export type CargoDeliveryExceptionUncheckedUpdateManyWithoutOrganizationInput = 
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CargoDeliveryExceptionCreateManyCargoInput = {
@@ -1243,6 +1313,8 @@ export type CargoDeliveryExceptionCreateManyCargoInput = {
   resolveIdempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type CargoDeliveryExceptionUpdateWithoutCargoInput = {
@@ -1266,6 +1338,8 @@ export type CargoDeliveryExceptionUpdateWithoutCargoInput = {
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoDeliveryExceptionsNestedInput
   claimSettlement?: Prisma.CargoClaimSettlementUpdateOneWithoutDeliveryExceptionNestedInput
 }
@@ -1292,6 +1366,8 @@ export type CargoDeliveryExceptionUncheckedUpdateWithoutCargoInput = {
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimSettlement?: Prisma.CargoClaimSettlementUncheckedUpdateOneWithoutDeliveryExceptionNestedInput
 }
 
@@ -1317,6 +1393,8 @@ export type CargoDeliveryExceptionUncheckedUpdateManyWithoutCargoInput = {
   resolveIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1344,6 +1422,8 @@ export type CargoDeliveryExceptionSelect<ExtArgs extends runtime.Types.Extension
   resolveIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
   claimSettlement?: boolean | Prisma.CargoDeliveryException$claimSettlementArgs<ExtArgs>
@@ -1372,6 +1452,8 @@ export type CargoDeliveryExceptionSelectCreateManyAndReturn<ExtArgs extends runt
   resolveIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cargoDeliveryException"]>
@@ -1399,6 +1481,8 @@ export type CargoDeliveryExceptionSelectUpdateManyAndReturn<ExtArgs extends runt
   resolveIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cargoDeliveryException"]>
@@ -1426,9 +1510,11 @@ export type CargoDeliveryExceptionSelectScalar = {
   resolveIdempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type CargoDeliveryExceptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "trackingShipmentId" | "exceptionType" | "deliveryConditionStatus" | "status" | "reportedByName" | "exceptionSummary" | "evidenceReference" | "claimReference" | "occurredAt" | "resolverName" | "resolutionCode" | "resolutionReference" | "resolutionSummary" | "resolvedAt" | "sourceSystem" | "recordIdempotencyKey" | "resolveIdempotencyKey" | "createdAt" | "updatedAt", ExtArgs["result"]["cargoDeliveryException"]>
+export type CargoDeliveryExceptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoId" | "trackingShipmentId" | "exceptionType" | "deliveryConditionStatus" | "status" | "reportedByName" | "exceptionSummary" | "evidenceReference" | "claimReference" | "occurredAt" | "resolverName" | "resolutionCode" | "resolutionReference" | "resolutionSummary" | "resolvedAt" | "sourceSystem" | "recordIdempotencyKey" | "resolveIdempotencyKey" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["cargoDeliveryException"]>
 export type CargoDeliveryExceptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   cargo?: boolean | Prisma.CargoDefaultArgs<ExtArgs>
@@ -1473,6 +1559,8 @@ export type $CargoDeliveryExceptionPayload<ExtArgs extends runtime.Types.Extensi
     resolveIdempotencyKey: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["cargoDeliveryException"]>
   composites: {}
 }
@@ -1921,6 +2009,8 @@ export interface CargoDeliveryExceptionFieldRefs {
   readonly resolveIdempotencyKey: Prisma.FieldRef<"CargoDeliveryException", 'String'>
   readonly createdAt: Prisma.FieldRef<"CargoDeliveryException", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CargoDeliveryException", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"CargoDeliveryException", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"CargoDeliveryException", 'String'>
 }
     
 

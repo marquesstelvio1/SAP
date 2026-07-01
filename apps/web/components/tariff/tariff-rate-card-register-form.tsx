@@ -19,6 +19,7 @@ import {
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
 
+import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TariffRateCardRegisterFormState } from "../../app/(platform)/app/tariffs/form-state";
 
 export type TariffRateCardRegisterFormProps = {
@@ -36,12 +37,14 @@ export function TariffRateCardRegisterForm({
   action,
 }: TariffRateCardRegisterFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("tariff_rate_card"),
+  );
   const isDisabled = isPending || !canManageTariffs;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("tariff_rate_card"));
     }
   }, [state.status]);
 
@@ -50,15 +53,15 @@ export function TariffRateCardRegisterForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageTariffs ? "success" : "warning"}>
-            {canManageTariffs ? "Tarifa governada" : "Sem permissao"}
+            {canManageTariffs ? "Tarifa autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">tariff.manage</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar rate card</CardTitle>
           <CardDescription className="leading-6">
-            Define tabela tarifaria por tenant com moeda, validade e codigo unico antes de qualquer
-            cotacao operacional.
+            Define tabela tarifária por tenant com moeda, validade e código único antes de qualquer
+            cotação operacional.
           </CardDescription>
         </div>
       </CardHeader>
@@ -68,7 +71,7 @@ export function TariffRateCardRegisterForm({
             <input name="idempotencyKey" type="hidden" value={idempotencyKey} />
             <div className="grid gap-4 md:grid-cols-2">
               <Field data-disabled={!canManageTariffs}>
-                <FieldLabel htmlFor="rateCardCode">Codigo</FieldLabel>
+                <FieldLabel htmlFor="rateCardCode">Código</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="rateCardCode"
@@ -110,7 +113,7 @@ export function TariffRateCardRegisterForm({
                 />
               </Field>
               <Field data-disabled={!canManageTariffs}>
-                <FieldLabel htmlFor="validFrom">Valido desde</FieldLabel>
+                <FieldLabel htmlFor="validFrom">Válido desde</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="validFrom"
@@ -120,7 +123,7 @@ export function TariffRateCardRegisterForm({
                 />
               </Field>
               <Field data-disabled={!canManageTariffs}>
-                <FieldLabel htmlFor="validUntil">Valido ate</FieldLabel>
+                <FieldLabel htmlFor="validUntil">Válido até</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="validUntil"
@@ -156,7 +159,7 @@ export function TariffRateCardRegisterForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canManageTariffs ? "Cria audit trail e outbox." : "Requer tariff.manage."}
+            {canManageTariffs ? "Registo cria auditoria." : "Requer gestao tarifaria."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A registar..." : "Registar rate card"}
@@ -165,11 +168,4 @@ export function TariffRateCardRegisterForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `tariff_rate_card_${randomValue}`;
 }

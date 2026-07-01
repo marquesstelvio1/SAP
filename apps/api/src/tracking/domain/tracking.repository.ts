@@ -167,6 +167,32 @@ export interface TrackingRepository {
 
   countShipments(organizationId: string): Promise<number>;
 
+  countExceptionEvents(organizationId: string): Promise<
+    Array<{
+      eventType: string;
+      _count: { _all: number };
+    }>
+  >;
+
+  findRecentExceptionEvents(
+    organizationId: string,
+    limit: number,
+    offset: number,
+  ): Promise<
+    Array<{
+      id: string;
+      eventType: string;
+      occurredAt: Date;
+      locationName: string | null;
+      payload: unknown;
+      shipment: {
+        id: string;
+        referenceCode: string;
+        transportMode: string;
+      };
+    }>
+  >;
+
   // Write operations
   createEvent(
     tx: PrismaTx,

@@ -53,7 +53,7 @@ export function IntegrationEventRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canIngestEvents ? "success" : "warning"}>
-            {canIngestEvents ? "Evento governado" : "Sem permissao"}
+            {canIngestEvents ? "Ingestao autorizada" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">integration.event.ingest</Badge>
           <Badge variant="outline">idempotente</Badge>
@@ -148,8 +148,8 @@ export function IntegrationEventRecordForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {activeServiceAccounts.length === 0
-              ? "Crie uma service account primeiro."
-              : "Evento gera audit e outbox."}
+              ? "Crie uma conta de servico primeiro."
+              : "Evento registado com auditoria."}
           </span>
         </CardFooter>
       </form>

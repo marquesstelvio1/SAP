@@ -19,6 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CargoClaimSettlementRecordFormState } from "../../app/(platform)/app/cargo/form-state";
 
@@ -37,13 +39,15 @@ export function CargoClaimSettlementRecordForm({
   action,
 }: CargoClaimSettlementRecordFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() =>
+    createIdempotencyKey("cargo_claim_settlement"),
+  );
   const defaultSettledAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canRecordClaimSettlement;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("cargo_claim_settlement"));
     }
   }, [state.status]);
 
@@ -52,7 +56,7 @@ export function CargoClaimSettlementRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordClaimSettlement ? "success" : "warning"}>
-            {canRecordClaimSettlement ? "Settlement governado" : "Sem permissao"}
+            {canRecordClaimSettlement ? "Liquidacao autorizada" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">cargo.claim.settle</Badge>
         </div>
@@ -60,7 +64,7 @@ export function CargoClaimSettlementRecordForm({
           <CardTitle>Liquidar claim contabilistica</CardTitle>
           <CardDescription className="leading-6">
             Regista settlement financeiro apenas para excecao resolvida com claim aceite, referencia
-            consistente, idempotencia, audit trail e outbox.
+            consistente e registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -231,8 +235,8 @@ export function CargoClaimSettlementRecordForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canRecordClaimSettlement
-              ? "Nao altera tracking; apenas contabiliza claim com audit e outbox."
-              : "Requer cargo.claim.settle."}
+              ? "Nao altera tracking; apenas contabiliza claim com auditoria."
+              : "Requer liquidacao de claims."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A liquidar..." : "Liquidar claim"}
@@ -241,17 +245,4 @@ export function CargoClaimSettlementRecordForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `cargo_claim_settlement_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }

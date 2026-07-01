@@ -17,7 +17,7 @@ export default function ErrorPage({
         <CardHeader className="gap-4 text-center">
           <div className="flex flex-col gap-2">
             <CardTitle className="text-2xl">Erro inesperado</CardTitle>
-            <CardDescription>{error.message}</CardDescription>
+            <CardDescription>Ocorreu um erro inesperado. Tente novamente ou contacte o administrador.</CardDescription>
           </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-2">

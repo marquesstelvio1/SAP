@@ -1,6 +1,7 @@
 import { createRequire } from "node:module";
 import { PrismaPg } from "@prisma/adapter-pg";
 import type { PrismaClient } from "../../generated/prisma/client";
+import { createSoftDeleteExtension } from "../soft-delete.js";
 import { createTenantScopingExtension } from "../tenant-scoping.js";
 
 export type SaptmPrismaClient = ReturnType<typeof createPrismaClient>;
@@ -35,12 +36,11 @@ export function createPrismaClient(poolSize?: number) {
     log: env.NODE_ENV === "production" ? ["error"] : ["query", "warn", "error"],
   }) as PrismaClient;
 
-  // Apply the tenant scoping extension for automatic organization scoping.
-  // This is a defense-in-depth measure that injects organizationId from
-  // the AsyncLocalStorage context into all queries on scoped models.
   // The type assertion is required because Prisma v7 $extends returns a
   // complex mapped type that doesn't perfectly align with PrismaClient.
-  return baseClient.$extends(createTenantScopingExtension()) as unknown as PrismaClient;
+  return baseClient
+    .$extends(createTenantScopingExtension())
+    .$extends(createSoftDeleteExtension()) as unknown as PrismaClient;
 }
 
 export function getPrismaClient() {

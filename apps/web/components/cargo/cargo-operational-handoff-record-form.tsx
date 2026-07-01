@@ -19,6 +19,8 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { createDatetimeLocalValue } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CargoOperationalHandoffRecordFormState } from "../../app/(platform)/app/cargo/form-state";
 
@@ -37,13 +39,13 @@ export function CargoOperationalHandoffRecordForm({
   action,
 }: CargoOperationalHandoffRecordFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
+  const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_handoff"));
   const defaultHandoffAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
   const isDisabled = isPending || !canRecordOperationalHandoff;
 
   useEffect(() => {
     if (state.status === "success") {
-      setIdempotencyKey(createIdempotencyKey());
+      setIdempotencyKey(createIdempotencyKey("cargo_handoff"));
     }
   }, [state.status]);
 
@@ -52,7 +54,7 @@ export function CargoOperationalHandoffRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordOperationalHandoff ? "success" : "warning"}>
-            {canRecordOperationalHandoff ? "Handoff governado" : "Sem permissao"}
+            {canRecordOperationalHandoff ? "Transferencia autorizada" : "Indisponivel"}
           </Badge>
           <Badge variant="outline">cargo.handoff.record</Badge>
         </div>
@@ -229,8 +231,8 @@ export function CargoOperationalHandoffRecordForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canRecordOperationalHandoff
-              ? "Atualiza custodia, cria tracking event, audit e outbox."
-              : "Requer cargo.handoff.record."}
+              ? "Atualiza custodia e cria evento de tracking com auditoria."
+              : "Requer registo de handoff."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A registar..." : "Registar handoff"}
@@ -239,17 +241,4 @@ export function CargoOperationalHandoffRecordForm({
       </form>
     </Card>
   );
-}
-
-function createIdempotencyKey(): string {
-  const randomValue =
-    typeof crypto === "undefined" ? Math.random().toString(36).slice(2) : crypto.randomUUID();
-
-  return `cargo_handoff_${randomValue}`;
-}
-
-function createDatetimeLocalValue(date: Date): string {
-  const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }
