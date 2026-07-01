@@ -1,10 +1,25 @@
 import { ThemeProvider, Toaster } from "@saptm/ui";
 import type { Metadata, Viewport } from "next";
-import { Suspense, type ReactNode } from "react";
+import { IBM_Plex_Mono, Inter } from "next/font/google";
+import { headers } from "next/headers";
+import { type ReactNode, Suspense } from "react";
 
 import { AnalyticsProvider } from "../components/analytics-provider";
 import { QueryProvider } from "../components/query-provider";
 import { WebVitalsReporter } from "../components/web-vitals-reporter";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-ibm-plex-mono",
+  display: "swap",
+});
 
 import "./globals.css";
 
@@ -32,15 +47,27 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+  let nonce = "";
+  try {
+    nonce = (await headers()).get("x-nonce") ?? "";
+  } catch {
+    // Static generation (/_not-found): no request context, nonce not needed.
+  }
+
   return (
-    <html lang="pt" suppressHydrationWarning>
+    <html
+      lang="pt"
+      suppressHydrationWarning
+      className={`${inter.variable} ${ibmPlexMono.variable}`}
+    >
       <body className="min-h-screen antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem
           disableTransitionOnChange
+          nonce={nonce}
         >
           <a
             href="#main-content"
