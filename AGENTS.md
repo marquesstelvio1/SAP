@@ -202,4 +202,17 @@ Cada departamento carrega conhecimento profundo do skill correspondente em `~/.a
 
 **Task 3 — error.tsx em 11 domain routes** ✅ Já existente
 
-### Próximo Sprint: Sprint 2 — Frontend Architecture + Shared Components
+### Sprint 2 — Frontend Architecture + Shared Components ✅ Concluído
+
+**Task 1 — Extract inline components from page files** ✅
+- `cargo/page.tsx`: 859→77 linhas (delegado para `CargoOverviewClient`)
+- `tracking/page.tsx`: 596→41 linhas (delegado para `TrackingOverviewClient`)
+- Componentes extraídos: `cargo-overview-header`, `cargo-lifecycle-sections`, `cargo-status-tables`, `cargo-register-form`, `cargo-release-form`, `cargo-transport-plan-form`, `cargo-transport-depart-form`, `cargo-transport-arrive-form`, `cargo-delivery-complete-form`, `cargo-delivery-exception-record-form`, `cargo-delivery-exception-resolve-form`, `cargo-operational-handoff-record-form`, `cargo-claim-settlement-record-form`, `cargo-compliance-evidence-record-form`, `cargo-compliance-evidence-verify-form`, `cargo-lifecycle-group`, `tracking-analytics-section`, `tracking-events-section`, `tracking-event-record-form`, `tracking-exception-manage-form`, `tracking-exception-resolve-form`, `tracking-next-action-card`, `tracking-overview-header`, `tracking-status-tables`
+
+**Task 2 — Install missing shadcn components** ✅ Já existente
+- `Checkbox` usado em `SignInForm`
+- Zero nativos `<input type="checkbox">` em app code
+- Zero CSS `group-hover` tooltips
+- Zero nativos `<select>` em app code
+
+### Próximo Sprint: Sprint 3 — Backend Architecture
