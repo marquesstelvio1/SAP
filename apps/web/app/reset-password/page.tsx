@@ -24,7 +24,10 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
 
   if (token === undefined || token.length === 0) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground" id="main-content">
+      <main
+        className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground"
+        id="main-content"
+      >
         <div className="flex max-w-md flex-col items-center gap-4 text-center">
           <h1 className="font-semibold text-2xl tracking-tight">Link inválido</h1>
           <p className="text-muted-foreground text-sm">

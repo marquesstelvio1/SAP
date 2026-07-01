@@ -5,30 +5,30 @@ import {
   billingCreateCheckoutSessionMetadata,
   billingCreatePortalSessionMetadata,
   billingInvoiceOutputSchema,
+  billingInvoiceStatuses,
   billingInvoicesMetadata,
   billingOverviewInputSchema,
   billingOverviewMetadata,
   billingOverviewOutputSchema,
+  billingPlanIds,
+  billingPlans,
   billingPlansMetadata,
   billingPlansOutputSchema,
   billingPortalMetadata,
   billingSubscriptionMetadata,
   billingSubscriptionOutputSchema,
+  billingSubscriptionStatuses,
   billingUsageMetadata,
+  billingUsageMetrics,
   billingUsageOutputSchema,
   createCheckoutSessionInputSchema,
   createCheckoutSessionOutputSchema,
   createPortalSessionInputSchema,
   createPortalSessionOutputSchema,
+  invoiceSchema,
   planSchema,
   subscriptionSchema,
-  invoiceSchema,
   usageSchema,
-  billingPlanIds,
-  billingPlans,
-  billingSubscriptionStatuses,
-  billingInvoiceStatuses,
-  billingUsageMetrics,
 } from "../dist/index.js";
 
 test("billing overview metadata requires session and tenant manage permission", () => {
@@ -141,8 +141,16 @@ test("billing checkout output validates audit and outbox contract", () => {
   const output = createCheckoutSessionOutputSchema.parse({
     url: "https://checkout.stripe.com/session_001",
     idempotency: { key: "idem_checkout_001", replayed: false },
-    audit: { action: "billing.checkout_session_created", subjectType: "organization", subjectId: "org_rail_port" },
-    outbox: { eventType: "billing.checkout_session_created", aggregateType: "billing", aggregateId: "org_rail_port" },
+    audit: {
+      action: "billing.checkout_session_created",
+      subjectType: "organization",
+      subjectId: "org_rail_port",
+    },
+    outbox: {
+      eventType: "billing.checkout_session_created",
+      aggregateType: "billing",
+      aggregateId: "org_rail_port",
+    },
   });
 
   assert.ok(output.url.startsWith("https://"));
@@ -176,8 +184,16 @@ test("billing portal output validates URL contract", () => {
   const output = createPortalSessionOutputSchema.parse({
     url: "https://stripe.com/portal/session_001",
     idempotency: { key: "idem_portal_001", replayed: false },
-    audit: { action: "billing.portal_session_created", subjectType: "organization", subjectId: "org_rail_port" },
-    outbox: { eventType: "billing.portal_session_created", aggregateType: "billing", aggregateId: "org_rail_port" },
+    audit: {
+      action: "billing.portal_session_created",
+      subjectType: "organization",
+      subjectId: "org_rail_port",
+    },
+    outbox: {
+      eventType: "billing.portal_session_created",
+      aggregateType: "billing",
+      aggregateId: "org_rail_port",
+    },
   });
 
   assert.ok(output.url.startsWith("https://"));
@@ -286,9 +302,7 @@ test("billing usage metadata and schema", () => {
 
 test("usage schema is alias for billing usage output", () => {
   const u = usageSchema.parse({
-    metrics: [
-      { metric: "members", current: 1, limit: 10, remaining: 9 },
-    ],
+    metrics: [{ metric: "members", current: 1, limit: 10, remaining: 9 }],
   });
 
   assert.equal(u.metrics[0].metric, "members");
@@ -304,5 +318,8 @@ test("billing plan IDs and constants are correctly defined", () => {
   assert.equal(billingCreatePortalSessionMetadata.name, "billing.portal");
 
   // portal alias metadata matches portal metadata
-  assert.equal(billingCreateCheckoutSessionMetadata.name, billingCreateCheckoutSessionMetadata.name);
+  assert.equal(
+    billingCreateCheckoutSessionMetadata.name,
+    billingCreateCheckoutSessionMetadata.name,
+  );
 });

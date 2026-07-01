@@ -1,7 +1,7 @@
 import type { ReportExportDomain } from "@saptm/rpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, EmptyState } from "@saptm/ui";
-import { Box, Container, Gauge, Route, DollarSign } from "lucide-react";
-import type { Route } from "next";
+import { Box, Container, DollarSign, Gauge, Route } from "lucide-react";
+import type { Route as RouteType } from "next";
 import Link from "next/link";
 
 import { requirePlatformSession } from "../../../../lib/auth-session";
@@ -58,7 +58,7 @@ export default async function ReportsPage() {
           (domain) => (
             <Link
               key={domain}
-              href={`/app/reports/export?domain=${domain}` as Route}
+              href={`/app/reports/export?domain=${domain}` as RouteType}
               className="block rounded-lg outline-none transition-colors hover:opacity-80 focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <Card className="h-full cursor-pointer">

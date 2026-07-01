@@ -41,6 +41,7 @@
     "@saptm/observability": "workspace:*"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "catalog:",
     "prisma": "catalog:",
     "@saptm/tsconfig": "workspace:*",
     "@types/node": "catalog:",

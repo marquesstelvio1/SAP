@@ -281,8 +281,20 @@ test("teams get RPC returns team detail with members", async () => {
             createdAt: "2026-06-01T00:00:00.000Z",
             updatedAt: "2026-06-01T00:00:00.000Z",
             members: [
-              { id: "mem_001", userId: "user_001", name: "John", email: "john@saptm.local", role: "admin" },
-              { id: "mem_002", userId: "user_002", name: "Jane", email: "jane@saptm.local", role: "member" },
+              {
+                id: "mem_001",
+                userId: "user_001",
+                name: "John",
+                email: "john@saptm.local",
+                role: "admin",
+              },
+              {
+                id: "mem_002",
+                userId: "user_002",
+                name: "Jane",
+                email: "jane@saptm.local",
+                role: "member",
+              },
             ],
           },
         };
@@ -342,10 +354,20 @@ test("teams add member RPC authorizes mutation", async () => {
       async addTeamMember(input) {
         return {
           teamId: input.teamId,
-          member: { id: "mem_003", userId: input.userId, name: "New Member", email: "new@saptm.local", role: input.role ?? "member" },
+          member: {
+            id: "mem_003",
+            userId: input.userId,
+            name: "New Member",
+            email: "new@saptm.local",
+            role: input.role ?? "member",
+          },
           idempotency: { key: input.idempotencyKey, replayed: false },
           audit: { action: "team.member.added", subjectType: "team_member", subjectId: "mem_003" },
-          outbox: { eventType: "team.member.added", aggregateType: "team", aggregateId: input.teamId },
+          outbox: {
+            eventType: "team.member.added",
+            aggregateType: "team",
+            aggregateId: input.teamId,
+          },
         };
       },
       async removeTeamMember() {
@@ -410,8 +432,16 @@ test("teams remove member RPC authorizes mutation", async () => {
           teamId: input.teamId,
           userId: input.userId,
           idempotency: { key: input.idempotencyKey, replayed: false },
-          audit: { action: "team.member.removed", subjectType: "team_member", subjectId: input.userId },
-          outbox: { eventType: "team.member.removed", aggregateType: "team", aggregateId: input.teamId },
+          audit: {
+            action: "team.member.removed",
+            subjectType: "team_member",
+            subjectId: input.userId,
+          },
+          outbox: {
+            eventType: "team.member.removed",
+            aggregateType: "team",
+            aggregateId: input.teamId,
+          },
         };
       },
       async updateTeamMemberRole() {
@@ -473,10 +503,24 @@ test("teams update member role RPC authorizes mutation", async () => {
       async updateTeamMemberRole(input) {
         return {
           teamId: input.teamId,
-          member: { id: "mem_001", userId: input.userId, name: "John", email: "john@saptm.local", role: input.role },
+          member: {
+            id: "mem_001",
+            userId: input.userId,
+            name: "John",
+            email: "john@saptm.local",
+            role: input.role,
+          },
           idempotency: { key: input.idempotencyKey, replayed: false },
-          audit: { action: "team.member.role.updated", subjectType: "team_member", subjectId: "mem_001" },
-          outbox: { eventType: "team.member.role.updated", aggregateType: "team", aggregateId: input.teamId },
+          audit: {
+            action: "team.member.role.updated",
+            subjectType: "team_member",
+            subjectId: "mem_001",
+          },
+          outbox: {
+            eventType: "team.member.role.updated",
+            aggregateType: "team",
+            aggregateId: input.teamId,
+          },
         };
       },
     },

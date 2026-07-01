@@ -73,8 +73,8 @@ export function AdminRoleAssignForm({
         <div className="flex flex-col gap-2">
           <CardTitle>Atribuir role</CardTitle>
           <CardDescription className="leading-6">
-            Liga um membro ativo ou convidado a uma role da organização. O sistema impede escopo fora da
-            organização com registo de auditoria.
+            Liga um membro ativo ou convidado a uma role da organização. O sistema impede escopo
+            fora da organização com registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>

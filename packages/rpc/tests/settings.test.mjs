@@ -2,14 +2,14 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import {
-  settingsOrganizationUpdateInputSchema,
-  settingsOrganizationUpdateMetadata,
   settingsBrandingUpdateInputSchema,
   settingsBrandingUpdateMetadata,
-  settingsOverviewMetadata,
-  settingsOverviewOutputSchema,
   settingsMutationOutputSchema,
   settingsOrganizationStatuses,
+  settingsOrganizationUpdateInputSchema,
+  settingsOrganizationUpdateMetadata,
+  settingsOverviewMetadata,
+  settingsOverviewOutputSchema,
 } from "../dist/index.js";
 
 test("settings overview metadata requires session and tenant manage permission", () => {
@@ -127,8 +127,16 @@ test("settings mutation output validates audit and outbox contract", () => {
     organizationId: "org_rail_port",
     updatedAt: "2026-06-04T00:00:00.000Z",
     idempotency: { key: "idem_settings_001", replayed: false },
-    audit: { action: "settings.organization.updated", subjectType: "organization", subjectId: "org_rail_port" },
-    outbox: { eventType: "settings.organization.updated", aggregateType: "organization", aggregateId: "org_rail_port" },
+    audit: {
+      action: "settings.organization.updated",
+      subjectType: "organization",
+      subjectId: "org_rail_port",
+    },
+    outbox: {
+      eventType: "settings.organization.updated",
+      aggregateType: "organization",
+      aggregateId: "org_rail_port",
+    },
   });
 
   assert.equal(output.organizationId, "org_rail_port");

@@ -5,23 +5,23 @@ import {
   createWebhookInputSchema,
   createWebhookMetadata,
   createWebhookOutputSchema,
-  updateWebhookInputSchema,
-  updateWebhookMetadata,
-  updateWebhookOutputSchema,
   deleteWebhookInputSchema,
   deleteWebhookMetadata,
   deleteWebhookOutputSchema,
-  listWebhooksInputSchema,
-  listWebhooksMetadata,
-  listWebhooksOutputSchema,
   getWebhookDeliveryLogInputSchema,
   getWebhookDeliveryLogMetadata,
   getWebhookDeliveryLogOutputSchema,
+  listWebhooksInputSchema,
+  listWebhooksMetadata,
+  listWebhooksOutputSchema,
   retryWebhookDeliveryInputSchema,
   retryWebhookDeliveryMetadata,
   retryWebhookDeliveryOutputSchema,
-  webhookEndpointSummarySchema,
+  updateWebhookInputSchema,
+  updateWebhookMetadata,
+  updateWebhookOutputSchema,
   webhookDeliverySummarySchema,
+  webhookEndpointSummarySchema,
 } from "../dist/index.js";
 
 test("create webhook metadata requires sensitive idempotent mutation", () => {
@@ -317,8 +317,16 @@ test("retry webhook delivery output schema", () => {
     deliveryId: "del_001",
     status: "queued",
     idempotency: { key: "idem_webhook_retry_001", replayed: false },
-    audit: { action: "webhook.delivery_retried", subjectType: "webhook_delivery", subjectId: "del_001" },
-    outbox: { eventType: "webhook.delivery_retried", aggregateType: "webhook", aggregateId: "wh_001" },
+    audit: {
+      action: "webhook.delivery_retried",
+      subjectType: "webhook_delivery",
+      subjectId: "del_001",
+    },
+    outbox: {
+      eventType: "webhook.delivery_retried",
+      aggregateType: "webhook",
+      aggregateId: "wh_001",
+    },
   });
 
   assert.equal(output.status, "queued");

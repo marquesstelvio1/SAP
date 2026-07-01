@@ -43,11 +43,11 @@ export type AdminUsersTableProps = {
     email: string;
     emailVerified: boolean;
     createdAt: string;
-      membership: {
-        id: string;
-        status: string;
-        roles: Array<{ id: string; key: string; name: string }>;
-      };
+    membership: {
+      id: string;
+      status: string;
+      roles: Array<{ id: string; key: string; name: string }>;
+    };
   }>;
   pagination: PaginationState;
 };

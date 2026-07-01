@@ -2,16 +2,16 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import {
-  privacyExportInputSchema,
-  privacyExportMetadata,
-  privacyExportOutputSchema,
+  privacyAccountSummarySchema,
+  privacyAssociatedAccountSchema,
+  privacyAuditRecordSchema,
   privacyDeleteInputSchema,
   privacyDeleteMetadata,
   privacyDeleteOutputSchema,
-  privacyAccountSummarySchema,
-  privacyAssociatedAccountSchema,
+  privacyExportInputSchema,
+  privacyExportMetadata,
+  privacyExportOutputSchema,
   privacyMembershipSchema,
-  privacyAuditRecordSchema,
   privacySessionSchema,
 } from "../dist/index.js";
 
@@ -231,7 +231,11 @@ test("privacy delete output validates scheduled deletion contract", () => {
     message: "Your account deletion has been scheduled and will be processed within 7 days.",
     idempotency: { key: "idem_delete_account_001", replayed: false },
     audit: { action: "account.deletion_scheduled", subjectType: "user", subjectId: "user_001" },
-    outbox: { eventType: "account.deletion_scheduled", aggregateType: "user", aggregateId: "user_001" },
+    outbox: {
+      eventType: "account.deletion_scheduled",
+      aggregateType: "user",
+      aggregateId: "user_001",
+    },
   });
 
   assert.equal(output.message.includes("deletion"), true);
