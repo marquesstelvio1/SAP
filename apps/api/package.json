@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
     "test:coverage": "c8 node --test tests/*.test.mjs",
-    "test": "node --test tests/rpc-foundation.test.mjs tests/admin-rpc.test.mjs tests/audit-rpc.test.mjs tests/reports-rpc.test.mjs tests/notifications-rpc.test.mjs tests/integrations-rpc.test.mjs tests/cargo-rpc.test.mjs tests/cargo-service-business-rules.test.mjs tests/tracking-rpc.test.mjs tests/capacity-rpc.test.mjs tests/capacity-service-business-rules.test.mjs tests/evidence-services-business-rules.test.mjs tests/tariff-rpc.test.mjs tests/planning-rpc.test.mjs tests/organizations-service.test.mjs tests/outbox-worker.test.mjs"
+    "test": "node --test \"tests/*.test.mjs\""
   },
   "dependencies": {
     "@nestjs/cache-manager": "catalog:",

@@ -74,7 +74,7 @@ export function AdminUsersTable({ users, pagination }: AdminUsersTableProps) {
       <CardHeader>
         <CardTitle>Utilizadores e memberships</CardTitle>
         <CardDescription>
-          Lista de utilizadores com status, verificação de email e permissoes atribuidas.
+          Lista de utilizadores com estado, verificação de email e permissões atribuídas.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -84,8 +84,8 @@ export function AdminUsersTable({ users, pagination }: AdminUsersTableProps) {
               <TableHead>Utilizador</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Roles</TableHead>
-              <TableHead>Criado</TableHead>
+              <TableHead>Funções</TableHead>
+              <TableHead>Criado em</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

@@ -58,7 +58,7 @@ export function AdminUserInviteForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canInviteUser ? "success" : "warning"}>
-            {canInviteUser ? "Convite autorizado" : "Indisponivel"}
+            {canInviteUser ? "Convite autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">identity.user.invite</Badge>
         </div>
@@ -106,7 +106,7 @@ export function AdminUserInviteForm({
                 ))}
               </SelectNative>
               <FieldDescription>
-                Use uma role existente do tenant; novas roles são geridas pelo administrador.
+                Use uma role existente da organização; novas roles são geridas pelo administrador.
               </FieldDescription>
             </Field>
             <Field>

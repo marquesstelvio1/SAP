@@ -59,7 +59,7 @@ export function CargoComplianceEvidenceVerifyForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canVerifyComplianceEvidence ? "success" : "warning"}>
-            {canVerifyComplianceEvidence ? "Verificacao autorizada" : "Indisponivel"}
+            {canVerifyComplianceEvidence ? "Verificacao autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.compliance.verify</Badge>
         </div>

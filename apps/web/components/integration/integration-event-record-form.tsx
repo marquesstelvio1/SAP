@@ -53,7 +53,7 @@ export function IntegrationEventRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canIngestEvents ? "success" : "warning"}>
-            {canIngestEvents ? "Ingestao autorizada" : "Indisponivel"}
+            {canIngestEvents ? "Ingestao autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">integration.event.ingest</Badge>
           <Badge variant="outline">idempotente</Badge>

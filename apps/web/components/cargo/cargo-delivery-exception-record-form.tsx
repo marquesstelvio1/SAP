@@ -54,7 +54,7 @@ export function CargoDeliveryExceptionRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordDeliveryException ? "success" : "warning"}>
-            {canRecordDeliveryException ? "Excecao autorizada" : "Indisponivel"}
+            {canRecordDeliveryException ? "Excecao autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.delivery.exception.record</Badge>
         </div>

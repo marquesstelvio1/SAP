@@ -86,7 +86,7 @@ export function CargoOverviewClient({
     return (
       <EmptyState
         title="Nenhum dado encontrado"
-        description="Nao ha dados de cargas disponiveis no momento. Verifique se ha cargas registradas."
+        description="Não há dados de cargas disponíveis no momento. Verifique se há cargas registadas."
       />
     );
   }

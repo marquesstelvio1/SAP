@@ -59,7 +59,7 @@ export function IntegrationTelematicsGpsPositionForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessTelematicsGps ? "success" : "warning"}>
-            {canProcessTelematicsGps ? "GPS autorizado" : "Indisponivel"}
+            {canProcessTelematicsGps ? "GPS autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Telematics/GPS</Badge>
           <Badge variant="outline">tracking.event.record</Badge>

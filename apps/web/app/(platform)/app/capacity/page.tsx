@@ -83,7 +83,7 @@ export default async function CapacityOverviewPage() {
     return (
       <AccessState
         badgeLabel="Capacidade"
-        description="Nao foi possivel carregar os dados de capacidade. Tente novamente."
+        description="Não foi possível carregar os dados de capacidade. Tente novamente."
         role="alert"
         title="Erro ao carregar capacidade"
         variant="error"

@@ -33,7 +33,7 @@ export function AdminOverviewHeader({
         <CardHeader className="gap-4">
           <div className="flex flex-wrap gap-2">
             <Badge variant="success">Administração</Badge>
-            <Badge variant="outline">{securityModel.authorizationModel}</Badge>
+            <Badge variant="outline">Controlo de acesso</Badge>
           </div>
           <div className="flex flex-col gap-2">
             <CardTitle className="text-3xl">Administração</CardTitle>

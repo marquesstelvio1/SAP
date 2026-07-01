@@ -72,7 +72,7 @@ export function AdminRoleRevokeForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canAssignRole ? "success" : "warning"}>
-            {canAssignRole ? "Revogação RBAC" : "Indisponivel"}
+            {canAssignRole ? "Revogação de roles" : "Indisponível"}
           </Badge>
           <Badge variant="outline">anti-lockout</Badge>
         </div>

@@ -63,7 +63,7 @@ export function AdminRoleDeleteForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageRoles ? "success" : "warning"}>
-            {canManageRoles ? "Delete custom" : "Indisponivel"}
+            {canManageRoles ? "Delete custom" : "Indisponível"}
           </Badge>
           <Badge variant="outline">sem membros</Badge>
         </div>

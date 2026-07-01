@@ -108,7 +108,7 @@ export function TrackingEventRecordForm({
                 ))}
               </SelectNative>
               <FieldDescription>
-                Apenas cargas recentes do tenant aparecem nesta primeira fatia.
+                Apenas cargas recentes da organização aparecem nesta primeira lista.
               </FieldDescription>
             </Field>
 

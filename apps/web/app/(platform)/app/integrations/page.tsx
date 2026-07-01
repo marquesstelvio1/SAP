@@ -90,10 +90,10 @@ export default async function IntegrationsPage() {
   } catch {
     return (
       <AccessState
-        badgeLabel="Integracoes"
-        description="Nao foi possivel carregar os dados de integracoes. Tente novamente."
+        badgeLabel="Integrações"
+        description="Não foi possível carregar os dados de integrações. Tente novamente."
         role="alert"
-        title="Erro ao carregar integracoes"
+        title="Erro ao carregar integrações"
         variant="error"
       />
     );

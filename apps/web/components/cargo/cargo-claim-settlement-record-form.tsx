@@ -56,7 +56,7 @@ export function CargoClaimSettlementRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordClaimSettlement ? "success" : "warning"}>
-            {canRecordClaimSettlement ? "Liquidacao autorizada" : "Indisponivel"}
+            {canRecordClaimSettlement ? "Liquidacao autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.claim.settle</Badge>
         </div>

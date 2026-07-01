@@ -62,7 +62,7 @@ export function CargoComplianceEvidenceRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordComplianceEvidence ? "success" : "warning"}>
-            {canRecordComplianceEvidence ? "Evidencia autorizada" : "Indisponivel"}
+            {canRecordComplianceEvidence ? "Evidencia autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.compliance.record</Badge>
         </div>
@@ -90,7 +90,7 @@ export function CargoComplianceEvidenceRecordForm({
                   required
                 />
                 <FieldDescription>
-                  A evidencia fica ligada a uma unica carga dentro do tenant.
+                  A evidência fica ligada a uma única carga dentro da organização.
                 </FieldDescription>
               </Field>
               <Field data-disabled={!canRecordComplianceEvidence}>

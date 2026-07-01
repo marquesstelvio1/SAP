@@ -62,7 +62,7 @@ export function AdminMembershipStatusForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageMemberships ? "success" : "warning"}>
-            {canManageMemberships ? "Lifecycle" : "Indisponivel"}
+            {canManageMemberships ? "Lifecycle" : "Indisponível"}
           </Badge>
           <Badge variant="outline">active/suspended/removed</Badge>
         </div>

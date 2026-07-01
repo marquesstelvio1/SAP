@@ -66,15 +66,15 @@ export function AdminRoleAssignForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canAssignRole ? "success" : "warning"}>
-            {canAssignRole ? "Atribuicao autorizada" : "Indisponivel"}
+            {canAssignRole ? "Atribuicao autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">identity.role.assign</Badge>
+          <Badge variant="outline">Atribuição de roles</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Atribuir role</CardTitle>
           <CardDescription className="leading-6">
-            Liga um membership ativo ou convidado a uma role do tenant. A API impede escopo fora da
-            organizacao com registo de auditoria.
+            Liga um membro ativo ou convidado a uma role da organização. O sistema impede escopo fora da
+            organização com registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>

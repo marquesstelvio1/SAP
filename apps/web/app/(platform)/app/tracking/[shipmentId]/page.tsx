@@ -165,7 +165,7 @@ export default async function TrackingShipmentDetailPage({
               />
               <MetricTile
                 label="Local atual"
-                value={shipment.lastKnownLocation ?? "Nao informado"}
+                value={shipment.lastKnownLocation ?? "Não informado"}
               />
             </CardContent>
           </Card>
@@ -315,7 +315,7 @@ export default async function TrackingShipmentDetailPage({
             <ContextRow label="Referencia" value={shipment.referenceCode} />
             <ContextRow
               label="Referencia externa"
-              value={shipment.externalReference ?? "Nao informada"}
+              value={shipment.externalReference ?? "Não informada"}
             />
             <ContextRow label="Ultima actualizacao" value={formatDateTime(detail.generatedAt)} />
             <Separator />

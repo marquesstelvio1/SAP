@@ -119,7 +119,7 @@ export function TrackingOverviewClient({
     return (
       <EmptyState
         title="Nenhum dado encontrado"
-        description="Nao ha dados de tracking disponiveis no momento. Verifique se ha remessas registradas."
+        description="Não há dados de tracking disponíveis no momento. Verifique se há remessas registadas."
       />
     );
   }

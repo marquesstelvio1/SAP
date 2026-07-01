@@ -54,7 +54,7 @@ export function CargoOperationalHandoffRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordOperationalHandoff ? "success" : "warning"}>
-            {canRecordOperationalHandoff ? "Transferencia autorizada" : "Indisponivel"}
+            {canRecordOperationalHandoff ? "Transferencia autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.handoff.record</Badge>
         </div>

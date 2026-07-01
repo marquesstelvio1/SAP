@@ -61,7 +61,7 @@ export default async function TariffOverviewPage() {
     return (
       <AccessState
         badgeLabel="Tarifario"
-        description="Nao foi possivel carregar os dados tarifarios. Tente novamente."
+        description="Não foi possível carregar os dados tarifários. Tente novamente."
         role="alert"
         title="Erro ao carregar tarifario"
         variant="error"

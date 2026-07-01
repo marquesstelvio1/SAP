@@ -52,7 +52,7 @@ export function CargoTransportArriveForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canArriveTransport ? "success" : "warning"}>
-            {canArriveTransport ? "Chegada autorizada" : "Indisponivel"}
+            {canArriveTransport ? "Chegada autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.transport.arrive</Badge>
         </div>

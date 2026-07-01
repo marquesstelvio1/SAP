@@ -59,7 +59,7 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canReleaseCargo ? "success" : "warning"}>
-            {canReleaseCargo ? "Liberacao autorizada" : "Indisponivel"}
+            {canReleaseCargo ? "Liberacao autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.release</Badge>
         </div>

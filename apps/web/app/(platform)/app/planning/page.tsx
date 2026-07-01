@@ -66,7 +66,7 @@ export default async function PlanningOverviewPage() {
   } catch {
     return (
       <ErrorCard
-        message="Nao foi possivel carregar os dados de planeamento. Tente novamente."
+        message="Não foi possível carregar os dados de planeamento. Tente novamente."
         title="Erro ao carregar planeamento"
       />
     );

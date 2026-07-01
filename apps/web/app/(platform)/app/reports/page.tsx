@@ -1,6 +1,6 @@
 import type { ReportExportDomain } from "@saptm/rpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, EmptyState } from "@saptm/ui";
-import { BoxIcon, ContainerIcon, GaugeIcon, RouteIcon, DollarSignIcon } from "lucide-react";
+import { Box, Container, Gauge, Route, DollarSign } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 
@@ -17,11 +17,11 @@ const domainLabels: Record<ReportExportDomain, string> = {
 };
 
 const domainIcons: Record<ReportExportDomain, React.ReactNode> = {
-  tracking: <ContainerIcon className="size-5" />,
-  cargo: <BoxIcon className="size-5" />,
-  capacity: <GaugeIcon className="size-5" />,
-  planning: <RouteIcon className="size-5" />,
-  tariff: <DollarSignIcon className="size-5" />,
+  tracking: <Container className="size-5" />,
+  cargo: <Box className="size-5" />,
+  capacity: <Gauge className="size-5" />,
+  planning: <Route className="size-5" />,
+  tariff: <DollarSign className="size-5" />,
 };
 
 export default async function ReportsPage() {
@@ -33,12 +33,12 @@ export default async function ReportsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="font-semibold text-2xl tracking-tight">Reports operacionais</h1>
-          <p className="mt-1 text-muted-foreground text-sm">Exportacoes CSV com auditoria.</p>
+          <h1 className="font-semibold text-2xl tracking-tight">Relatórios operacionais</h1>
+          <p className="mt-1 text-muted-foreground text-sm">Exportações CSV com auditoria.</p>
         </div>
         <EmptyState
-          title="Exportacao indisponivel"
-          description="Contacte o gestor de operacoes para solicitar acesso a exportacao de reports."
+          title="Exportação indisponível"
+          description="Contacte o gestor de operações para solicitar acesso à exportação de relatórios."
         />
       </div>
     );
@@ -47,9 +47,9 @@ export default async function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-semibold text-2xl tracking-tight">Reports operacionais</h1>
+        <h1 className="font-semibold text-2xl tracking-tight">Relatórios operacionais</h1>
         <p className="mt-1 text-muted-foreground text-sm">
-          Exportacoes CSV com auditoria e integracoes.
+          Exportações CSV com auditoria e integrações.
         </p>
       </div>
 
@@ -68,7 +68,7 @@ export default async function ReportsPage() {
                     {domainLabels[domain]}
                   </CardTitle>
                   <CardDescription>
-                    Exportar CSV ate 100 registos do dominio {domainLabels[domain]}.
+                    Exportar CSV até 100 registos do domínio {domainLabels[domain]}.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

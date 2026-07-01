@@ -59,7 +59,7 @@ export function IntegrationPortTosMovementForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessPortTos ? "success" : "warning"}>
-            {canProcessPortTos ? "Movimento autorizado" : "Indisponivel"}
+            {canProcessPortTos ? "Movimento autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Port TOS</Badge>
           <Badge variant="outline">tracking.event.record</Badge>

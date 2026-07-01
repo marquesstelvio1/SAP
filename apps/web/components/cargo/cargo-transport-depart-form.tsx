@@ -52,7 +52,7 @@ export function CargoTransportDepartForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canDepartTransport ? "success" : "warning"}>
-            {canDepartTransport ? "Partida autorizada" : "Indisponivel"}
+            {canDepartTransport ? "Partida autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.transport.depart</Badge>
         </div>

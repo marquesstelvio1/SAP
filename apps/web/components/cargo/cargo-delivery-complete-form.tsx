@@ -54,7 +54,7 @@ export function CargoDeliveryCompleteForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canCompleteDelivery ? "success" : "warning"}>
-            {canCompleteDelivery ? "Entrega autorizada" : "Indisponivel"}
+            {canCompleteDelivery ? "Entrega autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.delivery.complete</Badge>
         </div>

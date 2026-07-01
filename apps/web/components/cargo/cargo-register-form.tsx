@@ -81,7 +81,7 @@ export function CargoRegisterForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRegisterCargo ? "success" : "warning"}>
-            {canRegisterCargo ? "Registo autorizado" : "Indisponivel"}
+            {canRegisterCargo ? "Registo autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.register</Badge>
         </div>

@@ -59,7 +59,7 @@ export function IntegrationCarrierTmsMovementForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessCarrierTms ? "success" : "warning"}>
-            {canProcessCarrierTms ? "Movimento autorizado" : "Indisponivel"}
+            {canProcessCarrierTms ? "Movimento autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Carrier TMS</Badge>
           <Badge variant="outline">tracking.event.record</Badge>

@@ -45,17 +45,17 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
       <Card id="operations">
         <CardHeader>
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="warning">Indisponivel</Badge>
+            <Badge variant="warning">Indisponível</Badge>
             <Badge variant="outline">Tracking</Badge>
           </div>
-          <CardTitle>Resumo operacional indisponivel</CardTitle>
+          <CardTitle>Resumo operacional indisponível</CardTitle>
           <CardDescription>
-            O utilizador autenticado nao tem acesso ao modulo de tracking. Contacte o gestor de
-            operacoes para solicitacao de acesso.
+            O utilizador autenticado não tem acesso ao módulo de tracking. Contacte o gestor de
+            operações para solicitação de acesso.
           </CardDescription>
         </CardHeader>
         <CardContent className="text-muted-foreground text-sm">
-          Os dados operacionais so sao apresentados a utilizadores autorizados.
+          Os dados operacionais só são apresentados a utilizadores autorizados.
         </CardContent>
       </Card>
     );
@@ -74,7 +74,7 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
           <CardDescription>A carregar dados de tracking...</CardDescription>
         </CardHeader>
         <CardContent className="text-muted-foreground text-sm">
-          Aguarde enquanto os dados operacionais sao carregados.
+          Aguarde enquanto os dados operacionais são carregados.
         </CardContent>
       </Card>
     );
@@ -88,7 +88,7 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
             <Badge variant="warning">Erro</Badge>
             <Badge variant="outline">Tracking</Badge>
           </div>
-          <CardTitle>Resumo operacional indisponivel</CardTitle>
+          <CardTitle>Resumo operacional indisponível</CardTitle>
           <CardDescription>
             {overviewQuery.error instanceof Error
               ? overviewQuery.error.message
@@ -98,8 +98,8 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
         <CardContent className="grid gap-3 md:grid-cols-3">
           <StatusTile
             label="Leitura"
-            value="Nao autorizada"
-            badge="Indisponivel"
+            value="Não autorizada"
+            badge="Indisponível"
             variant="warning"
           />
           <StatusTile label="API" value="Erro" badge="Verificar" variant="warning" />
@@ -125,7 +125,7 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
         <CardTitle>Resumo operacional</CardTitle>
         <CardDescription>
           Dados de tracking operacional actualizados em tempo real. Servem como entrada para
-          decisoes de gestao de cargas e excepcoes.
+          decisões de gestão de cargas e exceções.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-3 md:grid-cols-4">
@@ -148,7 +148,7 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
           variant={overview.totals.delayedShipments > 0 ? "warning" : "success"}
         />
         <StatusTile
-          label="Excecoes"
+          label="Exceções"
           value={overview.totals.exceptionShipments.toString()}
           badge="Risco"
           variant={overview.totals.exceptionShipments > 0 ? "destructive" : "success"}

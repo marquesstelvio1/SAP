@@ -54,7 +54,7 @@ export function CargoDeliveryExceptionResolveForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canResolveDeliveryException ? "success" : "warning"}>
-            {canResolveDeliveryException ? "Resolucao autorizada" : "Indisponivel"}
+            {canResolveDeliveryException ? "Resolucao autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.delivery.exception.resolve</Badge>
         </div>

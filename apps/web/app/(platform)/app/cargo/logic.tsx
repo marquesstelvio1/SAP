@@ -25,7 +25,7 @@ export const cargoTypeLabels = {
 } as const;
 
 export const customsStatusLabels = {
-  not_required: "Nao requerido",
+  not_required: "Não requerido",
   pending: "Pendente",
   cleared: "Liberada",
   held: "Retida",

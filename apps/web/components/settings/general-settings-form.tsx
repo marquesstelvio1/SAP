@@ -56,7 +56,7 @@ export function GeneralSettingsForm({
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline">Configurações</Badge>
           <Badge variant={canManageTenant ? "success" : "warning"}>
-            {canManageTenant ? "Gerir organizacao" : "Indisponivel"}
+            {canManageTenant ? "Gerir organizacao" : "Indisponível"}
           </Badge>
           <Badge variant={organization.status === "active" ? "success" : "destructive"}>
             {organizationStatusLabels[

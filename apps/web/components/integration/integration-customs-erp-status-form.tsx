@@ -59,7 +59,7 @@ export function IntegrationCustomsErpStatusForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessCustomsErp ? "success" : "warning"}>
-            {canProcessCustomsErp ? "Status autorizado" : "Indisponivel"}
+            {canProcessCustomsErp ? "Status autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Customs/ERP</Badge>
           <Badge variant="outline">tracking.event.record</Badge>

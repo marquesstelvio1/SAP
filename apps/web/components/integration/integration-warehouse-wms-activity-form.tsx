@@ -59,7 +59,7 @@ export function IntegrationWarehouseWmsActivityForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessWarehouseWms ? "success" : "warning"}>
-            {canProcessWarehouseWms ? "Atividade autorizada" : "Indisponivel"}
+            {canProcessWarehouseWms ? "Atividade autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Warehouse/WMS</Badge>
           <Badge variant="outline">tracking.event.record</Badge>

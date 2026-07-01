@@ -49,7 +49,7 @@ export function BrandingSettingsForm({
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline">Branding</Badge>
           <Badge variant={canManageTenant ? "success" : "warning"}>
-            {canManageTenant ? "Gerir organizacao" : "Indisponivel"}
+            {canManageTenant ? "Gerir organizacao" : "Indisponível"}
           </Badge>
         </div>
         <div className="max-w-3xl">

@@ -90,7 +90,7 @@ export function TrackingExceptionResolveForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canResolveExceptions && isResolutionAllowed ? "success" : "outline"}>
-            {canResolveExceptions && isResolutionAllowed ? "Resolucao autorizada" : "Indisponivel"}
+            {canResolveExceptions && isResolutionAllowed ? "Resolucao autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Resolucao</Badge>
         </div>

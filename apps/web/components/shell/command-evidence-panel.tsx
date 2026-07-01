@@ -65,7 +65,7 @@ export function CommandEvidencePanel({ evidence, title }: CommandEvidencePanelPr
 
         <div className="flex flex-col gap-2">
           <span className="text-xs uppercase tracking-uppercase text-muted-foreground">
-            Evento outbox
+            Evento de integração
           </span>
           <div className="grid gap-2 rounded-lg border bg-card/50 p-3 text-xs md:grid-cols-3">
             <EvidenceRow label="Tipo de evento" value={evidence.outboxEventType} />

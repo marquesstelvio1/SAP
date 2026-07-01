@@ -60,7 +60,7 @@ export function AdminRoleCreateForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageRoles ? "success" : "warning"}>
-            {canManageRoles ? "Roles custom" : "Indisponivel"}
+            {canManageRoles ? "Roles custom" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Permissoes de administracao</Badge>
         </div>

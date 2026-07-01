@@ -59,7 +59,7 @@ export function IntegrationRailTmsMovementForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canProcessRailTms ? "success" : "warning"}>
-            {canProcessRailTms ? "Movimento autorizado" : "Indisponivel"}
+            {canProcessRailTms ? "Movimento autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Rail TMS</Badge>
           <Badge variant="outline">tracking.event.record</Badge>

@@ -61,7 +61,7 @@ export function CargoTransportPlanForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canPlanTransport ? "success" : "warning"}>
-            {canPlanTransport ? "Tracking autorizado" : "Indisponivel"}
+            {canPlanTransport ? "Tracking autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">cargo.transport.plan</Badge>
         </div>
