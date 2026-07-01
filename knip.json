@@ -11,5 +11,5 @@
     "class-variance-authority",
     "radix-ui"
   ],
-  "ignoreBinaries": ["dotenvx", "turbo", "tsx", "biome"]
+  "ignoreBinaries": ["turbo", "tsx", "biome"]
 }
