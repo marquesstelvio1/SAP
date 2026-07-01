@@ -127,7 +127,11 @@ test("webhooks update RPC authorizes mutation and delegates to service", async (
           },
           idempotency: { key: input.idempotencyKey, replayed: false },
           audit: { action: "webhook.updated", subjectType: "webhook", subjectId: input.webhookId },
-          outbox: { eventType: "webhook.updated", aggregateType: "webhook", aggregateId: input.webhookId },
+          outbox: {
+            eventType: "webhook.updated",
+            aggregateType: "webhook",
+            aggregateId: input.webhookId,
+          },
         };
       },
       async delete() {
@@ -192,7 +196,11 @@ test("webhooks delete RPC authorizes mutation", async () => {
           webhookId: input.webhookId,
           idempotency: { key: input.idempotencyKey, replayed: false },
           audit: { action: "webhook.deleted", subjectType: "webhook", subjectId: input.webhookId },
-          outbox: { eventType: "webhook.deleted", aggregateType: "webhook", aggregateId: input.webhookId },
+          outbox: {
+            eventType: "webhook.deleted",
+            aggregateType: "webhook",
+            aggregateId: input.webhookId,
+          },
         };
       },
       async list() {

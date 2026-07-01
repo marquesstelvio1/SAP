@@ -115,7 +115,6 @@ export default async function AdminIdentityPage(props: {
       <AdminOverviewHeader
         totals={overview.totals}
         organization={overview.organization}
-        securityModel={overview.securityModel}
       />
       <section className="grid gap-4 xl:grid-cols-2">
         <AdminUserInviteForm

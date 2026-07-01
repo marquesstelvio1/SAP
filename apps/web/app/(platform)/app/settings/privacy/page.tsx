@@ -21,8 +21,8 @@ export default async function PrivacyPage() {
         <div className="max-w-3xl">
           <h1 className="font-semibold text-3xl tracking-tight">Privacidade e dados pessoais</h1>
           <p className="mt-2 text-muted-foreground">
-            Gere os seus dados pessoais conforme o Regulamento Geral de Proteção de Dados (RGPD). Pode
-            exportar uma cópia completa ou solicitar a eliminação da sua conta.
+            Gere os seus dados pessoais conforme o Regulamento Geral de Proteção de Dados (RGPD).
+            Pode exportar uma cópia completa ou solicitar a eliminação da sua conta.
           </p>
         </div>
       </section>

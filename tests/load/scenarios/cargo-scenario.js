@@ -19,12 +19,16 @@ export const options = {
 
 export default function () {
   // Login step: obtain session cookie before making RPC calls
-  const loginRes = http.post(`${baseUrl}/api/auth/sign-in/email`, {
-    email: __ENV.TEST_USER_EMAIL || "test@example.com",
-    password: __ENV.TEST_USER_PASSWORD || "TestPassword123!",
-  }, {
-    headers: { "Content-Type": "application/json" },
-  });
+  const loginRes = http.post(
+    `${baseUrl}/api/auth/sign-in/email`,
+    {
+      email: __ENV.TEST_USER_EMAIL || "test@example.com",
+      password: __ENV.TEST_USER_PASSWORD || "TestPassword123!",
+    },
+    {
+      headers: { "Content-Type": "application/json" },
+    },
+  );
 
   const loginSuccess = check(loginRes, {
     "login status is 200": (r) => r.status === 200,

@@ -2,34 +2,34 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import {
-  createTeamInputSchema,
-  createTeamMetadata,
-  createTeamOutputSchema,
-  updateTeamInputSchema,
-  updateTeamMetadata,
-  updateTeamOutputSchema,
-  deleteTeamInputSchema,
-  deleteTeamMetadata,
-  deleteTeamOutputSchema,
-  listTeamsInputSchema,
-  listTeamsMetadata,
-  listTeamsOutputSchema,
-  getTeamInputSchema,
-  getTeamMetadata,
-  getTeamOutputSchema,
   addTeamMemberInputSchema,
   addTeamMemberMetadata,
   addTeamMemberOutputSchema,
+  createTeamInputSchema,
+  createTeamMetadata,
+  createTeamOutputSchema,
+  deleteTeamInputSchema,
+  deleteTeamMetadata,
+  deleteTeamOutputSchema,
+  getTeamInputSchema,
+  getTeamMetadata,
+  getTeamOutputSchema,
+  listTeamsInputSchema,
+  listTeamsMetadata,
+  listTeamsOutputSchema,
   removeTeamMemberInputSchema,
   removeTeamMemberMetadata,
   removeTeamMemberOutputSchema,
-  updateTeamMemberRoleInputSchema,
-  updateTeamMemberRoleMetadata,
-  updateTeamMemberRoleOutputSchema,
-  teamSummarySchema,
   teamDetailSchema,
   teamMemberSchema,
   teamRoles,
+  teamSummarySchema,
+  updateTeamInputSchema,
+  updateTeamMemberRoleInputSchema,
+  updateTeamMemberRoleMetadata,
+  updateTeamMemberRoleOutputSchema,
+  updateTeamMetadata,
+  updateTeamOutputSchema,
 } from "../dist/index.js";
 
 test("create team metadata requires sensitive idempotent mutation", () => {
@@ -240,8 +240,20 @@ test("get team output schema validates team detail with members", () => {
       createdAt: "2026-06-01T00:00:00.000Z",
       updatedAt: "2026-06-01T00:00:00.000Z",
       members: [
-        { id: "mem_001", userId: "user_001", name: "John", email: "john@saptm.local", role: "admin" },
-        { id: "mem_002", userId: "user_002", name: "Jane", email: "jane@saptm.local", role: "member" },
+        {
+          id: "mem_001",
+          userId: "user_001",
+          name: "John",
+          email: "john@saptm.local",
+          role: "admin",
+        },
+        {
+          id: "mem_002",
+          userId: "user_002",
+          name: "Jane",
+          email: "jane@saptm.local",
+          role: "member",
+        },
       ],
     },
   });
@@ -288,7 +300,13 @@ test("team detail schema extends summary with members", () => {
     createdAt: "2026-06-01T00:00:00.000Z",
     updatedAt: "2026-06-01T00:00:00.000Z",
     members: [
-      { id: "mem_001", userId: "user_001", name: "Admin", email: "admin@saptm.local", role: "admin" },
+      {
+        id: "mem_001",
+        userId: "user_001",
+        name: "Admin",
+        email: "admin@saptm.local",
+        role: "admin",
+      },
     ],
   });
 
@@ -320,7 +338,13 @@ test("add team member input schema validates", () => {
 test("add team member output validates idempotency contract", () => {
   const output = addTeamMemberOutputSchema.parse({
     teamId: "team_001",
-    member: { id: "mem_003", userId: "user_003", name: "New Member", email: "new@saptm.local", role: "member" },
+    member: {
+      id: "mem_003",
+      userId: "user_003",
+      name: "New Member",
+      email: "new@saptm.local",
+      role: "member",
+    },
     idempotency: { key: "idem_team_add_member_001", replayed: false },
     audit: { action: "team.member.added", subjectType: "team_member", subjectId: "mem_003" },
     outbox: { eventType: "team.member.added", aggregateType: "team", aggregateId: "team_001" },
@@ -382,10 +406,20 @@ test("update team member role input schema validates", () => {
 test("update team member role output schema", () => {
   const output = updateTeamMemberRoleOutputSchema.parse({
     teamId: "team_001",
-    member: { id: "mem_001", userId: "user_001", name: "John", email: "john@saptm.local", role: "admin" },
+    member: {
+      id: "mem_001",
+      userId: "user_001",
+      name: "John",
+      email: "john@saptm.local",
+      role: "admin",
+    },
     idempotency: { key: "idem_team_update_role_001", replayed: false },
     audit: { action: "team.member.role.updated", subjectType: "team_member", subjectId: "mem_001" },
-    outbox: { eventType: "team.member.role.updated", aggregateType: "team", aggregateId: "team_001" },
+    outbox: {
+      eventType: "team.member.role.updated",
+      aggregateType: "team",
+      aggregateId: "team_001",
+    },
   });
 
   assert.equal(output.member.role, "admin");

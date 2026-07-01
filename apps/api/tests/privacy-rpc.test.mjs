@@ -132,9 +132,7 @@ test("privacy export data with CSV format and sessions included", async () => {
           },
           associatedAccounts: [],
           memberships: [],
-          auditRecords: options.includeAuditLogs
-            ? []
-            : [],
+          auditRecords: options.includeAuditLogs ? [] : [],
           sessions: options.includeSessions
             ? [
                 {

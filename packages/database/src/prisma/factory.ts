@@ -24,11 +24,15 @@ export function createPrismaClient(poolSize?: number) {
   const env = getRuntimeEnv();
   const connectionString = env.DATABASE_URL ?? "";
 
+  const url = new URL(connectionString);
+  const isLocalhost = url.hostname === "localhost" || url.hostname === "127.0.0.1";
+
   const adapter = new PrismaPg({
     connectionString,
     max: poolSize ?? getDefaultPoolSize(),
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 10_000,
+    ...(isLocalhost ? {} : { ssl: { rejectUnauthorized: false } }),
   });
 
   const baseClient = new PrismaClientClass({

@@ -45,7 +45,8 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
                 Acesso seguro antes de qualquer operação logística.
               </h1>
               <p className="text-sidebar-foreground/70 text-lg leading-8">
-                Acesso seguro à plataforma SAPTM para gestão de operações de carga, tracking, planeamento e capacidade.
+                Acesso seguro à plataforma SAPTM para gestão de operações de carga, tracking,
+                planeamento e capacidade.
               </p>
             </div>
           </div>

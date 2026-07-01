@@ -23,7 +23,10 @@ export default async function TwoFactorPage({ searchParams }: TwoFactorPageProps
   const nextPath = readSafeNextPath(params.next);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground md:p-8" id="main-content">
+    <main
+      className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground md:p-8"
+      id="main-content"
+    >
       <TwoFactorVerificationForm nextPath={nextPath} />
     </main>
   );

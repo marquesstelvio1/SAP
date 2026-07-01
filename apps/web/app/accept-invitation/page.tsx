@@ -15,7 +15,10 @@ export default async function AcceptInvitationPage({ searchParams }: AcceptInvit
   const token = readToken(params.token);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 text-foreground" id="main-content">
+    <main
+      className="flex min-h-screen items-center justify-center bg-background px-4 py-10 text-foreground"
+      id="main-content"
+    >
       {token.length === 0 ? (
         <Card className="w-full max-w-lg">
           <CardHeader className="gap-3">

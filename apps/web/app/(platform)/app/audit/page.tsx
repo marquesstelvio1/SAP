@@ -350,7 +350,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
                     <TableCell>
                       <div className="flex flex-col gap-1">
                         <span className="font-medium">{record.action}</span>
-                          {/* correlationId removido da UI operacional */}
+                        {/* correlationId removido da UI operacional */}
                       </div>
                     </TableCell>
                     <TableCell>

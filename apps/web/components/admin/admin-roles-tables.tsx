@@ -80,9 +80,7 @@ export function AdminRolesTables({ roles, permissions }: AdminRolesTablesProps) 
       <Card>
         <CardHeader>
           <CardTitle>Roles da organização</CardTitle>
-          <CardDescription>
-            Templates base e contagem de permissões/membros.
-          </CardDescription>
+          <CardDescription>Templates base e contagem de permissões/membros.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table aria-label="Roles da organização">
@@ -145,7 +143,9 @@ export function AdminRolesTables({ roles, permissions }: AdminRolesTablesProps) 
                 <TableRow key={permission.id}>
                   <TableCell>
                     <div className="flex flex-col gap-1">
-                      <span className="font-medium">{permissionLabels[permission.key] ?? permission.key}</span>
+                      <span className="font-medium">
+                        {permissionLabels[permission.key] ?? permission.key}
+                      </span>
                       <span className="text-muted-foreground text-xs">
                         {permission.description ?? "Sem descrição"}
                       </span>

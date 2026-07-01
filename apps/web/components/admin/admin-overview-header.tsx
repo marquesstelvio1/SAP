@@ -19,13 +19,11 @@ export type AdminOverviewHeaderProps = {
     permissions: number;
   };
   organization: { name: string; slug: string; status: string; id: string; updatedAt: string };
-  securityModel: { authorizationModel: string };
 };
 
 export function AdminOverviewHeader({
   totals,
   organization,
-  securityModel,
 }: AdminOverviewHeaderProps) {
   return (
     <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">

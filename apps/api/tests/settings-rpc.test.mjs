@@ -103,8 +103,16 @@ test("settings update RPC authorizes mutation and delegates to service", async (
           organizationId: input.organizationId,
           updatedAt: "2026-06-04T00:00:00.000Z",
           idempotency: { key: input.idempotencyKey, replayed: false },
-          audit: { action: "settings.organization.updated", subjectType: "organization", subjectId: input.organizationId },
-          outbox: { eventType: "settings.organization.updated", aggregateType: "organization", aggregateId: input.organizationId },
+          audit: {
+            action: "settings.organization.updated",
+            subjectType: "organization",
+            subjectId: input.organizationId,
+          },
+          outbox: {
+            eventType: "settings.organization.updated",
+            aggregateType: "organization",
+            aggregateId: input.organizationId,
+          },
         };
       },
     },

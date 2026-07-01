@@ -63,9 +63,9 @@ export function AdminRolePermissionsForm({
     <Card>
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
-              <Badge variant={canManageRoles ? "success" : "warning"}>
-                {canManageRoles ? "Permissões custom" : "Indisponível"}
-              </Badge>
+          <Badge variant={canManageRoles ? "success" : "warning"}>
+            {canManageRoles ? "Permissões custom" : "Indisponível"}
+          </Badge>
           <Badge variant="outline">templates protegidos</Badge>
         </div>
         <div className="flex flex-col gap-2">
@@ -111,9 +111,7 @@ export function AdminRolePermissionsForm({
             <Field>
               <FieldDescription>
                 {state.status === "success" && state.roleKey !== undefined
-                  ? `${state.message} · Replay: ${
-                      state.replayed ? "sim" : "não"
-                    }`
+                  ? `${state.message} · Replay: ${state.replayed ? "sim" : "não"}`
                   : state.message}
               </FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
