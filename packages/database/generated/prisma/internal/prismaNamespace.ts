@@ -423,6 +423,7 @@ export const ModelName = {
   WebhookEndpoint: 'WebhookEndpoint',
   WebhookDelivery: 'WebhookDelivery',
   TrackingEvent: 'TrackingEvent',
+  Plan: 'Plan',
   Subscription: 'Subscription',
   Invoice: 'Invoice',
   UsageRecord: 'UsageRecord'
@@ -441,7 +442,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "twoFactor" | "session" | "account" | "verification" | "loginAttempt" | "organization" | "team" | "teamMember" | "membership" | "role" | "permission" | "rolePermission" | "membershipRole" | "auditRecord" | "serviceAccount" | "apiKey" | "integrationEvent" | "outboxEvent" | "notification" | "cargo" | "cargoDeliveryException" | "cargoClaimSettlement" | "capacityResource" | "capacitySlot" | "capacitySlotReservation" | "capacityAdvisoryDecision" | "transportOrder" | "transportOrderDispatch" | "transportOrderScheduleRevision" | "tariffRateCard" | "tariffRateRule" | "tariffQuote" | "cargoOperationalHandoff" | "cargoComplianceEvidence" | "trackingShipment" | "webhookEndpoint" | "webhookDelivery" | "trackingEvent" | "subscription" | "invoice" | "usageRecord"
+    modelProps: "user" | "twoFactor" | "session" | "account" | "verification" | "loginAttempt" | "organization" | "team" | "teamMember" | "membership" | "role" | "permission" | "rolePermission" | "membershipRole" | "auditRecord" | "serviceAccount" | "apiKey" | "integrationEvent" | "outboxEvent" | "notification" | "cargo" | "cargoDeliveryException" | "cargoClaimSettlement" | "capacityResource" | "capacitySlot" | "capacitySlotReservation" | "capacityAdvisoryDecision" | "transportOrder" | "transportOrderDispatch" | "transportOrderScheduleRevision" | "tariffRateCard" | "tariffRateRule" | "tariffQuote" | "cargoOperationalHandoff" | "cargoComplianceEvidence" | "trackingShipment" | "webhookEndpoint" | "webhookDelivery" | "trackingEvent" | "plan" | "subscription" | "invoice" | "usageRecord"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3331,6 +3332,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Plan: {
+      payload: Prisma.$PlanPayload<ExtArgs>
+      fields: Prisma.PlanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        findFirst: {
+          args: Prisma.PlanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        findMany: {
+          args: Prisma.PlanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>[]
+        }
+        create: {
+          args: Prisma.PlanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        createMany: {
+          args: Prisma.PlanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>[]
+        }
+        delete: {
+          args: Prisma.PlanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        update: {
+          args: Prisma.PlanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        aggregate: {
+          args: Prisma.PlanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlan>
+        }
+        groupBy: {
+          args: Prisma.PlanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanCountAggregateOutputType> | number
+        }
+      }
+    }
     Subscription: {
       payload: Prisma.$SubscriptionPayload<ExtArgs>
       fields: Prisma.SubscriptionFieldRefs
@@ -4395,12 +4470,35 @@ export const TrackingEventScalarFieldEnum = {
 export type TrackingEventScalarFieldEnum = (typeof TrackingEventScalarFieldEnum)[keyof typeof TrackingEventScalarFieldEnum]
 
 
+export const PlanScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  currency: 'currency',
+  interval: 'interval',
+  features: 'features',
+  limits: 'limits',
+  isPublic: 'isPublic',
+  sortOrder: 'sortOrder',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
+} as const
+
+export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof PlanScalarFieldEnum]
+
+
 export const SubscriptionScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   stripeCustomerId: 'stripeCustomerId',
   stripeSubscriptionId: 'stripeSubscriptionId',
   plan: 'plan',
+  planId: 'planId',
   status: 'status',
   currentPeriodStart: 'currentPeriodStart',
   currentPeriodEnd: 'currentPeriodEnd',
@@ -5206,6 +5304,7 @@ export type GlobalOmitConfig = {
   webhookEndpoint?: Prisma.WebhookEndpointOmit
   webhookDelivery?: Prisma.WebhookDeliveryOmit
   trackingEvent?: Prisma.TrackingEventOmit
+  plan?: Prisma.PlanOmit
   subscription?: Prisma.SubscriptionOmit
   invoice?: Prisma.InvoiceOmit
   usageRecord?: Prisma.UsageRecordOmit

@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
-import type { Plan, PlanFeature, PlanLimits } from "@saptm/rpc";
+import type { Plan, PlanLimits } from "@saptm/rpc";
 
 import type { PlanRecord, PlansRepository } from "./plans.repository.js";
 import { PLANS_REPOSITORY } from "./plans.repository.js";
@@ -37,7 +37,13 @@ export class PlansService {
   }
 
   private toPlan(record: PlanRecord): Plan {
-    const features = (record.features as Array<{ key: string; label: string; included: boolean; limit?: string }>) ?? [];
+    const features =
+      (record.features as Array<{
+        key: string;
+        label: string;
+        included: boolean;
+        limit?: string;
+      }>) ?? [];
     const limitsRaw = (record.limits as Record<string, unknown>) ?? {};
     const limits: PlanLimits = {
       maxMembers: (limitsRaw.maxMembers as number) ?? 5,

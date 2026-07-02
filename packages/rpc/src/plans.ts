@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { sharedAuditSchema, sharedOutboxSchema } from "./foundation.js";
 import { createRpcOperationMetadata } from "./metadata.js";
 
 export const planSlugs = ["free", "pro", "enterprise"] as const;

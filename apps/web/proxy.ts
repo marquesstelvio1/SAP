@@ -208,7 +208,10 @@ export function proxy(request: NextRequest) {
     );
   }
 
-  const CHUNKED_PREFIXES = ["better-auth.session_token.chunk", "__Secure-better-auth.session_token.chunk"] as const;
+  const CHUNKED_PREFIXES = [
+    "better-auth.session_token.chunk",
+    "__Secure-better-auth.session_token.chunk",
+  ] as const;
   const hasChunkedSession = Array.from(request.cookies.getAll()).some((c) =>
     CHUNKED_PREFIXES.some((p) => c.name.startsWith(p)),
   );

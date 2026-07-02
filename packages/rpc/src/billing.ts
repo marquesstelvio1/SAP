@@ -19,7 +19,7 @@ export type BillingUsageOutput = z.infer<typeof billingUsageOutputSchema>;
 export type BillingInvoice = BillingInvoiceOutput;
 export type BillingSubscription = BillingSubscriptionOutput;
 export type BillingUsage = BillingUsageOutput;
-export type BillingPlan = z.infer<typeof planSchema>;
+export type BillingPlan = z.infer<typeof billingPlanSchema>;
 export type BillingPlansOutput = z.infer<typeof billingPlansOutputSchema>;
 export type CreateCheckoutSessionInput = BillingCheckoutInput;
 export type CreateCheckoutSessionOutput = BillingCheckoutOutput;
@@ -58,7 +58,7 @@ export const billingOverviewOutputSchema = z.object({
   trackingLimit: z.number().int().nonnegative(),
 });
 
-export const planSchema = z.object({
+export const billingPlanSchema = z.object({
   id: z.enum(billingPlans),
   name: z.string(),
   description: z.string(),
@@ -67,7 +67,7 @@ export const planSchema = z.object({
 });
 
 export const billingPlansOutputSchema = z.object({
-  plans: z.array(planSchema),
+  plans: z.array(billingPlanSchema),
 });
 
 export const billingCheckoutInputSchema = z.object({

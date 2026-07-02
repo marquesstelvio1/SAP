@@ -30,6 +30,7 @@ export type SubscriptionMinAggregateOutputType = {
   stripeCustomerId: string | null
   stripeSubscriptionId: string | null
   plan: string | null
+  planId: string | null
   status: string | null
   currentPeriodStart: Date | null
   currentPeriodEnd: Date | null
@@ -47,6 +48,7 @@ export type SubscriptionMaxAggregateOutputType = {
   stripeCustomerId: string | null
   stripeSubscriptionId: string | null
   plan: string | null
+  planId: string | null
   status: string | null
   currentPeriodStart: Date | null
   currentPeriodEnd: Date | null
@@ -64,6 +66,7 @@ export type SubscriptionCountAggregateOutputType = {
   stripeCustomerId: number
   stripeSubscriptionId: number
   plan: number
+  planId: number
   status: number
   currentPeriodStart: number
   currentPeriodEnd: number
@@ -83,6 +86,7 @@ export type SubscriptionMinAggregateInputType = {
   stripeCustomerId?: true
   stripeSubscriptionId?: true
   plan?: true
+  planId?: true
   status?: true
   currentPeriodStart?: true
   currentPeriodEnd?: true
@@ -100,6 +104,7 @@ export type SubscriptionMaxAggregateInputType = {
   stripeCustomerId?: true
   stripeSubscriptionId?: true
   plan?: true
+  planId?: true
   status?: true
   currentPeriodStart?: true
   currentPeriodEnd?: true
@@ -117,6 +122,7 @@ export type SubscriptionCountAggregateInputType = {
   stripeCustomerId?: true
   stripeSubscriptionId?: true
   plan?: true
+  planId?: true
   status?: true
   currentPeriodStart?: true
   currentPeriodEnd?: true
@@ -207,6 +213,7 @@ export type SubscriptionGroupByOutputType = {
   stripeCustomerId: string | null
   stripeSubscriptionId: string | null
   plan: string
+  planId: string | null
   status: string
   currentPeriodStart: Date | null
   currentPeriodEnd: Date | null
@@ -245,6 +252,7 @@ export type SubscriptionWhereInput = {
   stripeCustomerId?: Prisma.StringNullableFilter<"Subscription"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableFilter<"Subscription"> | string | null
   plan?: Prisma.StringFilter<"Subscription"> | string
+  planId?: Prisma.StringNullableFilter<"Subscription"> | string | null
   status?: Prisma.StringFilter<"Subscription"> | string
   currentPeriodStart?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
   currentPeriodEnd?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
@@ -255,6 +263,7 @@ export type SubscriptionWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
   deletedBy?: Prisma.StringNullableFilter<"Subscription"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  planRel?: Prisma.XOR<Prisma.PlanNullableScalarRelationFilter, Prisma.PlanWhereInput> | null
 }
 
 export type SubscriptionOrderByWithRelationInput = {
@@ -263,6 +272,7 @@ export type SubscriptionOrderByWithRelationInput = {
   stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
   plan?: Prisma.SortOrder
+  planId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   currentPeriodStart?: Prisma.SortOrderInput | Prisma.SortOrder
   currentPeriodEnd?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -273,6 +283,7 @@ export type SubscriptionOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
+  planRel?: Prisma.PlanOrderByWithRelationInput
 }
 
 export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
@@ -284,6 +295,7 @@ export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
   stripeCustomerId?: Prisma.StringNullableFilter<"Subscription"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableFilter<"Subscription"> | string | null
   plan?: Prisma.StringFilter<"Subscription"> | string
+  planId?: Prisma.StringNullableFilter<"Subscription"> | string | null
   status?: Prisma.StringFilter<"Subscription"> | string
   currentPeriodStart?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
   currentPeriodEnd?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
@@ -294,6 +306,7 @@ export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
   deletedBy?: Prisma.StringNullableFilter<"Subscription"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  planRel?: Prisma.XOR<Prisma.PlanNullableScalarRelationFilter, Prisma.PlanWhereInput> | null
 }, "id" | "organizationId">
 
 export type SubscriptionOrderByWithAggregationInput = {
@@ -302,6 +315,7 @@ export type SubscriptionOrderByWithAggregationInput = {
   stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
   plan?: Prisma.SortOrder
+  planId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   currentPeriodStart?: Prisma.SortOrderInput | Prisma.SortOrder
   currentPeriodEnd?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -325,6 +339,7 @@ export type SubscriptionScalarWhereWithAggregatesInput = {
   stripeCustomerId?: Prisma.StringNullableWithAggregatesFilter<"Subscription"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableWithAggregatesFilter<"Subscription"> | string | null
   plan?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
+  planId?: Prisma.StringNullableWithAggregatesFilter<"Subscription"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
   currentPeriodStart?: Prisma.DateTimeNullableWithAggregatesFilter<"Subscription"> | Date | string | null
   currentPeriodEnd?: Prisma.DateTimeNullableWithAggregatesFilter<"Subscription"> | Date | string | null
@@ -351,6 +366,7 @@ export type SubscriptionCreateInput = {
   deletedAt?: Date | string | null
   deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutSubscriptionInput
+  planRel?: Prisma.PlanCreateNestedOneWithoutSubscriptionsInput
 }
 
 export type SubscriptionUncheckedCreateInput = {
@@ -359,6 +375,7 @@ export type SubscriptionUncheckedCreateInput = {
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
   plan?: string
+  planId?: string | null
   status?: string
   currentPeriodStart?: Date | string | null
   currentPeriodEnd?: Date | string | null
@@ -385,6 +402,7 @@ export type SubscriptionUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutSubscriptionNestedInput
+  planRel?: Prisma.PlanUpdateOneWithoutSubscriptionsNestedInput
 }
 
 export type SubscriptionUncheckedUpdateInput = {
@@ -393,6 +411,7 @@ export type SubscriptionUncheckedUpdateInput = {
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentPeriodStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -410,6 +429,7 @@ export type SubscriptionCreateManyInput = {
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
   plan?: string
+  planId?: string | null
   status?: string
   currentPeriodStart?: Date | string | null
   currentPeriodEnd?: Date | string | null
@@ -443,6 +463,7 @@ export type SubscriptionUncheckedUpdateManyInput = {
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentPeriodStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -459,12 +480,23 @@ export type SubscriptionNullableScalarRelationFilter = {
   isNot?: Prisma.SubscriptionWhereInput | null
 }
 
+export type SubscriptionListRelationFilter = {
+  every?: Prisma.SubscriptionWhereInput
+  some?: Prisma.SubscriptionWhereInput
+  none?: Prisma.SubscriptionWhereInput
+}
+
+export type SubscriptionOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type SubscriptionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrder
   plan?: Prisma.SortOrder
+  planId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentPeriodStart?: Prisma.SortOrder
   currentPeriodEnd?: Prisma.SortOrder
@@ -482,6 +514,7 @@ export type SubscriptionMaxOrderByAggregateInput = {
   stripeCustomerId?: Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrder
   plan?: Prisma.SortOrder
+  planId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentPeriodStart?: Prisma.SortOrder
   currentPeriodEnd?: Prisma.SortOrder
@@ -499,6 +532,7 @@ export type SubscriptionMinOrderByAggregateInput = {
   stripeCustomerId?: Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrder
   plan?: Prisma.SortOrder
+  planId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentPeriodStart?: Prisma.SortOrder
   currentPeriodEnd?: Prisma.SortOrder
@@ -542,6 +576,48 @@ export type SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SubscriptionUpdateToOneWithWhereWithoutOrganizationInput, Prisma.SubscriptionUpdateWithoutOrganizationInput>, Prisma.SubscriptionUncheckedUpdateWithoutOrganizationInput>
 }
 
+export type SubscriptionCreateNestedManyWithoutPlanRelInput = {
+  create?: Prisma.XOR<Prisma.SubscriptionCreateWithoutPlanRelInput, Prisma.SubscriptionUncheckedCreateWithoutPlanRelInput> | Prisma.SubscriptionCreateWithoutPlanRelInput[] | Prisma.SubscriptionUncheckedCreateWithoutPlanRelInput[]
+  connectOrCreate?: Prisma.SubscriptionCreateOrConnectWithoutPlanRelInput | Prisma.SubscriptionCreateOrConnectWithoutPlanRelInput[]
+  createMany?: Prisma.SubscriptionCreateManyPlanRelInputEnvelope
+  connect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
+}
+
+export type SubscriptionUncheckedCreateNestedManyWithoutPlanRelInput = {
+  create?: Prisma.XOR<Prisma.SubscriptionCreateWithoutPlanRelInput, Prisma.SubscriptionUncheckedCreateWithoutPlanRelInput> | Prisma.SubscriptionCreateWithoutPlanRelInput[] | Prisma.SubscriptionUncheckedCreateWithoutPlanRelInput[]
+  connectOrCreate?: Prisma.SubscriptionCreateOrConnectWithoutPlanRelInput | Prisma.SubscriptionCreateOrConnectWithoutPlanRelInput[]
+  createMany?: Prisma.SubscriptionCreateManyPlanRelInputEnvelope
+  connect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
+}
+
+export type SubscriptionUpdateManyWithoutPlanRelNestedInput = {
+  create?: Prisma.XOR<Prisma.SubscriptionCreateWithoutPlanRelInput, Prisma.SubscriptionUncheckedCreateWithoutPlanRelInput> | Prisma.SubscriptionCreateWithoutPlanRelInput[] | Prisma.SubscriptionUncheckedCreateWithoutPlanRelInput[]
+  connectOrCreate?: Prisma.SubscriptionCreateOrConnectWithoutPlanRelInput | Prisma.SubscriptionCreateOrConnectWithoutPlanRelInput[]
+  upsert?: Prisma.SubscriptionUpsertWithWhereUniqueWithoutPlanRelInput | Prisma.SubscriptionUpsertWithWhereUniqueWithoutPlanRelInput[]
+  createMany?: Prisma.SubscriptionCreateManyPlanRelInputEnvelope
+  set?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
+  disconnect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
+  delete?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
+  connect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
+  update?: Prisma.SubscriptionUpdateWithWhereUniqueWithoutPlanRelInput | Prisma.SubscriptionUpdateWithWhereUniqueWithoutPlanRelInput[]
+  updateMany?: Prisma.SubscriptionUpdateManyWithWhereWithoutPlanRelInput | Prisma.SubscriptionUpdateManyWithWhereWithoutPlanRelInput[]
+  deleteMany?: Prisma.SubscriptionScalarWhereInput | Prisma.SubscriptionScalarWhereInput[]
+}
+
+export type SubscriptionUncheckedUpdateManyWithoutPlanRelNestedInput = {
+  create?: Prisma.XOR<Prisma.SubscriptionCreateWithoutPlanRelInput, Prisma.SubscriptionUncheckedCreateWithoutPlanRelInput> | Prisma.SubscriptionCreateWithoutPlanRelInput[] | Prisma.SubscriptionUncheckedCreateWithoutPlanRelInput[]
+  connectOrCreate?: Prisma.SubscriptionCreateOrConnectWithoutPlanRelInput | Prisma.SubscriptionCreateOrConnectWithoutPlanRelInput[]
+  upsert?: Prisma.SubscriptionUpsertWithWhereUniqueWithoutPlanRelInput | Prisma.SubscriptionUpsertWithWhereUniqueWithoutPlanRelInput[]
+  createMany?: Prisma.SubscriptionCreateManyPlanRelInputEnvelope
+  set?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
+  disconnect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
+  delete?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
+  connect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
+  update?: Prisma.SubscriptionUpdateWithWhereUniqueWithoutPlanRelInput | Prisma.SubscriptionUpdateWithWhereUniqueWithoutPlanRelInput[]
+  updateMany?: Prisma.SubscriptionUpdateManyWithWhereWithoutPlanRelInput | Prisma.SubscriptionUpdateManyWithWhereWithoutPlanRelInput[]
+  deleteMany?: Prisma.SubscriptionScalarWhereInput | Prisma.SubscriptionScalarWhereInput[]
+}
+
 export type SubscriptionCreateWithoutOrganizationInput = {
   id?: string
   stripeCustomerId?: string | null
@@ -556,6 +632,7 @@ export type SubscriptionCreateWithoutOrganizationInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   deletedBy?: string | null
+  planRel?: Prisma.PlanCreateNestedOneWithoutSubscriptionsInput
 }
 
 export type SubscriptionUncheckedCreateWithoutOrganizationInput = {
@@ -563,6 +640,7 @@ export type SubscriptionUncheckedCreateWithoutOrganizationInput = {
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
   plan?: string
+  planId?: string | null
   status?: string
   currentPeriodStart?: Date | string | null
   currentPeriodEnd?: Date | string | null
@@ -604,10 +682,161 @@ export type SubscriptionUpdateWithoutOrganizationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planRel?: Prisma.PlanUpdateOneWithoutSubscriptionsNestedInput
 }
 
 export type SubscriptionUncheckedUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentPeriodStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type SubscriptionCreateWithoutPlanRelInput = {
+  id?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  plan?: string
+  status?: string
+  currentPeriodStart?: Date | string | null
+  currentPeriodEnd?: Date | string | null
+  cancelAtPeriodEnd?: boolean
+  trialEndsAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutSubscriptionInput
+}
+
+export type SubscriptionUncheckedCreateWithoutPlanRelInput = {
+  id?: string
+  organizationId: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  plan?: string
+  status?: string
+  currentPeriodStart?: Date | string | null
+  currentPeriodEnd?: Date | string | null
+  cancelAtPeriodEnd?: boolean
+  trialEndsAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
+}
+
+export type SubscriptionCreateOrConnectWithoutPlanRelInput = {
+  where: Prisma.SubscriptionWhereUniqueInput
+  create: Prisma.XOR<Prisma.SubscriptionCreateWithoutPlanRelInput, Prisma.SubscriptionUncheckedCreateWithoutPlanRelInput>
+}
+
+export type SubscriptionCreateManyPlanRelInputEnvelope = {
+  data: Prisma.SubscriptionCreateManyPlanRelInput | Prisma.SubscriptionCreateManyPlanRelInput[]
+  skipDuplicates?: boolean
+}
+
+export type SubscriptionUpsertWithWhereUniqueWithoutPlanRelInput = {
+  where: Prisma.SubscriptionWhereUniqueInput
+  update: Prisma.XOR<Prisma.SubscriptionUpdateWithoutPlanRelInput, Prisma.SubscriptionUncheckedUpdateWithoutPlanRelInput>
+  create: Prisma.XOR<Prisma.SubscriptionCreateWithoutPlanRelInput, Prisma.SubscriptionUncheckedCreateWithoutPlanRelInput>
+}
+
+export type SubscriptionUpdateWithWhereUniqueWithoutPlanRelInput = {
+  where: Prisma.SubscriptionWhereUniqueInput
+  data: Prisma.XOR<Prisma.SubscriptionUpdateWithoutPlanRelInput, Prisma.SubscriptionUncheckedUpdateWithoutPlanRelInput>
+}
+
+export type SubscriptionUpdateManyWithWhereWithoutPlanRelInput = {
+  where: Prisma.SubscriptionScalarWhereInput
+  data: Prisma.XOR<Prisma.SubscriptionUpdateManyMutationInput, Prisma.SubscriptionUncheckedUpdateManyWithoutPlanRelInput>
+}
+
+export type SubscriptionScalarWhereInput = {
+  AND?: Prisma.SubscriptionScalarWhereInput | Prisma.SubscriptionScalarWhereInput[]
+  OR?: Prisma.SubscriptionScalarWhereInput[]
+  NOT?: Prisma.SubscriptionScalarWhereInput | Prisma.SubscriptionScalarWhereInput[]
+  id?: Prisma.StringFilter<"Subscription"> | string
+  organizationId?: Prisma.StringFilter<"Subscription"> | string
+  stripeCustomerId?: Prisma.StringNullableFilter<"Subscription"> | string | null
+  stripeSubscriptionId?: Prisma.StringNullableFilter<"Subscription"> | string | null
+  plan?: Prisma.StringFilter<"Subscription"> | string
+  planId?: Prisma.StringNullableFilter<"Subscription"> | string | null
+  status?: Prisma.StringFilter<"Subscription"> | string
+  currentPeriodStart?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
+  currentPeriodEnd?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFilter<"Subscription"> | boolean
+  trialEndsAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"Subscription"> | string | null
+}
+
+export type SubscriptionCreateManyPlanRelInput = {
+  id?: string
+  organizationId: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  plan?: string
+  status?: string
+  currentPeriodStart?: Date | string | null
+  currentPeriodEnd?: Date | string | null
+  cancelAtPeriodEnd?: boolean
+  trialEndsAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
+}
+
+export type SubscriptionUpdateWithoutPlanRelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentPeriodStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutSubscriptionNestedInput
+}
+
+export type SubscriptionUncheckedUpdateWithoutPlanRelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentPeriodStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type SubscriptionUncheckedUpdateManyWithoutPlanRelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.StringFieldUpdateOperationsInput | string
@@ -630,6 +859,7 @@ export type SubscriptionSelect<ExtArgs extends runtime.Types.Extensions.Internal
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
   plan?: boolean
+  planId?: boolean
   status?: boolean
   currentPeriodStart?: boolean
   currentPeriodEnd?: boolean
@@ -640,6 +870,7 @@ export type SubscriptionSelect<ExtArgs extends runtime.Types.Extensions.Internal
   deletedAt?: boolean
   deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  planRel?: boolean | Prisma.Subscription$planRelArgs<ExtArgs>
 }, ExtArgs["result"]["subscription"]>
 
 export type SubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -648,6 +879,7 @@ export type SubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
   plan?: boolean
+  planId?: boolean
   status?: boolean
   currentPeriodStart?: boolean
   currentPeriodEnd?: boolean
@@ -658,6 +890,7 @@ export type SubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   deletedAt?: boolean
   deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  planRel?: boolean | Prisma.Subscription$planRelArgs<ExtArgs>
 }, ExtArgs["result"]["subscription"]>
 
 export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -666,6 +899,7 @@ export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
   plan?: boolean
+  planId?: boolean
   status?: boolean
   currentPeriodStart?: boolean
   currentPeriodEnd?: boolean
@@ -676,6 +910,7 @@ export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   deletedAt?: boolean
   deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  planRel?: boolean | Prisma.Subscription$planRelArgs<ExtArgs>
 }, ExtArgs["result"]["subscription"]>
 
 export type SubscriptionSelectScalar = {
@@ -684,6 +919,7 @@ export type SubscriptionSelectScalar = {
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
   plan?: boolean
+  planId?: boolean
   status?: boolean
   currentPeriodStart?: boolean
   currentPeriodEnd?: boolean
@@ -695,21 +931,25 @@ export type SubscriptionSelectScalar = {
   deletedBy?: boolean
 }
 
-export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "stripeCustomerId" | "stripeSubscriptionId" | "plan" | "status" | "currentPeriodStart" | "currentPeriodEnd" | "cancelAtPeriodEnd" | "trialEndsAt" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["subscription"]>
+export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "stripeCustomerId" | "stripeSubscriptionId" | "plan" | "planId" | "status" | "currentPeriodStart" | "currentPeriodEnd" | "cancelAtPeriodEnd" | "trialEndsAt" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["subscription"]>
 export type SubscriptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  planRel?: boolean | Prisma.Subscription$planRelArgs<ExtArgs>
 }
 export type SubscriptionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  planRel?: boolean | Prisma.Subscription$planRelArgs<ExtArgs>
 }
 export type SubscriptionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  planRel?: boolean | Prisma.Subscription$planRelArgs<ExtArgs>
 }
 
 export type $SubscriptionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Subscription"
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
+    planRel: Prisma.$PlanPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -717,6 +957,7 @@ export type $SubscriptionPayload<ExtArgs extends runtime.Types.Extensions.Intern
     stripeCustomerId: string | null
     stripeSubscriptionId: string | null
     plan: string
+    planId: string | null
     status: string
     currentPeriodStart: Date | null
     currentPeriodEnd: Date | null
@@ -1121,6 +1362,7 @@ readonly fields: SubscriptionFieldRefs;
 export interface Prisma__SubscriptionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  planRel<T extends Prisma.Subscription$planRelArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Subscription$planRelArgs<ExtArgs>>): Prisma.Prisma__PlanClient<runtime.Types.Result.GetResult<Prisma.$PlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1155,6 +1397,7 @@ export interface SubscriptionFieldRefs {
   readonly stripeCustomerId: Prisma.FieldRef<"Subscription", 'String'>
   readonly stripeSubscriptionId: Prisma.FieldRef<"Subscription", 'String'>
   readonly plan: Prisma.FieldRef<"Subscription", 'String'>
+  readonly planId: Prisma.FieldRef<"Subscription", 'String'>
   readonly status: Prisma.FieldRef<"Subscription", 'String'>
   readonly currentPeriodStart: Prisma.FieldRef<"Subscription", 'DateTime'>
   readonly currentPeriodEnd: Prisma.FieldRef<"Subscription", 'DateTime'>
@@ -1562,6 +1805,25 @@ export type SubscriptionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many Subscriptions to delete.
    */
   limit?: number
+}
+
+/**
+ * Subscription.planRel
+ */
+export type Subscription$planRelArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Plan
+   */
+  select?: Prisma.PlanSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Plan
+   */
+  omit?: Prisma.PlanOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlanInclude<ExtArgs> | null
+  where?: Prisma.PlanWhereInput
 }
 
 /**

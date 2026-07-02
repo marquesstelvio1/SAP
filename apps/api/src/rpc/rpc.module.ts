@@ -4,6 +4,7 @@ import { AdminModule } from "../admin/admin.module.js";
 import { AuditModule } from "../audit/audit.module.js";
 import { AuthModule } from "../auth/auth.module.js";
 import { BillingModule } from "../billing/billing.module.js";
+import { PlansModule } from "../billing/plans/plans.module.js";
 import { CapacityModule } from "../capacity/capacity.module.js";
 import { CargoModule } from "../cargo/cargo.module.js";
 import { DocumentsModule } from "../documents/documents.module.js";
@@ -30,6 +31,7 @@ import { RpcHttpMiddleware } from "./rpc-http.middleware.js";
     AdminModule,
     AuditModule,
     BillingModule,
+    PlansModule,
     IntegrationsModule,
     ObservabilityModule,
     CargoModule,

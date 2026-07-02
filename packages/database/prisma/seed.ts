@@ -61,6 +61,7 @@ async function seedLocalDemoData(database: PrismaClient): Promise<DemoSeedResult
 
   const trackingShipments = await seedTrackingDemoData(database, organization.id, now);
   const cargoRecords = await seedCargoDemoData(database, organization.id, trackingShipments, now);
+  await seedPlans(database);
   const capacitySlots = await seedCapacityDemoData(database, organization.id, cargoRecords, now);
   const transportOrders = await seedPlanningDemoData(database, organization.id, cargoRecords, now);
   const tariffQuotes = await seedTariffDemoData(database, organization.id, cargoRecords, now);
@@ -1813,6 +1814,188 @@ async function upsertCargoComplianceEvidence(
       sourceSystem: localDemoDefaults.sourceSystem,
       status: input.status,
       verifyIdempotencyKey: input.verifyIdempotencyKey,
+    },
+  });
+}
+
+async function seedPlans(database: PrismaClient): Promise<void> {
+  const freeFeatures = [
+    { key: "cargos", label: "Cargas", included: true, limit: "50" },
+    { key: "members", label: "Utilizadores", included: true, limit: "5" },
+    { key: "tracking", label: "Tracking", included: true, limit: "1000" },
+    { key: "api", label: "API", included: false },
+    { key: "reports", label: "Relatorios", included: true },
+    { key: "sso", label: "SSO", included: false },
+    { key: "audit_log", label: "Audit Log", included: false },
+    { key: "webhooks", label: "Webhooks", included: false },
+  ];
+  const proFeatures = [
+    { key: "cargos", label: "Cargas", included: true, limit: "500" },
+    { key: "members", label: "Utilizadores", included: true, limit: "25" },
+    { key: "tracking", label: "Tracking", included: true, limit: "50000" },
+    { key: "api", label: "API", included: true },
+    { key: "reports", label: "Relatorios", included: true },
+    { key: "sso", label: "SSO", included: false },
+    { key: "audit_log", label: "Audit Log", included: false },
+    { key: "webhooks", label: "Webhooks", included: false },
+  ];
+  const enterpriseFeatures = [
+    { key: "cargos", label: "Cargas", included: true, limit: "10000" },
+    { key: "members", label: "Utilizadores", included: true, limit: "999" },
+    { key: "tracking", label: "Tracking", included: true, limit: "999999" },
+    { key: "api", label: "API", included: true },
+    { key: "reports", label: "Relatorios", included: true },
+    { key: "sso", label: "SSO", included: true },
+    { key: "audit_log", label: "Audit Log", included: true },
+    { key: "webhooks", label: "Webhooks", included: true },
+  ];
+
+  await database.plan.upsert({
+    where: { slug: "free" },
+    update: {
+      name: "Free",
+      description: "Para testar a plataforma",
+      features: freeFeatures,
+      limits: {
+        maxMembers: 5,
+        maxCargos: 50,
+        maxTrackingEvents: 1000,
+        maxApiCalls: 1000,
+        maxTeams: 0,
+        hasSso: false,
+        hasApi: false,
+        hasWebhooks: false,
+        hasReports: true,
+        hasAuditLog: false,
+      },
+      isPublic: true,
+      sortOrder: 0,
+      active: true,
+    },
+    create: {
+      id: "plan_free",
+      slug: "free",
+      name: "Free",
+      description: "Para testar a plataforma",
+      price: 0,
+      currency: "eur",
+      interval: "month",
+      features: freeFeatures,
+      limits: {
+        maxMembers: 5,
+        maxCargos: 50,
+        maxTrackingEvents: 1000,
+        maxApiCalls: 1000,
+        maxTeams: 0,
+        hasSso: false,
+        hasApi: false,
+        hasWebhooks: false,
+        hasReports: true,
+        hasAuditLog: false,
+      },
+      isPublic: true,
+      sortOrder: 0,
+      active: true,
+    },
+  });
+
+  await database.plan.upsert({
+    where: { slug: "pro" },
+    update: {
+      name: "Pro",
+      description: "Para operacoes profissionais",
+      price: 9900,
+      features: proFeatures,
+      limits: {
+        maxMembers: 25,
+        maxCargos: 500,
+        maxTrackingEvents: 50000,
+        maxApiCalls: 50000,
+        maxTeams: 10,
+        hasSso: false,
+        hasApi: true,
+        hasWebhooks: false,
+        hasReports: true,
+        hasAuditLog: false,
+      },
+      isPublic: true,
+      sortOrder: 1,
+      active: true,
+    },
+    create: {
+      id: "plan_pro",
+      slug: "pro",
+      name: "Pro",
+      description: "Para operacoes profissionais",
+      price: 9900,
+      currency: "eur",
+      interval: "month",
+      features: proFeatures,
+      limits: {
+        maxMembers: 25,
+        maxCargos: 500,
+        maxTrackingEvents: 50000,
+        maxApiCalls: 50000,
+        maxTeams: 10,
+        hasSso: false,
+        hasApi: true,
+        hasWebhooks: false,
+        hasReports: true,
+        hasAuditLog: false,
+      },
+      isPublic: true,
+      sortOrder: 1,
+      active: true,
+    },
+  });
+
+  await database.plan.upsert({
+    where: { slug: "enterprise" },
+    update: {
+      name: "Enterprise",
+      description: "Para grandes operadores logisticos",
+      price: 0,
+      features: enterpriseFeatures,
+      limits: {
+        maxMembers: 999,
+        maxCargos: 10000,
+        maxTrackingEvents: 999999,
+        maxApiCalls: 999999,
+        maxTeams: 999,
+        hasSso: true,
+        hasApi: true,
+        hasWebhooks: true,
+        hasReports: true,
+        hasAuditLog: true,
+      },
+      isPublic: true,
+      sortOrder: 2,
+      active: true,
+    },
+    create: {
+      id: "plan_enterprise",
+      slug: "enterprise",
+      name: "Enterprise",
+      description: "Para grandes operadores logisticos",
+      price: 0,
+      currency: "eur",
+      interval: "month",
+      features: enterpriseFeatures,
+      limits: {
+        maxMembers: 999,
+        maxCargos: 10000,
+        maxTrackingEvents: 999999,
+        maxApiCalls: 999999,
+        maxTeams: 999,
+        hasSso: true,
+        hasApi: true,
+        hasWebhooks: true,
+        hasReports: true,
+        hasAuditLog: true,
+      },
+      isPublic: true,
+      sortOrder: 2,
+      active: true,
     },
   });
 }

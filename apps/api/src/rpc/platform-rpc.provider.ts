@@ -3,6 +3,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { AdminService } from "../admin/admin.service.js";
 import { AuditService } from "../audit/audit.service.js";
 import { BillingService } from "../billing/billing.service.js";
+import { PlansService } from "../billing/plans/plans.service.js";
 import { CapacityService } from "../capacity/capacity.service.js";
 import { CargoService } from "../cargo/cargo.service.js";
 import { DocumentsService } from "../documents/documents.service.js";
@@ -32,6 +33,8 @@ export class PlatformRpcProvider {
     auditService: AuditService,
     @Inject(BillingService)
     billingService: BillingService,
+    @Inject(PlansService)
+    plansService: PlansService,
     @Inject(CargoService)
     cargoService: CargoService,
     @Inject(TrackingService)
@@ -69,6 +72,7 @@ export class PlatformRpcProvider {
       adminService,
       auditService,
       billingService,
+      plansService,
       cargoService,
       trackingService,
       capacityService,

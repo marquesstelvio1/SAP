@@ -8,6 +8,7 @@ import {
 import { type AdminRpcContext, createAdminRpcRouter } from "../admin/admin-rpc.router.js";
 import { type AuditRpcContext, createAuditRpcRouter } from "../audit/audit-rpc.router.js";
 import { type BillingRpcContext, createBillingRpcRouter } from "../billing/billing-rpc.router.js";
+import { createPlansRpcRouter, type PlansRpcContext } from "../billing/plans/plans-rpc.router.js";
 import {
   type CapacityRpcContext,
   createCapacityRpcRouter,
@@ -60,6 +61,7 @@ export type PlatformRpcContext = AdminRpcContext &
   IntegrationsRpcContext &
   NotificationsRpcContext &
   OrganizationsRpcContext &
+  PlansRpcContext &
   PlanningRpcContext &
   ReportsRpcContext &
   SettingsRpcContext &
@@ -78,6 +80,7 @@ export type CreatePlatformRpcRouterInput = Parameters<typeof createAdminRpcRoute
   Parameters<typeof createIntegrationsRpcRouter>[0] &
   Parameters<typeof createNotificationsRpcRouter>[0] &
   Parameters<typeof createOrganizationsRpcRouter>[0] &
+  Parameters<typeof createPlansRpcRouter>[0] &
   Parameters<typeof createPlanningRpcRouter>[0] &
   Parameters<typeof createReportsRpcRouter>[0] &
   Parameters<typeof createSettingsRpcRouter>[0] &
@@ -100,6 +103,7 @@ export function createPlatformRpcRouter(input: CreatePlatformRpcRouterInput) {
   const adminRpcRouter = createAdminRpcRouter(input);
   const auditRpcRouter = createAuditRpcRouter(input);
   const billingRpcRouter = createBillingRpcRouter(input);
+  const plansRpcRouter = createPlansRpcRouter(input);
   const capacityRpcRouter = createCapacityRpcRouter(input);
   const cargoRpcRouter = createCargoRpcRouter(input);
   const documentsRpcRouter = createDocumentsRpcRouter(input);
@@ -124,6 +128,7 @@ export function createPlatformRpcRouter(input: CreatePlatformRpcRouterInput) {
         .handler(() => createFoundationRpcHealthReport()),
     },
     billing: billingRpcRouter.billing,
+    plans: plansRpcRouter.plans,
     capacity: capacityRpcRouter.capacity,
     cargo: cargoRpcRouter.cargo,
     documents: documentsRpcRouter.documents,
