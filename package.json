@@ -56,6 +56,8 @@
     "storybook": "pnpm --filter @saptm/ui storybook",
     "build:storybook": "pnpm --filter @saptm/ui build:storybook",
     "changeset": "changeset",
+    "ci:gate": "node scripts/ci-gate.mjs --full",
+    "ci:gate:precommit": "node scripts/ci-gate.mjs",
     "db:generate": "pnpm --filter @saptm/database db:generate",
     "db:validate": "pnpm --filter @saptm/database db:validate",
     "db:migrate:dev": "pnpm --filter @saptm/database db:migrate:dev",
@@ -72,6 +74,7 @@
     "infra:stack": "docker compose up -d --build",
     "infra:down": "docker compose down",
     "infra:logs": "docker compose logs -f",
+    "postinstall": "git config core.hooksPath .githooks",
     "docker:api:build": "docker build -f apps/api/Dockerfile -t saptm-api .",
     "docker:web:build": "docker build -f apps/web/Dockerfile -t saptm-web ."
   },
