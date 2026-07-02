@@ -48,6 +48,7 @@ const staticHeaders = [
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  outputFileTracingRoot: path.join(import.meta.dirname, "../../"),
   reactStrictMode: true,
   serverExternalPackages: ["@better-auth/kysely-adapter", "better-auth", "kysely"],
   typedRoutes: true,
