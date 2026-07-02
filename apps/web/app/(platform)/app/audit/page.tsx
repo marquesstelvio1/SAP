@@ -85,7 +85,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
   const parsedFilters = parseAuditSearchParams(rawSearchParams);
   const auditInput = parsedFilters.input;
 
-  let result;
+  let result: Awaited<ReturnType<typeof searchAuditRecords>>;
   try {
     result = await searchAuditRecords(auditInput);
   } catch (error) {

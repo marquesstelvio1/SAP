@@ -83,7 +83,7 @@ export default async function AdminIdentityPage(props: {
       />
     );
   }
-  let result;
+  let result: Awaited<ReturnType<typeof getAdminOverview>>;
   try {
     result = await getAdminOverview({ offset, limit });
   } catch (error) {
@@ -114,10 +114,7 @@ export default async function AdminIdentityPage(props: {
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <AdminOverviewHeader
-        totals={overview.totals}
-        organization={overview.organization}
-      />
+      <AdminOverviewHeader totals={overview.totals} organization={overview.organization} />
       <section className="grid gap-4 xl:grid-cols-2">
         <AdminUserInviteForm
           action={inviteAdminUserAction}

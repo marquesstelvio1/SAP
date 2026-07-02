@@ -62,7 +62,7 @@ export function IntegrationCarrierTmsMovementForm({
             {canProcessCarrierTms ? "Movimento autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Carrier TMS</Badge>
-          <Badge variant="outline">tracking.event.record</Badge>
+          <Badge variant="outline">Registo de tracking</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Processar movimento Carrier TMS</CardTitle>
@@ -76,7 +76,7 @@ export function IntegrationCarrierTmsMovementForm({
         <CardContent>
           <FieldGroup>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="carrierTmsServiceAccountId">Service account</FieldLabel>
+              <FieldLabel htmlFor="carrierTmsServiceAccountId">Conta de integração</FieldLabel>
               <SelectNative
                 disabled={isDisabled}
                 id="carrierTmsServiceAccountId"
@@ -85,16 +85,16 @@ export function IntegrationCarrierTmsMovementForm({
               >
                 {eligibleServiceAccounts.map((serviceAccount) => (
                   <option key={serviceAccount.id} value={serviceAccount.id}>
-                    {serviceAccount.name} ({serviceAccount.id})
+                    {serviceAccount.name}
                   </option>
                 ))}
               </SelectNative>
               <FieldDescription>
-                Requer `integration.event.ingest` e `tracking.event.record`.
+                Requer recepção de eventos e registo de tracking.
               </FieldDescription>
             </Field>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="carrierTmsSourceSystem">Source system</FieldLabel>
+              <FieldLabel htmlFor="carrierTmsSourceSystem">Origem</FieldLabel>
               <Input
                 defaultValue="carrier-tms"
                 disabled={isDisabled}

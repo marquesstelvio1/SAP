@@ -324,14 +324,14 @@ export const platformNavigation: readonly PlatformNavigationGroup[] = [
       {
         label: "Integrações",
         href: "/app/integrations",
-        description: "Service accounts, API keys e eventos externos idempotentes.",
+        description: "Contas de integração, chaves e eventos externos auditáveis.",
         status: "available",
         requiredPermissions: ["integration.api_key.manage"],
       },
       {
         label: "Identidade e permissões",
         href: "/app/admin",
-        description: "Utilizadores, memberships, roles, permissões e governança tenant-scoped.",
+        description: "Utilizadores, membros, perfis e permissões da organização.",
         status: "available",
         requiredPermissions: ["identity.role.assign"],
       },

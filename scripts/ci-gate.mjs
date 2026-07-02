@@ -1,5 +1,8 @@
 #!/usr/bin/env node
+import { execSync } from "node:child_process";
+import { existsSync } from "node:fs";
 
+const ROOT = new URL("..", import.meta.url).pathname;
 const FULL = process.argv.includes("--full");
 
 const steps = FULL
@@ -21,10 +24,6 @@ const steps = FULL
     { cmd: "pnpm --filter @saptm/database db:generate", label: "prisma generate" },
     { cmd: "pnpm test", label: "pnpm test" },
   ];
-
-import { execSync } from "node:child_process";
-
-const ROOT = new URL("..", import.meta.url).pathname;
 
 const failed = [];
 

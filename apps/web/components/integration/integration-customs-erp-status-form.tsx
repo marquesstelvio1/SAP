@@ -62,7 +62,7 @@ export function IntegrationCustomsErpStatusForm({
             {canProcessCustomsErp ? "Status autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Customs/ERP</Badge>
-          <Badge variant="outline">tracking.event.record</Badge>
+          <Badge variant="outline">Registo de tracking</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Processar status Customs/ERP</CardTitle>
@@ -76,7 +76,7 @@ export function IntegrationCustomsErpStatusForm({
         <CardContent>
           <FieldGroup>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="customsErpServiceAccountId">Service account</FieldLabel>
+              <FieldLabel htmlFor="customsErpServiceAccountId">Conta de integração</FieldLabel>
               <SelectNative
                 disabled={isDisabled}
                 id="customsErpServiceAccountId"
@@ -85,16 +85,16 @@ export function IntegrationCustomsErpStatusForm({
               >
                 {eligibleServiceAccounts.map((serviceAccount) => (
                   <option key={serviceAccount.id} value={serviceAccount.id}>
-                    {serviceAccount.name} ({serviceAccount.id})
+                    {serviceAccount.name}
                   </option>
                 ))}
               </SelectNative>
               <FieldDescription>
-                Requer `integration.event.ingest` e `tracking.event.record`.
+                Requer recepção de eventos e registo de tracking.
               </FieldDescription>
             </Field>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="customsErpSourceSystem">Source system</FieldLabel>
+              <FieldLabel htmlFor="customsErpSourceSystem">Origem</FieldLabel>
               <Input
                 defaultValue="customs-erp"
                 disabled={isDisabled}

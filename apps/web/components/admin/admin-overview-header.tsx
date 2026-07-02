@@ -21,10 +21,7 @@ export type AdminOverviewHeaderProps = {
   organization: { name: string; slug: string; status: string; id: string; updatedAt: string };
 };
 
-export function AdminOverviewHeader({
-  totals,
-  organization,
-}: AdminOverviewHeaderProps) {
+export function AdminOverviewHeader({ totals, organization }: AdminOverviewHeaderProps) {
   return (
     <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
       <Card>

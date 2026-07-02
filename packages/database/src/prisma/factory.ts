@@ -17,6 +17,15 @@ function getCjsRequire() {
   return _require;
 }
 
+function getPgPool() {
+  const { Pool } = getCjsRequire()("pg") as {
+    Pool: new (
+      config: Record<string, unknown>,
+    ) => { options: Record<string, unknown>; end(): Promise<void> };
+  };
+  return Pool;
+}
+
 export function createPrismaClient(poolSize?: number) {
   const { PrismaClient: PrismaClientClass } = getCjsRequire()("../../generated/prisma/client") as {
     PrismaClient: typeof PrismaClient;
@@ -27,13 +36,18 @@ export function createPrismaClient(poolSize?: number) {
   const url = new URL(connectionString);
   const isLocalhost = url.hostname === "localhost" || url.hostname === "127.0.0.1";
 
-  const adapter = new PrismaPg({
+  const Pool = getPgPool();
+
+  const pool = new Pool({
     connectionString,
     max: poolSize ?? getDefaultPoolSize(),
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 10_000,
     ...(isLocalhost ? {} : { ssl: { rejectUnauthorized: false } }),
   });
+
+  // biome-ignore lint/suspicious/noExplicitAny: internal PG casting
+  const adapter = new PrismaPg(pool as any, { disposeExternalPool: true });
 
   const baseClient = new PrismaClientClass({
     adapter,

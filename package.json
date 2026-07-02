@@ -74,14 +74,14 @@
     "infra:stack": "docker compose up -d --build",
     "infra:down": "docker compose down",
     "infra:logs": "docker compose logs -f",
-    "postinstall": "git config core.hooksPath .githooks",
+    "postinstall": "pnpm --filter @saptm/database db:generate",
     "docker:api:build": "docker build -f apps/api/Dockerfile -t saptm-api .",
     "docker:web:build": "docker build -f apps/web/Dockerfile -t saptm-web ."
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@changesets/cli": "catalog:",
-
+    "simple-git-hooks": "catalog:",
     "@playwright/test": "catalog:",
     "@axe-core/playwright": "catalog:",
     "tsup": "catalog:",
@@ -103,5 +103,8 @@
   "dependencies": {
     "class-variance-authority": "catalog:",
     "radix-ui": "catalog:"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm run ci:gate:precommit"
   }
 }

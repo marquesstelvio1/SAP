@@ -550,7 +550,10 @@ function SidebarMenuSkeleton({ className, ...props }: React.ComponentProps<"div"
   return (
     <div
       data-slot="sidebar-menu-skeleton"
-      className={cn("flex h-[var(--density-compact-control-height)] items-center gap-3 px-3", className)}
+      className={cn(
+        "flex h-[var(--density-compact-control-height)] items-center gap-3 px-3",
+        className,
+      )}
       {...props}
     >
       <div className="size-4 rounded-md bg-sidebar-accent/50 animate-pulse" />

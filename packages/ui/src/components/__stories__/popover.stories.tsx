@@ -24,9 +24,7 @@ export const Default: Story = {
       </PopoverTrigger>
       <PopoverContent>
         <div style={{ fontSize: "0.875rem" }}>
-          <p style={{ margin: 0, fontWeight: 600, marginBottom: "var(--space-1)" }}>
-            Dimensions
-          </p>
+          <p style={{ margin: 0, fontWeight: 600, marginBottom: "var(--space-1)" }}>Dimensions</p>
           <p style={{ margin: 0, color: "var(--muted-foreground)" }}>
             Set the dimensions for the layer.
           </p>
@@ -45,7 +43,14 @@ export const Form: Story = {
       <PopoverContent style={{ width: 280 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
           <div>
-            <p style={{ margin: 0, fontWeight: 600, fontSize: "0.875rem", marginBottom: "var(--space-1)" }}>
+            <p
+              style={{
+                margin: 0,
+                fontWeight: 600,
+                fontSize: "0.875rem",
+                marginBottom: "var(--space-1)",
+              }}
+            >
               Dimensions
             </p>
             <p style={{ margin: 0, color: "var(--muted-foreground)", fontSize: "0.75rem" }}>

@@ -78,7 +78,7 @@ export function TrackingEventRecordForm({
           <Badge variant={canRecordEvents ? "success" : "warning"}>
             {canRecordEvents ? "Evento autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">tracking.event.record</Badge>
+          <Badge variant="outline">Registo de tracking</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar evento operacional</CardTitle>

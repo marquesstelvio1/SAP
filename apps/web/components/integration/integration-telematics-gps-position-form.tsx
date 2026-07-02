@@ -62,7 +62,7 @@ export function IntegrationTelematicsGpsPositionForm({
             {canProcessTelematicsGps ? "GPS autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Telematics/GPS</Badge>
-          <Badge variant="outline">tracking.event.record</Badge>
+          <Badge variant="outline">Registo de tracking</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Processar posicao Telematics/GPS</CardTitle>
@@ -76,7 +76,7 @@ export function IntegrationTelematicsGpsPositionForm({
         <CardContent>
           <FieldGroup>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="telematicsGpsServiceAccountId">Service account</FieldLabel>
+              <FieldLabel htmlFor="telematicsGpsServiceAccountId">Conta de integração</FieldLabel>
               <SelectNative
                 disabled={isDisabled}
                 id="telematicsGpsServiceAccountId"
@@ -85,16 +85,16 @@ export function IntegrationTelematicsGpsPositionForm({
               >
                 {eligibleServiceAccounts.map((serviceAccount) => (
                   <option key={serviceAccount.id} value={serviceAccount.id}>
-                    {serviceAccount.name} ({serviceAccount.id})
+                    {serviceAccount.name}
                   </option>
                 ))}
               </SelectNative>
               <FieldDescription>
-                Requer `integration.event.ingest` e `tracking.event.record`.
+                Requer recepção de eventos e registo de tracking.
               </FieldDescription>
             </Field>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="telematicsGpsSourceSystem">Source system</FieldLabel>
+              <FieldLabel htmlFor="telematicsGpsSourceSystem">Origem</FieldLabel>
               <Input
                 defaultValue="telematics-gps"
                 disabled={isDisabled}

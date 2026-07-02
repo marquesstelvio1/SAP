@@ -81,15 +81,15 @@ export function IntegrationServiceAccountCreateForm({
               />
             </Field>
             <Field data-disabled={!canManageApiKeys}>
-              <FieldLabel htmlFor="integrationExtraScope">Escopo adicional opcional</FieldLabel>
+              <FieldLabel htmlFor="integrationExtraScope">Permissão adicional opcional</FieldLabel>
               <SelectNative disabled={isDisabled} id="integrationExtraScope" name="extraScope">
-                <option value="">Apenas integration.event.ingest</option>
-                <option value="tracking.event.record">tracking.event.record</option>
-                <option value="cargo.register">cargo.register</option>
-                <option value="cargo.transport.arrive">cargo.transport.arrive</option>
+                <option value="">Apenas recepção de eventos</option>
+                <option value="tracking.event.record">Registo de tracking</option>
+                <option value="cargo.register">Registo de cargas</option>
+                <option value="cargo.transport.arrive">Chegada de transporte</option>
               </SelectNative>
               <FieldDescription>
-                O escopo `integration.event.ingest` é obrigatório e sempre incluído.
+                A recepção de eventos é obrigatória e sempre incluída.
               </FieldDescription>
             </Field>
             <Field data-disabled={!canManageApiKeys}>
@@ -101,13 +101,13 @@ export function IntegrationServiceAccountCreateForm({
                 type="datetime-local"
               />
               <FieldDescription>
-                Opcional. Em produção deve seguir rotação de secrets.
+                Opcional. Em produção deve seguir rotação de segredos.
               </FieldDescription>
             </Field>
             <Field>
               <FieldDescription>
                 {state.status === "success" && state.serviceAccountId !== undefined
-                  ? `${state.message} Service account: ${state.serviceAccountId} · Prefixo: ${
+                  ? `${state.message} Prefixo: ${
                       state.apiKeyPrefix ?? "sem-prefixo"
                     } · Replay: ${state.replayed ? "sim" : "nao"}`
                   : state.message}
@@ -123,10 +123,10 @@ export function IntegrationServiceAccountCreateForm({
         </CardContent>
         <CardFooter>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A provisionar..." : "Criar conta de servico"}
+            {isPending ? "A provisionar..." : "Criar conta de serviço"}
           </Button>
           <span className="text-muted-foreground text-xs">
-            {canManageApiKeys ? "Segredo aparece apenas no sucesso inicial." : "Requer permissao."}
+            {canManageApiKeys ? "Segredo aparece apenas no sucesso inicial." : "Sem autorização."}
           </span>
         </CardFooter>
       </form>
