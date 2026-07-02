@@ -133,8 +133,6 @@ export function createCargoTransportPlanAuditAfter(input: {
     transportPlannedAt: toIsoStringOrNull(input.cargo.transportPlannedAt),
     transportPlanningReference: input.cargo.transportPlanningReference,
     transportOwnerTeam: input.cargo.transportOwnerTeam,
-    plannedDepartureAt: toIsoStringOrNull(input.cargo.plannedDepartureAt),
-    estimatedArrivalAt: toIsoStringOrNull(input.cargo.estimatedArrivalAt),
     planningAllowed: input.businessRules.planningAllowed,
     cargoReadyForTracking: input.businessRules.cargoReadyForTracking,
     trackingLinked: input.businessRules.trackingLinked,

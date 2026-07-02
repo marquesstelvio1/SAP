@@ -67,11 +67,7 @@ export function TrackingOverviewClient({
     return (
       <AccessState
         badgeLabel="Tracking Operacional"
-        description={
-          overviewQuery.error instanceof Error
-            ? overviewQuery.error.message
-            : "Erro ao carregar dados de tracking."
-        }
+        description="Dados indisponiveis. Tente novamente mais tarde."
         role="alert"
         title="Tracking operacional indisponivel"
         variant="error"
@@ -83,11 +79,7 @@ export function TrackingOverviewClient({
     return (
       <AccessState
         badgeLabel="Tracking Operacional"
-        description={
-          analyticsQuery.error instanceof Error
-            ? analyticsQuery.error.message
-            : "Erro ao carregar analytics."
-        }
+        description="Dados indisponiveis. Tente novamente mais tarde."
         role="alert"
         title="Analytics indisponivel"
         variant="error"
@@ -99,11 +91,7 @@ export function TrackingOverviewClient({
     return (
       <AccessState
         badgeLabel="Tracking Operacional"
-        description={
-          advisoryQuery.error instanceof Error
-            ? advisoryQuery.error.message
-            : "Erro ao carregar advisory."
-        }
+        description="Dados indisponiveis. Tente novamente mais tarde."
         role="alert"
         title="Advisory indisponivel"
         variant="error"

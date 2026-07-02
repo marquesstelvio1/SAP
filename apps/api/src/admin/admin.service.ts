@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { createPlatformInvitationToken, deletePlatformInvitationToken } from "@saptm/auth";
-import { type DatabaseActorType, getPrismaClient, type PrismaTx } from "@saptm/database";
+import type { DatabaseActorType, PrismaTx } from "@saptm/database";
 import type {
   AdminInvitationCancelInput,
   AdminInvitationLifecycleOutput,
@@ -131,9 +131,7 @@ export class AdminService {
   }
 
   async inviteUser(input: InviteAdminUserInput): Promise<AdminUserInviteOutput> {
-    const database = getPrismaClient();
-
-    return database.$transaction(async (tx: PrismaTx) => {
+    return this.adminRepository.transaction(async (tx: PrismaTx) => {
       await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
       const roles = await this.adminRepository.findRolesByKeys(
         tx,
@@ -238,9 +236,7 @@ export class AdminService {
   }
 
   async assignRole(input: AssignAdminRoleInput): Promise<AdminRoleAssignOutput> {
-    const database = getPrismaClient();
-
-    return database.$transaction(async (tx: PrismaTx) => {
+    return this.adminRepository.transaction(async (tx: PrismaTx) => {
       await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
       const membership = await this.adminRepository.findTenantMembership(
         tx,
@@ -323,9 +319,7 @@ export class AdminService {
   }
 
   async createRole(input: CreateAdminRoleInput): Promise<AdminRoleMutationOutput> {
-    const database = getPrismaClient();
-
-    return database.$transaction(async (tx: PrismaTx) => {
+    return this.adminRepository.transaction(async (tx: PrismaTx) => {
       await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
       assertCustomRoleKey(input.key);
       const permissionRecords = await this.adminRepository.findPermissionsByKeys(
@@ -401,9 +395,7 @@ export class AdminService {
   async updateRolePermissions(
     input: UpdateAdminRolePermissionsInput,
   ): Promise<AdminRoleMutationOutput> {
-    const database = getPrismaClient();
-
-    return database.$transaction(async (tx: PrismaTx) => {
+    return this.adminRepository.transaction(async (tx: PrismaTx) => {
       await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
       const role = await this.adminRepository.findTenantRole(
         tx,
@@ -476,9 +468,7 @@ export class AdminService {
   }
 
   async deleteRole(input: DeleteAdminRoleInput): Promise<AdminRoleDeleteOutput> {
-    const database = getPrismaClient();
-
-    return database.$transaction(async (tx: PrismaTx) => {
+    return this.adminRepository.transaction(async (tx: PrismaTx) => {
       await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
       const role = await this.adminRepository.findRoleForDelete(
         tx,
@@ -546,9 +536,7 @@ export class AdminService {
   }
 
   async revokeRole(input: RevokeAdminRoleInput): Promise<AdminRoleRevokeOutput> {
-    const database = getPrismaClient();
-
-    return database.$transaction(async (tx: PrismaTx) => {
+    return this.adminRepository.transaction(async (tx: PrismaTx) => {
       await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
       const membership = await this.adminRepository.findTenantMembership(
         tx,
@@ -642,9 +630,7 @@ export class AdminService {
   async updateMembershipStatus(
     input: UpdateAdminMembershipStatusInput,
   ): Promise<AdminMembershipStatusUpdateOutput> {
-    const database = getPrismaClient();
-
-    return database.$transaction(async (tx: PrismaTx) => {
+    return this.adminRepository.transaction(async (tx: PrismaTx) => {
       await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
       const membership = await this.adminRepository.findTenantMembership(
         tx,
@@ -728,9 +714,7 @@ export class AdminService {
   async resendInvitation(
     input: ResendAdminInvitationInput,
   ): Promise<AdminInvitationLifecycleOutput> {
-    const database = getPrismaClient();
-
-    return database.$transaction(async (tx: PrismaTx) => {
+    return this.adminRepository.transaction(async (tx: PrismaTx) => {
       await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
       const membership = await this.adminRepository.findTenantMembership(
         tx,
@@ -807,9 +791,7 @@ export class AdminService {
   async cancelInvitation(
     input: CancelAdminInvitationInput,
   ): Promise<AdminInvitationLifecycleOutput> {
-    const database = getPrismaClient();
-
-    return database.$transaction(async (tx: PrismaTx) => {
+    return this.adminRepository.transaction(async (tx: PrismaTx) => {
       await this.adminRepository.assertOrganizationExists(tx, input.organizationId);
       const membership = await this.adminRepository.findTenantMembership(
         tx,

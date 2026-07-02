@@ -19,10 +19,10 @@ export default async function WebhooksSettingsPage(props: {
   if (!canManage) {
     return (
       <AccessState
-        badgeLabel="Webhooks"
-        description="O utilizador autenticado não tem acesso à gestão de webhooks."
+        badgeLabel="Notificações"
+        description="O utilizador autenticado não tem acesso à gestão de notificações externas."
         role="alert"
-        title="Webhooks bloqueados"
+        title="Notificações bloqueadas"
         variant="blocked"
       />
     );

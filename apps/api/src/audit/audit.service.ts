@@ -1,10 +1,5 @@
-import { Inject, Injectable, Optional } from "@nestjs/common";
-import {
-  type DatabaseActorType,
-  getPrismaClient,
-  type PrismaTx,
-  type SaptmPrismaClient,
-} from "@saptm/database";
+import { Inject, Injectable } from "@nestjs/common";
+import type { DatabaseActorType, PrismaTx } from "@saptm/database";
 import {
   type AuditExportInput,
   type AuditExportOutput,
@@ -46,13 +41,7 @@ export class AuditService {
   constructor(
     @Inject(AUDIT_REPOSITORY)
     private readonly auditRepository: AuditRepository,
-    @Optional()
-    private readonly database?: SaptmPrismaClient,
   ) {}
-
-  private getDatabase(): SaptmPrismaClient {
-    return this.database ?? getPrismaClient();
-  }
 
   async searchRecords(input: SearchAuditRecordsInput): Promise<AuditSearchOutput> {
     const limit = input.limit ?? 25;
@@ -95,7 +84,7 @@ export class AuditService {
     const content = formatCsv(searchResult.records);
     const filters = createAuditFilters(input, limit);
 
-    await this.getDatabase().$transaction(async (tx: PrismaTx) => {
+    await this.auditRepository.transaction(async (tx: PrismaTx) => {
       await writeExportAuditAndOutbox(
         this.auditRepository,
         tx,

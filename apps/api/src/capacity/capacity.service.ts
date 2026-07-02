@@ -1,10 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
-import {
-  type DatabaseActorType,
-  getPrismaClient,
-  type PrismaTx,
-  type SaptmPrismaClient,
-} from "@saptm/database";
+import { CURRENT_EVENT_VERSION, type DatabaseActorType, type PrismaTx } from "@saptm/database";
 import type {
   CapacityAdvisoryDecisionAnalyticsInput,
   CapacityAdvisoryDecisionAnalyticsOutput,
@@ -125,8 +120,6 @@ export type RecordCapacityAdvisoryDecisionInput = CapacityAdvisoryDecisionRecord
 
 @Injectable()
 export class CapacityService {
-  private readonly database: SaptmPrismaClient = getPrismaClient();
-
   constructor(
     @Inject(CAPACITY_REPOSITORY) private readonly capacityRepo: CapacityRepository,
     @Inject(OutboxEventBusAdapter) private readonly eventBus: OutboxEventBusAdapter,
@@ -259,7 +252,7 @@ export class CapacityService {
       throw new BadRequestException("capacity.resource_register_blocked");
     }
 
-    const resource = await this.database.$transaction(async (transaction: PrismaTx) => {
+    const resource = await this.capacityRepo.transaction(async (transaction: PrismaTx) => {
       const createdResource = await this.capacityRepo.createResource(transaction, {
         organizationId: input.organizationId,
         resourceCode,
@@ -296,7 +289,7 @@ export class CapacityService {
         eventType: "capacity.resource.registered",
         aggregateType: "capacity",
         aggregateId: createdResource.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           resourceId: createdResource.id,
           resourceCode: createdResource.resourceCode,
@@ -362,7 +355,7 @@ export class CapacityService {
       duplicateReference,
       businessRules,
     });
-    const slot = await this.database.$transaction(async (transaction: PrismaTx) => {
+    const slot = await this.capacityRepo.transaction(async (transaction: PrismaTx) => {
       const createdSlot = await this.capacityRepo.createSlot(transaction, {
         organizationId: input.organizationId,
         resourceId: resource.id,
@@ -401,7 +394,7 @@ export class CapacityService {
         eventType: "capacity.slot.opened",
         aggregateType: "capacity",
         aggregateId: createdSlot.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           slotId: createdSlot.id,
           resourceId: createdSlot.resourceId,
@@ -489,7 +482,7 @@ export class CapacityService {
       duplicateCargoSlot,
       businessRules,
     });
-    const reservation = await this.database.$transaction(async (transaction: PrismaTx) => {
+    const reservation = await this.capacityRepo.transaction(async (transaction: PrismaTx) => {
       const slotUpdate = await this.capacityRepo.updateSlotReservedUnitsIncrement(
         transaction,
         slot.id,
@@ -542,7 +535,7 @@ export class CapacityService {
         eventType: "capacity.slot.reserved",
         aggregateType: "capacity",
         aggregateId: createdReservation.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           reservationId: createdReservation.id,
           reservationReference: createdReservation.reservationReference,
@@ -615,84 +608,86 @@ export class CapacityService {
       reservation,
       businessRules,
     });
-    const cancelledReservation = await this.database.$transaction(async (transaction: PrismaTx) => {
-      const reservationUpdate = await this.capacityRepo.updateReservationCancel(
-        transaction,
-        reservation.id,
-        input.organizationId,
-        "reserved",
-        {
-          status: "cancelled",
-          cancellationReference,
-          cancelledByName: input.cancelledByName.trim(),
-          cancellationReason: input.cancellationReason.trim(),
-          cancelledAt,
-          cancelIdempotencyKey: input.idempotencyKey,
-        },
-      );
+    const cancelledReservation = await this.capacityRepo.transaction(
+      async (transaction: PrismaTx) => {
+        const reservationUpdate = await this.capacityRepo.updateReservationCancel(
+          transaction,
+          reservation.id,
+          input.organizationId,
+          "reserved",
+          {
+            status: "cancelled",
+            cancellationReference,
+            cancelledByName: input.cancelledByName.trim(),
+            cancellationReason: input.cancellationReason.trim(),
+            cancelledAt,
+            cancelIdempotencyKey: input.idempotencyKey,
+          },
+        );
 
-      if (reservationUpdate.count !== 1) {
-        throw new BadRequestException("capacity.reservation_state_changed");
-      }
+        if (reservationUpdate.count !== 1) {
+          throw new BadRequestException("capacity.reservation_state_changed");
+        }
 
-      await this.capacityRepo.updateSlotReservedUnitsDecrement(
-        transaction,
-        reservation.slotId,
-        Math.min(reservation.reservedUnits, reservation.slot.reservedUnits),
-      );
+        await this.capacityRepo.updateSlotReservedUnitsDecrement(
+          transaction,
+          reservation.slotId,
+          Math.min(reservation.reservedUnits, reservation.slot.reservedUnits),
+        );
 
-      const updatedReservation = await this.capacityRepo.findReservationByIdAfterUpdate(
-        transaction,
-        reservation.id,
-        input.organizationId,
-      );
+        const updatedReservation = await this.capacityRepo.findReservationByIdAfterUpdate(
+          transaction,
+          reservation.id,
+          input.organizationId,
+        );
 
-      await transaction.auditRecord.create({
-        data: {
+        await transaction.auditRecord.create({
+          data: {
+            organizationId: input.organizationId,
+            actorType: input.actorType,
+            actorId: input.actorId,
+            action: "capacity.slot_reservation.cancelled",
+            subjectType: "capacity_slot_reservation",
+            subjectId: updatedReservation.id,
+            severity: "high",
+            before: previousAuditState,
+            after: createCapacitySlotCancelAuditAfter({
+              reservation: updatedReservation,
+              businessRules,
+              sourceSystem: input.sourceSystem,
+            }),
+            correlationId: input.correlationId,
+            ...(input.ipAddress === undefined ? {} : { ipAddress: input.ipAddress }),
+            ...(input.userAgent === undefined ? {} : { userAgent: input.userAgent }),
+          },
+        });
+
+        await this.eventBus.publish(transaction, {
           organizationId: input.organizationId,
-          actorType: input.actorType,
-          actorId: input.actorId,
-          action: "capacity.slot_reservation.cancelled",
-          subjectType: "capacity_slot_reservation",
-          subjectId: updatedReservation.id,
-          severity: "high",
-          before: previousAuditState,
-          after: createCapacitySlotCancelAuditAfter({
-            reservation: updatedReservation,
-            businessRules,
-            sourceSystem: input.sourceSystem,
-          }),
-          correlationId: input.correlationId,
-          ...(input.ipAddress === undefined ? {} : { ipAddress: input.ipAddress }),
-          ...(input.userAgent === undefined ? {} : { userAgent: input.userAgent }),
-        },
-      });
+          eventType: "capacity.slot_reservation.cancelled",
+          aggregateType: "capacity",
+          aggregateId: updatedReservation.id,
+          eventVersion: CURRENT_EVENT_VERSION,
+          payload: {
+            reservationId: updatedReservation.id,
+            reservationReference: updatedReservation.reservationReference,
+            cancellationReference: updatedReservation.cancellationReference,
+            cancellationReason: updatedReservation.cancellationReason,
+            cargoId: updatedReservation.cargoId,
+            cargoReference: updatedReservation.cargo.cargoReference,
+            slotId: updatedReservation.slotId,
+            slotReference: updatedReservation.slot.slotReference,
+            releasedUnits: reservation.reservedUnits,
+            cancelledAt: toRequiredIsoString(updatedReservation.cancelledAt),
+            appliedRules: businessRules.appliedRules,
+            idempotencyKey: input.idempotencyKey,
+            correlationId: input.correlationId,
+          },
+        });
 
-      await this.eventBus.publish(transaction, {
-        organizationId: input.organizationId,
-        eventType: "capacity.slot_reservation.cancelled",
-        aggregateType: "capacity",
-        aggregateId: updatedReservation.id,
-        eventVersion: 1,
-        payload: {
-          reservationId: updatedReservation.id,
-          reservationReference: updatedReservation.reservationReference,
-          cancellationReference: updatedReservation.cancellationReference,
-          cancellationReason: updatedReservation.cancellationReason,
-          cargoId: updatedReservation.cargoId,
-          cargoReference: updatedReservation.cargo.cargoReference,
-          slotId: updatedReservation.slotId,
-          slotReference: updatedReservation.slot.slotReference,
-          releasedUnits: reservation.reservedUnits,
-          cancelledAt: toRequiredIsoString(updatedReservation.cancelledAt),
-          appliedRules: businessRules.appliedRules,
-          idempotencyKey: input.idempotencyKey,
-          correlationId: input.correlationId,
-        },
-      });
-
-      return updatedReservation;
-    });
+        return updatedReservation;
+      },
+    );
 
     return createCapacitySlotCancelOutput({
       organizationId: input.organizationId,
@@ -756,7 +751,7 @@ export class CapacityService {
     }
 
     const decidedAt = new Date(input.decidedAt);
-    const decision = await this.database.$transaction(async (transaction: PrismaTx) => {
+    const decision = await this.capacityRepo.transaction(async (transaction: PrismaTx) => {
       const createdDecision = await this.capacityRepo.createAdvisoryDecision(transaction, {
         organizationId: input.organizationId,
         recommendationId,
@@ -803,7 +798,7 @@ export class CapacityService {
         eventType: "capacity.advisory.decision.recorded",
         aggregateType: "capacity",
         aggregateId: createdDecision.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           decisionId: createdDecision.id,
           recommendationId: createdDecision.recommendationId,

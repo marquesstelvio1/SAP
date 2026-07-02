@@ -17,6 +17,7 @@ import {
   Input,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -36,6 +37,7 @@ export function CargoTransportDepartForm({
   initialState,
   action,
 }: CargoTransportDepartFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_dep"));
   const defaultDepartedAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -44,6 +46,12 @@ export function CargoTransportDepartForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("cargo_dep"));
+      capture("cargo:status_changed", {
+        cargo_id: state.cargoId,
+        cargo_reference: state.cargoReference,
+        to_status: "in_transport",
+        shipment_id: state.shipmentId,
+      });
     }
   }, [state.status]);
 
@@ -54,7 +62,7 @@ export function CargoTransportDepartForm({
           <Badge variant={canDepartTransport ? "success" : "warning"}>
             {canDepartTransport ? "Partida autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.transport.depart</Badge>
+          <Badge variant="outline">Registar partida</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Iniciar partida operacional</CardTitle>

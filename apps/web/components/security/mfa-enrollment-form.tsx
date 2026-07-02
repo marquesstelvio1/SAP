@@ -151,7 +151,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
           <Badge variant={enabled ? "success" : "warning"}>
             {enabled ? "MFA ativo" : "MFA inativo"}
           </Badge>
-          <Badge variant="outline">Better Auth twoFactor</Badge>
+          <Badge variant="outline">Autenticação de dois fatores</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Politica MFA</CardTitle>

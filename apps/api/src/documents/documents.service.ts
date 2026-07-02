@@ -1,81 +1,56 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { getPrismaClient } from "@saptm/database";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import type { DocumentSummary, GetDocumentOutput, ListDocumentsOutput } from "@saptm/rpc";
 
-import type {
-  DocumentEntity,
-  GetDocumentServiceInput,
-  ListDocumentsServiceInput,
-} from "./documents.types.js";
+import { CARGO_REPOSITORY, type CargoRepository } from "../cargo/domain/cargo.repository.js";
+import type { CargoComplianceEvidenceRecord } from "../cargo/domain/dto.js";
+import type { GetDocumentServiceInput, ListDocumentsServiceInput } from "./documents.types.js";
 
 @Injectable()
 export class DocumentsService {
+  constructor(@Inject(CARGO_REPOSITORY) private readonly cargoRepo: CargoRepository) {}
+
   async listDocuments(input: ListDocumentsServiceInput): Promise<ListDocumentsOutput> {
-    const prisma = getPrismaClient();
     const limit = input.limit ?? 25;
     const offset = input.offset ?? 0;
 
-    const where = buildWhereClause(input);
-
     const [records, totalCount] = await Promise.all([
-      prisma.cargoComplianceEvidence.findMany({
-        where: where as Parameters<typeof prisma.cargoComplianceEvidence.findMany>[0]["where"],
-        orderBy: { recordedAt: "desc" },
-        take: limit,
-        skip: offset,
+      this.cargoRepo.findComplianceEvidenceMany(input.organizationId, {
+        cargoId: input.cargoId,
+        evidenceType: input.evidenceType,
+        status: input.validationStatus,
+        limit,
+        offset,
       }),
-      prisma.cargoComplianceEvidence.count({
-        where: where as Parameters<typeof prisma.cargoComplianceEvidence.count>[0]["where"],
+      this.cargoRepo.countComplianceEvidence(input.organizationId, {
+        cargoId: input.cargoId,
+        evidenceType: input.evidenceType,
+        status: input.validationStatus,
       }),
     ]);
 
     return {
-      documents: records.map(mapDocumentEntityToSummary),
+      documents: records.map(mapEvidenceToSummary),
       pagination: { totalCount, limit, offset },
     };
   }
 
   async getDocument(input: GetDocumentServiceInput): Promise<GetDocumentOutput> {
-    const prisma = getPrismaClient();
-
-    const record = await prisma.cargoComplianceEvidence.findFirst({
-      where: {
-        id: input.documentId,
-        organizationId: input.organizationId,
-      },
-    });
+    const record = await this.cargoRepo.findComplianceEvidenceById(
+      input.organizationId,
+      input.documentId,
+    );
 
     if (record === null) {
       throw new NotFoundException("documents.document_not_found");
     }
 
     return {
-      document: mapDocumentEntityToSummary(record),
+      document: mapEvidenceToSummary(record),
     };
   }
 }
 
-function buildWhereClause(input: ListDocumentsServiceInput): Record<string, unknown> {
-  const where: Record<string, unknown> = {
-    organizationId: input.organizationId,
-  };
-
-  if (input.cargoId !== undefined) {
-    where.cargoId = input.cargoId;
-  }
-
-  if (input.evidenceType !== undefined) {
-    where.evidenceType = input.evidenceType;
-  }
-
-  if (input.validationStatus !== undefined) {
-    where.status = input.validationStatus;
-  }
-
-  return where;
-}
-
-function mapDocumentEntityToSummary(entity: DocumentEntity): DocumentSummary {
+function mapEvidenceToSummary(entity: CargoComplianceEvidenceRecord): DocumentSummary {
   return {
     id: entity.id,
     organizationId: entity.organizationId,

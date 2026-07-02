@@ -484,21 +484,23 @@ export const cargoReleaseOutputSchema = z.object({
 export const cargoTransportPlanOutputSchema = z.object({
   organizationId: z.string(),
   cargoId: z.string(),
-  shipmentId: z.string(),
+  shipmentId: z.string().nullable(),
   cargo: cargoSummarySchema.extend({
     trackingShipmentId: z.string(),
     transportPlannedAt: z.string(),
     transportPlanningReference: z.string().nullable(),
     transportOwnerTeam: z.string(),
   }),
-  shipment: z.object({
-    id: z.string(),
-    referenceCode: z.string(),
-    transportMode: z.enum(trackingTransportModes),
-    status: z.literal("planned"),
-    plannedDepartureAt: z.string(),
-    estimatedArrivalAt: z.string(),
-  }),
+  shipment: z
+    .object({
+      id: z.string(),
+      referenceCode: z.string(),
+      transportMode: z.enum(trackingTransportModes),
+      status: z.literal("planned"),
+      plannedDepartureAt: z.string(),
+      estimatedArrivalAt: z.string(),
+    })
+    .nullable(),
   businessRules: z.object({
     planningAllowed: z.boolean(),
     cargoReadyForTracking: z.boolean(),
@@ -524,8 +526,8 @@ export const cargoTransportPlanOutputSchema = z.object({
 export const cargoTransportDepartOutputSchema = z.object({
   organizationId: z.string(),
   cargoId: z.string(),
-  shipmentId: z.string(),
-  eventId: z.string(),
+  shipmentId: z.string().nullable(),
+  eventId: z.string().nullable(),
   cargo: cargoSummarySchema.extend({
     trackingShipmentId: z.string(),
     departedAt: z.string(),
@@ -534,19 +536,23 @@ export const cargoTransportDepartOutputSchema = z.object({
     departureOperatorName: z.string(),
     carrierReference: z.string().nullable(),
   }),
-  shipment: z.object({
-    id: z.string(),
-    referenceCode: z.string(),
-    transportMode: z.enum(trackingTransportModes),
-    previousStatus: z.enum(trackingShipmentStatuses),
-    status: z.literal("in_transit"),
-  }),
-  event: z.object({
-    id: z.string(),
-    eventType: z.literal("departed"),
-    occurredAt: z.string(),
-    locationName: z.string(),
-  }),
+  shipment: z
+    .object({
+      id: z.string(),
+      referenceCode: z.string(),
+      transportMode: z.enum(trackingTransportModes),
+      previousStatus: z.enum(trackingShipmentStatuses),
+      status: z.literal("in_transit"),
+    })
+    .nullable(),
+  event: z
+    .object({
+      id: z.string(),
+      eventType: z.literal("departed"),
+      occurredAt: z.string(),
+      locationName: z.string(),
+    })
+    .nullable(),
   businessRules: z.object({
     departureAllowed: z.boolean(),
     cargoReadyForDeparture: z.boolean(),
@@ -574,8 +580,8 @@ export const cargoTransportDepartOutputSchema = z.object({
 export const cargoTransportArriveOutputSchema = z.object({
   organizationId: z.string(),
   cargoId: z.string(),
-  shipmentId: z.string(),
-  eventId: z.string(),
+  shipmentId: z.string().nullable(),
+  eventId: z.string().nullable(),
   cargo: cargoSummarySchema.extend({
     trackingShipmentId: z.string(),
     arrivedAt: z.string(),
@@ -583,20 +589,24 @@ export const cargoTransportArriveOutputSchema = z.object({
     arrivalLocationName: z.string(),
     arrivalOperatorName: z.string(),
   }),
-  shipment: z.object({
-    id: z.string(),
-    referenceCode: z.string(),
-    transportMode: z.enum(trackingTransportModes),
-    previousStatus: z.enum(trackingShipmentStatuses),
-    status: z.literal("arrived"),
-    actualArrivalAt: z.string(),
-  }),
-  event: z.object({
-    id: z.string(),
-    eventType: z.literal("arrived"),
-    occurredAt: z.string(),
-    locationName: z.string(),
-  }),
+  shipment: z
+    .object({
+      id: z.string(),
+      referenceCode: z.string(),
+      transportMode: z.enum(trackingTransportModes),
+      previousStatus: z.enum(trackingShipmentStatuses),
+      status: z.literal("arrived"),
+      actualArrivalAt: z.string(),
+    })
+    .nullable(),
+  event: z
+    .object({
+      id: z.string(),
+      eventType: z.literal("arrived"),
+      occurredAt: z.string(),
+      locationName: z.string(),
+    })
+    .nullable(),
   businessRules: z.object({
     arrivalAllowed: z.boolean(),
     cargoInTransport: z.boolean(),
@@ -623,8 +633,8 @@ export const cargoTransportArriveOutputSchema = z.object({
 export const cargoDeliveryCompleteOutputSchema = z.object({
   organizationId: z.string(),
   cargoId: z.string(),
-  shipmentId: z.string(),
-  eventId: z.string(),
+  shipmentId: z.string().nullable(),
+  eventId: z.string().nullable(),
   cargo: cargoSummarySchema.extend({
     trackingShipmentId: z.string(),
     deliveredAt: z.string(),
@@ -632,19 +642,23 @@ export const cargoDeliveryCompleteOutputSchema = z.object({
     receivedByName: z.string(),
     deliveryNotes: z.string().nullable(),
   }),
-  shipment: z.object({
-    id: z.string(),
-    referenceCode: z.string(),
-    transportMode: z.enum(trackingTransportModes),
-    previousStatus: z.enum(trackingShipmentStatuses),
-    status: z.literal("completed"),
-  }),
-  event: z.object({
-    id: z.string(),
-    eventType: z.literal("handover_completed"),
-    occurredAt: z.string(),
-    locationName: z.string(),
-  }),
+  shipment: z
+    .object({
+      id: z.string(),
+      referenceCode: z.string(),
+      transportMode: z.enum(trackingTransportModes),
+      previousStatus: z.enum(trackingShipmentStatuses),
+      status: z.literal("completed"),
+    })
+    .nullable(),
+  event: z
+    .object({
+      id: z.string(),
+      eventType: z.literal("handover_completed"),
+      occurredAt: z.string(),
+      locationName: z.string(),
+    })
+    .nullable(),
   businessRules: z.object({
     deliveryAllowed: z.boolean(),
     cargoArrivedForDelivery: z.boolean(),
@@ -695,25 +709,29 @@ export const cargoDeliveryExceptionRecordOutputSchema = z.object({
   organizationId: z.string(),
   cargoId: z.string(),
   exceptionId: z.string(),
-  shipmentId: z.string(),
-  eventId: z.string(),
+  shipmentId: z.string().nullable(),
+  eventId: z.string().nullable(),
   cargo: cargoSummarySchema.extend({
     trackingShipmentId: z.string(),
   }),
   exception: cargoDeliveryExceptionSummarySchema,
-  shipment: z.object({
-    id: z.string(),
-    referenceCode: z.string(),
-    transportMode: z.enum(trackingTransportModes),
-    previousStatus: z.enum(trackingShipmentStatuses),
-    status: z.literal("exception"),
-  }),
-  event: z.object({
-    id: z.string(),
-    eventType: z.literal("exception"),
-    occurredAt: z.string(),
-    locationName: z.string(),
-  }),
+  shipment: z
+    .object({
+      id: z.string(),
+      referenceCode: z.string(),
+      transportMode: z.enum(trackingTransportModes),
+      previousStatus: z.enum(trackingShipmentStatuses),
+      status: z.literal("exception"),
+    })
+    .nullable(),
+  event: z
+    .object({
+      id: z.string(),
+      eventType: z.literal("exception"),
+      occurredAt: z.string(),
+      locationName: z.string(),
+    })
+    .nullable(),
   businessRules: z.object({
     exceptionAccepted: z.boolean(),
     cargoArrivedForException: z.boolean(),
@@ -742,25 +760,29 @@ export const cargoDeliveryExceptionResolveOutputSchema = z.object({
   organizationId: z.string(),
   cargoId: z.string(),
   exceptionId: z.string(),
-  shipmentId: z.string(),
-  eventId: z.string(),
+  shipmentId: z.string().nullable(),
+  eventId: z.string().nullable(),
   cargo: cargoSummarySchema.extend({
     trackingShipmentId: z.string(),
   }),
   exception: cargoDeliveryExceptionSummarySchema,
-  shipment: z.object({
-    id: z.string(),
-    referenceCode: z.string(),
-    transportMode: z.enum(trackingTransportModes),
-    previousStatus: z.enum(trackingShipmentStatuses),
-    status: z.literal("arrived"),
-  }),
-  event: z.object({
-    id: z.string(),
-    eventType: z.literal("released"),
-    occurredAt: z.string(),
-    locationName: z.string(),
-  }),
+  shipment: z
+    .object({
+      id: z.string(),
+      referenceCode: z.string(),
+      transportMode: z.enum(trackingTransportModes),
+      previousStatus: z.enum(trackingShipmentStatuses),
+      status: z.literal("arrived"),
+    })
+    .nullable(),
+  event: z
+    .object({
+      id: z.string(),
+      eventType: z.literal("released"),
+      occurredAt: z.string(),
+      locationName: z.string(),
+    })
+    .nullable(),
   businessRules: z.object({
     resolutionAllowed: z.boolean(),
     openException: z.boolean(),
@@ -865,26 +887,30 @@ export const cargoOperationalHandoffRecordOutputSchema = z.object({
   organizationId: z.string(),
   cargoId: z.string(),
   handoffId: z.string(),
-  shipmentId: z.string(),
-  eventId: z.string(),
+  shipmentId: z.string().nullable(),
+  eventId: z.string().nullable(),
   cargo: cargoSummarySchema.extend({
     trackingShipmentId: z.string(),
     custodyOwnerName: z.string(),
   }),
   handoff: cargoOperationalHandoffSummarySchema,
-  shipment: z.object({
-    id: z.string(),
-    referenceCode: z.string(),
-    transportMode: z.enum(trackingTransportModes),
-    previousStatus: z.enum(trackingShipmentStatuses),
-    status: z.literal("in_transit"),
-  }),
-  event: z.object({
-    id: z.string(),
-    eventType: z.literal("location_updated"),
-    occurredAt: z.string(),
-    locationName: z.string(),
-  }),
+  shipment: z
+    .object({
+      id: z.string(),
+      referenceCode: z.string(),
+      transportMode: z.enum(trackingTransportModes),
+      previousStatus: z.enum(trackingShipmentStatuses),
+      status: z.literal("in_transit"),
+    })
+    .nullable(),
+  event: z
+    .object({
+      id: z.string(),
+      eventType: z.literal("location_updated"),
+      occurredAt: z.string(),
+      locationName: z.string(),
+    })
+    .nullable(),
   businessRules: z.object({
     handoffAllowed: z.boolean(),
     cargoInTransport: z.boolean(),

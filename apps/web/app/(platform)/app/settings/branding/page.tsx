@@ -14,10 +14,10 @@ export default async function BrandingSettingsPage() {
   if (!canManageTenant) {
     return (
       <AccessState
-        badgeLabel="Branding"
+        badgeLabel="Marca"
         description="O utilizador autenticado não tem permissões para gerir a identidade visual da organização."
         role="alert"
-        title="Branding indisponível"
+        title="Marca indisponível"
         variant="blocked"
       />
     );

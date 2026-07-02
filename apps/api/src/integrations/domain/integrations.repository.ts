@@ -100,6 +100,7 @@ export type TrackingEventWithShipment = {
 };
 
 export interface IntegrationsRepository {
+  transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T>;
   // Organization lookup
   assertOrganizationExists(tx: PrismaTx, organizationId: string): Promise<void>;
 

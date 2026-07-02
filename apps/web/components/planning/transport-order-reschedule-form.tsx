@@ -67,7 +67,7 @@ export function TransportOrderRescheduleForm({
           <Badge variant={canRescheduleTransportOrder ? "success" : "outline"}>
             {canRescheduleTransportOrder ? "Replaneamento autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">planning.order.reschedule</Badge>
+          <Badge variant="outline">Reagendar ordem</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Replanear transport order</CardTitle>

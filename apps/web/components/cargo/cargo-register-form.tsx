@@ -19,6 +19,7 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { addHours, createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -75,6 +76,7 @@ export function CargoRegisterForm({
   initialState,
   action,
 }: CargoRegisterFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_reg"));
   const [releaseImmediately, setReleaseImmediately] = useState(true);
@@ -88,6 +90,12 @@ export function CargoRegisterForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("cargo_reg"));
+      capture("cargo:created", {
+        cargo_id: state.cargoId,
+        cargo_reference: state.cargoReference,
+        movement_blocked: state.movementBlocked,
+        release_status: state.releaseStatus,
+      });
     }
   }, [state.status]);
 

@@ -44,7 +44,7 @@ export function SessionRevocationForm({
           <Badge variant={hasOtherSessions ? "warning" : "success"}>
             {hasOtherSessions ? `${otherSessions} outras sessões` : "Sessão única"}
           </Badge>
-          <Badge variant="outline">Better Auth Session</Badge>
+          <Badge variant="outline">Gestão de sessões</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Revogação de sessões</CardTitle>

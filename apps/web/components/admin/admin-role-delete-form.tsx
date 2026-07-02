@@ -76,11 +76,11 @@ export function AdminRoleDeleteForm({
         <AlertDialogHeader>
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant={canManageRoles ? "success" : "warning"}>
-              {canManageRoles ? "Delete custom" : "Indisponível"}
+              {canManageRoles ? "Eliminar perfil" : "Indisponível"}
             </Badge>
-            <Badge variant="outline">sem membros</Badge>
+            <Badge variant="outline">Sem membros</Badge>
           </div>
-          <AlertDialogTitle>Eliminar role custom</AlertDialogTitle>
+          <AlertDialogTitle>Eliminar perfil personalizado</AlertDialogTitle>
           <AlertDialogDescription>
             Apenas roles custom sem memberships podem ser eliminadas. Templates bootstrap ficam
             protegidos.

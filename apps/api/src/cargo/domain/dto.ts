@@ -414,22 +414,21 @@ export function createCargoTransportPlanOutput(input: {
     planningAllowed: true,
     cargoReadyForTracking: input.cargo.status === "ready_for_transport",
     trackingLinked: false,
-    appliedRules: [
-      "tenant_scoped_cargo_tracking_linkage",
-      "idempotent_transport_planning_replay",
-    ],
+    appliedRules: ["tenant_scoped_cargo_tracking_linkage", "idempotent_transport_planning_replay"],
   };
 
   return {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
+    shipmentId: null,
     cargo: {
       ...summary,
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
       transportPlannedAt: input.cargo.transportPlannedAt.toISOString(),
       transportPlanningReference: input.cargo.transportPlanningReference,
       transportOwnerTeam: input.cargo.transportOwnerTeam,
     },
+    shipment: null,
     businessRules,
     idempotency: {
       key: input.cargo.transportPlanIdempotencyKey,
@@ -483,15 +482,19 @@ export function createCargoTransportDepartOutput(input: {
   return {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...summary,
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
       departedAt: input.cargo.departedAt.toISOString(),
       departureReference: input.cargo.departureReference,
       departureLocationName: input.cargo.departureLocationName,
       departureOperatorName: input.cargo.departureOperatorName,
       carrierReference: input.cargo.carrierReference,
     },
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.cargo.departureIdempotencyKey,
@@ -534,23 +537,24 @@ export function createCargoTransportArriveOutput(input: {
     cargoInTransport: input.cargo.status === "in_transport",
     trackingShipmentInTransit: true,
     arrivalAfterDeparture: true,
-    appliedRules: [
-      "tenant_scoped_cargo_arrival",
-      "idempotent_cargo_arrival_replay",
-    ],
+    appliedRules: ["tenant_scoped_cargo_arrival", "idempotent_cargo_arrival_replay"],
   };
 
   return {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...summary,
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
       arrivedAt: input.cargo.arrivedAt.toISOString(),
       arrivalReference: input.cargo.arrivalReference,
       arrivalLocationName: input.cargo.arrivalLocationName,
       arrivalOperatorName: input.cargo.arrivalOperatorName,
     },
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.cargo.arrivalIdempotencyKey,
@@ -624,12 +628,16 @@ export function createCargoOperationalHandoffRecordOutput(input: {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
     handoffId: input.handoff.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...createCargoSummary(input.cargo),
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
       custodyOwnerName: input.cargo.custodyOwnerName,
     },
     handoff: createCargoOperationalHandoffSummary(input.handoff),
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.handoff.recordIdempotencyKey,
@@ -683,14 +691,18 @@ export function createCargoDeliveryCompleteOutput(input: {
   return {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...summary,
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
       deliveredAt: input.cargo.deliveredAt.toISOString(),
       deliveryReference: input.cargo.deliveryReference,
       receivedByName: input.cargo.receivedByName,
       deliveryNotes: input.cargo.deliveryNotes,
     },
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.cargo.deliveryIdempotencyKey,
@@ -763,11 +775,15 @@ export function createCargoDeliveryExceptionRecordOutput(input: {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
     exceptionId: input.exception.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...createCargoSummary(input.cargo),
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
     },
     exception: createCargoDeliveryExceptionSummary(input.exception),
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.exception.recordIdempotencyKey,
@@ -815,11 +831,15 @@ export function createCargoDeliveryExceptionResolveOutput(input: {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
     exceptionId: input.exception.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...createCargoSummary(input.cargo),
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
     },
     exception: createCargoDeliveryExceptionSummary(input.exception),
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.exception.resolveIdempotencyKey,
@@ -896,7 +916,7 @@ export function createCargoClaimSettlementRecordOutput(input: {
     settlementId: input.settlement.id,
     cargo: {
       ...createCargoSummary(input.cargo),
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
     },
     exception: createCargoDeliveryExceptionSummary(input.exception),
     settlement: createCargoClaimSettlementSummary(input.settlement),

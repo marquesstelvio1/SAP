@@ -1,6 +1,6 @@
 import type { OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
-import { getPrismaClient, type PrismaTx } from "@saptm/database";
+import { CURRENT_EVENT_VERSION, type PrismaTx } from "@saptm/database";
 import type { Subscription } from "rxjs";
 // biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
 import { EventBusService } from "../../event-bus/event-bus.service.js";
@@ -235,7 +235,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
     organizationId: string,
     payload: CargoTransportPlannedPayload,
   ): Promise<void> {
-    await getPrismaClient().$transaction(async (tx: PrismaTx) => {
+    await this.trackingRepo.transaction(async (tx: PrismaTx) => {
       const existing = await this.trackingRepo.findShipmentById(organizationId, payload.shipmentId);
 
       if (existing !== null) {
@@ -280,7 +280,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
         eventType: "tracking.shipment.created",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           shipmentId: shipment.id,
           referenceCode: payload.shipmentReferenceCode,
@@ -299,7 +299,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
     organizationId: string,
     payload: CargoTransportDepartedPayload,
   ): Promise<void> {
-    await getPrismaClient().$transaction(async (tx: PrismaTx) => {
+    await this.trackingRepo.transaction(async (tx: PrismaTx) => {
       const shipment = await this.trackingRepo.findShipmentById(
         organizationId,
         payload.trackingShipmentId,
@@ -342,7 +342,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
         eventType: "tracking.event.recorded",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -361,7 +361,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
     organizationId: string,
     payload: CargoTransportArrivedPayload,
   ): Promise<void> {
-    await getPrismaClient().$transaction(async (tx: PrismaTx) => {
+    await this.trackingRepo.transaction(async (tx: PrismaTx) => {
       const shipment = await this.trackingRepo.findShipmentById(
         organizationId,
         payload.trackingShipmentId,
@@ -406,7 +406,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
         eventType: "tracking.event.recorded",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -425,7 +425,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
     organizationId: string,
     payload: CargoDeliveryCompletedPayload,
   ): Promise<void> {
-    await getPrismaClient().$transaction(async (tx: PrismaTx) => {
+    await this.trackingRepo.transaction(async (tx: PrismaTx) => {
       const shipment = await this.trackingRepo.findShipmentById(
         organizationId,
         payload.trackingShipmentId,
@@ -467,7 +467,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
         eventType: "tracking.event.recorded",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -486,7 +486,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
     organizationId: string,
     payload: CargoDeliveryExceptionRecordedPayload,
   ): Promise<void> {
-    await getPrismaClient().$transaction(async (tx: PrismaTx) => {
+    await this.trackingRepo.transaction(async (tx: PrismaTx) => {
       const shipment = await this.trackingRepo.findShipmentById(
         organizationId,
         payload.trackingShipmentId,
@@ -529,7 +529,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
         eventType: "tracking.event.recorded",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -548,7 +548,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
     organizationId: string,
     payload: CargoDeliveryExceptionResolvedPayload,
   ): Promise<void> {
-    await getPrismaClient().$transaction(async (tx: PrismaTx) => {
+    await this.trackingRepo.transaction(async (tx: PrismaTx) => {
       const shipment = await this.trackingRepo.findShipmentById(
         organizationId,
         payload.trackingShipmentId,
@@ -592,7 +592,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
         eventType: "tracking.event.recorded",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -611,7 +611,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
     organizationId: string,
     payload: CargoOperationalHandoffRecordedPayload,
   ): Promise<void> {
-    await getPrismaClient().$transaction(async (tx: PrismaTx) => {
+    await this.trackingRepo.transaction(async (tx: PrismaTx) => {
       const shipment = await this.trackingRepo.findShipmentById(
         organizationId,
         payload.trackingShipmentId,
@@ -648,7 +648,7 @@ export class CargoTrackingEventHandler implements OnModuleInit, OnModuleDestroy 
         eventType: "tracking.event.recorded",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,

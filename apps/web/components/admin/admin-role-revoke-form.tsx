@@ -74,7 +74,7 @@ export function AdminRoleRevokeForm({
           <Badge variant={canAssignRole ? "success" : "warning"}>
             {canAssignRole ? "Revogação de roles" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">anti-lockout</Badge>
+          <Badge variant="outline">Anti-bloqueio</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Revogar role</CardTitle>

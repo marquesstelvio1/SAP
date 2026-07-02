@@ -1,8 +1,8 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import {
   type AuditSeverity,
+  CURRENT_EVENT_VERSION,
   type DatabaseActorType,
-  getPrismaClient,
   type PrismaTx,
 } from "@saptm/database";
 import type {
@@ -493,7 +493,7 @@ export class TrackingService {
         eventType: "tracking.exception.managed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -631,7 +631,7 @@ export class TrackingService {
         eventType: "tracking.exception.resolved",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -750,7 +750,7 @@ export class TrackingService {
         eventType: "tracking.event.recorded",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -781,6 +781,6 @@ export class TrackingService {
   }
 
   private databaseTransaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T> {
-    return getPrismaClient().$transaction(fn) as Promise<T>;
+    return this.trackingRepo.transaction(fn);
   }
 }

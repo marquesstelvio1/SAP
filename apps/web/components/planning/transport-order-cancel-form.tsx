@@ -56,7 +56,7 @@ export function TransportOrderCancelForm({
           <Badge variant={canCancelTransportOrder ? "warning" : "outline"}>
             {canCancelTransportOrder ? "Cancelamento autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">planning.order.cancel</Badge>
+          <Badge variant="outline">Cancelar ordem</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Cancelar transport order</CardTitle>
@@ -149,7 +149,7 @@ export function TransportOrderCancelForm({
           <span className="text-muted-foreground text-xs">
             {canCancelTransportOrder
               ? "Cancelamento gravado com registo de auditoria."
-              : "Requer cancelamento de transporte."}
+              : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit" variant="outline">
             {isPending ? "A cancelar..." : "Cancelar transport order"}

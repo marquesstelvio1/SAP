@@ -222,4 +222,7 @@ export interface PlanningRepository {
     tx: PrismaTx,
     data: PlanningDispatchCreateInput,
   ): Promise<PlanningTransportOrderDispatchRecord>;
+
+  // Transaction support
+  transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T>;
 }

@@ -131,7 +131,7 @@ export function AdminUsersTable({
                 <TableCell>
                   <div className="flex flex-wrap gap-1">
                     {user.membership.roles.length === 0 ? (
-                      <Badge variant="warning">Sem role</Badge>
+                      <Badge variant="warning">Sem perfil</Badge>
                     ) : (
                       user.membership.roles.map((role) => (
                         <Badge key={role.id} variant="outline">

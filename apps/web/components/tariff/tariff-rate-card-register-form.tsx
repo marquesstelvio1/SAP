@@ -18,7 +18,7 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
-
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TariffRateCardRegisterFormState } from "../../app/(platform)/app/tariffs/form-state";
 
@@ -36,6 +36,7 @@ export function TariffRateCardRegisterForm({
   initialState,
   action,
 }: TariffRateCardRegisterFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     createIdempotencyKey("tariff_rate_card"),
@@ -45,6 +46,10 @@ export function TariffRateCardRegisterForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("tariff_rate_card"));
+      capture("tariff:rate_card_registered", {
+        rate_card_id: state.rateCardId,
+        rate_card_code: state.rateCardCode,
+      });
     }
   }, [state.status]);
 
@@ -55,7 +60,7 @@ export function TariffRateCardRegisterForm({
           <Badge variant={canManageTariffs ? "success" : "warning"}>
             {canManageTariffs ? "Tarifa autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">tariff.manage</Badge>
+          <Badge variant="outline">Gerir tarifas</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar rate card</CardTitle>
@@ -156,7 +161,7 @@ export function TariffRateCardRegisterForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canManageTariffs ? "Registo cria auditoria." : "Requer gestao tarifaria."}
+            {canManageTariffs ? "Registo cria auditoria." : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A registar..." : "Registar rate card"}

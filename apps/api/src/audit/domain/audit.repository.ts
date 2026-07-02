@@ -49,4 +49,7 @@ export interface AuditRepository {
   createAuditRecord(tx: PrismaTx, input: PrismaAuditRecordCreateInput): Promise<void>;
 
   createOutboxEvent(tx: PrismaTx, input: PrismaOutboxEventCreateInput): Promise<void>;
+
+  // Transaction support
+  transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T>;
 }

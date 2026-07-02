@@ -229,4 +229,7 @@ export interface CapacityRepository {
     tx: PrismaTx,
     data: CapacityAdvisoryDecisionCreateInput,
   ): Promise<CapacityAdvisoryDecisionRecord>;
+
+  // Transaction support
+  transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T>;
 }

@@ -118,7 +118,7 @@ export function AdminRoleAssignForm({
             {isPending ? "A atribuir..." : "Atribuir perfil"}
           </Button>
           <span className="text-muted-foreground text-xs">
-            {canAssignRole ? "Atribuicao registada." : "Sem autorizacao."}
+            {canAssignRole ? "Atribuição registada." : "Indisponível"}
           </span>
         </CardFooter>
       </form>

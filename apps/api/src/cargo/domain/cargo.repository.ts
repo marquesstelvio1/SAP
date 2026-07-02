@@ -104,6 +104,24 @@ export interface CargoRepository {
     orgId: string,
     key: string,
   ): Promise<CargoComplianceEvidenceRecord | null>;
+  findComplianceEvidenceMany(
+    orgId: string,
+    filters: {
+      cargoId: string | undefined;
+      evidenceType: string | undefined;
+      status: string | undefined;
+      limit: number;
+      offset: number;
+    },
+  ): Promise<CargoComplianceEvidenceRecord[]>;
+  countComplianceEvidence(
+    orgId: string,
+    filters: {
+      cargoId: string | undefined;
+      evidenceType: string | undefined;
+      status: string | undefined;
+    },
+  ): Promise<number>;
   getOverview(organizationId: string, limit: number, offset: number): Promise<CargoOverviewRawData>;
 
   // Transactional write operations - receive a transaction client

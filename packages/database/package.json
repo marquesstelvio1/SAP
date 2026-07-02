@@ -25,7 +25,7 @@
     "db:seed:users": "tsx prisma/seed-users.ts",
     "db:studio": "npx --no prisma studio",
     "validate:migrations": "node ../../scripts/validate-migrations.mjs",
-    "worker:outbox": "echo 'Outbox worker disabled'"
+    "worker:outbox": "echo 'Outbox worker migrated to @saptm/api — run pnpm --filter @saptm/api worker:outbox'"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

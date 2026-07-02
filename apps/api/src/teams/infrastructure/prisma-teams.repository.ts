@@ -32,7 +32,7 @@ export class PrismaTeamsRepository implements TeamsRepository {
     return this.database.team.findUnique({
       where: { organizationId_slug: { organizationId, slug } },
       select: { id: true },
-    });
+    }) as unknown as Promise<{ id: string } | null>;
   }
 
   async findTeamById(organizationId: string, teamId: string): Promise<TeamRecord | null> {
@@ -83,7 +83,7 @@ export class PrismaTeamsRepository implements TeamsRepository {
     return this.database.user.findUnique({
       where: { id: userId },
       select: { id: true },
-    });
+    }) as unknown as Promise<{ id: string } | null>;
   }
 
   // ── TeamMember reads ────────────────────────────────────────

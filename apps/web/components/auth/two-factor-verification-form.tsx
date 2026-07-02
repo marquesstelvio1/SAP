@@ -58,7 +58,7 @@ export function TwoFactorVerificationForm({ nextPath }: { nextPath: string }) {
       <CardHeader className="gap-3">
         <div className="flex items-center justify-between gap-3">
           <Badge variant="info">MFA</Badge>
-          <Badge variant="outline">Better Auth twoFactor</Badge>
+          <Badge variant="outline">Autenticação de dois fatores</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle className="text-2xl">Verificacao MFA</CardTitle>

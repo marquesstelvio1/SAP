@@ -17,7 +17,7 @@ import {
   Input,
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
-
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TariffQuoteCalculateFormState } from "../../app/(platform)/app/tariffs/form-state";
 
@@ -35,6 +35,7 @@ export function TariffQuoteCalculateForm({
   initialState,
   action,
 }: TariffQuoteCalculateFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("tariff_quote"));
   const isDisabled = isPending || !canCalculateQuotes;
@@ -42,6 +43,16 @@ export function TariffQuoteCalculateForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("tariff_quote"));
+      capture("tariff:quote_calculated", {
+        quote_id: state.quoteId,
+        quote_reference: state.quoteReference,
+        cargo_id: state.cargoId,
+        rate_card_id: state.rateCardId,
+        quoted_amount: state.quotedAmount,
+        taxable_amount: state.taxableAmount,
+        tax_amount: state.taxAmount,
+        tax_rate: state.taxRatePercentage,
+      });
     }
   }, [state.status]);
 
@@ -52,7 +63,7 @@ export function TariffQuoteCalculateForm({
           <Badge variant={canCalculateQuotes ? "success" : "warning"}>
             {canCalculateQuotes ? "Cotação autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">tariff.quote.calculate</Badge>
+          <Badge variant="outline">Calcular cotação</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Calcular cotação</CardTitle>
@@ -160,7 +171,7 @@ export function TariffQuoteCalculateForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canCalculateQuotes ? "Nao aprova automaticamente." : "Requer calculo de cotacao."}
+            {canCalculateQuotes ? "Não aprova automaticamente." : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A calcular..." : "Calcular cotação"}

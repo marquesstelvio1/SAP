@@ -41,7 +41,7 @@ import { prepareAdminOptions } from "./logic";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Administração",
-  description: "Gestão de utilizadores, convites, roles e permissões da organização.",
+  description: "Gestão de utilizadores, convites, perfis e permissões da organização.",
 };
 
 const openAdminPermissions: readonly PlatformPermission[] = [

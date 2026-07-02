@@ -362,8 +362,11 @@ export class PrismaCapacityRepository implements CapacityRepository {
     tx: PrismaTx,
     data: CapacityAdvisoryDecisionCreateInput,
   ): Promise<CapacityAdvisoryDecisionRecord> {
-    return tx.capacityAdvisoryDecision.create({
-      data,
-    }) as Promise<CapacityAdvisoryDecisionRecord>;
+    const raw = await tx.capacityAdvisoryDecision.create({ data: data as never });
+    return raw as unknown as CapacityAdvisoryDecisionRecord;
+  }
+
+  async transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T> {
+    return this.database.$transaction(fn);
   }
 }

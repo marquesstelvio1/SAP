@@ -71,7 +71,7 @@ export function AdminInvitationLifecycleForm({
           <Badge variant={canManageInvitations ? "success" : "warning"}>
             {canManageInvitations ? "Convites" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">identity.user.invite</Badge>
+          <Badge variant="outline">Convidar utilizador</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>{title}</CardTitle>

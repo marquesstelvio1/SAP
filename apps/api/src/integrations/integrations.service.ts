@@ -1,6 +1,7 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { createApiKeyMaterial, filterPlatformPermissions, hashApiKey } from "@saptm/auth";
-import type { AuditJsonValue } from "@saptm/database";
+import type { AuditJsonValue, PrismaTx } from "@saptm/database";
+import { CURRENT_EVENT_VERSION } from "@saptm/database";
 import type {
   IntegrationCarrierTmsMovementOutput,
   IntegrationCustomsErpStatusOutput,
@@ -202,7 +203,7 @@ export class IntegrationsService {
         eventType: "integration.api_key.created",
         aggregateType: "integration.service_account",
         aggregateId: serviceAccount.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           serviceAccountId: serviceAccount.id,
           name: normalizedName,
@@ -319,7 +320,7 @@ export class IntegrationsService {
         eventType: "integration.event.received",
         aggregateType: "integration.event",
         aggregateId: event.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           serviceAccountId: serviceAccount.id,
           sourceSystem: input.sourceSystem,
@@ -511,7 +512,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.port_tos.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,
@@ -709,7 +710,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.rail_tms.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,
@@ -911,7 +912,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.carrier_tms.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,
@@ -1118,7 +1119,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.telematics_gps.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,
@@ -1325,7 +1326,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.customs_erp.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,
@@ -1532,7 +1533,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.warehouse_wms.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,
@@ -1608,24 +1609,15 @@ export class IntegrationsService {
   }
 
   private async findServiceAccountById(serviceAccountId: string): Promise<ServiceAccountRecord> {
-    // We need a non-transactional lookup — use the database directly
-    const { getPrismaClient } = await import("@saptm/database");
-    const database = getPrismaClient();
-    const serviceAccount = await database.serviceAccount.findUnique({
-      where: { id: serviceAccountId },
-      include: {
-        apiKeys: {
-          orderBy: { createdAt: "desc" },
-          take: 5,
-        },
-      },
-    });
+    const account = await this.databaseTransaction((tx) =>
+      this.integrationsRepo.findServiceAccountById(tx, serviceAccountId),
+    );
 
-    if (serviceAccount === null) {
+    if (account === null) {
       throw new NotFoundException("integration.service_account_not_found");
     }
 
-    return serviceAccount as ServiceAccountRecord;
+    return account as unknown as ServiceAccountRecord;
   }
 
   private async findIntegrationEventByIdempotencyKey(
@@ -1633,17 +1625,14 @@ export class IntegrationsService {
     sourceSystem: string,
     externalId: string,
   ): Promise<IntegrationEventRecord> {
-    const { getPrismaClient } = await import("@saptm/database");
-    const database = getPrismaClient();
-    const event = await database.integrationEvent.findUnique({
-      where: {
-        organizationId_sourceSystem_externalId: {
-          organizationId,
-          sourceSystem,
-          externalId,
-        },
-      },
-    });
+    const event = await this.databaseTransaction((tx) =>
+      this.integrationsRepo.findIntegrationEventByIdempotencyKey(
+        tx,
+        organizationId,
+        sourceSystem,
+        externalId,
+      ),
+    );
 
     if (event === null) {
       throw new NotFoundException("integration.event_not_found");
@@ -1652,9 +1641,7 @@ export class IntegrationsService {
     return event as IntegrationEventRecord;
   }
 
-  private async databaseTransaction<T>(fn: (tx: never) => Promise<T>): Promise<T> {
-    const { getPrismaClient } = await import("@saptm/database");
-    const database = getPrismaClient();
-    return database.$transaction(fn);
+  private async databaseTransaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T> {
+    return this.integrationsRepo.transaction(fn);
   }
 }

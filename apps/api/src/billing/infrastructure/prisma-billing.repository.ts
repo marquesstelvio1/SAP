@@ -44,7 +44,7 @@ export class PrismaBillingRepository implements BillingRepository {
     return this.database.subscription.findFirst({
       where: { stripeSubscriptionId },
       select: { organizationId: true },
-    });
+    }) as unknown as { organizationId: string } | null;
   }
 
   async upsertSubscription(organizationId: string, data: SubscriptionUpsertInput): Promise<void> {

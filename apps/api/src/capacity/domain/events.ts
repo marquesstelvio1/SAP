@@ -1,4 +1,5 @@
 import type { DomainEvent } from "@saptm/database";
+import { CURRENT_EVENT_VERSION } from "@saptm/database";
 import type { CapacitySlot } from "./capacity-types.js";
 
 export type { DomainEvent } from "@saptm/database";
@@ -12,6 +13,7 @@ export function createCapacitySlotScheduledEvent(
     eventType: "capacity.slot.scheduled",
     aggregateType: "capacity",
     aggregateId: slot.id,
+    eventVersion: CURRENT_EVENT_VERSION,
     payload: {
       slotId: slot.id,
       origin: slot.origin,
@@ -38,6 +40,7 @@ export function createCapacitySlotInTransitEvent(
     eventType: "capacity.slot.in_transit",
     aggregateType: "capacity",
     aggregateId: slot.id,
+    eventVersion: CURRENT_EVENT_VERSION,
     payload: {
       slotId: slot.id,
       status: slot.status,
@@ -55,6 +58,7 @@ export function createCapacitySlotCompletedEvent(
     eventType: "capacity.slot.completed",
     aggregateType: "capacity",
     aggregateId: slot.id,
+    eventVersion: CURRENT_EVENT_VERSION,
     payload: {
       slotId: slot.id,
       status: slot.status,
@@ -72,6 +76,7 @@ export function createCapacitySlotCancelledEvent(
     eventType: "capacity.slot.cancelled",
     aggregateType: "capacity",
     aggregateId: slot.id,
+    eventVersion: CURRENT_EVENT_VERSION,
     payload: {
       slotId: slot.id,
       status: slot.status,

@@ -1,8 +1,8 @@
 import type { OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { Injectable } from "@nestjs/common";
 import type { Subscription } from "rxjs";
-import { EventBusService } from "../../event-bus/event-bus.service.js";
-import { UsageService } from "../usage.service.js";
+import type { EventBusService } from "../../event-bus/event-bus.service.js";
+import type { UsageService } from "../usage.service.js";
 
 type CargoRegisteredPayload = {
   cargoId: string;

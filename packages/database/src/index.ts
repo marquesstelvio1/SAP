@@ -13,6 +13,7 @@ export {
   outboxEventStatuses,
 } from "./constants.js";
 export type { DomainEvent, EventBus } from "./domain-events.js";
+export { CURRENT_EVENT_VERSION } from "./domain-events.js";
 export { OutboxEventBus } from "./outbox-event-bus.js";
 export {
   createPrismaClient,

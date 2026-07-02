@@ -303,4 +303,8 @@ export class PrismaIntegrationsRepository implements IntegrationsRepository {
   async createOutboxEvent(tx: PrismaTx, input: PrismaOutboxEventCreateInput): Promise<void> {
     await tx.outboxEvent.create({ data: input as never });
   }
+
+  async transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T> {
+    return this.database.$transaction(fn) as Promise<T>;
+  }
 }

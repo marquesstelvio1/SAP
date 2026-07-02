@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TrackingExceptionManageFormState } from "../../app/(platform)/app/tracking/form-state";
@@ -78,6 +79,7 @@ export function TrackingExceptionManageForm({
   initialState,
   action,
 }: TrackingExceptionManageFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("trk_exc"));
   const defaultOccurredAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -90,6 +92,11 @@ export function TrackingExceptionManageForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("trk_exc"));
+      capture("tracking:exception_raised", {
+        shipment_id: shipment.id,
+        exception_id: state.eventId,
+        severity: state.currentStatus,
+      });
     }
   }, [state.status]);
 
@@ -367,9 +374,7 @@ export function TrackingExceptionManageForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canManageExceptions
-              ? "Excecao gravada com registo de auditoria."
-              : "Requer gestao de excecoes."}
+            {canManageExceptions ? "Exceção gravada com registo de auditoria." : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A gerir..." : "Gerir exceção"}

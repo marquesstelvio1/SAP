@@ -1,4 +1,5 @@
 import type { DomainEvent } from "@saptm/database";
+import { CURRENT_EVENT_VERSION } from "@saptm/database";
 import type { PlanningAllocation, PlanningSession } from "./planning-types.js";
 
 export type { DomainEvent } from "@saptm/database";
@@ -12,6 +13,7 @@ export function createPlanningSessionCreatedEvent(
     eventType: "planning.session.created",
     aggregateType: "planning",
     aggregateId: session.id,
+    eventVersion: CURRENT_EVENT_VERSION,
     payload: {
       sessionId: session.id,
       name: session.name,
@@ -33,6 +35,7 @@ export function createPlanningSessionActivatedEvent(
     eventType: "planning.session.activated",
     aggregateType: "planning",
     aggregateId: session.id,
+    eventVersion: CURRENT_EVENT_VERSION,
     payload: {
       sessionId: session.id,
       status: session.status,
@@ -50,6 +53,7 @@ export function createPlanningSessionLockedEvent(
     eventType: "planning.session.locked",
     aggregateType: "planning",
     aggregateId: session.id,
+    eventVersion: CURRENT_EVENT_VERSION,
     payload: {
       sessionId: session.id,
       status: session.status,
@@ -67,6 +71,7 @@ export function createPlanningAllocationProposedEvent(
     eventType: "planning.allocation.proposed",
     aggregateType: "planning",
     aggregateId: allocation.id,
+    eventVersion: CURRENT_EVENT_VERSION,
     payload: {
       allocationId: allocation.id,
       sessionId: allocation.sessionId,
@@ -87,6 +92,7 @@ export function createPlanningAllocationConfirmedEvent(
     eventType: "planning.allocation.confirmed",
     aggregateType: "planning",
     aggregateId: allocation.id,
+    eventVersion: CURRENT_EVENT_VERSION,
     payload: {
       allocationId: allocation.id,
       sessionId: allocation.sessionId,
@@ -105,6 +111,7 @@ export function createPlanningAllocationCancelledEvent(
     eventType: "planning.allocation.cancelled",
     aggregateType: "planning",
     aggregateId: allocation.id,
+    eventVersion: CURRENT_EVENT_VERSION,
     payload: {
       allocationId: allocation.id,
       sessionId: allocation.sessionId,

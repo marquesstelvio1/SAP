@@ -15,13 +15,13 @@ type SettingsSection = {
 
 const settingsSections: readonly SettingsSection[] = [
   {
-    label: "General",
+    label: "Geral",
     href: "/app/settings/general",
     description: "Nome, slug e estado da organização",
     status: "active",
   },
   {
-    label: "Branding",
+    label: "Marca",
     href: "/app/settings/branding",
     description: "Logotipo, cores e favicon",
     status: "active",
@@ -35,7 +35,7 @@ const settingsSections: readonly SettingsSection[] = [
   {
     label: "Funções",
     href: "/app/admin",
-    description: "Gerir roles e permissões",
+    description: "Gerir perfis e permissões",
     status: "active",
   },
   {
@@ -51,7 +51,7 @@ const settingsSections: readonly SettingsSection[] = [
     status: "active",
   },
   {
-    label: "Webhooks",
+    label: "Notificações",
     href: "/app/settings/webhooks",
     description: "Notificações HTTP para eventos da organização",
     status: "active",

@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -42,9 +43,9 @@ const recommendationTypeOptions = [
 ] as const;
 
 const requiredPermissionOptions = [
-  { value: "capacity.manage", label: "capacity.manage" },
-  { value: "capacity.slot.reserve", label: "capacity.slot.reserve" },
-  { value: "capacity.slot.cancel", label: "capacity.slot.cancel" },
+  { value: "capacity.manage", label: "Gerir capacidade" },
+  { value: "capacity.slot.reserve", label: "Reservar slot" },
+  { value: "capacity.slot.cancel", label: "Cancelar slot" },
 ] as const;
 
 export function CapacityAdvisoryDecisionForm({
@@ -52,6 +53,7 @@ export function CapacityAdvisoryDecisionForm({
   initialState,
   action,
 }: CapacityAdvisoryDecisionFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     createIdempotencyKey("capacity_advisory_decision"),
@@ -62,6 +64,11 @@ export function CapacityAdvisoryDecisionForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("capacity_advisory_decision"));
+      capture("capacity:advisory_checked", {
+        decision_id: state.decisionId,
+        recommendation_id: state.recommendationId,
+        decision_status: state.decisionStatus,
+      });
     }
   }, [state.status]);
 
@@ -72,7 +79,7 @@ export function CapacityAdvisoryDecisionForm({
           <Badge variant={canDecideCapacityAdvisory ? "success" : "warning"}>
             {canDecideCapacityAdvisory ? "Decisão autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">capacity.advisory.decide</Badge>
+          <Badge variant="outline">Decidir aconselhamento</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar decisão de advisory</CardTitle>
@@ -237,7 +244,7 @@ export function CapacityAdvisoryDecisionForm({
           <span className="text-muted-foreground text-xs">
             {canDecideCapacityAdvisory
               ? "Regista decisão; não executa comandos operacionais."
-              : "Requer decisao de advisory."}
+              : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A registar..." : "Registar decisão"}

@@ -17,6 +17,10 @@ const STATIC_PREFIXES = [
   "/robots.txt",
 ] as const;
 
+// Additional path patterns that are always static and should bypass auth.
+// These extend the prefix-based check with suffix matching for completeness.
+const STATIC_SUFFIXES = [".map", ".webmanifest"] as const;
+
 function isPublicPath(pathname: string): boolean {
   return (
     PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`)) ||
@@ -25,7 +29,10 @@ function isPublicPath(pathname: string): boolean {
 }
 
 function isStaticAsset(pathname: string): boolean {
-  return STATIC_PREFIXES.some((p) => pathname.startsWith(p));
+  return (
+    STATIC_PREFIXES.some((p) => pathname.startsWith(p)) ||
+    STATIC_SUFFIXES.some((s) => pathname.endsWith(s))
+  );
 }
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -56,7 +63,17 @@ function isRateLimited(ip: string): boolean {
   return false;
 }
 
-function buildCsp(nonce: string, origin: string, apiUrl: string, isDev: boolean): string {
+function isAuthPath(pathname: string): boolean {
+  return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+function buildCsp(
+  nonce: string,
+  origin: string,
+  apiUrl: string,
+  isDev: boolean,
+  isAuthPath: boolean,
+): string {
   const scriptSrc = isDev
     ? `'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval'`
     : `'nonce-${nonce}' 'strict-dynamic'`;
@@ -67,18 +84,22 @@ function buildCsp(nonce: string, origin: string, apiUrl: string, isDev: boolean)
     connectSources.push(apiUrl);
   }
 
+  const imgSrc = isAuthPath ? `'self' data:` : `'self' data: blob: https:`;
+  const workerSrc = isAuthPath ? `'none'` : `'self' blob:`;
+
   const directives = [
     `default-src 'self'`,
     `base-uri 'self'`,
     `form-action 'self'`,
     `frame-ancestors 'none'`,
     `object-src 'none'`,
-    `img-src 'self' data: blob: https:`,
+    `img-src ${imgSrc}`,
     `font-src 'self' data:`,
     `script-src 'self' ${scriptSrc}`,
-    `style-src 'self' 'unsafe-inline'`,
+    `style-src-attr 'unsafe-inline'`,
+    `style-src-elem 'self' 'nonce-${nonce}'`,
     `connect-src ${connectSources.join(" ")}`,
-    `worker-src 'self' blob:`,
+    `worker-src ${workerSrc}`,
     `frame-src 'none'`,
     `upgrade-insecure-requests`,
     `report-uri ${reportUri}`,
@@ -87,25 +108,45 @@ function buildCsp(nonce: string, origin: string, apiUrl: string, isDev: boolean)
   return directives.join("; ");
 }
 
-function respondWithSecurityHeaders(nonce: string, origin: string, apiUrl: string, isDev: boolean) {
-  const csp = buildCsp(nonce, origin, apiUrl, isDev);
-  const response = NextResponse.next();
-  response.headers.set("x-nonce", nonce);
+function respondWithSecurityHeaders(
+  nonce: string,
+  origin: string,
+  apiUrl: string,
+  isDev: boolean,
+  request: NextRequest,
+  isAuthPath: boolean = false,
+) {
+  const csp = buildCsp(nonce, origin, apiUrl, isDev, isAuthPath);
+
+  // Forward nonce to React tree via request headers (needed for headers() in Server Components)
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+
+  // Create response with modified request headers upstream
+  const response = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
+
+  // Set CSP and security headers on the response (for the browser)
   response.headers.set("Content-Security-Policy", csp);
   response.headers.set("Reporting-Endpoints", `csp-endpoint="${origin}/api/csp-report"`);
-  response.headers.set("X-Nonce", nonce);
   response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set("X-Frame-Options", "DENY");
   response.headers.set(
     "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    "camera=(), geolocation=(), microphone=(), interest-cohort=(), payment=(), usb=()",
   );
   response.headers.set("Cross-Origin-Opener-Policy", "same-origin");
   response.headers.set("Cross-Origin-Resource-Policy", "same-origin");
-  response.headers.set("Cache-Control", "private, no-cache, no-store");
-  response.headers.set("Vary", "Cookie");
+
+  // Only prevent caching for HTML responses; let Next.js control static asset caching
+  if (request.headers.get("accept")?.includes("text/html")) {
+    response.headers.set("Cache-Control", "private, no-cache, no-store");
+    response.headers.set("Vary", "Cookie");
+  }
+
   return response;
 }
 
@@ -118,7 +159,14 @@ export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
   if (isPublicPath(pathname) || isStaticAsset(pathname)) {
-    return respondWithSecurityHeaders(nonce, url.origin, apiUrl, isDev);
+    return respondWithSecurityHeaders(
+      nonce,
+      url.origin,
+      apiUrl,
+      isDev,
+      request,
+      isAuthPath(pathname),
+    );
   }
 
   const forwardedFor = request.headers.get("x-forwarded-for");
@@ -129,13 +177,27 @@ export function proxy(request: NextRequest) {
       return new NextResponse(null, { status: 429, statusText: "Too Many Requests" });
     }
 
-    return respondWithSecurityHeaders(nonce, url.origin, apiUrl, isDev);
+    return respondWithSecurityHeaders(
+      nonce,
+      url.origin,
+      apiUrl,
+      isDev,
+      request,
+      isAuthPath(pathname),
+    );
   }
 
   const sessionCookie = request.cookies.get("better-auth.session_token")?.value;
 
   if (sessionCookie !== undefined) {
-    return respondWithSecurityHeaders(nonce, url.origin, apiUrl, isDev);
+    return respondWithSecurityHeaders(
+      nonce,
+      url.origin,
+      apiUrl,
+      isDev,
+      request,
+      isAuthPath(pathname),
+    );
   }
 
   const chunkedPrefix = "better-auth.session_token.chunk";
@@ -144,7 +206,14 @@ export function proxy(request: NextRequest) {
   );
 
   if (hasChunkedSession) {
-    return respondWithSecurityHeaders(nonce, url.origin, apiUrl, isDev);
+    return respondWithSecurityHeaders(
+      nonce,
+      url.origin,
+      apiUrl,
+      isDev,
+      request,
+      isAuthPath(pathname),
+    );
   }
 
   const signInUrl = new URL("/sign-in", url);

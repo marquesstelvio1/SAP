@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -43,6 +44,7 @@ export function CargoComplianceEvidenceVerifyForm({
   initialState,
   action,
 }: CargoComplianceEvidenceVerifyFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_ver"));
   const defaultReviewedAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -51,6 +53,12 @@ export function CargoComplianceEvidenceVerifyForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("cargo_ver"));
+      capture("cargo:status_changed", {
+        cargo_id: state.cargoId,
+        to_status: state.statusValue === "approved" ? "compliance_approved" : "compliance_rejected",
+        evidence_id: state.evidenceId,
+        status_value: state.statusValue,
+      });
     }
   }, [state.status]);
 
@@ -61,7 +69,7 @@ export function CargoComplianceEvidenceVerifyForm({
           <Badge variant={canVerifyComplianceEvidence ? "success" : "warning"}>
             {canVerifyComplianceEvidence ? "Verificacao autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.compliance.verify</Badge>
+          <Badge variant="outline">Verificar conformidade</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Verificar evidencia de compliance</CardTitle>

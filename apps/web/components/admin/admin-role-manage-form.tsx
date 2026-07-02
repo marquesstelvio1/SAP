@@ -72,12 +72,12 @@ export function AdminRoleManageForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageRoles ? "success" : "warning"}>
-            {canManageRoles ? "Roles custom" : "Indisponível"}
+            {canManageRoles ? "Perfis personalizados" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">Gestao de roles</Badge>
+          <Badge variant="outline">Gestão de perfis</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Gerir roles</CardTitle>
+          <CardTitle>Gerir perfis</CardTitle>
           <CardDescription className="leading-6">
             Crie roles personalizadas ou atualize as permissões de roles existentes.
           </CardDescription>
@@ -86,7 +86,7 @@ export function AdminRoleManageForm({
       <CardContent>
         <Tabs defaultValue="create">
           <TabsList>
-            <TabsTrigger value="create">Criar role</TabsTrigger>
+            <TabsTrigger value="create">Criar perfil</TabsTrigger>
             <TabsTrigger value="permissions">Atualizar permissoes</TabsTrigger>
           </TabsList>
           <TabsContent value="create">
@@ -115,7 +115,6 @@ function CreateRoleSection({
   action,
   canManageRoles,
   initialState,
-  permissions,
 }: {
   action: AdminRoleManageFormProps["createAction"];
   canManageRoles: boolean;
@@ -186,7 +185,7 @@ function CreateRoleSection({
         </Field>
       </FieldGroup>
       <Button className="mt-4" disabled={isDisabled} type="submit">
-        {isPending ? "A criar..." : "Criar role"}
+        {isPending ? "A criar..." : "Criar perfil"}
       </Button>
     </form>
   );

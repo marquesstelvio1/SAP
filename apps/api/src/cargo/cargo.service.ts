@@ -1,10 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
-import {
-  type DatabaseActorType,
-  getPrismaClient,
-  type PrismaTx,
-  type SaptmPrismaClient,
-} from "@saptm/database";
+import { CURRENT_EVENT_VERSION, type DatabaseActorType, type PrismaTx } from "@saptm/database";
 import type {
   CargoClaimSettlementRecordInput,
   CargoClaimSettlementRecordOutput,
@@ -194,8 +189,6 @@ export type VerifyCargoComplianceEvidenceInput = CargoComplianceEvidenceVerifyIn
 
 @Injectable()
 export class CargoService {
-  private readonly database: SaptmPrismaClient = getPrismaClient();
-
   constructor(
     @Inject(CARGO_REPOSITORY) private readonly cargoRepo: CargoRepository,
     private readonly eventBus: OutboxEventBusAdapter,
@@ -256,7 +249,7 @@ export class CargoService {
     const expectedReadyAt =
       input.expectedReadyAt === undefined ? null : new Date(input.expectedReadyAt);
 
-    const cargo = await this.database.$transaction(async (tx: PrismaTx) => {
+    const cargo = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const createdCargo = await this.cargoRepo.createCargo(tx, {
         organizationId: input.organizationId,
         cargoReference,
@@ -316,7 +309,7 @@ export class CargoService {
         eventType: "cargo.registered",
         aggregateType: "cargo",
         aggregateId: createdCargo.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: createdCargo.id,
           cargoReference: createdCargo.cargoReference,
@@ -380,7 +373,7 @@ export class CargoService {
 
     const releasedAt = input.releasedAt === undefined ? new Date() : new Date(input.releasedAt);
     const previousAuditState = createCargoReleaseAuditBefore(existingCargo, businessRules);
-    const cargo = await this.database.$transaction(async (tx: PrismaTx) => {
+    const cargo = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const releasedCargo = await this.cargoRepo.updateCargo(tx, existingCargo.id, {
         status: "ready_for_transport",
         customsStatus: input.customsStatus,
@@ -423,7 +416,7 @@ export class CargoService {
         eventType: "cargo.released",
         aggregateType: "cargo",
         aggregateId: releasedCargo.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: releasedCargo.id,
           cargoReference: releasedCargo.cargoReference,
@@ -486,7 +479,7 @@ export class CargoService {
 
     const transportPlannedAt = new Date();
     const previousAuditState = createCargoTransportPlanAuditBefore(cargo, businessRules);
-    const plannedCargo = await this.database.$transaction(async (tx: PrismaTx) => {
+    const plannedCargo = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const updatedCargo = await this.cargoRepo.updateCargo(tx, cargo.id, {
         transportPlanIdempotencyKey: input.idempotencyKey,
         transportOwnerTeam: input.operationsOwnerTeam.trim(),
@@ -534,7 +527,7 @@ export class CargoService {
         eventType: "cargo.transport_planned",
         aggregateType: "cargo",
         aggregateId: updatedCargo.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: updatedCargo.id,
           cargoReference: updatedCargo.cargoReference,
@@ -617,8 +610,7 @@ export class CargoService {
       complianceEvidenceCounts.pendingReview > 0 || complianceEvidenceCounts.rejected > 0;
 
     const departedAt = new Date(input.departedAt);
-    const departureAfterRelease =
-      cargo.releasedAt === null || departedAt >= cargo.releasedAt;
+    const departureAfterRelease = cargo.releasedAt === null || departedAt >= cargo.releasedAt;
     const departureAfterPlanning =
       cargo.transportPlannedAt === null || departedAt >= cargo.transportPlannedAt;
     const departureAllowed =
@@ -680,7 +672,7 @@ export class CargoService {
       appliedRules: appliedDepartRules,
     };
 
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const departedCargo = await this.cargoRepo.updateCargo(tx, cargo.id, {
         status: "in_transport",
         departureIdempotencyKey: input.idempotencyKey,
@@ -736,7 +728,7 @@ export class CargoService {
         eventType: "cargo.transport_departed",
         aggregateType: "cargo",
         aggregateId: cargo.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -840,7 +832,7 @@ export class CargoService {
       appliedRules: appliedArriveRules,
     };
 
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const arrivedCargo = await this.cargoRepo.updateCargo(tx, cargo.id, {
         arrivalIdempotencyKey: input.idempotencyKey,
         arrivalLocationName: input.arrivalLocationName.trim(),
@@ -888,7 +880,7 @@ export class CargoService {
         eventType: "cargo.transport_arrived",
         aggregateType: "cargo",
         aggregateId: cargo.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -1040,7 +1032,8 @@ export class CargoService {
       custodyOwnerName: cargo.custodyOwnerName,
       departedAt: cargo.departedAt?.toISOString() ?? null,
       arrivedAt: cargo.arrivedAt?.toISOString() ?? null,
-      duplicateHandoffId: duplicateReference?.id ?? null,
+      duplicateHandoffId:
+        duplicateReference === null ? null : (duplicateReference as { id: string }).id,
       handoffAllowed,
       cargoInTransport,
       currentCustodyMatched,
@@ -1050,7 +1043,7 @@ export class CargoService {
       appliedRules: appliedHandoffRules,
     };
 
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const handoff = await this.cargoRepo.createOperationalHandoff(tx, {
         organizationId: input.organizationId,
         cargoId: cargo.id,
@@ -1115,7 +1108,7 @@ export class CargoService {
         eventType: "cargo.operational_handoff.recorded",
         aggregateType: "cargo",
         aggregateId: cargo.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -1198,9 +1191,7 @@ export class CargoService {
     const deliveryAfterArrival = cargo.arrivedAt === null || deliveredAt >= cargo.arrivedAt;
     const deliveryConditionAccepted = input.deliveryConditionStatus === "sound";
     const deliveryAllowed =
-      cargoArrivedForDelivery &&
-      deliveryAfterArrival &&
-      deliveryConditionAccepted;
+      cargoArrivedForDelivery && deliveryAfterArrival && deliveryConditionAccepted;
     const appliedDeliveryRules = [
       "tenant_scoped_cargo_delivery",
       "idempotent_cargo_delivery",
@@ -1226,7 +1217,6 @@ export class CargoService {
       throw new BadRequestException("cargo.delivery_blocked");
     }
 
-    const deliveryLocationName = cargo.arrivalLocationName ?? cargo.destinationName;
     const previousAuditState = {
       cargoId: cargo.id,
       cargoReference: cargo.cargoReference,
@@ -1241,7 +1231,7 @@ export class CargoService {
       appliedRules: appliedDeliveryRules,
     };
 
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const deliveredCargo = await this.cargoRepo.updateCargo(tx, cargo.id, {
         status: "delivered",
         conditionStatus: input.deliveryConditionStatus,
@@ -1291,7 +1281,7 @@ export class CargoService {
         eventType: "cargo.delivery_completed",
         aggregateType: "cargo",
         aggregateId: cargo.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -1369,9 +1359,7 @@ export class CargoService {
       cargo.trackingShipmentId !== null;
     const occurredAt = new Date(input.occurredAt);
     const exceptionAfterArrival = cargo.arrivedAt === null || occurredAt >= cargo.arrivedAt;
-    const exceptionAccepted =
-      cargoArrivedForException &&
-      exceptionAfterArrival;
+    const exceptionAccepted = cargoArrivedForException && exceptionAfterArrival;
     const appliedExceptionRules = [
       "tenant_scoped_delivery_exception",
       "idempotent_delivery_exception_record",
@@ -1392,7 +1380,6 @@ export class CargoService {
       throw new BadRequestException("cargo.delivery_exception_record_blocked");
     }
 
-    const eventLocationName = cargo.arrivalLocationName ?? cargo.destinationName;
     const previousAuditState = {
       cargoId: cargo.id,
       cargoReference: cargo.cargoReference,
@@ -1407,7 +1394,7 @@ export class CargoService {
       appliedRules: appliedExceptionRules,
     };
 
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const exception = await this.cargoRepo.createDeliveryException(tx, {
         organizationId: input.organizationId,
         cargoId: cargo.id,
@@ -1472,7 +1459,7 @@ export class CargoService {
         eventType: "cargo.delivery_exception.recorded",
         aggregateType: "cargo",
         aggregateId: cargo.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -1596,8 +1583,6 @@ export class CargoService {
       throw new BadRequestException("cargo.delivery_exception_resolve_blocked");
     }
 
-    const eventLocationName =
-      exception.cargo.arrivalLocationName ?? exception.cargo.destinationName;
     const previousAuditState = {
       cargoId: exception.cargo.id,
       cargoReference: exception.cargo.cargoReference,
@@ -1616,7 +1601,7 @@ export class CargoService {
       appliedRules: appliedResolveRules,
     };
 
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       await this.cargoRepo.updateDeliveryException(tx, exception.id, {
         status: "resolved",
         resolverName: input.resolverName.trim(),
@@ -1681,7 +1666,7 @@ export class CargoService {
         eventType: "cargo.delivery_exception.resolved",
         aggregateType: "cargo",
         aggregateId: exception.cargo.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: exception.cargo.id,
           cargoReference: exception.cargo.cargoReference,
@@ -1786,7 +1771,7 @@ export class CargoService {
       duplicateReference: duplicateSettlementByRef,
       businessRules,
     });
-    const settlement = await this.database.$transaction(async (tx: PrismaTx) => {
+    const settlement = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const recordedSettlement = await this.cargoRepo.createClaimSettlement(tx, {
         organizationId: input.organizationId,
         cargoId: exception.cargoId,
@@ -1834,7 +1819,7 @@ export class CargoService {
         eventType: "cargo.claim_settlement.recorded",
         aggregateType: "cargo",
         aggregateId: exception.cargoId,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: exception.cargoId,
           cargoReference: exception.cargo.cargoReference,
@@ -1912,7 +1897,7 @@ export class CargoService {
 
     const issuedAt = input.issuedAt === undefined ? null : new Date(input.issuedAt);
     const expiresAt = input.expiresAt === undefined ? null : new Date(input.expiresAt);
-    const evidence = await this.database.$transaction(async (tx: PrismaTx) => {
+    const evidence = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const createdEvidence = await this.cargoRepo.createComplianceEvidence(tx, {
         organizationId: input.organizationId,
         cargoId: input.cargoId,
@@ -1959,7 +1944,7 @@ export class CargoService {
         eventType: "cargo.compliance_evidence.recorded",
         aggregateType: "cargo",
         aggregateId: cargo.id,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -2037,7 +2022,7 @@ export class CargoService {
 
     const reviewedAt = input.reviewedAt === undefined ? new Date() : new Date(input.reviewedAt);
     const previousAuditState = createCargoComplianceEvidenceVerifyAuditBefore(evidenceWithCargo);
-    const verifiedEvidence = await this.database.$transaction(async (tx: PrismaTx) => {
+    const verifiedEvidence = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       await this.cargoRepo.updateComplianceEvidence(tx, evidence.id, {
         status: input.status,
         reviewerName: input.reviewerName.trim(),
@@ -2087,7 +2072,7 @@ export class CargoService {
         eventType: "cargo.compliance_evidence.verified",
         aggregateType: "cargo",
         aggregateId: evidence.cargoId,
-        eventVersion: 1,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: evidence.cargoId,
           evidenceId: updatedEvidence.id,

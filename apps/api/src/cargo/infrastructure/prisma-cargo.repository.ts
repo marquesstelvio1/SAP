@@ -147,7 +147,7 @@ export class PrismaCargoRepository implements CargoRepository {
     return this.database.cargo.findFirst({
       where: { organizationId, cargoReference },
       select: { id: true },
-    });
+    }) as unknown as Promise<{ id: string } | null>;
   }
 
   async getComplianceEvidenceStatusCounts(
@@ -159,7 +159,7 @@ export class PrismaCargoRepository implements CargoRepository {
       where: { organizationId, cargoId },
       _count: { _all: true },
     });
-    return groups.map((g: { status: string; _count: { _all: number } }) => ({
+    return (groups as Array<{ status: string; _count: { _all: number } }>).map((g) => ({
       status: g.status,
       count: g._count._all,
     }));
@@ -215,14 +215,18 @@ export class PrismaCargoRepository implements CargoRepository {
       ]);
 
     return {
-      statusGroups: statusGroups.map((g: { status: string; _count: { _all: number } }) => ({
-        status: g.status,
-        count: g._count._all,
-      })),
-      typeGroups: typeGroups.map((g: { evidenceType: string; _count: { _all: number } }) => ({
-        evidenceType: g.evidenceType,
-        count: g._count._all,
-      })),
+      statusGroups: (statusGroups as Array<{ status: string; _count: { _all: number } }>).map(
+        (g) => ({
+          status: g.status,
+          count: g._count._all,
+        }),
+      ),
+      typeGroups: (typeGroups as Array<{ evidenceType: string; _count: { _all: number } }>).map(
+        (g) => ({
+          evidenceType: g.evidenceType,
+          count: g._count._all,
+        }),
+      ),
       expiringCount,
       expiredCount,
       totalCount,
@@ -293,7 +297,7 @@ export class PrismaCargoRepository implements CargoRepository {
       where: { organizationId },
       _count: { _all: true },
     });
-    return groups.map((g: { status: string; _count: { _all: number } }) => ({
+    return (groups as Array<{ status: string; _count: { _all: number } }>).map((g) => ({
       status: g.status,
       count: g._count._all,
     }));
@@ -373,6 +377,69 @@ export class PrismaCargoRepository implements CargoRepository {
     return raw as unknown as CargoComplianceEvidenceRecord | null;
   }
 
+  async findComplianceEvidenceMany(
+    orgId: string,
+    filters: {
+      cargoId: string | undefined;
+      evidenceType: string | undefined;
+      status: string | undefined;
+      limit: number;
+      offset: number;
+    },
+  ): Promise<CargoComplianceEvidenceRecord[]> {
+    const where: Record<string, unknown> = { organizationId: orgId };
+
+    if (filters.cargoId !== undefined) {
+      where.cargoId = filters.cargoId;
+    }
+
+    if (filters.evidenceType !== undefined) {
+      where.evidenceType = filters.evidenceType;
+    }
+
+    if (filters.status !== undefined) {
+      where.status = filters.status;
+    }
+
+    const raw = await this.database.cargoComplianceEvidence.findMany({
+      where: where as never,
+      orderBy: { recordedAt: "desc" },
+      take: filters.limit,
+      skip: filters.offset,
+    });
+
+    return raw as unknown as CargoComplianceEvidenceRecord[];
+  }
+
+  async countComplianceEvidence(
+    orgId: string,
+    filters: {
+      cargoId: string | undefined;
+      evidenceType: string | undefined;
+      status: string | undefined;
+    },
+  ): Promise<number> {
+    const where: Record<string, unknown> = { organizationId: orgId };
+
+    if (filters.cargoId !== undefined) {
+      where.cargoId = filters.cargoId;
+    }
+
+    if (filters.evidenceType !== undefined) {
+      where.evidenceType = filters.evidenceType;
+    }
+
+    if (filters.status !== undefined) {
+      where.status = filters.status;
+    }
+
+    const count = await this.database.cargoComplianceEvidence.count({
+      where: where as never,
+    });
+
+    return count;
+  }
+
   async getOverview(
     organizationId: string,
     limit: number,
@@ -403,10 +470,12 @@ export class PrismaCargoRepository implements CargoRepository {
       ]);
 
     return {
-      statusGroups: statusGroups.map((g: { status: string; _count: { _all: number } }) => ({
-        status: g.status as CargoStatus,
-        _count: { _all: g._count._all },
-      })),
+      statusGroups: (statusGroups as Array<{ status: string; _count: { _all: number } }>).map(
+        (g) => ({
+          status: g.status as CargoStatus,
+          _count: { _all: g._count._all },
+        }),
+      ),
       hazardousCount,
       inspectionRequiredCount,
       totalCount,

@@ -18,6 +18,7 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { addHours, createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -46,6 +47,7 @@ export function CapacitySlotReserveForm({
   initialState,
   action,
 }: CapacitySlotReserveFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     createIdempotencyKey("capacity_reserve"),
@@ -56,6 +58,12 @@ export function CapacitySlotReserveForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("capacity_reserve"));
+      capture("capacity:slot_booked", {
+        slot_id: state.slotId,
+        cargo_id: state.cargoId,
+        reservation_id: state.reservationId,
+        reservation_reference: state.reservationReference,
+      });
     }
   }, [state.status]);
 
@@ -66,7 +74,7 @@ export function CapacitySlotReserveForm({
           <Badge variant={canReserveCapacity ? "success" : "warning"}>
             {canReserveCapacity ? "Reserva autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">capacity.slot.reserve</Badge>
+          <Badge variant="outline">Reservar slot</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Reservar slot para carga</CardTitle>
@@ -189,7 +197,7 @@ export function CapacitySlotReserveForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canReserveCapacity ? "Reserva atualiza unidades atomicamente." : "Requer reserve."}
+            {canReserveCapacity ? "Reserva atualiza unidades atomicamente." : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A reservar..." : "Reservar capacidade"}

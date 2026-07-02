@@ -26,7 +26,7 @@ const staticHeaders = [
   },
   {
     key: "Permissions-Policy",
-    value: "camera=(), geolocation=(), microphone=(), payment=(), usb=()",
+    value: "camera=(), geolocation=(), microphone=(), interest-cohort=(), payment=(), usb=()",
   },
   {
     key: "Referrer-Policy",

@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TrackingEventRecordFormState } from "../../app/(platform)/app/tracking/form-state";
@@ -59,6 +60,7 @@ export function TrackingEventRecordForm({
   initialState,
   action,
 }: TrackingEventRecordFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("trk_evt"));
   const defaultOccurredAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -68,6 +70,9 @@ export function TrackingEventRecordForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("trk_evt"));
+      capture("tracking:event_received", {
+        event_id: state.eventId,
+      });
     }
   }, [state.status]);
 

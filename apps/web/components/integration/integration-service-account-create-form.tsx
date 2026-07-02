@@ -18,7 +18,7 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
-
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { IntegrationServiceAccountCreateFormState } from "../../app/(platform)/app/integrations/form-state";
 
@@ -36,6 +36,7 @@ export function IntegrationServiceAccountCreateForm({
   canManageApiKeys,
   initialState,
 }: IntegrationServiceAccountCreateFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     createIdempotencyKey("integration_service_account"),
@@ -45,6 +46,10 @@ export function IntegrationServiceAccountCreateForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("integration_service_account"));
+      capture("settings:integration_connected", {
+        service_account_id: state.serviceAccountId,
+        api_key_prefix: state.apiKeyPrefix,
+      });
     }
   }, [state.status]);
 

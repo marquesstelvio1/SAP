@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
 
+import { captureEvent } from "../../lib/analytics";
 import { authClient } from "../../lib/auth-client";
 
 const signInSchema = z.object({
@@ -73,6 +74,10 @@ export function SignInForm({ nextPath }: { nextPath: string }) {
       return;
     }
 
+    captureEvent("auth:signed_in", {
+      method: "email",
+      has_2fa: false,
+    });
     router.replace(nextPath as Route);
     router.refresh();
   }

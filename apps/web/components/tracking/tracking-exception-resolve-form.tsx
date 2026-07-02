@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TrackingExceptionResolveFormState } from "../../app/(platform)/app/tracking/form-state";
@@ -74,6 +75,7 @@ export function TrackingExceptionResolveForm({
   initialState,
   action,
 }: TrackingExceptionResolveFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("trk_res"));
   const defaultOccurredAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -82,6 +84,10 @@ export function TrackingExceptionResolveForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("trk_res"));
+      capture("tracking:exception_resolved", {
+        shipment_id: shipment.id,
+        exception_id: state.eventId,
+      });
     }
   }, [state.status]);
 

@@ -17,6 +17,7 @@ import {
   Input,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -36,6 +37,7 @@ export function CargoTransportArriveForm({
   initialState,
   action,
 }: CargoTransportArriveFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_arr"));
   const defaultArrivedAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -44,6 +46,12 @@ export function CargoTransportArriveForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("cargo_arr"));
+      capture("cargo:status_changed", {
+        cargo_id: state.cargoId,
+        cargo_reference: state.cargoReference,
+        to_status: "arrived",
+        shipment_id: state.shipmentId,
+      });
     }
   }, [state.status]);
 

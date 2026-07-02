@@ -249,4 +249,7 @@ export interface TrackingRepository {
     referenceCode: string;
     status: string;
   }>;
+
+  // Transaction support
+  transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T>;
 }

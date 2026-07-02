@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -38,6 +39,7 @@ export function CargoClaimSettlementRecordForm({
   initialState,
   action,
 }: CargoClaimSettlementRecordFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     createIdempotencyKey("cargo_claim_settlement"),
@@ -48,6 +50,12 @@ export function CargoClaimSettlementRecordForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("cargo_claim_settlement"));
+      capture("cargo:claim_resolved", {
+        cargo_id: state.cargoId,
+        exception_id: state.exceptionId,
+        settlement_id: state.settlementId,
+        settlement_reference: state.settlementReference,
+      });
     }
   }, [state.status]);
 
@@ -58,7 +66,7 @@ export function CargoClaimSettlementRecordForm({
           <Badge variant={canRecordClaimSettlement ? "success" : "warning"}>
             {canRecordClaimSettlement ? "Liquidacao autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.claim.settle</Badge>
+          <Badge variant="outline">Liquidar reclamação</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Liquidar claim contabilistica</CardTitle>

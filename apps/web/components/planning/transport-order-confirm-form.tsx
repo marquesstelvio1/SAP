@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { addHours, createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TransportOrderConfirmFormState } from "../../app/(platform)/app/planning/form-state";
@@ -45,6 +46,7 @@ export function TransportOrderConfirmForm({
   initialState,
   action,
 }: TransportOrderConfirmFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     createIdempotencyKey("planning_confirm"),
@@ -57,6 +59,11 @@ export function TransportOrderConfirmForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("planning_confirm"));
+      capture("planning:order_created", {
+        order_id: state.orderId,
+        order_reference: state.orderReference,
+        cargo_id: state.cargoId,
+      });
     }
   }, [state.status]);
 
@@ -67,7 +74,7 @@ export function TransportOrderConfirmForm({
           <Badge variant={canConfirmTransportOrder ? "success" : "warning"}>
             {canConfirmTransportOrder ? "Confirmação autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">planning.order.confirm</Badge>
+          <Badge variant="outline">Confirmar ordem</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Confirmar transport order</CardTitle>

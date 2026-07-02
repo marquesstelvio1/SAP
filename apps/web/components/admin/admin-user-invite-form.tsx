@@ -18,7 +18,7 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
-
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { AdminUserInviteFormState } from "../../app/(platform)/app/admin/form-state";
 
@@ -43,6 +43,7 @@ export function AdminUserInviteForm({
   initialState,
   roles,
 }: AdminUserInviteFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("admin_invite"));
   const isDisabled = isPending || !canInviteUser;
@@ -50,6 +51,11 @@ export function AdminUserInviteForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("admin_invite"));
+      capture("settings:member_invited", {
+        user_id: state.userId,
+        membership_id: state.membershipId,
+        email: state.email,
+      });
     }
   }, [state.status]);
 

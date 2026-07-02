@@ -18,7 +18,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
-
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { AdminMembershipStatusFormState } from "../../app/(platform)/app/admin/form-state";
 
@@ -45,6 +45,7 @@ export function AdminMembershipStatusForm({
   initialState,
   members,
 }: AdminMembershipStatusFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     createIdempotencyKey("admin_membership_status"),
@@ -54,6 +55,11 @@ export function AdminMembershipStatusForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("admin_membership_status"));
+      if (state.membershipStatus === "removed") {
+        capture("settings:member_removed", {
+          membership_id: state.membershipId,
+        });
+      }
     }
   }, [state.status]);
 
@@ -62,12 +68,12 @@ export function AdminMembershipStatusForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageMemberships ? "success" : "warning"}>
-            {canManageMemberships ? "Lifecycle" : "Indisponível"}
+            {canManageMemberships ? "Ciclo de vida" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">active/suspended/removed</Badge>
+          <Badge variant="outline">Ativo/Suspenso/Removido</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Atualizar membership</CardTitle>
+          <CardTitle>Atualizar adesão</CardTitle>
           <CardDescription className="leading-6">
             Ativa, suspende ou remove acesso. Sessão removida perde permissões porque o resolver só
             aceita memberships `active`.

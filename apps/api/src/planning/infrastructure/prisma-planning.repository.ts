@@ -478,8 +478,11 @@ export class PrismaPlanningRepository implements PlanningRepository {
     tx: PrismaTx,
     data: PlanningDispatchCreateInput,
   ): Promise<PlanningTransportOrderDispatchRecord> {
-    return tx.transportOrderDispatch.create({
-      data,
-    });
+    const raw = await tx.transportOrderDispatch.create({ data: data as never });
+    return raw as unknown as PlanningTransportOrderDispatchRecord;
+  }
+
+  async transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T> {
+    return this.database.$transaction(fn);
   }
 }

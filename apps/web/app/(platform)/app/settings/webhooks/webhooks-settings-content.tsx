@@ -188,23 +188,23 @@ export function WebhooksSettingsContent({ initialData }: WebhooksSettingsContent
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-semibold text-2xl tracking-heading">Webhooks</h1>
+          <h1 className="font-semibold text-2xl tracking-heading">Notificações</h1>
           <p className="text-muted-foreground text-sm">
-            Notificacoes HTTP para eventos da organizacao.
+            Endpoints HTTP para receber eventos da organização.
           </p>
         </div>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
             <Button className="gap-1.5">
               <PlusIcon className="size-4" />
-              Novo webhook
+              Nova notificação
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Criar webhook</DialogTitle>
+              <DialogTitle>Criar notificação</DialogTitle>
               <DialogDescription>
-                Configura um endpoint HTTP para receber notificacoes de eventos.
+                Configura um endpoint HTTP para receber eventos da organização.
               </DialogDescription>
             </DialogHeader>
             <form action={createFormAction} className="flex flex-col gap-4">
@@ -258,7 +258,7 @@ export function WebhooksSettingsContent({ initialData }: WebhooksSettingsContent
                 <p className="text-destructive text-sm">{createState.message}</p>
               )}
               <Button type="submit" disabled={createPending}>
-                {createPending ? "A criar..." : "Criar webhook"}
+                {createPending ? "A criar..." : "Criar notificação"}
               </Button>
             </form>
           </DialogContent>
@@ -270,15 +270,15 @@ export function WebhooksSettingsContent({ initialData }: WebhooksSettingsContent
         data={webhooks}
         filterColumn="name"
         filterPlaceholder="Filtrar por nome..."
-        emptyMessage="Nenhum webhook configurado. Cria um webhook para comecar a receber eventos."
+        emptyMessage="Nenhuma notificação configurada. Cria uma notificação para começar a receber eventos."
         pageSize={25}
       />
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Editar webhook</DialogTitle>
-            <DialogDescription>Atualiza as configuracoes do webhook.</DialogDescription>
+            <DialogTitle>Editar notificação</DialogTitle>
+            <DialogDescription>Atualiza as configurações da notificação.</DialogDescription>
           </DialogHeader>
           {editingWebhook && (
             <form action={updateFormAction} className="flex flex-col gap-4">
@@ -337,7 +337,7 @@ export function WebhooksSettingsContent({ initialData }: WebhooksSettingsContent
                 <p className="text-destructive text-sm">{updateState.message}</p>
               )}
               <Button type="submit" disabled={updatePending}>
-                {updatePending ? "A atualizar..." : "Atualizar webhook"}
+                {updatePending ? "A atualizar..." : "Atualizar notificação"}
               </Button>
             </form>
           )}

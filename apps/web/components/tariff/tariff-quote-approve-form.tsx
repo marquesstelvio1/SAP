@@ -18,7 +18,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
-
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TariffQuoteApproveFormState } from "../../app/(platform)/app/tariffs/form-state";
 
@@ -36,6 +36,7 @@ export function TariffQuoteApproveForm({
   initialState,
   action,
 }: TariffQuoteApproveFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     createIdempotencyKey("tariff_approve"),
@@ -45,6 +46,11 @@ export function TariffQuoteApproveForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("tariff_approve"));
+      capture("tariff:quote_approved", {
+        quote_id: state.quoteId,
+        cargo_id: state.cargoId,
+        approval_reference: state.approvalReference,
+      });
     }
   }, [state.status]);
 
@@ -53,9 +59,9 @@ export function TariffQuoteApproveForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canApproveQuotes ? "success" : "warning"}>
-            {canApproveQuotes ? "Aprovação financeira" : "Sem permissão"}
+            {canApproveQuotes ? "Aprovação financeira" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">tariff.quote.approve</Badge>
+          <Badge variant="outline">Aprovar cotação</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Aprovar cotação</CardTitle>
@@ -140,7 +146,7 @@ export function TariffQuoteApproveForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canApproveQuotes ? "Exige estado calculado." : "Requer aprovacao de cotacao."}
+            {canApproveQuotes ? "Exige estado calculado." : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A aprovar..." : "Aprovar cotação"}
