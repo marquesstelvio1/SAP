@@ -233,4 +233,40 @@ Cada departamento carrega conhecimento profundo do skill correspondente em `~/.a
 
 **Task 3 — Organizations module** ✅ Já existente
 
-### Próximo Sprint: Sprint 4 — API Versioning + Pagination
+### Sprint 4 — API Versioning + Pagination ✅ Concluído
+
+**Task 1 — Add API versioning** ✅
+- `rpc-http.middleware.ts`: suporta `["/v1/rpc", "/rpc"]` prefixes
+- `metadata.ts`: campo `version` já definido e validado
+- `docs/adr/0007-api-versioning-strategy.md`: ADR criado
+
+**Task 2 — Add pagination to data tables** ✅
+- `DataTable` component: suporta `manualPagination`, `pageIndex`, `pageCount`, `onPageChange`
+- `DataTablePagination` component: navegação de páginas built-in
+- `teams-table.tsx`: usa `manualPagination` com server-side
+- Todas as RPC list contracts: têm schema `pagination: z.object({offset, limit})`
+
+### Sprint 5 — Form Validation + Testing Infrastructure ✅ Concluído
+
+**Task 1 — Write unit tests for business rules** ✅
+- `cargo-service-business-rules.test.mjs`
+- `capacity-service-business-rules.test.mjs`
+- `tracking-service-business-rules.test.mjs`
+- `evidence-services-business-rules.test.mjs`
+- Mais 20+ testes RPC e integração em `apps/api/tests/` e `packages/rpc/tests/`
+
+**Task 2 — Add client-side Zod validation** ✅
+- `sign-in-form.tsx`: usa `useForm` + `zodResolver` de `@saptm/form`
+- `Field`, `FieldError`, `FieldLabel` já existem em `@saptm/ui`
+
+### Sprint 6 — DevOps + Accessibility ✅ Concluído
+
+**Task 1 — Rewrite PowerShell scripts to Node.js** ✅
+- Zero `.ps1` files — todos os scripts são `.mjs` cross-platform
+- CI workflows usam `shell: bash` com `actions/setup-node@v4`
+
+**Task 2 — Implement skip-to-content + keyboard navigation** ✅
+- Skip link em `layout.tsx`: `href="#main-content"`
+- `id="main-content"` presente em todas as pages principais
+- `aria-live="assertive"` regions em tracking pages
+- `aria-label`, focus-visible, focus-trap verificados nos componentes de diálogo
