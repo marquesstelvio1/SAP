@@ -215,4 +215,22 @@ Cada departamento carrega conhecimento profundo do skill correspondente em `~/.a
 - Zero CSS `group-hover` tooltips
 - Zero nativos `<select>` em app code
 
-### Próximo Sprint: Sprint 3 — Backend Architecture
+### Sprint 3 — Backend Architecture ✅ Concluído
+
+**Task 1 — Implement repository pattern (cargo module)** ✅
+- `cargo.repository.ts` — Interface com `CargoRepository` + `CARGO_REPOSITORY` symbol
+- `prisma-cargo.repository.ts` — `PrismaCargoRepository` implementa a interface
+- `cargo.entity.ts` — Aggregate root com domínio rico
+- `cargo.service.ts` — Usa `@Inject(CARGO_REPOSITORY) cargoRepo: CargoRepository` (sem `prisma.cargo`)
+- **Validação:** `grep -r "prisma.cargo" apps/api/src/cargo/` → 0 resultados
+
+**Task 2 — Implement EventBus abstraction** ✅
+- `packages/database/src/domain-events.ts` — `DomainEvent`, `EventBus` interfaces
+- `packages/database/src/outbox-event-bus.ts` — `OutboxEventBus` implementação
+- `apps/api/src/event-bus/` — `EventBusModule`, `EventBusService`, `OutboxEventBusAdapter`
+- Todos os services usam `eventBus.publish()` em vez de `prisma.outboxEvent.create()`
+- **Validação:** `grep -r "prisma.outboxEvent" apps/api/src/` → 0 resultados
+
+**Task 3 — Organizations module** ✅ Já existente
+
+### Próximo Sprint: Sprint 4 — API Versioning + Pagination
