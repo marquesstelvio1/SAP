@@ -21,7 +21,7 @@
     "lint": "biome check .",
     "test": "node --test tests/soft-delete.test.mjs",
     "db:validate": "npx --no prisma validate",
-    "db:generate": "npx --no prisma generate",
+    "db:generate": "NPM_CONFIG_loglevel=error npx --no prisma generate",
     "db:migrate:dev": "npx --no prisma migrate dev",
     "db:migrate:deploy": "npx --no prisma migrate deploy",
     "db:migrate:status": "npx --no prisma migrate status",
