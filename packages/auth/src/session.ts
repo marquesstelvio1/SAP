@@ -8,7 +8,7 @@ export type BetterAuthSessionUser = {
   email?: string;
   emailVerified?: boolean;
   name?: string;
-  twoFactorEnabled?: boolean | null;
+  twoFactorEnabled: boolean | null | undefined;
 };
 
 export type BetterAuthSessionRecord = {
