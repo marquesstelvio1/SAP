@@ -45,8 +45,8 @@ export function IntegrationOverviewHeader({
               Gateway de Integração
             </CardTitle>
             <CardDescription className="max-w-3xl text-base leading-7">
-              Contas técnicas e integrações EDI, ERP, TOS para operações ferroviárias,
-              portuárias e logísticas.
+              Contas técnicas e integrações EDI, ERP, TOS para operações ferroviárias, portuárias e
+              logísticas.
             </CardDescription>
           </div>
         </CardHeader>

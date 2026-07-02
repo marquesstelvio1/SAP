@@ -86,7 +86,7 @@ export default async function AdminIdentityPage(props: {
   let result: Awaited<ReturnType<typeof getAdminOverview>>;
   try {
     result = await getAdminOverview({ offset, limit });
-  } catch (error) {
+  } catch (_error) {
     return (
       <AccessState
         badgeLabel="Administração"

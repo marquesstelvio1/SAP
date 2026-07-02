@@ -191,7 +191,7 @@ test("privacy delete account RPC authorizes deletion mutation", async () => {
       async exportUserData() {
         throw new Error("exportUserData should not be called by delete test");
       },
-      async scheduleAccountDeletion(actorId, context) {
+      async scheduleAccountDeletion(_actorId, _context) {
         deleteCalled = true;
         return {
           scheduledAt: "2026-06-11T00:00:00.000Z",

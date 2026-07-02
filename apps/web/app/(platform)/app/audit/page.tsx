@@ -2,9 +2,11 @@ import type { PlatformPermission } from "@saptm/auth";
 import {
   type AuditSearchInput,
   auditActorTypes,
+  auditRecordSummarySchema,
   auditSearchInputSchema,
   auditSeverities,
 } from "@saptm/rpc/audit";
+import type { z } from "zod";
 import {
   AccessState,
   Badge,
@@ -85,10 +87,10 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
   const parsedFilters = parseAuditSearchParams(rawSearchParams);
   const auditInput = parsedFilters.input;
 
-  let result: Awaited<ReturnType<typeof searchAuditRecords>>;
+  let auditResult: Awaited<ReturnType<typeof searchAuditRecords>>;
   try {
-    result = await searchAuditRecords(auditInput);
-  } catch (error) {
+    auditResult = await searchAuditRecords(auditInput);
+  } catch (_error) {
     return (
       <AccessState
         badgeLabel="Auditoria"
@@ -100,11 +102,11 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
     );
   }
 
-  if (result.status !== "ok") {
+  if (auditResult.status !== "ok") {
     return (
       <AccessState
         badgeLabel="Auditoria"
-        description={result.message}
+        description={auditResult.message}
         role="alert"
         title="Auditoria indisponível"
         variant="error"
@@ -112,7 +114,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
     );
   }
 
-  const { search } = result;
+  const { search } = auditResult;
   const exportHref = buildAuditExportHref(auditInput);
 
   return (
@@ -339,7 +341,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
                   </TableCell>
                 </TableRow>
               ) : (
-                search.records.map((record) => (
+                search.records.map((record: z.infer<typeof auditRecordSummarySchema>) => (
                   <TableRow key={record.id}>
                     <TableCell>{formatDateTime(record.createdAt)}</TableCell>
                     <TableCell>

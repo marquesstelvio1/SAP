@@ -89,9 +89,7 @@ export function IntegrationCustomsErpStatusForm({
                   </option>
                 ))}
               </SelectNative>
-              <FieldDescription>
-                Requer recepção de eventos e registo de tracking.
-              </FieldDescription>
+              <FieldDescription>Requer recepção de eventos e registo de tracking.</FieldDescription>
             </Field>
             <Field data-disabled={isDisabled}>
               <FieldLabel htmlFor="customsErpSourceSystem">Origem</FieldLabel>

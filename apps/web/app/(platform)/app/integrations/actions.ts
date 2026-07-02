@@ -361,8 +361,7 @@ export async function processTelematicsGpsPositionAction(
 
   return {
     status: "success",
-    message:
-      "Posição Telematics/GPS processada com auditoria.",
+    message: "Posição Telematics/GPS processada com auditoria.",
     integrationEventId: parsedOutput.data.integrationEvent.id,
     trackingEventId: parsedOutput.data.trackingEvent.id,
     idempotencyKey: parsedOutput.data.idempotency.key,
@@ -474,8 +473,7 @@ export async function processWarehouseWmsActivityAction(
 
   return {
     status: "success",
-    message:
-      "Actividade Warehouse/WMS processada com auditoria.",
+    message: "Actividade Warehouse/WMS processada com auditoria.",
     integrationEventId: parsedOutput.data.integrationEvent.id,
     trackingEventId: parsedOutput.data.trackingEvent.id,
     idempotencyKey: parsedOutput.data.idempotency.key,
