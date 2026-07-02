@@ -86,6 +86,7 @@
     "@next/bundle-analyzer": "catalog:",
     "turbo": "catalog:",
     "knip": "catalog:",
+    "prisma": "catalog:",
     "typescript": "catalog:"
   },
   "onlyBuiltDependencies": [

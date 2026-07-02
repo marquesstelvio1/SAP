@@ -21,8 +21,13 @@
     "EMAIL_FROM"
   ],
   "tasks": {
+    "db:generate": {
+      "dependsOn": [],
+      "outputs": ["node_modules/.prisma/**", "packages/database/node_modules/.prisma/**"],
+      "cache": false
+    },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "db:generate"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "dev": {
