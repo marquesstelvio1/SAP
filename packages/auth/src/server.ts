@@ -139,6 +139,12 @@ export function createSaptmAuthOptions({
     basePath: "/api/auth",
     secret: env.BETTER_AUTH_SECRET,
     trustedOrigins: getTrustedOrigins(env),
+    onAPIError: {
+      throw: true,
+      onError: (error) => {
+        console.error("[SAPTM:AUTH] error:", error?.message);
+      },
+    },
     database: prismaAdapter(database, {
       provider: databaseProvider,
       transaction: true,
