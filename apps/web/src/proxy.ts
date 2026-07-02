@@ -63,7 +63,3 @@ function buildCsp(nonce: string, origin: string, apiUrl: string, isDev: boolean)
   ];
   return directives.join("; ");
 }
-
-export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
-};

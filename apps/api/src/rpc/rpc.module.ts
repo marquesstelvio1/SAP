@@ -52,6 +52,6 @@ import { RpcHttpMiddleware } from "./rpc-http.middleware.js";
 })
 export class RpcModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(RpcHttpMiddleware).forRoutes("*");
+    consumer.apply(RpcHttpMiddleware).forRoutes("/rpc", "/v1/rpc");
   }
 }
