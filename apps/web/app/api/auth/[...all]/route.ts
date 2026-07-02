@@ -1,3 +1,4 @@
+import type { SaptmAuth } from "@saptm/auth/server";
 import { createSaptmAuthFromEnv } from "@saptm/auth/server";
 import { toNextJsHandler } from "better-auth/next-js";
 
@@ -7,25 +8,6 @@ const AUTH_LOG_PREFIX = "[SAPTM:AUTH:ROUTE]";
 
 export const runtime = "nodejs";
 
-/**
- * Rate‑limit configuration for sensitive auth endpoints.
- *
- * These limits are intentionally stricter than the global API tier
- * (200 req/min) to mitigate brute‑force and credential‑stuffing attacks.
- *
- * ── Sign‑in ─────────────────────────────────────────────────────────────
- *    5 requests per minute per IP.  Better Auth also implements an
- *    account‑level lockout (5 failures → 15 min block) as a second layer.
- *
- * ── 2FA verification ────────────────────────────────────────────────────
- *    3 requests per minute per IP.  TOTP codes change every 30 seconds,
- *    so 3 attempts per minute is generous for a human but restrictive for
- *    an automated attacker.
- *
- * ── 2FA setup ───────────────────────────────────────────────────────────
- *    3 requests per minute per IP (user ID would be better but the
- *    request must be intercepted before Better Auth resolves the session).
- */
 const AUTH_RATE_LIMITS: Record<string, { windowMs: number; max: number; message: string }> = {
   "sign-in/email": {
     windowMs: 60_000,
@@ -44,6 +26,16 @@ const AUTH_RATE_LIMITS: Record<string, { windowMs: number; max: number; message:
   },
 };
 
+let cachedAuth: SaptmAuth | undefined;
+
+function getAuth(): SaptmAuth {
+  if (cachedAuth === undefined) {
+    cachedAuth = createSaptmAuthFromEnv();
+  }
+
+  return cachedAuth;
+}
+
 const authHandler = async (request: Request): Promise<Response> => {
   const url = new URL(request.url);
   const method = request.method;
@@ -52,9 +44,6 @@ const authHandler = async (request: Request): Promise<Response> => {
 
   console.log(`${AUTH_LOG_PREFIX} ┌─ REQUEST`, { method, path: authPath, ip });
 
-  // Map the Better Auth path to a rate‑limit key.
-  // Better Auth paths are relative to the base path `/api/auth`.
-  // For example: `/api/auth/sign-in/email` → `sign-in/email`
   const limitConfig = AUTH_RATE_LIMITS[authPath];
 
   if (limitConfig !== undefined) {
@@ -80,16 +69,8 @@ const authHandler = async (request: Request): Promise<Response> => {
   }
 
   try {
-    console.log(`${AUTH_LOG_PREFIX} │ creating auth handler...`, {
-      envVars: {
-        hasDbUrl: !!process.env.DATABASE_URL,
-        hasAuthUrl: !!process.env.BETTER_AUTH_URL,
-        hasSecret: !!process.env.BETTER_AUTH_SECRET,
-      },
-    });
-    const auth = createSaptmAuthFromEnv();
+    const auth = getAuth();
     const handlers = toNextJsHandler(auth);
-    console.log(`${AUTH_LOG_PREFIX} │ handler ready, calling ${method}...`, { path: authPath });
 
     let response: Response;
     if (method === "GET" && handlers.GET) {
@@ -110,13 +91,26 @@ const authHandler = async (request: Request): Promise<Response> => {
     });
     return response;
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : String(error);
-    const stack = error instanceof Error ? error.stack : undefined;
-    console.error(`${AUTH_LOG_PREFIX} └─ ERROR`, { message, stack });
-    return new Response(JSON.stringify({ error: message, stack }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
+    const isPrismaError = error != null && typeof error === "object" && "code" in error;
+    const errorCode = isPrismaError ? (error as { code: string }).code : "UNKNOWN";
+    const details = isPrismaError
+      ? { code: errorCode, meta: (error as { meta?: unknown }).meta }
+      : { stack: error instanceof Error ? error.stack : undefined };
+    console.error(`${AUTH_LOG_PREFIX} └─ ERROR`, {
+      errorCode,
+      message: error instanceof Error ? error.message : String(error),
+      details,
     });
+    return new Response(
+      JSON.stringify({
+        error: "Internal server error",
+        code: errorCode,
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
   }
 };
 

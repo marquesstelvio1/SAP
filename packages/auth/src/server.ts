@@ -1,30 +1,11 @@
 import { getServerEnv, getTrustedOrigins, type ServerEnv } from "@saptm/config";
 import { databaseProvider, getPrismaClient } from "@saptm/database";
 import { sendPasswordResetEmail, sendVerificationEmail } from "@saptm/email";
-import type { Auth } from "better-auth";
+import type { Auth, DBAdapter } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { createAuthMiddleware } from "better-auth/api";
 import { type BetterAuthOptions, betterAuth } from "better-auth/minimal";
 import { twoFactor } from "better-auth/plugins/two-factor";
-
-type AdapterUpdate = (params: {
-  model: string;
-  where: Array<{ field: string; value: unknown; operator?: string; connector?: string; mode?: string }>;
-  update: Record<string, unknown>;
-}) => Promise<unknown>;
-
-type AdapterInstance = {
-  create?: (params: Record<string, unknown>) => Promise<unknown>;
-  findOne?: (params: Record<string, unknown>) => Promise<unknown>;
-  findMany?: (params: Record<string, unknown>) => Promise<unknown[]>;
-  count?: (params: Record<string, unknown>) => Promise<number>;
-  update?: AdapterUpdate;
-  updateMany?: (params: Record<string, unknown>) => Promise<number>;
-  delete?: (params: Record<string, unknown>) => Promise<void>;
-  deleteMany?: (params: Record<string, unknown>) => Promise<number>;
-  consumeOne?: (params: Record<string, unknown>) => Promise<unknown>;
-  [key: string]: unknown;
-};
 
 export {
   getUserOrganizations,
@@ -154,31 +135,29 @@ function createP2025SafePrismaAdapter(
   config: Parameters<typeof prismaAdapter>[1],
 ): ReturnType<typeof prismaAdapter> {
   const factory = originalFactory(database, config);
-  return (options: Record<string, unknown>) => {
-    const adapter = factory(options) as AdapterInstance;
-    const originalUpdate = adapter.update;
-    if (originalUpdate) {
-      adapter.update = async (params) => {
-        try {
-          return await originalUpdate(params);
-        } catch (error) {
-          if (
-            error != null &&
-            typeof error === "object" &&
-            "code" in error &&
-            (error as { code: string }).code === "P2025"
-          ) {
-            console.warn(
-              "[SAPTM:AUTH] P2025 suppressed on adapter.update(model=%s) — record not found",
-              params.model,
-            );
-            return null;
-          }
-          throw error;
+  return (options) => {
+    const dbAdapter = factory(options) as DBAdapter<BetterAuthOptions>;
+    const originalUpdate = dbAdapter.update;
+    dbAdapter.update = async (data) => {
+      try {
+        return await originalUpdate(data);
+      } catch (error) {
+        if (
+          error != null &&
+          typeof error === "object" &&
+          "code" in error &&
+          (error as { code: string }).code === "P2025"
+        ) {
+          console.warn(
+            "[SAPTM:AUTH] P2025 suppressed on adapter.update(model=%s) — record not found",
+            data.model,
+          );
+          return null;
         }
-      };
-    }
-    return adapter;
+        throw error;
+      }
+    };
+    return dbAdapter;
   };
 }
 
