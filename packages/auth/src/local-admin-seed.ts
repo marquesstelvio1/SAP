@@ -6,6 +6,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 config({ path: resolve(__dirname, "../../../.env") });
 
+process.env.PRISMA_HIDE_QUERY_LOGS = "true";
+
 import { randomInt } from "node:crypto";
 import { getPrismaClient, seedRbacBootstrap } from "@saptm/database";
 import { hashPassword } from "better-auth/crypto";
@@ -22,6 +24,7 @@ const localAdminDefaults = {
 const database = getPrismaClient();
 
 try {
+  console.log("Iniciando a criação do Local Admin...");
   assertLocalOnly();
 
   const email = readEnv("SAPTM_LOCAL_ADMIN_EMAIL", localAdminDefaults.email).toLowerCase();
@@ -159,16 +162,7 @@ try {
     },
   });
 
-  console.log(
-    [
-      "SAPTM local admin seed completed.",
-      `email=${user.email}`,
-      `organization=${organization.slug}`,
-      `role=${adminRole.key}`,
-      `permissions=${rbacResult.permissionsSeeded}`,
-      `rolePermissionLinks=${rbacResult.rolePermissionLinksSeeded}`,
-    ].join(" "),
-  );
+  console.log("✅ Local Admin criado com sucesso!");
 } finally {
   await database.$disconnect();
 }
