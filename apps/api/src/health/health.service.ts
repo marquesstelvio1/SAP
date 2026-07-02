@@ -9,7 +9,8 @@ import type {
   RuntimeHealthReport,
   RuntimeHealthStatus,
 } from "@saptm/types";
-import type { CacheService } from "../cache/cache.service.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { CacheService } from "../cache/cache.service.js";
 
 const serviceName = "@saptm/api";
 

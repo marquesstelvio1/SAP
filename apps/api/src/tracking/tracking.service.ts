@@ -15,8 +15,10 @@ import type {
   TrackingOverviewOutput,
   TrackingShipmentDetailOutput,
 } from "@saptm/rpc";
-import type { UsageService } from "../billing/usage.service.js";
-import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { UsageService } from "../billing/usage.service.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createTrackingEventAuditAfter,
   createTrackingExceptionAuditAfter,

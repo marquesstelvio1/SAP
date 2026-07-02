@@ -12,7 +12,8 @@ import type {
   IntegrationTelematicsGpsPositionOutput,
   IntegrationWarehouseWmsActivityOutput,
 } from "@saptm/rpc";
-import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createAdapterAuditBefore,
   createCarrierTmsAdapterAuditAfter,
