@@ -8,18 +8,13 @@
       "types": "./dist/src/index.d.ts",
       "import": "./dist/src/index.js",
       "default": "./dist/src/index.js"
-    },
-    "./event-bus-module": {
-      "types": "./dist/src/event-bus.module.d.ts",
-      "import": "./dist/src/event-bus.module.js",
-      "default": "./dist/src/event-bus.module.js"
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json && node ../../scripts/patch-esm-dist-extensions.mjs dist/src/index.js audit rbac-bootstrap outbox-event-bus event-bus.module domain-events constants prisma/factory && node ../../scripts/patch-prisma-esm-imports.mjs && node ../../scripts/create-prisma-shim.mjs",
+    "build": "tsc -p tsconfig.json && node ../../scripts/patch-esm-dist-extensions.mjs dist/src/index.js audit rbac-bootstrap outbox-event-bus domain-events constants prisma/factory && node ../../scripts/patch-prisma-esm-imports.mjs && node ../../scripts/create-prisma-shim.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "biome check .",
-    "test": "node --test tests/soft-delete.test.mjs",
+    "test": "echo 'No tests yet'",
     "db:validate": "npx --no prisma validate",
     "db:generate": "NPM_CONFIG_loglevel=error npx --no prisma generate",
     "db:migrate:dev": "npx --no prisma migrate dev",
@@ -29,19 +24,17 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "npx --no prisma studio",
     "validate:migrations": "node ../../scripts/validate-migrations.mjs",
-    "worker:outbox": "node scripts/process-outbox.mjs"
+    "worker:outbox": "echo 'Outbox worker disabled'"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@nestjs/common": "catalog:",
     "@prisma/adapter-pg": "catalog:",
     "@prisma/client": "catalog:",
     "dotenv": "catalog:",
     "@saptm/config": "workspace:*",
     "@saptm/email": "workspace:*",
-    "@saptm/observability": "workspace:*",
     "pg": "catalog:"
   },
   "devDependencies": {

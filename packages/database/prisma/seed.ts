@@ -9,7 +9,7 @@ config({ path: resolve(__dirname, "../../../.env") });
 process.env.PRISMA_HIDE_QUERY_LOGS = "true";
 
 import type { PrismaClient } from "../generated/prisma/client.js";
-import { getPrismaClient, seedRbacBootstrap } from "../src/index.js";
+import { getPrismaClient } from "../src/index.js";
 
 const database = getPrismaClient();
 const localDemoDefaults = {
@@ -20,11 +20,6 @@ const localDemoDefaults = {
 
 try {
   console.log("Iniciando o processo de seed...");
-  const organizationId = process.env.SAPTM_BOOTSTRAP_ORGANIZATION_ID;
-  await seedRbacBootstrap({
-    database,
-    ...(organizationId === undefined ? {} : { organizationId }),
-  });
   await seedLocalDemoData(database);
 
   console.log("✅ Seed concluído com sucesso.");
@@ -62,11 +57,6 @@ async function seedLocalDemoData(database: PrismaClient): Promise<DemoSeedResult
       id: true,
       slug: true,
     },
-  });
-
-  await seedRbacBootstrap({
-    database,
-    organizationId: organization.id,
   });
 
   const trackingShipments = await seedTrackingDemoData(database, organization.id, now);

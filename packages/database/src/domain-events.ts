@@ -1,5 +1,5 @@
 import type { AuditJsonValue } from "./audit.js";
-import type { PrismaTx } from "./index.js";
+import type { PrismaTx } from "./prisma/factory.js";
 
 export type DomainEvent = {
   eventType: string;

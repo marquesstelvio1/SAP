@@ -1,5 +1,5 @@
 import type { DomainEvent, EventBus } from "./domain-events.js";
-import type { PrismaTx } from "./index.js";
+import type { PrismaTx } from "./prisma/factory.js";
 
 export class OutboxEventBus implements EventBus {
   async publish(tx: PrismaTx, event: DomainEvent): Promise<void> {
