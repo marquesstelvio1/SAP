@@ -326,6 +326,26 @@ graph TD
 
 ---
 
+### Objective 5: Tomar decisões de produto baseadas em dados, não em palpites
+
+**Alinhamento:** 📊 Decisões Baseadas em Dados (Princípio #6)
+
+| Key Result | Baseline | Target | Métrica |
+|-----------|----------|--------|---------|
+| KR 5.1: % de eventos PostHog instrumentados na taxonomia | ~58% (22/38) | 100% | Eventos com `capture()` implementado / total de eventos definidos |
+| KR 5.2: Dashboard de produto com métricas de OKR visível semanalmente | 0% | 100% | Dashboard PostHog com todos os KRs monitorizados |
+| KR 5.3: % de features lançadas com hipótese mensurável definida a priori | ~0% (estimado) | >80% | Features com hipótese documentada antes do desenvolvimento |
+| KR 5.4: % de decisões de produto baseadas em dados (não opinião) | ~30% (estimado) | >75% | Decisões documentadas com referência a dados ou testes |
+
+**Iniciativas:**
+- Completar instrumentação dos 16 eventos PostHog em falta
+- Criar dashboard PostHog com KRs dos OKRs Q3
+- Template de "hipótese de produto" para cada nova feature (antes do desenvolvimento)
+- Feature flags para rollout progressivo (Unleash ou LaunchDarkly)
+- Revisão semanal de métricas com a equipa de produto
+
+---
+
 ### OKR Dependency Map
 
 ```mermaid
@@ -333,17 +353,24 @@ graph LR
     O1["O1: Eficiência Operador"] --> O2["O2: Visibilidade Unificada"]
     O2 --> O3["O3: Rastreabilidade Total"]
     O4["O4: Maturidade SaaS"] --> O3
+    O5["O5: Decisões por Dados"] -.-> O1
+    O5 -.-> O2
+    O5 -.-> O3
+    O5 -.-> O4
 
     KR1_1["KR1.1: <3min registo"] --> KR2_1["KR2.1: Timeline unificada"]
     KR1_3["KR1.3: >90% sem erros"] --> KR2_3["KR2.3: >95% evidence pre-partida"]
     KR2_3 --> KR3_2["KR3.2: >90% evidence digital"]
     KR4_1["KR4.1: 100% self-service"] --> KR4_2["KR4.2: >50% equipas"]
     KR3_4["KR3.4: >80% 2FA"] --> KR4_4["KR4.4: NPS >40"]
+    KR5_1["KR5.1: 100% eventos instrumentados"] --> KR5_2["KR5.2: Dashboard semanal"]
+    KR5_3["KR5.3: >80% hipóteses definidas"] --> KR5_4["KR5.4: >75% decisões por dados"]
 
     style O1 fill:#2980B9,color:#fff
     style O2 fill:#27AE60,color:#fff
     style O3 fill:#8E44AD,color:#fff
     style O4 fill:#E67E22,color:#fff
+    style O5 fill:#1ABC9C,color:#fff
 ```
 
 ---
@@ -461,37 +488,57 @@ Para monitorizar o progresso dos OKRs e da North Star:
 | % utilizadores com 2FA ativa | DB | Mensal | Security |
 | % organizações com equipas configuradas | DB | Mensal | Product |
 | % recomendações advisory com decisão | DB | Semanal | Operations |
+| % eventos PostHog instrumentados | Código + PostHog | Quinzenal | Product |
+| % features com hipótese definida a priori | ADR + docs | Por feature | Product |
+| Receita mensal recorrente (MRR) | Stripe | Mensal | Finance |
 
 ---
 
 ## 9. Roadmap — Now / Next / Later
 
-### Now (Q3 2026)
+> **Nota:** O roadmap foi atualizado para refletir o progresso dos sprints de hardening (Sprints 1-6 + Phase 1-2) e as novas prioridades de produto. Vários itens do roadmap original foram entretanto concluídos (error boundaries, loading states, paginação, API versioning, repositórios, event bus, testes unitários, validação Zod, entre outros).
+
+### Now — Sprint A (Q3 2026, Dias 1-14)
+
+| Iniciativa | OKR | Tema | RICE |
+|-----------|-----|------|------|
+| Completar instrumentação dos 16 eventos PostHog em falta | O5 | 📊 Decisões por Dados | 13.50 |
+| Componente Breadcrumb + implementação em 8 rotas profundas | O2 | 📡 Visibilidade | 18.00 |
+| Página de Perfil do Utilizador (nome, email, foto, password) | O4 | 🏢 Escala | 5.33 |
+| Adoção total de spacing tokens (zero hardcoded values) | — | 🎨 Design System | 4.50 |
+| Fluxo de signup + criação de organização | O4 | 🏢 Escala | 3.20 |
+| Checkout Stripe básico + plano Pro | O4 | 🏢 Escala | 2.40 |
+
+### Next — Sprint B (Q3 2026, Dias 15-28)
+
+| Iniciativa | OKR | Tema | RICE |
+|-----------|-----|------|------|
+| SSO/OAuth (Google, Microsoft, SAML) | O4 | 🏢 Escala | 2.40 |
+| Gestão de Equipas com scoping de permissões | O4 | 🏢 Escala | 3.00 |
+| TanStack Query para caching client-side | O2 | 📡 Visibilidade | 3.50 |
+| Página de Configuração de Organização (branding) | O4 | 🏢 Escala | 3.20 |
+| Webhook delivery real (worker + retry + dead-letter) | O3, O4 | 🔒 Confiança | 2.40 |
+| Dark mode toggle no shell | — | 🎨 Design System | 8.40 |
+
+### Later (Q4 2026)
 
 | Iniciativa | OKR | Tema |
 |-----------|-----|------|
-| Shipper templates + autocomplete no registo | O1 | 🚂 Excelência Operacional |
-| "My Queue" — pendências do operador | O1 | 🚂 Excelência Operacional |
-| Embed da tracking timeline na carga | O2 | 📡 Visibilidade |
-| Página dedicada de Compliance com dashboard | O2, O3 | 🔒 Confiança |
-| Fluxo de signup + criação de organização | O4 | 🏢 Escala |
-| NPS survey + baseline | O4 | 🏢 Escala |
-
-### Next (Q4 2026)
-
-| Iniciativa | OKR | Tema |
-|-----------|-----|------|
-| SSO/SAML para organizações enterprise | O4 | 🏢 Escala |
-| Equipas com scoping de permissões | O4 | 🏢 Escala |
-| Notificações push para eventos críticos | O2 | 📡 Visibilidade |
 | SLA timers visuais nas excepções | O1, O3 | 🚂 + 🔒 |
-| Dashboard de analytics com tendências (7/30 dias) | O2 | 📡 Visibilidade |
-| Billing por subscrição (Stripe) | O4 | 🏢 Escala |
+| Dashboard de produto (PostHog + KPIs de OKR) | O5 | 📊 Decisões |
+| Feature flag system (Unleash ou LaunchDarkly) | O4 | 🏢 Escala |
+| Notificações push para eventos críticos (SSE/WS) | O2 | 📡 Visibilidade |
+| Pesquisa NPS integrada (PostHog survey) | O4 | 🏢 Escala |
+| Billing com usage metering (Stripe) | O4 | 🏢 Escala |
+| Exportar relatório de auditoria SOC2-ready | O3 | 🔒 Confiança |
 
-### Later (Q1 2027+)
+### Backlog (Q1 2027+)
 
 | Iniciativa | Tema |
 |-----------|------|
+| Shipper templates + autocomplete no registo | 🚂 Excelência Operacional |
+| "My Queue" — pendências do operador | 🚂 Excelência Operacional |
+| Embed da tracking timeline na página de carga | 📡 Visibilidade |
 | Capacity Optimizer Advisory — recomendação preditiva | 🤖 Eficiência |
 | Predição de atrasos baseada em ML | 🤖 Eficiência |
 | Mapa interativo de cargas em trânsito | 📡 Visibilidade |

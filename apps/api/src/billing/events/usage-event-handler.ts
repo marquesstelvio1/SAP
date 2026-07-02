@@ -1,8 +1,10 @@
 import type { OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { Injectable } from "@nestjs/common";
 import type { Subscription } from "rxjs";
-import type { EventBusService } from "../../event-bus/event-bus.service.js";
-import type { UsageService } from "../usage.service.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { EventBusService } from "../../event-bus/event-bus.service.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { UsageService } from "../usage.service.js";
 
 type CargoRegisteredPayload = {
   cargoId: string;
