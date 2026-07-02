@@ -195,7 +195,7 @@ function Sidebar({
       <div
         data-sidebar="sidebar"
         data-mobile="true"
-        className="fixed inset-0 z-50 flex"
+        className="fixed inset-0 z-overlay flex"
         role="dialog"
         aria-modal="true"
       >
@@ -249,7 +249,7 @@ function Sidebar({
         data-slot="sidebar-container"
         className={cn(
           sidebarVariants({ collapsible }),
-          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-normal ease-linear md:flex",
+          "fixed inset-y-0 z-sticky hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-normal ease-linear md:flex",
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
@@ -334,7 +334,7 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
       onClick={toggleSidebar}
       title="Alternar barra lateral"
       className={cn(
-        "absolute inset-y-0 right-0 z-20 hidden w-1 cursor-col-resize bg-transparent transition-colors after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:bg-sidebar-border group-data-[collapsible=icon]:flex md:flex",
+        "absolute inset-y-0 right-0 z-sticky hidden w-1 cursor-col-resize bg-transparent transition-colors after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:bg-sidebar-border group-data-[collapsible=icon]:flex md:flex",
         className,
       )}
       {...props}
@@ -418,7 +418,7 @@ function SidebarGroupLabel({ className, ...props }: React.ComponentProps<"div">)
     <div
       data-slot="sidebar-group-label"
       className={cn(
-        "flex h-[var(--density-operational-control-height)] items-center px-2 text-sidebar-foreground/50 text-xs font-medium uppercase tracking-wider",
+        "flex h-[var(--density-operational-control-height)] items-center px-2 text-sidebar-foreground/50 text-xs font-medium uppercase tracking-uppercase",
         density === "comfortable" && "h-[var(--density-comfortable-control-height)]",
         density === "operational" && "text-2xs",
         className,

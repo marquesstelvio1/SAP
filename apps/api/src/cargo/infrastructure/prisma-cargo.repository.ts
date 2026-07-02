@@ -12,10 +12,6 @@ import {
   CargoReference,
   type CargoStatus,
   type GrossWeight,
-  type TrackingDepartureEventRecord,
-  type TrackingEventType,
-  type TrackingLifecycleEventRecord,
-  type TrackingShipmentRecord,
 } from "../domain/index.js";
 
 @Injectable()
@@ -77,28 +73,6 @@ export class PrismaCargoRepository implements CargoRepository {
       arrivedAt: (raw.arrivedAt as Date) ?? null,
       deliveredAt: (raw.deliveredAt as Date) ?? null,
       updatedAt: raw.updatedAt as Date,
-    };
-  }
-
-  private mapTrackingShipment(raw: Record<string, unknown>): TrackingShipmentRecord {
-    return {
-      id: raw.id as string,
-      organizationId: raw.organizationId as string,
-      referenceCode: raw.referenceCode as string,
-      transportMode: raw.transportMode as TrackingShipmentRecord["transportMode"],
-      status: raw.status as TrackingShipmentRecord["status"],
-      plannedDepartureAt: (raw.plannedDepartureAt as Date) ?? null,
-      estimatedArrivalAt: (raw.estimatedArrivalAt as Date) ?? null,
-      actualArrivalAt: (raw.actualArrivalAt as Date) ?? null,
-    };
-  }
-
-  private mapTrackingEvent(raw: Record<string, unknown>): TrackingLifecycleEventRecord {
-    return {
-      id: raw.id as string,
-      eventType: raw.eventType as TrackingLifecycleEventRecord["eventType"],
-      occurredAt: raw.occurredAt as Date,
-      locationName: (raw.locationName as string) ?? null,
     };
   }
 
@@ -174,53 +148,6 @@ export class PrismaCargoRepository implements CargoRepository {
       where: { organizationId, cargoReference },
       select: { id: true },
     });
-  }
-
-  async findTrackingShipmentByReferenceCode(
-    organizationId: string,
-    referenceCode: string,
-  ): Promise<{ id: string } | null> {
-    return this.database.trackingShipment.findFirst({
-      where: { organizationId, referenceCode },
-      select: { id: true },
-    });
-  }
-
-  async findTrackingShipmentById(
-    organizationId: string,
-    id: string | null,
-  ): Promise<TrackingShipmentRecord | null> {
-    if (id === null) {
-      return null;
-    }
-
-    const raw = await this.database.trackingShipment.findFirst({
-      where: { id, organizationId },
-    });
-    return raw ? this.mapTrackingShipment(raw as unknown as Record<string, unknown>) : null;
-  }
-
-  async findTrackingDepartureEventByIdempotencyKey(
-    organizationId: string,
-    key: string,
-  ): Promise<TrackingDepartureEventRecord | null> {
-    const raw = await this.database.trackingEvent.findFirst({
-      where: { organizationId, idempotencyKey: key, eventType: "departed" },
-      select: { id: true, eventType: true, occurredAt: true, locationName: true },
-    });
-    return raw ? this.mapTrackingEvent(raw as unknown as Record<string, unknown>) : null;
-  }
-
-  async findTrackingLifecycleEventByIdempotencyKey(
-    organizationId: string,
-    key: string,
-    eventType: TrackingEventType,
-  ): Promise<TrackingLifecycleEventRecord | null> {
-    const raw = await this.database.trackingEvent.findFirst({
-      where: { organizationId, idempotencyKey: key, eventType },
-      select: { id: true, eventType: true, occurredAt: true, locationName: true },
-    });
-    return raw ? this.mapTrackingEvent(raw as unknown as Record<string, unknown>) : null;
   }
 
   async getComplianceEvidenceStatusCounts(

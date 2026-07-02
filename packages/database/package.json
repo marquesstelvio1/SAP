@@ -16,7 +16,7 @@
     "lint": "biome check .",
     "test": "echo 'No tests yet'",
     "db:validate": "npx --no prisma validate",
-    "db:generate": "NPM_CONFIG_loglevel=error npx --no prisma generate",
+    "db:generate": "npx --loglevel error --no prisma generate",
     "db:migrate:dev": "npx --no prisma migrate dev",
     "db:migrate:deploy": "npx --no prisma migrate deploy",
     "db:migrate:status": "npx --no prisma migrate status",

@@ -108,7 +108,7 @@ export function AdminRolesTables({ roles, permissions }: AdminRolesTablesProps) 
                       <div className="flex flex-wrap gap-1">
                         {role.permissions.slice(0, 4).map((permission) => (
                           <Badge key={permission} variant="outline">
-                            {permissionLabels[permission] ?? permission}
+                            {permissionLabels[permission] ?? "Permissão personalizada"}
                           </Badge>
                         ))}
                         {role.permissions.length > 4 ? (
@@ -144,7 +144,7 @@ export function AdminRolesTables({ roles, permissions }: AdminRolesTablesProps) 
                   <TableCell>
                     <div className="flex flex-col gap-1">
                       <span className="font-medium">
-                        {permissionLabels[permission.key] ?? permission.key}
+                        {permissionLabels[permission.key] ?? "Permissão personalizada"}
                       </span>
                       <span className="text-muted-foreground text-xs">
                         {permission.description ?? "Sem descrição"}

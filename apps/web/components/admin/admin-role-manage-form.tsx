@@ -173,12 +173,11 @@ function CreateRoleSection({
             disabled={isDisabled}
             id="adminRoleCreatePermissions"
             name="permissionKeys"
-            placeholder="cargo.read, tracking.shipment.read"
+            placeholder="Ler cargas, Ler tracking"
             required
           />
           <FieldDescription>
-            Separe por virgula ou linha. Catalogo disponivel:{" "}
-            {permissions.map((permission) => permission.key).join(", ")}
+            Separe por virgula ou linha. Use o catalogo de permissoes como referencia.
           </FieldDescription>
         </Field>
         <Field>
@@ -237,7 +236,7 @@ function PermissionsSection({
             disabled={isDisabled}
             id="adminRolePermissionsKeys"
             name="permissionKeys"
-            placeholder="cargo.read, capacity.read"
+            placeholder="Ler cargas, Gerir capacidade"
             required
           />
           <FieldDescription>

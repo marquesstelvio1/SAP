@@ -7,10 +7,6 @@ import type {
   CargoOperationalHandoffRecord,
   CargoOverviewRawData,
   CargoRecord,
-  TrackingDepartureEventRecord,
-  TrackingEventType,
-  TrackingLifecycleEventRecord,
-  TrackingShipmentRecord,
 } from "./dto.js";
 
 export const CARGO_REPOSITORY = Symbol("CargoRepository");
@@ -40,23 +36,6 @@ export interface CargoRepository {
     organizationId: string,
     cargoReference: string,
   ): Promise<{ id: string } | null>;
-  findTrackingShipmentByReferenceCode(
-    organizationId: string,
-    referenceCode: string,
-  ): Promise<{ id: string } | null>;
-  findTrackingShipmentById(
-    organizationId: string,
-    id: string | null,
-  ): Promise<TrackingShipmentRecord | null>;
-  findTrackingDepartureEventByIdempotencyKey(
-    organizationId: string,
-    key: string,
-  ): Promise<TrackingDepartureEventRecord | null>;
-  findTrackingLifecycleEventByIdempotencyKey(
-    organizationId: string,
-    key: string,
-    eventType: TrackingEventType,
-  ): Promise<TrackingLifecycleEventRecord | null>;
   getComplianceEvidenceStatusCounts(
     organizationId: string,
     cargoId: string,

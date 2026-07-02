@@ -23,7 +23,7 @@ export default async function ForgotPasswordPage() {
               ST
             </div>
             <div className="flex flex-col gap-0.5">
-              <span className="font-semibold tracking-tight">SAPTM</span>
+              <span className="font-semibold tracking-heading">SAPTM</span>
               <span className="text-sidebar-foreground/65 text-sm">Plataforma logística</span>
             </div>
           </div>
@@ -32,7 +32,7 @@ export default async function ForgotPasswordPage() {
               Recuperação segura
             </div>
             <div className="flex flex-col gap-4">
-              <h1 className="font-semibold text-4xl tracking-tight">
+              <h1 className="font-semibold text-4xl tracking-heading">
                 Recupere o acesso à sua conta.
               </h1>
               <p className="text-sidebar-foreground/70 text-lg leading-8">

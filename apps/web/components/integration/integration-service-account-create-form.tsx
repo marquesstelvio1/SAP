@@ -55,7 +55,7 @@ export function IntegrationServiceAccountCreateForm({
           <Badge variant={canManageApiKeys ? "success" : "warning"}>
             {canManageApiKeys ? "Conta autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">integration.api_key.manage</Badge>
+          <Badge variant="outline">Chave de API</Badge>
           <Badge variant="outline">hash-only</Badge>
         </div>
         <div className="flex flex-col gap-2">

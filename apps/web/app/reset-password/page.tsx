@@ -29,7 +29,7 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
         id="main-content"
       >
         <div className="flex max-w-md flex-col items-center gap-4 text-center">
-          <h1 className="font-semibold text-2xl tracking-tight">Link inválido</h1>
+          <h1 className="font-semibold text-2xl tracking-heading">Link inválido</h1>
           <p className="text-muted-foreground text-sm">
             O link de redefinição de password é inválido ou está expirado. Solicite um novo link.
           </p>
@@ -54,7 +54,7 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
               ST
             </div>
             <div className="flex flex-col gap-0.5">
-              <span className="font-semibold tracking-tight">SAPTM</span>
+              <span className="font-semibold tracking-heading">SAPTM</span>
               <span className="text-sidebar-foreground/65 text-sm">Plataforma logística</span>
             </div>
           </div>
@@ -63,7 +63,7 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
               Redefinição segura
             </div>
             <div className="flex flex-col gap-4">
-              <h1 className="font-semibold text-4xl tracking-tight">Defina uma nova password.</h1>
+              <h1 className="font-semibold text-4xl tracking-heading">Defina uma nova password.</h1>
               <p className="text-sidebar-foreground/70 text-lg leading-8">
                 Escolha uma password forte para proteger a sua conta. Após redefinir, será
                 redirecionado para o login.

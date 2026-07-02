@@ -110,12 +110,11 @@ export function AdminRoleCreateForm({
                 disabled={isDisabled}
                 id="adminRoleCreatePermissions"
                 name="permissionKeys"
-                placeholder="cargo.read, tracking.shipment.read"
+                placeholder="Ler cargas, Ler tracking"
                 required
               />
               <FieldDescription>
-                Separe por vírgula ou linha. Catálogo disponível:{" "}
-                {permissions.map((permission) => permission.key).join(", ")}
+                Separe por vírgula ou linha. Use o catalogo de permissoes como referencia.
               </FieldDescription>
             </Field>
             <Field>

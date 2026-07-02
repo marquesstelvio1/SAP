@@ -15,6 +15,7 @@ export function createCargoRegisteredEvent(
     eventType: "cargo.registered",
     aggregateType: "cargo",
     aggregateId: cargo.id,
+    eventVersion: 1,
     payload: {
       cargoId: cargo.id,
       cargoReference: cargo.cargoReference.value,
@@ -44,6 +45,7 @@ export function createCargoReleasedEvent(
     eventType: "cargo.released",
     aggregateType: "cargo",
     aggregateId: cargo.id,
+    eventVersion: 1,
     payload: {
       cargoId: cargo.id,
       cargoReference: cargo.cargoReference.value,
@@ -73,6 +75,7 @@ export function createCargoTransportPlannedEvent(
     eventType: "cargo.transport_planned",
     aggregateType: "cargo",
     aggregateId: cargo.id,
+    eventVersion: 1,
     payload: {
       cargoId: cargo.id,
       cargoReference: cargo.cargoReference.value,
@@ -106,6 +109,7 @@ export function createCargoTransportDepartedEvent(
     eventType: "cargo.transport_departed",
     aggregateType: "cargo",
     aggregateId: cargo.id,
+    eventVersion: 1,
     payload: {
       cargoId: cargo.id,
       cargoReference: cargo.cargoReference.value,
@@ -140,6 +144,7 @@ export function createCargoTransportArrivedEvent(
     eventType: "cargo.transport_arrived",
     aggregateType: "cargo",
     aggregateId: cargo.id,
+    eventVersion: 1,
     payload: {
       cargoId: cargo.id,
       cargoReference: cargo.cargoReference.value,
@@ -174,6 +179,7 @@ export function createCargoDeliveryCompletedEvent(
     eventType: "cargo.delivery_completed",
     aggregateType: "cargo",
     aggregateId: cargo.id,
+    eventVersion: 1,
     payload: {
       cargoId: cargo.id,
       cargoReference: cargo.cargoReference.value,
@@ -213,6 +219,7 @@ export function createCargoDeliveryExceptionRecordedEvent(
     eventType: "cargo.delivery_exception.recorded",
     aggregateType: "cargo",
     aggregateId: cargoId,
+    eventVersion: 1,
     payload: {
       cargoId,
       cargoReference,

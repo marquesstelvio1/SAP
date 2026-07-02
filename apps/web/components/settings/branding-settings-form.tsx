@@ -53,7 +53,7 @@ export function BrandingSettingsForm({
           </Badge>
         </div>
         <div className="max-w-3xl">
-          <h1 className="font-semibold text-3xl tracking-tight">Branding</h1>
+          <h1 className="font-semibold text-3xl tracking-heading">Branding</h1>
           <p className="mt-2 text-muted-foreground">
             Personalize o aspeto visual da organização: logotipo, cor primária e favicon.
           </p>
@@ -180,7 +180,7 @@ export function BrandingSettingsForm({
                   ST
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-semibold text-sm tracking-tight">SAPTM</span>
+                  <span className="font-semibold text-sm tracking-heading">SAPTM</span>
                   <span className="text-muted-foreground text-xs">{organizationSlug}</span>
                 </div>
               </div>

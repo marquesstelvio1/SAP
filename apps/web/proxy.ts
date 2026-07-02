@@ -9,11 +9,23 @@ const PUBLIC_PATHS = [
   "/accept-invitation",
 ] as const;
 
+const STATIC_PREFIXES = [
+  "/_next/static/",
+  "/__nextjs_original-stack-frame",
+  "/sentry-tunnel",
+  "/favicon.ico",
+  "/robots.txt",
+] as const;
+
 function isPublicPath(pathname: string): boolean {
   return (
     PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`)) ||
     pathname.startsWith("/api/")
   );
+}
+
+function isStaticAsset(pathname: string): boolean {
+  return STATIC_PREFIXES.some((p) => pathname.startsWith(p));
 }
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -64,7 +76,7 @@ function buildCsp(nonce: string, origin: string, apiUrl: string, isDev: boolean)
     `img-src 'self' data: blob: https:`,
     `font-src 'self' data:`,
     `script-src 'self' ${scriptSrc}`,
-    `style-src 'self' 'nonce-${nonce}'`,
+    `style-src 'self' 'unsafe-inline'`,
     `connect-src ${connectSources.join(" ")}`,
     `worker-src 'self' blob:`,
     `frame-src 'none'`,
@@ -105,7 +117,7 @@ export function proxy(request: NextRequest) {
 
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
-  if (isPublicPath(pathname)) {
+  if (isPublicPath(pathname) || isStaticAsset(pathname)) {
     return respondWithSecurityHeaders(nonce, url.origin, apiUrl, isDev);
   }
 

@@ -118,7 +118,7 @@ export function OrganizationSwitcher() {
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-64 p-1" side="right" sideOffset={8}>
-        <div className="px-2 py-1.5 text-muted-foreground text-2xs uppercase tracking-widest">
+        <div className="px-2 py-1.5 text-muted-foreground text-2xs uppercase tracking-uppercase">
           Organizações
         </div>
         <div className="flex flex-col gap-0.5" id={`${id}-list`} role="listbox">

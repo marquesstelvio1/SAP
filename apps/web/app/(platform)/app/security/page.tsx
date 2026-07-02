@@ -27,7 +27,7 @@ export default async function SecurityPage() {
           </Badge>
         </div>
         <div className="max-w-3xl">
-          <h1 className="font-semibold text-3xl tracking-tight">Seguranca da conta</h1>
+          <h1 className="font-semibold text-3xl tracking-heading">Seguranca da conta</h1>
           <p className="mt-2 text-muted-foreground">
             Centro de seguranca do utilizador autenticado: sessao atual, revogacao de outras sessoes
             e configuracao de MFA.

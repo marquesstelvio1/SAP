@@ -7,7 +7,7 @@ export type DomainEvent = {
   eventType: string;
   aggregateType: string;
   aggregateId: string;
-  eventVersion?: number;
+  eventVersion: number;
   organizationId: string;
   payload: AuditJsonValue;
 };

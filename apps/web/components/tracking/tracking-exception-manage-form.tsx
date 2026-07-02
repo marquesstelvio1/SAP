@@ -100,7 +100,7 @@ export function TrackingExceptionManageForm({
           <Badge variant={canManageExceptions ? "warning" : "outline"}>
             {canManageExceptions ? "Exceção autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">tracking.exception.manage</Badge>
+          <Badge variant="outline">Exceção de transporte</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Gerir exceção operacional</CardTitle>

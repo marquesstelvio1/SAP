@@ -71,7 +71,7 @@ export function SettingsShell({ children, organizationName }: SettingsShellProps
       <aside className="hidden w-64 shrink-0 self-stretch border-r overflow-y-auto md:block">
         <div className="flex flex-col gap-1 p-4">
           <div className="mb-3 flex flex-col gap-0.5 px-3">
-            <span className="font-semibold text-sm tracking-tight">Configurações</span>
+            <span className="font-semibold text-sm tracking-heading">Configurações</span>
             <span className="truncate text-muted-foreground text-xs">{organizationName}</span>
           </div>
           <Separator className="mb-3" />
