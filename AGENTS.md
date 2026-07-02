@@ -270,3 +270,17 @@ Cada departamento carrega conhecimento profundo do skill correspondente em `~/.a
 - `id="main-content"` presente em todas as pages principais
 - `aria-live="assertive"` regions em tracking pages
 - `aria-label`, focus-visible, focus-trap verificados nos componentes de diálogo
+
+## Phase 1 — Production Hardening (execution-plan.md) ✅ Concluído
+
+| # | Task | Status |
+|---|---|---|
+| 1.1 | Database backup/restore scripts | ✅ Scripts + cron workflow CI |
+| 1.2 | Coverage tooling (c8) + 80% gate | ✅ `.c8rc.json` com threshold 80% |
+| 1.3 | Core Web Vitals monitoring | ✅ `web-vitals-reporter.tsx` com CLS/LCP/INP |
+| 1.4 | react-hook-form + zod resolver | ✅ `@saptm/form` com `useForm` + `zodResolver` |
+| 1.5 | npm audit / Snyk to CI | ✅ `pnpm audit --audit-level high` no CI |
+| 1.6 | Frontend DOM interaction tests | ✅ 5 E2E specs, 63 test cases (Playwright) |
+| 1.7 | Expand component tests to 20/50 | ✅ 26 component test files |
+| 1.8 | Migrate rate limiting to Redis | ✅ `RedisThrottlerStorage` + `TenantThrottlerGuard` |
+| 1.9 | Enforce 2FA for admin roles | ✅ `two-factor.guard.ts`

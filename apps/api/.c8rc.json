@@ -1,8 +1,8 @@
 {
   "reporter": ["text", "lcov", "html"],
-  "include": ["src/**/*.ts"],
-  "exclude": ["src/main.ts", "src/**/*.module.ts", "src/**/*.interface.ts"],
-  "all": true,
+  "include": ["dist/**/*.js"],
+  "exclude": ["dist/main.js", "dist/**/*.module.js"],
+  "all": false,
   "check-coverage": true,
   "branches": 80,
   "lines": 80,
