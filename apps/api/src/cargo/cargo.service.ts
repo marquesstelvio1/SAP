@@ -32,8 +32,8 @@ import type {
   CargoTransportPlanInput,
   CargoTransportPlanOutput,
 } from "@saptm/rpc";
-import { UsageService } from "../billing/usage.service.js";
-import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+import type { UsageService } from "../billing/usage.service.js";
+import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createCargoClaimSettlementRecordAuditAfter,
   createCargoClaimSettlementRecordAuditBefore,

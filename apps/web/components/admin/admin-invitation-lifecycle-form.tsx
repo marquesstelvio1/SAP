@@ -110,9 +110,7 @@ export function AdminInvitationLifecycleForm({
               </Field>
             ) : null}
             <Field>
-              <FieldDescription>
-                {state.message}
-              </FieldDescription>
+              <FieldDescription>{state.message}</FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
             {state.status === "success" && state.invitationAcceptUrl !== undefined ? (

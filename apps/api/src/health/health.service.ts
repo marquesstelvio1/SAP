@@ -9,7 +9,7 @@ import type {
   RuntimeHealthReport,
   RuntimeHealthStatus,
 } from "@saptm/types";
-import { CacheService } from "../cache/cache.service.js";
+import type { CacheService } from "../cache/cache.service.js";
 
 const serviceName = "@saptm/api";
 

@@ -7,6 +7,25 @@ import { createAuthMiddleware } from "better-auth/api";
 import { type BetterAuthOptions, betterAuth } from "better-auth/minimal";
 import { twoFactor } from "better-auth/plugins/two-factor";
 
+type AdapterUpdate = (params: {
+  model: string;
+  where: Array<{ field: string; value: unknown; operator?: string; connector?: string; mode?: string }>;
+  update: Record<string, unknown>;
+}) => Promise<unknown>;
+
+type AdapterInstance = {
+  create?: (params: Record<string, unknown>) => Promise<unknown>;
+  findOne?: (params: Record<string, unknown>) => Promise<unknown>;
+  findMany?: (params: Record<string, unknown>) => Promise<unknown[]>;
+  count?: (params: Record<string, unknown>) => Promise<number>;
+  update?: AdapterUpdate;
+  updateMany?: (params: Record<string, unknown>) => Promise<number>;
+  delete?: (params: Record<string, unknown>) => Promise<void>;
+  deleteMany?: (params: Record<string, unknown>) => Promise<number>;
+  consumeOne?: (params: Record<string, unknown>) => Promise<unknown>;
+  [key: string]: unknown;
+};
+
 export {
   getUserOrganizations,
   type ResolvedUserAuthorization,
@@ -129,6 +148,40 @@ async function recordLoginAttempt(
   }
 }
 
+function createP2025SafePrismaAdapter(
+  originalFactory: typeof prismaAdapter,
+  database: Parameters<typeof prismaAdapter>[0],
+  config: Parameters<typeof prismaAdapter>[1],
+): ReturnType<typeof prismaAdapter> {
+  const factory = originalFactory(database, config);
+  return (options: Record<string, unknown>) => {
+    const adapter = factory(options) as AdapterInstance;
+    const originalUpdate = adapter.update;
+    if (originalUpdate) {
+      adapter.update = async (params) => {
+        try {
+          return await originalUpdate(params);
+        } catch (error) {
+          if (
+            error != null &&
+            typeof error === "object" &&
+            "code" in error &&
+            (error as { code: string }).code === "P2025"
+          ) {
+            console.warn(
+              "[SAPTM:AUTH] P2025 suppressed on adapter.update(model=%s) — record not found",
+              params.model,
+            );
+            return null;
+          }
+          throw error;
+        }
+      };
+    }
+    return adapter;
+  };
+}
+
 export function createSaptmAuthOptions({
   database,
   env,
@@ -141,11 +194,27 @@ export function createSaptmAuthOptions({
     trustedOrigins: getTrustedOrigins(env),
     onAPIError: {
       throw: true,
-      onError: (error) => {
-        console.error("[SAPTM:AUTH] error:", String(error));
+      onError: (error: unknown) => {
+        const isPrismaError = error != null && typeof error === "object" && "code" in error;
+        if (isPrismaError) {
+          const prismaErr = error as {
+            code: string;
+            message?: string;
+            meta?: Record<string, unknown>;
+            stack?: string;
+          };
+          console.error(
+            "[SAPTM:AUTH] Prisma error: code=%s message=%s meta=%j",
+            prismaErr.code,
+            prismaErr.message ?? "",
+            prismaErr.meta,
+          );
+        } else {
+          console.error("[SAPTM:AUTH] error:", String(error));
+        }
       },
     },
-    database: prismaAdapter(database, {
+    database: createP2025SafePrismaAdapter(prismaAdapter, database, {
       provider: databaseProvider,
       transaction: true,
     }),

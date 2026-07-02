@@ -105,9 +105,7 @@ export function IntegrationServiceAccountCreateForm({
               </FieldDescription>
             </Field>
             <Field>
-              <FieldDescription>
-                {state.message}
-              </FieldDescription>
+              <FieldDescription>{state.message}</FieldDescription>
               {state.plaintextApiKey ? (
                 <div className="rounded-lg border border-warning/40 bg-warning/10 p-3 font-mono text-xs">
                   {state.plaintextApiKey}

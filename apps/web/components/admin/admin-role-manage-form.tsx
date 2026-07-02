@@ -182,9 +182,7 @@ function CreateRoleSection({
           </FieldDescription>
         </Field>
         <Field>
-          <FieldDescription>
-            {state.message}
-          </FieldDescription>
+          <FieldDescription>{state.message}</FieldDescription>
           {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
         </Field>
       </FieldGroup>
@@ -247,9 +245,7 @@ function PermissionsSection({
           </FieldDescription>
         </Field>
         <Field>
-          <FieldDescription>
-            {state.message}
-          </FieldDescription>
+          <FieldDescription>{state.message}</FieldDescription>
           {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
         </Field>
       </FieldGroup>

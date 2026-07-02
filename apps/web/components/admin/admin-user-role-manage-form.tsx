@@ -173,14 +173,10 @@ function AssignSection({
               </option>
             ))}
           </SelectNative>
-          <FieldDescription>
-            Perfis disponíveis para esta organização.
-          </FieldDescription>
+          <FieldDescription>Perfis disponíveis para esta organização.</FieldDescription>
         </Field>
         <Field>
-          <FieldDescription>
-            {state.message}
-          </FieldDescription>
+          <FieldDescription>{state.message}</FieldDescription>
           {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
         </Field>
       </FieldGroup>
@@ -244,9 +240,7 @@ function RevokeSection({
           </SelectNative>
         </Field>
         <Field>
-          <FieldDescription>
-            {state.message}
-          </FieldDescription>
+          <FieldDescription>{state.message}</FieldDescription>
           {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
         </Field>
       </FieldGroup>

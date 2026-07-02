@@ -2,11 +2,10 @@ import type { PlatformPermission } from "@saptm/auth";
 import {
   type AuditSearchInput,
   auditActorTypes,
-  auditRecordSummarySchema,
+  type auditRecordSummarySchema,
   auditSearchInputSchema,
   auditSeverities,
 } from "@saptm/rpc/audit";
-import type { z } from "zod";
 import {
   AccessState,
   Badge,
@@ -33,6 +32,7 @@ import {
 } from "@saptm/ui";
 import type { Route } from "next";
 import Link from "next/link";
+import type { z } from "zod";
 
 import { formatDateTime } from "@/lib/format";
 import { searchAuditRecords } from "../../../../lib/audit-records";

@@ -106,9 +106,7 @@ export function AdminRoleRevokeForm({
               </SelectNative>
             </Field>
             <Field>
-              <FieldDescription>
-                {state.message}
-              </FieldDescription>
+              <FieldDescription>{state.message}</FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
           </FieldGroup>

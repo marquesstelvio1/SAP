@@ -80,7 +80,13 @@ const authHandler = async (request: Request): Promise<Response> => {
   }
 
   try {
-    console.log(`${AUTH_LOG_PREFIX} │ creating auth handler...`, { envVars: { hasDbUrl: !!process.env.DATABASE_URL, hasAuthUrl: !!process.env.BETTER_AUTH_URL, hasSecret: !!process.env.BETTER_AUTH_SECRET } });
+    console.log(`${AUTH_LOG_PREFIX} │ creating auth handler...`, {
+      envVars: {
+        hasDbUrl: !!process.env.DATABASE_URL,
+        hasAuthUrl: !!process.env.BETTER_AUTH_URL,
+        hasSecret: !!process.env.BETTER_AUTH_SECRET,
+      },
+    });
     const auth = createSaptmAuthFromEnv();
     const handlers = toNextJsHandler(auth);
     console.log(`${AUTH_LOG_PREFIX} │ handler ready, calling ${method}...`, { path: authPath });

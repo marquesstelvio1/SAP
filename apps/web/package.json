@@ -15,6 +15,8 @@
     "@saptm/auth": "workspace:*",
     "@saptm/config": "workspace:*",
     "@saptm/form": "workspace:*",
+    "@orpc/client": "catalog:",
+    "@orpc/contract": "catalog:",
     "@saptm/rpc": "workspace:*",
     "@saptm/types": "workspace:*",
     "@saptm/ui": "workspace:*",

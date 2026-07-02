@@ -216,9 +216,7 @@ export function IntegrationCustomsErpStatusForm({
               </FieldDescription>
             </Field>
             <Field>
-              <FieldDescription>
-                {state.message}
-              </FieldDescription>
+              <FieldDescription>{state.message}</FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
           </FieldGroup>

@@ -1,10 +1,11 @@
+import { createORPCClient } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
+import type { ContractRouterClient } from "@orpc/contract";
 import { getClientEnv } from "@saptm/config";
+import type { contracts } from "@saptm/rpc/contracts";
 
-/**
- * Internal request marker for server-to-server RPC calls.
- * The API's CSRF middleware skips validation when this header is present.
- * CORS does not expose this header, so browser-origin requests cannot set it.
- */
+// ── Existing RPC helpers (rpcGet, rpcPost) ──────────────────────────
+
 const INTERNAL_REQUEST_HEADER = "x-internal-request" as const;
 
 export type RpcStatus = "forbidden" | "not_found" | "unavailable" | "invalid";
@@ -25,7 +26,6 @@ type Schema<T> = {
 
 type RpcQueryOptions = {
   searchParams?: Record<string, string | number | undefined>;
-  /** Only needed for server-to-server calls. Browser calls send cookies automatically. */
   cookie?: string;
 };
 
@@ -34,8 +34,6 @@ function isServerSide(): boolean {
 }
 
 function rpcUrl(path: string, hasCookie: boolean): URL {
-  // Server-side (Actions or Server Components): fetch directly from API
-  // Browser: fetch through proxy (same-origin, avoids CORS/CSP/cookie issues)
   if (hasCookie || isServerSide()) {
     return new URL(path, getClientEnv().NEXT_PUBLIC_API_URL);
   }
@@ -157,3 +155,12 @@ async function parseRpcResponse<T>(response: Response, schema: Schema<T>): Promi
 
   return { status: "ok", data: parsed.data };
 }
+
+// ── Typed oRPC client (contract-first) ──────────────────────────────
+
+const link = new RPCLink({
+  url: `${typeof window !== "undefined" ? window.location.origin : ""}/api/rpc`,
+  headers: {},
+});
+
+export const rpcClient: ContractRouterClient<typeof contracts> = createORPCClient(link);

@@ -53,7 +53,12 @@ export function createPrismaClient(poolSize?: number) {
 
   const baseClient = new PrismaClientClass({
     adapter,
-    log: env.NODE_ENV === "production" ? ["error"] : hideQueryLogs ? ["warn", "error"] : ["query", "warn", "error"],
+    log:
+      env.NODE_ENV === "production"
+        ? ["error"]
+        : hideQueryLogs
+          ? ["warn", "error"]
+          : ["query", "warn", "error"],
   }) as PrismaClient;
 
   // The type assertion is required because Prisma v7 $extends returns a

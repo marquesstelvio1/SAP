@@ -7,7 +7,7 @@ import type {
   TariffRateCardRegisterOutput,
   TariffRateRuleAddOutput,
 } from "@saptm/rpc";
-import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createTariffQuoteApproveAuditAfter,
   createTariffQuoteApproveAuditBefore,

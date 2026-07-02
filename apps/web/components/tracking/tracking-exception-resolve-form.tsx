@@ -311,9 +311,7 @@ export function TrackingExceptionResolveForm({
               {state.status === "error" ? (
                 <FieldError>{state.message}</FieldError>
               ) : (
-                <FieldDescription>
-                  {state.message}
-                </FieldDescription>
+                <FieldDescription>{state.message}</FieldDescription>
               )}
             </Field>
           </FieldGroup>
