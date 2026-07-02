@@ -142,7 +142,7 @@ export function createSaptmAuthOptions({
     onAPIError: {
       throw: true,
       onError: (error) => {
-        console.error("[SAPTM:AUTH] error:", error?.message);
+        console.error("[SAPTM:AUTH] error:", String(error));
       },
     },
     database: prismaAdapter(database, {
