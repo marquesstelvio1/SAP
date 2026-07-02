@@ -406,7 +406,7 @@ importers:
         version: link:../../packages/ui
       '@sentry/nextjs':
         specifier: 'catalog:'
-        version: 8.55.2(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.1))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.1))(@opentelemetry/instrumentation@0.57.2(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.1))(next@16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(webpack@5.107.2(@swc/core@1.15.43)(esbuild@0.27.7)(postcss@8.5.16))
+        version: 8.55.2(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.1))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.1))(@opentelemetry/instrumentation@0.57.2(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.1))(next@16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(webpack@5.107.2(@swc/core@1.15.43)(postcss@8.5.16))
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.100.14(react@19.2.7)
@@ -530,9 +530,6 @@ importers:
 
   packages/database:
     dependencies:
-      '@nestjs/common':
-        specifier: 'catalog:'
-        version: 11.1.24(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@prisma/adapter-pg':
         specifier: 'catalog:'
         version: 7.8.0
@@ -545,9 +542,6 @@ importers:
       '@saptm/email':
         specifier: workspace:*
         version: link:../email
-      '@saptm/observability':
-        specifier: workspace:*
-        version: link:../observability
       dotenv:
         specifier: 'catalog:'
         version: 16.6.1
@@ -561,6 +555,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.19
+      better-auth:
+        specifier: 'catalog:'
+        version: 1.6.13(@opentelemetry/api@1.9.1)(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.16))(@types/react@19.2.16)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3))(typescript@5.9.3))(mysql2@3.15.3)(next@16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(pg@8.22.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.16))(@types/react@19.2.16)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       prisma:
         specifier: 'catalog:'
         version: 7.8.0(@types/react-dom@19.2.3(@types/react@19.2.16))(@types/react@19.2.16)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)
@@ -11179,7 +11176,7 @@ snapshots:
 
   '@sentry/core@8.55.2': {}
 
-  '@sentry/nextjs@8.55.2(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.1))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.1))(@opentelemetry/instrumentation@0.57.2(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.1))(next@16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(webpack@5.107.2(@swc/core@1.15.43)(esbuild@0.27.7)(postcss@8.5.16))':
+  '@sentry/nextjs@8.55.2(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.1))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.1))(@opentelemetry/instrumentation@0.57.2(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.1))(next@16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(webpack@5.107.2(@swc/core@1.15.43)(postcss@8.5.16))':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/semantic-conventions': 1.41.1
@@ -11190,7 +11187,7 @@ snapshots:
       '@sentry/opentelemetry': 8.55.2(@opentelemetry/api@1.9.1)(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.1))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.1))(@opentelemetry/instrumentation@0.57.2(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.1))(@opentelemetry/semantic-conventions@1.41.1)
       '@sentry/react': 8.55.2(react@19.2.7)
       '@sentry/vercel-edge': 8.55.2
-      '@sentry/webpack-plugin': 2.22.7(webpack@5.107.2(@swc/core@1.15.43)(esbuild@0.27.7)(postcss@8.5.16))
+      '@sentry/webpack-plugin': 2.22.7(webpack@5.107.2(@swc/core@1.15.43)(postcss@8.5.16))
       chalk: 3.0.0
       next: 16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       resolve: 1.22.8
@@ -11268,12 +11265,12 @@ snapshots:
       '@opentelemetry/api': 1.9.1
       '@sentry/core': 8.55.2
 
-  '@sentry/webpack-plugin@2.22.7(webpack@5.107.2(@swc/core@1.15.43)(esbuild@0.27.7)(postcss@8.5.16))':
+  '@sentry/webpack-plugin@2.22.7(webpack@5.107.2(@swc/core@1.15.43)(postcss@8.5.16))':
     dependencies:
       '@sentry/bundler-plugin-core': 2.22.7
       unplugin: 1.0.1
       uuid: 9.0.1
-      webpack: 5.107.2(@swc/core@1.15.43)(esbuild@0.27.7)(postcss@8.5.16)
+      webpack: 5.107.2(@swc/core@1.15.43)(postcss@8.5.16)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -14624,16 +14621,15 @@ snapshots:
 
   term-size@2.2.1: {}
 
-  terser-webpack-plugin@5.6.1(@swc/core@1.15.43)(esbuild@0.27.7)(postcss@8.5.16)(webpack@5.107.2(@swc/core@1.15.43)(esbuild@0.27.7)(postcss@8.5.16)):
+  terser-webpack-plugin@5.6.1(@swc/core@1.15.43)(postcss@8.5.16)(webpack@5.107.2(@swc/core@1.15.43)(postcss@8.5.16)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.48.0
-      webpack: 5.107.2(@swc/core@1.15.43)(esbuild@0.27.7)(postcss@8.5.16)
+      webpack: 5.107.2(@swc/core@1.15.43)(postcss@8.5.16)
     optionalDependencies:
       '@swc/core': 1.15.43
-      esbuild: 0.27.7
       postcss: 8.5.16
 
   terser@5.48.0:
@@ -14931,7 +14927,7 @@ snapshots:
 
   webpack-virtual-modules@0.6.2: {}
 
-  webpack@5.107.2(@swc/core@1.15.43)(esbuild@0.27.7)(postcss@8.5.16):
+  webpack@5.107.2(@swc/core@1.15.43)(postcss@8.5.16):
     dependencies:
       '@types/estree': 1.0.9
       '@types/json-schema': 7.0.15
@@ -14953,7 +14949,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.3
-      terser-webpack-plugin: 5.6.1(@swc/core@1.15.43)(esbuild@0.27.7)(postcss@8.5.16)(webpack@5.107.2(@swc/core@1.15.43)(esbuild@0.27.7)(postcss@8.5.16))
+      terser-webpack-plugin: 5.6.1(@swc/core@1.15.43)(postcss@8.5.16)(webpack@5.107.2(@swc/core@1.15.43)(postcss@8.5.16))
       watchpack: 2.5.2
       webpack-sources: 3.5.0
     transitivePeerDependencies:

@@ -22,6 +22,7 @@
     "db:migrate:status": "npx --no prisma migrate status",
     "db:migrate:rollback": "node scripts/rollback-migration.mjs",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:users": "tsx prisma/seed-users.ts",
     "db:studio": "npx --no prisma studio",
     "validate:migrations": "node ../../scripts/validate-migrations.mjs",
     "worker:outbox": "echo 'Outbox worker disabled'"
@@ -38,6 +39,7 @@
     "pg": "catalog:"
   },
   "devDependencies": {
+    "better-auth": "catalog:",
     "prisma": "catalog:",
     "@saptm/tsconfig": "workspace:*",
     "@types/node": "catalog:",

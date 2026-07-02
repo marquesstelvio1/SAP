@@ -39,6 +39,7 @@ pnpm infra:stack            # docker compose up -d --build (full stack)
 pnpm db:generate            # prisma generate
 pnpm db:migrate:dev         # prisma migrate dev
 pnpm db:seed                # prisma seed
+pnpm db:seed:users          # seed 4 users (admin, gestora, operador, integradora)
 pnpm auth:seed-local-admin  # seed admin user
 pnpm worker:outbox          # start outbox worker
 ```
