@@ -24,7 +24,6 @@ export function CargoOverviewClient({
   offset,
   limit,
   canRegisterCargo,
-  canReleaseCargo,
   canPlanTransport,
   canDepartTransport,
   canArriveTransport,
@@ -39,7 +38,6 @@ export function CargoOverviewClient({
   offset: number;
   limit: number;
   canRegisterCargo: boolean;
-  canReleaseCargo: boolean;
   canPlanTransport: boolean;
   canDepartTransport: boolean;
   canArriveTransport: boolean;
@@ -125,7 +123,6 @@ export function CargoOverviewClient({
       >
         <CargoLifecycleSections
           canRegisterCargo={canRegisterCargo}
-          canReleaseCargo={canReleaseCargo}
           canPlanTransport={canPlanTransport}
           canDepartTransport={canDepartTransport}
           canArriveTransport={canArriveTransport}

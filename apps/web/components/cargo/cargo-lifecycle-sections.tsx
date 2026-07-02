@@ -17,7 +17,6 @@ import {
   recordCargoDeliveryExceptionAction,
   recordCargoOperationalHandoffAction,
   registerCargoAction,
-  releaseCargoAction,
   resolveCargoDeliveryExceptionAction,
   verifyCargoComplianceEvidenceAction,
 } from "../../app/(platform)/app/cargo/actions";
@@ -30,7 +29,6 @@ import {
   initialCargoDeliveryExceptionResolveFormState,
   initialCargoOperationalHandoffRecordFormState,
   initialCargoRegisterFormState,
-  initialCargoReleaseFormState,
   initialCargoTransportArriveFormState,
   initialCargoTransportDepartFormState,
   initialCargoTransportPlanFormState,
@@ -44,14 +42,12 @@ import { CargoDeliveryExceptionResolveForm } from "./cargo-delivery-exception-re
 import { CargoLifecycleGroup } from "./cargo-lifecycle-group";
 import { CargoOperationalHandoffRecordForm } from "./cargo-operational-handoff-record-form";
 import { CargoRegisterForm } from "./cargo-register-form";
-import { CargoReleaseForm } from "./cargo-release-form";
 import { CargoTransportArriveForm } from "./cargo-transport-arrive-form";
 import { CargoTransportDepartForm } from "./cargo-transport-depart-form";
 import { CargoTransportPlanForm } from "./cargo-transport-plan-form";
 
 export type CargoLifecycleSectionsProps = {
   canRegisterCargo: boolean;
-  canReleaseCargo: boolean;
   canPlanTransport: boolean;
   canDepartTransport: boolean;
   canArriveTransport: boolean;
@@ -98,35 +94,7 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
               <ContextRow label="Aduana" value="retencao exige referencia aduaneira" />
               <ContextRow label="Danos" value="carga danificada exige inspecao" />
               <ContextRow label="Transporte" value="bloqueado ate liberacao" />
-            </CardContent>
-          </Card>
-        </section>
-
-        <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]" id="cargo-release">
-          <CargoReleaseForm
-            action={releaseCargoAction}
-            canReleaseCargo={props.canReleaseCargo}
-            initialState={initialCargoReleaseFormState}
-          />
-
-          <Card>
-            <CardHeader>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant={props.canReleaseCargo ? "success" : "warning"}>
-                  {props.canReleaseCargo ? "Liberacao autorizada" : "Liberacao indisponivel"}
-                </Badge>
-              </div>
-              <CardTitle>Liberacao de carga</CardTitle>
-              <CardDescription>
-                Carga liberada fica pronta para transporte apos validacao das regras de negocio.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-3 text-sm">
-              <ContextRow label="Estado" value="registered/held sao liberaveis" />
-              <ContextRow label="Aduana" value="pending/held exigem cleared" />
-              <ContextRow label="Inspecao" value="danos/bloqueios exigem passed" />
-              <ContextRow label="Perigosa" value="UN number + hazard class obrigatorios" />
-              <ContextRow label="Idempotencia" value="chave obrigatoria" />
+              <ContextRow label="Libertacao" value="disponivel no formulario de registo" />
             </CardContent>
           </Card>
         </section>

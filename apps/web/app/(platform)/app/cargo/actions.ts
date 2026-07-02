@@ -78,6 +78,40 @@ type RpcJsonEnvelope = {
   json?: unknown;
 };
 
+const parseCargoReleaseFormDataCombined = (
+  formData: FormData,
+  cargoId: string,
+):
+  | {
+      status: "ok";
+      input: CargoReleaseInput;
+    }
+  | CargoReleaseFormState => {
+  const input = {
+    cargoId,
+    customsStatus: "cleared",
+    inspectionOutcome: readFormString(formData, "inspectionOutcome") || "not_required",
+    releaseReference: readOptionalFormString(formData, "releaseReference"),
+    releaseReason: readFormString(formData, "releaseReason"),
+    releasedAt: new Date().toISOString(),
+    idempotencyKey: `combined_${readFormString(formData, "idempotencyKey")}`,
+    sourceSystem: readFormString(formData, "sourceSystem") || "saptm",
+  };
+  const parsed = cargoReleaseInputSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return {
+      status: "error",
+      message: parsed.error.issues.map((issue) => issue.message).join(" "),
+    };
+  }
+
+  return {
+    status: "ok",
+    input: parsed.data,
+  };
+};
+
 export async function registerCargoAction(
   _previousState: CargoRegisterFormState,
   formData: FormData,
@@ -97,10 +131,23 @@ export async function registerCargoAction(
     return parsedInput;
   }
 
+  const releaseImmediately = formData.get("releaseImmediately") === "on";
+  const hasReleasePermission =
+    releaseImmediately && platformSession.viewer.permissions.includes(releaseCargoPermission);
+
+  if (releaseImmediately && !hasReleasePermission) {
+    return {
+      status: "error",
+      message: "A sessao nao possui cargo.release para libertar cargas apos registo.",
+    };
+  }
+
   const requestHeaders = await headers();
   const cookieHeader = requestHeaders.get("cookie");
-  const url = new URL("/rpc/cargo/register", getClientEnv().NEXT_PUBLIC_API_URL);
-  const response = await fetch(url, {
+
+  // 1. Register cargo
+  const registerUrl = new URL("/rpc/cargo/register", getClientEnv().NEXT_PUBLIC_API_URL);
+  const registerResponse = await fetch(registerUrl, {
     method: "POST",
     cache: "no-store",
     headers: {
@@ -112,27 +159,126 @@ export async function registerCargoAction(
     }),
   });
 
-  if (response.status === 401 || response.status === 403) {
+  if (registerResponse.status === 401 || registerResponse.status === 403) {
     return {
       status: "error",
       message: "API recusou o registo por sessao, organizacao ou permissao insuficiente.",
     };
   }
 
-  if (!response.ok) {
+  if (!registerResponse.ok) {
     return {
       status: "error",
-      message: `API de cargas recusou o registo: HTTP ${response.status}.`,
+      message: `API de cargas recusou o registo: HTTP ${registerResponse.status}.`,
     };
   }
 
-  const envelope = (await response.json()) as RpcJsonEnvelope;
-  const parsedOutput = cargoRegisterOutputSchema.safeParse(envelope.json);
+  const registerEnvelope = (await registerResponse.json()) as RpcJsonEnvelope;
+  const parsedRegisterOutput = cargoRegisterOutputSchema.safeParse(registerEnvelope.json);
 
-  if (!parsedOutput.success) {
+  if (!parsedRegisterOutput.success) {
     return {
       status: "error",
       message: "Contrato RPC de cargas retornou resposta invalida para o registo.",
+    };
+  }
+
+  const cargoId = parsedRegisterOutput.data.cargoId;
+  const cargoReference = parsedRegisterOutput.data.cargo.cargoReference;
+  const movementBlocked = parsedRegisterOutput.data.businessRules.movementBlocked;
+  const inspectionRequired = parsedRegisterOutput.data.businessRules.inspectionRequired;
+
+  // 2. If releaseImmediately, also release the cargo
+  if (releaseImmediately && hasReleasePermission) {
+    const parsedRelease = parseCargoReleaseFormDataCombined(formData, cargoId);
+
+    if (!("input" in parsedRelease)) {
+      // Register succeeded but release parsing failed
+      return {
+        status: "success",
+        message: `Carga registada mas libertacao falhou: ${parsedRelease.message}`,
+        cargoId,
+        cargoReference,
+        idempotencyKey: parsedRegisterOutput.data.idempotency.key,
+        movementBlocked,
+        inspectionRequired,
+        releaseStatus: "release_parse_error",
+        releaseCargoId: cargoId,
+      };
+    }
+
+    const releaseUrl = new URL("/rpc/cargo/release", getClientEnv().NEXT_PUBLIC_API_URL);
+    const releaseResponse = await fetch(releaseUrl, {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        ...(cookieHeader === null ? {} : { cookie: cookieHeader }),
+      },
+      body: JSON.stringify({
+        json: parsedRelease.input,
+      }),
+    });
+
+    if (releaseResponse.status === 401 || releaseResponse.status === 403) {
+      return {
+        status: "success",
+        message: "Carga registada mas API recusou a libertacao por permissoes.",
+        cargoId,
+        cargoReference,
+        idempotencyKey: parsedRegisterOutput.data.idempotency.key,
+        movementBlocked,
+        inspectionRequired,
+        releaseStatus: "release_auth_error",
+        releaseCargoId: cargoId,
+      };
+    }
+
+    if (!releaseResponse.ok) {
+      return {
+        status: "success",
+        message: `Carga registada mas API recusou a libertacao: HTTP ${releaseResponse.status}.`,
+        cargoId,
+        cargoReference,
+        idempotencyKey: parsedRegisterOutput.data.idempotency.key,
+        movementBlocked,
+        inspectionRequired,
+        releaseStatus: "release_api_error",
+        releaseCargoId: cargoId,
+      };
+    }
+
+    const releaseEnvelope = (await releaseResponse.json()) as RpcJsonEnvelope;
+    const parsedReleaseOutput = cargoReleaseOutputSchema.safeParse(releaseEnvelope.json);
+
+    if (!parsedReleaseOutput.success) {
+      return {
+        status: "success",
+        message: "Carga registada mas resposta de libertacao invalida do RPC.",
+        cargoId,
+        cargoReference,
+        idempotencyKey: parsedRegisterOutput.data.idempotency.key,
+        movementBlocked,
+        inspectionRequired,
+        releaseStatus: "release_output_error",
+        releaseCargoId: cargoId,
+      };
+    }
+
+    revalidatePath("/app/cargo");
+
+    return {
+      status: "success",
+      message: parsedReleaseOutput.data.idempotency.replayed
+        ? "Carga registada e libertacao ja tinha sido processada (idempotente)."
+        : "Carga registada e libertada com regras de negocio, audit trail e outbox.",
+      cargoId,
+      cargoReference,
+      idempotencyKey: parsedReleaseOutput.data.idempotency.key,
+      movementBlocked: parsedReleaseOutput.data.businessRules.movementBlocked,
+      inspectionRequired: false,
+      releaseStatus: "released",
+      releaseCargoId: cargoId,
     };
   }
 
@@ -140,14 +286,14 @@ export async function registerCargoAction(
 
   return {
     status: "success",
-    message: parsedOutput.data.idempotency.replayed
+    message: parsedRegisterOutput.data.idempotency.replayed
       ? "Carga ja tinha sido registada; resposta idempotente reaproveitada."
       : "Carga registada com regras de negocio, audit trail e outbox.",
-    cargoId: parsedOutput.data.cargoId,
-    cargoReference: parsedOutput.data.cargo.cargoReference,
-    idempotencyKey: parsedOutput.data.idempotency.key,
-    movementBlocked: parsedOutput.data.businessRules.movementBlocked,
-    inspectionRequired: parsedOutput.data.businessRules.inspectionRequired,
+    cargoId,
+    cargoReference,
+    idempotencyKey: parsedRegisterOutput.data.idempotency.key,
+    movementBlocked,
+    inspectionRequired,
   };
 }
 

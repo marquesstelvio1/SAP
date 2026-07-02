@@ -13,8 +13,11 @@ import { AdminRoleRevokeForm } from "../../../../components/admin/admin-role-rev
 import { AdminRolesTables } from "../../../../components/admin/admin-roles-tables";
 import { AdminUserInviteForm } from "../../../../components/admin/admin-user-invite-form";
 import { AdminUsersTable } from "../../../../components/admin/admin-users-table";
+import { CapacityResourceRegisterForm } from "../../../../components/capacity/capacity-resource-register-form";
 import { getAdminOverview } from "../../../../lib/admin-overview";
 import { requirePlatformSession } from "../../../../lib/auth-session";
+import { registerCapacityResourceAction } from "../capacity/actions";
+import { initialCapacityResourceRegisterFormState } from "../capacity/form-state";
 import {
   assignAdminRoleAction,
   cancelAdminInvitationAction,
@@ -70,6 +73,7 @@ export default async function AdminIdentityPage(props: {
   const canManageMemberships =
     viewerPermissions.includes(inviteUserPermission) &&
     viewerPermissions.includes(assignRolePermission);
+  const canRegisterResource = viewerPermissions.includes("capacity.manage" as PlatformPermission);
   if (!canOpenAdmin) {
     return (
       <AccessState
@@ -197,6 +201,13 @@ export default async function AdminIdentityPage(props: {
         }}
       />
       <AdminRolesTables roles={overview.roles} permissions={overview.permissions} />
+      <section className="grid gap-4">
+        <CapacityResourceRegisterForm
+          action={registerCapacityResourceAction}
+          canManageCapacity={canRegisterResource}
+          initialState={initialCapacityResourceRegisterFormState}
+        />
+      </section>
     </div>
   );
 }

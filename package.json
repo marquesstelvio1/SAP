@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@10.12.1",
   "engines": {
-    "node": ">=22.0.0",
+    "node": ">=22.0.0 <26.0.0",
     "pnpm": ">=10.0.0"
   },
   "scripts": {
@@ -53,6 +53,8 @@
     "test:coverage": "turbo run test:coverage --filter @saptm/api",
     "test:e2e": "node scripts/run-e2e.mjs",
     "test:load": "bash tests/load/run-load-tests.sh",
+    "storybook": "pnpm --filter @saptm/ui storybook",
+    "build:storybook": "pnpm --filter @saptm/ui build:storybook",
     "changeset": "changeset",
     "db:generate": "pnpm --filter @saptm/database db:generate",
     "db:validate": "pnpm --filter @saptm/database db:validate",

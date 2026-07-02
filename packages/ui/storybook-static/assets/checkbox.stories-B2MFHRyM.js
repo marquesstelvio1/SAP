@@ -1,0 +1,34 @@
+import{j as t}from"./jsx-runtime-D_zvdyIk.js";import{c as ue}from"./utils-BLSKlp9E.js";import{u as pe,C as me}from"./check-BdKGWJ-Y.js";import{r as d}from"./index-DURGLf5P.js";import{u as ee}from"./index-toT294on.js";import{P as w,c as he}from"./index-CXgFpmaa.js";import{u as fe,c as T}from"./index-7nrtBLB1.js";import{u as be}from"./index-CW1u6dt9.js";import{P as ke}from"./index-CVUsnoK_.js";import"./createLucideIcon-Dm95hVBN.js";import"./_commonjsHelpers-CqkleIqs.js";import"./index-VYnphsZV.js";import"./index-CSQiPKB2.js";var P="Checkbox",[xe]=he(P),[Ce,B]=xe(P);function ge(r){const{__scopeCheckbox:s,checked:c,children:u,defaultChecked:n,disabled:e,form:m,name:h,onCheckedChange:i,required:b,value:k="on",internal_do_not_use_render:l}=r,[p,g]=fe({prop:c,defaultProp:n??!1,onChange:i,caller:P}),[x,C]=d.useState(null),[v,o]=d.useState(null),a=d.useRef(!1),R=x?!!m||!!x.closest("form"):!0,N={checked:p,disabled:e,setChecked:g,control:x,setControl:C,name:h,form:m,value:k,hasConsumerStoppedPropagationRef:a,required:b,defaultChecked:f(n)?!1:n,isFormControl:R,bubbleInput:v,setBubbleInput:o};return t.jsx(Ce,{scope:s,...N,children:ve(l)?l(N):u})}var re="CheckboxTrigger",te=d.forwardRef(({__scopeCheckbox:r,onKeyDown:s,onClick:c,...u},n)=>{const{control:e,value:m,disabled:h,checked:i,required:b,setControl:k,setChecked:l,hasConsumerStoppedPropagationRef:p,isFormControl:g,bubbleInput:x}=B(re,r),C=ee(n,k),v=d.useRef(i);return d.useEffect(()=>{const o=e==null?void 0:e.form;if(o){const a=()=>l(v.current);return o.addEventListener("reset",a),()=>o.removeEventListener("reset",a)}},[e,l]),t.jsx(w.button,{type:"button",role:"checkbox","aria-checked":f(i)?"mixed":i,"aria-required":b,"data-state":de(i),"data-disabled":h?"":void 0,disabled:h,value:m,...u,ref:C,onKeyDown:T(s,o=>{o.key==="Enter"&&o.preventDefault()}),onClick:T(c,o=>{l(a=>f(a)?!0:!a),x&&g&&(p.current=o.isPropagationStopped(),p.current||o.stopPropagation())})})});te.displayName=re;var oe=d.forwardRef((r,s)=>{const{__scopeCheckbox:c,name:u,checked:n,defaultChecked:e,required:m,disabled:h,value:i,onCheckedChange:b,form:k,...l}=r;return t.jsx(ge,{__scopeCheckbox:c,checked:n,defaultChecked:e,disabled:h,required:m,onCheckedChange:b,name:u,form:k,value:i,internal_do_not_use_render:({isFormControl:p})=>t.jsxs(t.Fragment,{children:[t.jsx(te,{...l,ref:s,__scopeCheckbox:c}),p&&t.jsx(ce,{__scopeCheckbox:c})]})})});oe.displayName=P;var se="CheckboxIndicator",ne=d.forwardRef((r,s)=>{const{__scopeCheckbox:c,forceMount:u,...n}=r,e=B(se,c);return t.jsx(ke,{present:u||f(e.checked)||e.checked===!0,children:t.jsx(w.span,{"data-state":de(e.checked),"data-disabled":e.disabled?"":void 0,...n,ref:s,style:{pointerEvents:"none",...r.style}})})});ne.displayName=se;var ae="CheckboxBubbleInput",ce=d.forwardRef(({__scopeCheckbox:r,...s},c)=>{const{control:u,hasConsumerStoppedPropagationRef:n,checked:e,defaultChecked:m,required:h,disabled:i,name:b,value:k,form:l,bubbleInput:p,setBubbleInput:g}=B(ae,r),x=ee(c,g),C=pe(e),v=be(u);d.useEffect(()=>{const a=p;if(!a)return;const R=window.HTMLInputElement.prototype,A=Object.getOwnPropertyDescriptor(R,"checked").set,ie=!n.current;if(C!==e&&A){const le=new Event("click",{bubbles:ie});a.indeterminate=f(e),A.call(a,f(e)?!1:e),a.dispatchEvent(le)}},[p,C,e,n]);const o=d.useRef(f(e)?!1:e);return t.jsx(w.input,{type:"checkbox","aria-hidden":!0,defaultChecked:m??o.current,required:h,disabled:i,name:b,value:k,form:l,...s,tabIndex:-1,ref:x,style:{...s.style,...v,position:"absolute",pointerEvents:"none",opacity:0,margin:0,transform:"translateX(-100%)"}})});ce.displayName=ae;function ve(r){return typeof r=="function"}function f(r){return r==="indeterminate"}function de(r){return f(r)?"indeterminate":r?"checked":"unchecked"}function D({className:r,...s}){return t.jsx(oe,{"data-slot":"checkbox",className:ue("peer size-4 shrink-0 rounded-sm border border-input shadow-panel outline-none transition-[color,box-shadow] duration-[var(--motion-duration-fast)] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",r),...s,children:t.jsx(ne,{"data-slot":"checkbox-indicator",className:"flex items-center justify-center text-current",children:t.jsx(me,{className:"size-3.5"})})})}D.__docgenInfo={description:"",methods:[],displayName:"Checkbox"};const Te={title:"Components/Checkbox",component:D,parameters:{layout:"centered"},tags:["autodocs"],argTypes:{disabled:{control:"boolean"},checked:{control:"select",options:[!0,!1,"indeterminate"]}}},y={args:{checked:!1}},_={args:{checked:!0}},I={args:{checked:"indeterminate"}},E={args:{disabled:!0}},S={args:{disabled:!0,checked:!0}},j={render:()=>t.jsxs("label",{htmlFor:"terms",style:{display:"flex",alignItems:"center",gap:"var(--space-2)",cursor:"pointer"},children:[t.jsx(D,{id:"terms"}),t.jsx("span",{style:{fontSize:"var(--space-3.5)"},children:"Accept terms and conditions"})]})};var z,F,L;y.parameters={...y.parameters,docs:{...(z=y.parameters)==null?void 0:z.docs,source:{originalSource:`{
+  args: {
+    checked: false
+  }
+}`,...(L=(F=y.parameters)==null?void 0:F.docs)==null?void 0:L.source}}};var M,q,O;_.parameters={..._.parameters,docs:{...(M=_.parameters)==null?void 0:M.docs,source:{originalSource:`{
+  args: {
+    checked: true
+  }
+}`,...(O=(q=_.parameters)==null?void 0:q.docs)==null?void 0:O.source}}};var U,H,G;I.parameters={...I.parameters,docs:{...(U=I.parameters)==null?void 0:U.docs,source:{originalSource:`{
+  args: {
+    checked: "indeterminate" as const
+  }
+}`,...(G=(H=I.parameters)==null?void 0:H.docs)==null?void 0:G.source}}};var K,W,X;E.parameters={...E.parameters,docs:{...(K=E.parameters)==null?void 0:K.docs,source:{originalSource:`{
+  args: {
+    disabled: true
+  }
+}`,...(X=(W=E.parameters)==null?void 0:W.docs)==null?void 0:X.source}}};var $,J,Q;S.parameters={...S.parameters,docs:{...($=S.parameters)==null?void 0:$.docs,source:{originalSource:`{
+  args: {
+    disabled: true,
+    checked: true
+  }
+}`,...(Q=(J=S.parameters)==null?void 0:J.docs)==null?void 0:Q.source}}};var V,Y,Z;j.parameters={...j.parameters,docs:{...(V=j.parameters)==null?void 0:V.docs,source:{originalSource:`{
+  render: () => <label htmlFor="terms" style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--space-2)",
+    cursor: "pointer"
+  }}>\r
+      <Checkbox id="terms" />\r
+      <span style={{
+      fontSize: "var(--space-3.5)"
+    }}>Accept terms and conditions</span>\r
+    </label>
+}`,...(Z=(Y=j.parameters)==null?void 0:Y.docs)==null?void 0:Z.source}}};const ze=["Unchecked","Checked","Indeterminate","Disabled","DisabledChecked","WithLabel"];export{_ as Checked,E as Disabled,S as DisabledChecked,I as Indeterminate,y as Unchecked,j as WithLabel,ze as __namedExportsOrder,Te as default};

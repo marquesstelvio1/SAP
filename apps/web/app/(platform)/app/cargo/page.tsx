@@ -15,7 +15,6 @@ export const metadata: Metadata = {
 
 const readCargoPermission: PlatformPermission = "cargo.read";
 const registerCargoPermission: PlatformPermission = "cargo.register";
-const releaseCargoPermission: PlatformPermission = "cargo.release";
 const planCargoTransportPermission: PlatformPermission = "cargo.transport.plan";
 const departCargoTransportPermission: PlatformPermission = "cargo.transport.depart";
 const arriveCargoTransportPermission: PlatformPermission = "cargo.transport.arrive";
@@ -55,7 +54,6 @@ export default async function CargoOverviewPage(props: {
       offset={offset}
       limit={limit}
       canRegisterCargo={viewerPermissions.includes(registerCargoPermission)}
-      canReleaseCargo={viewerPermissions.includes(releaseCargoPermission)}
       canPlanTransport={viewerPermissions.includes(planCargoTransportPermission)}
       canDepartTransport={viewerPermissions.includes(departCargoTransportPermission)}
       canArriveTransport={viewerPermissions.includes(arriveCargoTransportPermission)}

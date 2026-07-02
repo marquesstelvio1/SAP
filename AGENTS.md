@@ -284,3 +284,16 @@ Cada departamento carrega conhecimento profundo do skill correspondente em `~/.a
 | 1.7 | Expand component tests to 20/50 | ✅ 26 component test files |
 | 1.8 | Migrate rate limiting to Redis | ✅ `RedisThrottlerStorage` + `TenantThrottlerGuard` |
 | 1.9 | Enforce 2FA for admin roles | ✅ `two-factor.guard.ts`
+
+## Phase 2 — Quality & Scale (execution-plan.md) ✅ Concluído
+
+| # | Task | Status |
+|---|---|---|
+| 2.1 | k6 load testing (auth, cargo, tracking) | ✅ `tests/load/` com 3 cenários k6 |
+| 2.2 | Bundle analysis + size budgets | ✅ `@next/bundle-analyzer` via `ANALYZE=true` |
+| 2.3 | i18n framework (next-intl) | ✅ `createNextIntlPlugin` + `i18n/request.ts` |
+| 2.4 | OpenAPI spec generation from oRPC | ✅ `@orpc/openapi` + Swagger UI `/api/docs` |
+| 2.5 | SLIs/SLOs for 3 critical paths | ✅ `docs/observability/slos.md` (5 SLIs) |
+| 2.6 | Storybook with component library | ✅ 18 stories (8 novas + 10 existentes) |
+| 2.7 | aXe accessibility scanning to CI | ✅ `@axe-core/playwright` em E2E tests |
+| 2.8 | Analytics event taxonomy (PostHog) | ✅ `docs/product/analytics-events.md` (38 eventos)

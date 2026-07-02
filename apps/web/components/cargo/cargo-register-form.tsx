@@ -33,6 +33,19 @@ export type CargoRegisterFormProps = {
   ) => Promise<CargoRegisterFormState>;
 };
 
+const inspectionOutcomeOptions = [
+  { value: "not_required", label: "Nao requerido" },
+  { value: "passed", label: "Inspecao aprovada" },
+] as const;
+
+const releaseReasonOptions = [
+  { value: "customs_cleared", label: "Alfandega liberada" },
+  { value: "inspection_passed", label: "Inspecao aprovada" },
+  { value: "compliance_ok", label: "Compliance OK" },
+  { value: "expedited_release", label: "Liberacao expedita" },
+  { value: "other", label: "Outra justificativa" },
+] as const;
+
 const cargoTypeOptions = [
   { value: "container", label: "Contentor" },
   { value: "bulk", label: "Granel" },
@@ -64,11 +77,13 @@ export function CargoRegisterForm({
 }: CargoRegisterFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_reg"));
+  const [releaseImmediately, setReleaseImmediately] = useState(true);
   const defaultExpectedReadyAt = useMemo(
     () => createDatetimeLocalValue(addHours(new Date(), 24)),
     [],
   );
   const isDisabled = isPending || !canRegisterCargo;
+  const releaseDisabled = isDisabled || !releaseImmediately;
 
   useEffect(() => {
     if (state.status === "success") {
@@ -89,7 +104,8 @@ export function CargoRegisterForm({
           <CardTitle>Registar carga</CardTitle>
           <CardDescription className="leading-6">
             Aplica regras de negócio antes do transporte: identidade única, custódia, peso, volumes,
-            compliance aduaneiro, perigosidade, inspecao e registo de auditoria.
+            compliance aduaneiro, perigosidade, inspecao e registo de auditoria. Opcionalmente
+            liberta a carga imediatamente apos o registo.
           </CardDescription>
         </div>
       </CardHeader>
@@ -323,6 +339,71 @@ export function CargoRegisterForm({
               </Field>
             </div>
 
+            {/* Release immediately section */}
+            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+              <Field orientation="horizontal">
+                <Checkbox
+                  checked={releaseImmediately}
+                  className="mt-0.5"
+                  id="releaseImmediately"
+                  name="releaseImmediately"
+                  onCheckedChange={(checked) => setReleaseImmediately(checked === true)}
+                />
+                <div className="flex flex-col gap-1">
+                  <FieldLabel htmlFor="releaseImmediately">Libertar apos registo</FieldLabel>
+                  <FieldDescription>
+                    Se marcado, a carga e libertada automaticamente para transporte apos o registo
+                    bem-sucedido.
+                  </FieldDescription>
+                </div>
+              </Field>
+
+              {releaseImmediately && (
+                <div className="mt-4 grid gap-4 md:grid-cols-3">
+                  <Field data-disabled={!canRegisterCargo}>
+                    <FieldLabel htmlFor="releaseReason">Justificativa operacional</FieldLabel>
+                    <SelectNative
+                      disabled={releaseDisabled}
+                      id="releaseReason"
+                      name="releaseReason"
+                      required
+                    >
+                      <option value="">Selecionar...</option>
+                      {releaseReasonOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </SelectNative>
+                  </Field>
+                  <Field data-disabled={!canRegisterCargo}>
+                    <FieldLabel htmlFor="releaseReference">Referencia de liberacao</FieldLabel>
+                    <Input
+                      disabled={releaseDisabled}
+                      id="releaseReference"
+                      name="releaseReference"
+                      placeholder="DU, inspecao, manifesto"
+                    />
+                  </Field>
+                  <Field data-disabled={!canRegisterCargo}>
+                    <FieldLabel htmlFor="inspectionOutcome">Resultado da inspecao</FieldLabel>
+                    <SelectNative
+                      defaultValue="not_required"
+                      disabled={releaseDisabled}
+                      id="inspectionOutcome"
+                      name="inspectionOutcome"
+                    >
+                      {inspectionOutcomeOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </SelectNative>
+                  </Field>
+                </div>
+              )}
+            </div>
+
             <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
               Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
             </div>
@@ -335,7 +416,7 @@ export function CargoRegisterForm({
                   {state.status === "success"
                     ? `${state.message} Ref.: ${state.cargoReference ?? "sem-ref"} · Bloqueio: ${
                         state.movementBlocked ? "sim" : "nao"
-                      }`
+                      }${state.releaseStatus === "released" ? " · Liberta: sim" : ""}`
                     : state.message}
                 </FieldDescription>
               )}
@@ -344,10 +425,20 @@ export function CargoRegisterForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canRegisterCargo ? "Registo cria registo de auditoria." : "Requer registo de cargas."}
+            {canRegisterCargo
+              ? releaseImmediately
+                ? "Registo com libertacao cria auditoria em ambos os passos."
+                : "Registo cria registo de auditoria."
+              : "Requer registo de cargas."}
           </span>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A registar..." : "Registar carga"}
+            {isPending
+              ? releaseImmediately
+                ? "A registar e libertar..."
+                : "A registar..."
+              : releaseImmediately
+                ? "Registar e libertar"
+                : "Registar carga"}
           </Button>
         </CardFooter>
       </form>

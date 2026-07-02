@@ -20,6 +20,7 @@ import { TariffModule } from "../tariff/tariff.module.js";
 import { TeamsModule } from "../teams/teams.module.js";
 import { TrackingModule } from "../tracking/tracking.module.js";
 import { WebhooksModule } from "../webhooks/webhooks.module.js";
+import { PlatformRpcProvider } from "./platform-rpc.provider.js";
 import { RpcContextService } from "./rpc-context.service.js";
 import { RpcHttpMiddleware } from "./rpc-http.middleware.js";
 
@@ -46,8 +47,8 @@ import { RpcHttpMiddleware } from "./rpc-http.middleware.js";
     WebhooksModule,
     PrivacyModule,
   ],
-  providers: [RpcContextService, RpcHttpMiddleware],
-  exports: [RpcContextService],
+  providers: [RpcContextService, RpcHttpMiddleware, PlatformRpcProvider],
+  exports: [RpcContextService, PlatformRpcProvider],
 })
 export class RpcModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
