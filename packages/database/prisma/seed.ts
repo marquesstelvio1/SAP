@@ -21,11 +21,11 @@ const localDemoDefaults = {
 try {
   console.log("Iniciando o processo de seed...");
   const organizationId = process.env.SAPTM_BOOTSTRAP_ORGANIZATION_ID;
-  const rbacResult = await seedRbacBootstrap({
+  await seedRbacBootstrap({
     database,
     ...(organizationId === undefined ? {} : { organizationId }),
   });
-  const demoResult = await seedLocalDemoData(database);
+  await seedLocalDemoData(database);
 
   console.log("✅ Seed concluído com sucesso.");
 } finally {

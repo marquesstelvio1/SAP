@@ -60,7 +60,7 @@ try {
     },
   });
 
-  const rbacResult = await seedRbacBootstrap({
+  await seedRbacBootstrap({
     database,
     organizationId: organization.id,
   });
