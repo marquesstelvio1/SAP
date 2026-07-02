@@ -200,7 +200,7 @@ function Sidebar({
         aria-modal="true"
       >
         <div
-          className="fixed inset-0 bg-black/50"
+          className="fixed inset-0 bg-background/80"
           onClick={() => setOpenMobile(false)}
           aria-hidden="true"
         />

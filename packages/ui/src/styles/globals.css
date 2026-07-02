@@ -163,6 +163,11 @@
   --sidebar-accent-foreground: oklch(0.96 0.008 255);
   --sidebar-border: oklch(0.26 0.035 255);
   --sidebar-ring: oklch(0.72 0.13 215);
+
+  --shadow-panel: 0 1px 3px oklch(0 0 0 / 30%);
+  --shadow-overlay: 0 18px 45px oklch(0 0 0 / 50%);
+  --shadow-command: 0 24px 60px oklch(0 0 0 / 60%);
+  --shadow-sticky: 0 1px 0 oklch(0.3 0.038 255);
 }
 
 @theme inline {
