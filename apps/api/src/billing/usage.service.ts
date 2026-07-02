@@ -3,6 +3,15 @@ import { Inject, Injectable } from "@nestjs/common";
 import type { BillingRepository } from "./domain/billing.repository.js";
 import { BILLING_REPOSITORY } from "./domain/billing.repository.js";
 
+export type UsageLimitResult = {
+  allowed: boolean;
+  current: number;
+  limit: number;
+  remaining: number;
+};
+
+export type UsageLimitsResult = UsageLimitResult & { metric: string };
+
 @Injectable()
 export class UsageService {
   constructor(
@@ -31,21 +40,38 @@ export class UsageService {
     await this.billingRepo.incrementUsageRecord(organizationId, metric, delta);
   }
 
-  async checkLimit(
-    organizationId: string,
-    metric: string,
-  ): Promise<{ allowed: boolean; current: number; limit: number }> {
+  async checkLimit(organizationId: string, metric: string): Promise<UsageLimitResult> {
     const record = await this.billingRepo.findUsageRecord(organizationId, metric);
 
     if (!record) {
-      return { allowed: true, current: 0, limit: 0 };
+      return { allowed: true, current: 0, limit: 0, remaining: 0 };
     }
 
     return {
       allowed: record.current < record.limit,
       current: record.current,
       limit: record.limit,
+      remaining: Math.max(0, record.limit - record.current),
     };
+  }
+
+  async checkLimits(organizationId: string): Promise<UsageLimitsResult[]> {
+    const records = await this.billingRepo.findUsageRecords(organizationId);
+    const defaultMetrics = ["members", "cargo_shipments", "tracking_events"];
+
+    return defaultMetrics.map((metric) => {
+      const record = records.find((r) => r.metric === metric);
+      if (!record) {
+        return { metric, allowed: true, current: 0, limit: 0, remaining: 0 };
+      }
+      return {
+        metric,
+        allowed: record.current < record.limit,
+        current: record.current,
+        limit: record.limit,
+        remaining: Math.max(0, record.limit - record.current),
+      };
+    });
   }
 
   async resetPeriodicUsage(): Promise<void> {
@@ -70,6 +96,7 @@ export class UsageService {
     }
   }
 
+  // TODO: migrate to use Plan model when available
   private getPlanLimits(plan: string): Record<string, number> {
     switch (plan) {
       case "pro":

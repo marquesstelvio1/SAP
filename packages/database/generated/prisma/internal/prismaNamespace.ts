@@ -426,7 +426,8 @@ export const ModelName = {
   Plan: 'Plan',
   Subscription: 'Subscription',
   Invoice: 'Invoice',
-  UsageRecord: 'UsageRecord'
+  UsageRecord: 'UsageRecord',
+  SsoConfig: 'SsoConfig'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -442,7 +443,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "twoFactor" | "session" | "account" | "verification" | "loginAttempt" | "organization" | "team" | "teamMember" | "membership" | "role" | "permission" | "rolePermission" | "membershipRole" | "auditRecord" | "serviceAccount" | "apiKey" | "integrationEvent" | "outboxEvent" | "notification" | "cargo" | "cargoDeliveryException" | "cargoClaimSettlement" | "capacityResource" | "capacitySlot" | "capacitySlotReservation" | "capacityAdvisoryDecision" | "transportOrder" | "transportOrderDispatch" | "transportOrderScheduleRevision" | "tariffRateCard" | "tariffRateRule" | "tariffQuote" | "cargoOperationalHandoff" | "cargoComplianceEvidence" | "trackingShipment" | "webhookEndpoint" | "webhookDelivery" | "trackingEvent" | "plan" | "subscription" | "invoice" | "usageRecord"
+    modelProps: "user" | "twoFactor" | "session" | "account" | "verification" | "loginAttempt" | "organization" | "team" | "teamMember" | "membership" | "role" | "permission" | "rolePermission" | "membershipRole" | "auditRecord" | "serviceAccount" | "apiKey" | "integrationEvent" | "outboxEvent" | "notification" | "cargo" | "cargoDeliveryException" | "cargoClaimSettlement" | "capacityResource" | "capacitySlot" | "capacitySlotReservation" | "capacityAdvisoryDecision" | "transportOrder" | "transportOrderDispatch" | "transportOrderScheduleRevision" | "tariffRateCard" | "tariffRateRule" | "tariffQuote" | "cargoOperationalHandoff" | "cargoComplianceEvidence" | "trackingShipment" | "webhookEndpoint" | "webhookDelivery" | "trackingEvent" | "plan" | "subscription" | "invoice" | "usageRecord" | "ssoConfig"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3628,6 +3629,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SsoConfig: {
+      payload: Prisma.$SsoConfigPayload<ExtArgs>
+      fields: Prisma.SsoConfigFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SsoConfigFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SsoConfigFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        findFirst: {
+          args: Prisma.SsoConfigFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SsoConfigFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        findMany: {
+          args: Prisma.SsoConfigFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>[]
+        }
+        create: {
+          args: Prisma.SsoConfigCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        createMany: {
+          args: Prisma.SsoConfigCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SsoConfigCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>[]
+        }
+        delete: {
+          args: Prisma.SsoConfigDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        update: {
+          args: Prisma.SsoConfigUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        deleteMany: {
+          args: Prisma.SsoConfigDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SsoConfigUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SsoConfigUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>[]
+        }
+        upsert: {
+          args: Prisma.SsoConfigUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        aggregate: {
+          args: Prisma.SsoConfigAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSsoConfig>
+        }
+        groupBy: {
+          args: Prisma.SsoConfigGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SsoConfigGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SsoConfigCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SsoConfigCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3962,6 +4037,7 @@ export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[k
 export const CargoScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
+  teamId: 'teamId',
   cargoReference: 'cargoReference',
   externalReference: 'externalReference',
   cargoDescription: 'cargoDescription',
@@ -4391,6 +4467,7 @@ export type CargoComplianceEvidenceScalarFieldEnum = (typeof CargoComplianceEvid
 export const TrackingShipmentScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
+  teamId: 'teamId',
   referenceCode: 'referenceCode',
   externalReference: 'externalReference',
   cargoDescription: 'cargoDescription',
@@ -4547,6 +4624,26 @@ export const UsageRecordScalarFieldEnum = {
 } as const
 
 export type UsageRecordScalarFieldEnum = (typeof UsageRecordScalarFieldEnum)[keyof typeof UsageRecordScalarFieldEnum]
+
+
+export const SsoConfigScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  domain: 'domain',
+  idpMetadataUrl: 'idpMetadataUrl',
+  idpEntityId: 'idpEntityId',
+  idpSsoUrl: 'idpSsoUrl',
+  idpCertificate: 'idpCertificate',
+  jitProvisioning: 'jitProvisioning',
+  jitDefaultRoleId: 'jitDefaultRoleId',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
+} as const
+
+export type SsoConfigScalarFieldEnum = (typeof SsoConfigScalarFieldEnum)[keyof typeof SsoConfigScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -5308,6 +5405,7 @@ export type GlobalOmitConfig = {
   subscription?: Prisma.SubscriptionOmit
   invoice?: Prisma.InvoiceOmit
   usageRecord?: Prisma.UsageRecordOmit
+  ssoConfig?: Prisma.SsoConfigOmit
 }
 
 /* Types for Logging */

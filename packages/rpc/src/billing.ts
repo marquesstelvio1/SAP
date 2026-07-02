@@ -147,6 +147,40 @@ export const createPortalSessionInputSchema = z.object({
   idempotencyKey: sharedIdempotencyKeySchema,
 });
 
+export const billingInvoicesListInputSchema = z.object({
+  limit: z.number().int().min(1).max(100).default(10),
+  offset: z.number().int().min(0).default(0),
+});
+
+export const billingInvoicesListOutputSchema = z.object({
+  invoices: z.array(invoiceSchema),
+  pagination: z.object({
+    totalCount: z.number().int().nonnegative(),
+    limit: z.number().int().positive(),
+    offset: z.number().int().min(0),
+  }),
+});
+
+export const billingSubscriptionDetailSchema = subscriptionSchema.extend({
+  usage: z.array(
+    z.object({
+      metric: z.enum(billingUsageMetrics),
+      current: z.number().int().nonnegative(),
+      limit: z.number().int().nonnegative(),
+      remaining: z.number().int().nonnegative(),
+    }),
+  ),
+});
+
+export const billingSubscriptionGetOutputSchema = z.object({
+  subscription: billingSubscriptionDetailSchema,
+});
+
+export type BillingInvoicesListInput = z.infer<typeof billingInvoicesListInputSchema>;
+export type BillingInvoicesListOutput = z.infer<typeof billingInvoicesListOutputSchema>;
+export type BillingSubscriptionDetail = z.infer<typeof billingSubscriptionDetailSchema>;
+export type BillingSubscriptionGetOutput = z.infer<typeof billingSubscriptionGetOutputSchema>;
+
 export const billingOverviewMetadata = createRpcOperationMetadata({
   name: "billing.overview",
   kind: "query",
@@ -231,6 +265,45 @@ export const billingInvoicesMetadata = createRpcOperationMetadata({
 
 export const billingUsageMetadata = createRpcOperationMetadata({
   name: "billing.usage",
+  kind: "query",
+  auth: "session",
+  permissions: ["tenant.manage"],
+  permissionMode: "all",
+  organizationRequired: true,
+  audit: "standard",
+  idempotency: "none",
+  criticality: "low",
+  signals: ["log", "metric", "span"],
+});
+
+export const billingSubscriptionGetMetadata = createRpcOperationMetadata({
+  name: "billing.subscription.get",
+  kind: "query",
+  auth: "session",
+  permissions: ["tenant.manage"],
+  permissionMode: "all",
+  organizationRequired: true,
+  audit: "standard",
+  idempotency: "none",
+  criticality: "low",
+  signals: ["log", "metric", "span"],
+});
+
+export const billingSubscriptionUsageMetadata = createRpcOperationMetadata({
+  name: "billing.subscription.usage",
+  kind: "query",
+  auth: "session",
+  permissions: ["tenant.manage"],
+  permissionMode: "all",
+  organizationRequired: true,
+  audit: "standard",
+  idempotency: "none",
+  criticality: "low",
+  signals: ["log", "metric", "span"],
+});
+
+export const billingInvoicesListMetadata = createRpcOperationMetadata({
+  name: "billing.invoices.list",
   kind: "query",
   auth: "session",
   permissions: ["tenant.manage"],

@@ -16,6 +16,7 @@ import { PrivacyService } from "../privacy/privacy.service.js";
 import { ReportsService } from "../reports/reports.service.js";
 import { SettingsService } from "../settings/settings.service.js";
 import { TariffService } from "../tariff/tariff.service.js";
+import { SsoService } from "../sso/sso.service.js";
 import { TeamsService } from "../teams/teams.service.js";
 import { TrackingService } from "../tracking/tracking.service.js";
 import { WebhooksService } from "../webhooks/webhooks.service.js";
@@ -59,6 +60,8 @@ export class PlatformRpcProvider {
     settingsService: SettingsService,
     @Inject(TariffService)
     tariffService: TariffService,
+    @Inject(SsoService)
+    ssoService: SsoService,
     @Inject(TeamsService)
     teamsService: TeamsService,
     @Inject(WebhooksService)
@@ -85,6 +88,7 @@ export class PlatformRpcProvider {
       reportsService,
       settingsService,
       tariffService,
+      ssoService,
       teamsService,
       webhooksService,
       privacyService,

@@ -105,6 +105,7 @@ export interface TrackingRepository {
     organizationId: string,
     limit: number,
     offset: number,
+    teamId?: string,
   ): Promise<
     Array<{
       id: string;

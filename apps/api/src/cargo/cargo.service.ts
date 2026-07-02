@@ -76,6 +76,7 @@ export type GetCargoOverviewInput = {
   organizationId: string;
   limit?: number;
   offset?: number;
+  teamId?: string;
   generatedAt?: Date;
 };
 
@@ -197,7 +198,7 @@ export class CargoService {
   async getOverview(input: GetCargoOverviewInput): Promise<CargoOverviewOutput> {
     const limit = normalizeLimit(input.limit);
     const offset = input.offset ?? 0;
-    const data = await this.cargoRepo.getOverview(input.organizationId, limit, offset);
+    const data = await this.cargoRepo.getOverview(input.organizationId, limit, offset, input.teamId);
     const statusCounts = createCargoStatusCounts(data.statusGroups);
 
     return {
@@ -252,6 +253,7 @@ export class CargoService {
     const cargo = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const createdCargo = await this.cargoRepo.createCargo(tx, {
         organizationId: input.organizationId,
+        ...(input.teamId === undefined ? {} : { teamId: input.teamId }),
         cargoReference,
         cargoDescription: input.cargoDescription.trim(),
         cargoType: input.cargoType,

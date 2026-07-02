@@ -104,6 +104,7 @@ export function createCargoRpcRouter(deps: CreateCargoRpcRouterInput) {
             organizationId,
             limit: input.limit,
             offset: input.offset,
+            ...(input.teamId === undefined ? {} : { teamId: input.teamId }),
           });
         }),
       complianceOverview: cargoRpc

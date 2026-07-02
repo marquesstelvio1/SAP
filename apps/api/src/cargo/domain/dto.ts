@@ -51,6 +51,7 @@ export type TrackingTransportMode = (typeof trackingTransportModes)[number];
 export type CargoRecord = {
   id: string;
   organizationId: string;
+  teamId: string | null;
   cargoReference: string;
   externalReference: string | null;
   cargoDescription: string;
@@ -232,6 +233,7 @@ export function createCargoSummary(cargo: CargoRecord): CargoOverviewOutput["rec
   return {
     id: cargo.id,
     cargoReference: cargo.cargoReference,
+    teamId: cargo.teamId,
     externalReference: cargo.externalReference,
     cargoDescription: cargo.cargoDescription,
     cargoType: cargo.cargoType,

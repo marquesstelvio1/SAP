@@ -23,6 +23,7 @@ const NON_TENANT_MODELS = new Set([
   "MembershipRole",
   "ApiKey",
   "WebhookDelivery",
+  "Plan",
 ]);
 
 /**

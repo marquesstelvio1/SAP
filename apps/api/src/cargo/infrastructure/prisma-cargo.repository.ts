@@ -22,6 +22,7 @@ export class PrismaCargoRepository implements CargoRepository {
     return {
       id: raw.id as string,
       organizationId: raw.organizationId as string,
+      teamId: (raw.teamId as string) ?? null,
       cargoReference: raw.cargoReference as string,
       externalReference: (raw.externalReference as string) ?? null,
       cargoDescription: raw.cargoDescription as string,
@@ -444,25 +445,35 @@ export class PrismaCargoRepository implements CargoRepository {
     organizationId: string,
     limit: number,
     offset: number,
+    teamId?: string,
   ): Promise<CargoOverviewRawData> {
+    const where: Record<string, unknown> = { organizationId };
+
+    if (teamId !== undefined) {
+      where.teamId = teamId;
+    }
+
+    const hazardousWhere: Record<string, unknown> = { ...where, hazardous: true };
+    const inspectionWhere: Record<string, unknown> = { ...where, requiresInspection: true };
+
     const [statusGroups, hazardousCount, inspectionRequiredCount, totalCount, recentCargo] =
       await Promise.all([
         this.database.cargo.groupBy({
           by: ["status"],
-          where: { organizationId },
+          where: where as never,
           _count: { _all: true },
         }),
         this.database.cargo.count({
-          where: { organizationId, hazardous: true },
+          where: hazardousWhere as never,
         }),
         this.database.cargo.count({
-          where: { organizationId, requiresInspection: true },
+          where: inspectionWhere as never,
         }),
         this.database.cargo.count({
-          where: { organizationId },
+          where: where as never,
         }),
         this.database.cargo.findMany({
-          where: { organizationId },
+          where: where as never,
           orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
           skip: offset,
           take: limit,
@@ -489,6 +500,7 @@ export class PrismaCargoRepository implements CargoRepository {
     tx: PrismaTx,
     data: {
       organizationId: string;
+      teamId?: string;
       cargoReference: string;
       cargoDescription: string;
       cargoType: string;
@@ -584,6 +596,7 @@ export class PrismaCargoRepository implements CargoRepository {
     return {
       id: raw.id as string,
       organizationId: raw.organizationId as string,
+      teamId: (raw.teamId as string) ?? null,
       cargoReference,
       externalReference: (raw.externalReference as string) ?? null,
       cargoDescription: raw.cargoDescription as string,
@@ -666,6 +679,7 @@ export class PrismaCargoRepository implements CargoRepository {
       create: {
         id: entity.id,
         organizationId: entity.organizationId,
+        teamId: entity.teamId,
         cargoReference: entity.cargoReference.value,
         externalReference: entity.externalReference,
         cargoDescription: entity.cargoDescription,
@@ -718,6 +732,7 @@ export class PrismaCargoRepository implements CargoRepository {
         deliveredAt: entity.deliveredAt,
       },
       update: {
+        teamId: entity.teamId,
         cargoReference: entity.cargoReference.value,
         externalReference: entity.externalReference,
         cargoDescription: entity.cargoDescription,

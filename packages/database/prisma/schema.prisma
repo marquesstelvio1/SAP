@@ -396,6 +396,7 @@ model Organization {
   invoices                        Invoice[]
   usageRecords                    UsageRecord[]
   webhookEndpoints                WebhookEndpoint[]
+  ssoConfigs                      SsoConfig[]
 }
 
 model Team {
@@ -405,8 +406,10 @@ model Team {
   slug           String
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  members        TeamMember[]
-  createdAt      DateTime     @default(now())
+  members            TeamMember[]
+  cargos             Cargo[]
+  trackingShipments  TrackingShipment[]
+  createdAt          DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   deletedAt      DateTime?
   deletedBy      String?
@@ -642,6 +645,7 @@ model Notification {
 model Cargo {
   id                          String               @id @default(cuid())
   organizationId              String
+  teamId                      String?
   cargoReference              String
   externalReference           String?
   cargoDescription            String
@@ -698,6 +702,7 @@ model Cargo {
   deletedBy                   String?
 
   organization         Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  team                 Team?                     @relation(fields: [teamId], references: [id], onDelete: SetNull)
   // Logical reference to TrackingShipment (no FK constraint for bounded context decoupling)
   complianceEvidences  CargoComplianceEvidence[]
   operationalHandoffs  CargoOperationalHandoff[]
@@ -722,6 +727,8 @@ model Cargo {
   @@index([organizationId, status, arrivedAt])
   @@index([organizationId, status, deliveredAt])
   @@index([organizationId, trackingShipmentId])
+  @@index([organizationId, teamId])
+  @@index([organizationId, teamId, status])
   @@index([organizationId, cargoType, status])
   @@index([organizationId, customsStatus, conditionStatus])
 }
@@ -1196,6 +1203,7 @@ model CargoComplianceEvidence {
 model TrackingShipment {
   id                 String                 @id @default(cuid())
   organizationId     String
+  teamId             String?
   referenceCode      String
   externalReference  String?
   cargoDescription   String
@@ -1213,12 +1221,15 @@ model TrackingShipment {
   deletedBy          String?
 
   organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  team            Team?            @relation(fields: [teamId], references: [id], onDelete: SetNull)
   events          TrackingEvent[]
   cargo           Cargo?           @relation(fields: [cargoId], references: [id])
   transportOrders TransportOrder[]
   cargoId         String?
 
   @@unique([organizationId, referenceCode])
+  @@index([organizationId, teamId])
+  @@index([organizationId, teamId, status])
   @@index([organizationId, status, estimatedArrivalAt])
   @@index([organizationId, transportMode, status])
   @@index([organizationId, externalReference])
@@ -1375,4 +1386,25 @@ model UsageRecord {
 
   @@unique([organizationId, metric])
   @@map("usage_records")
+}
+
+model SsoConfig {
+  id                String        @id @default(cuid())
+  organizationId    String        @unique
+  organization      Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  domain            String?
+  idpMetadataUrl    String?
+  idpEntityId       String?
+  idpSsoUrl         String?
+  idpCertificate    String?
+  jitProvisioning   Boolean       @default(true)
+  jitDefaultRoleId  String?
+  active            Boolean       @default(false)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  deletedAt         DateTime?
+  deletedBy         String?
+
+  @@index([domain, active])
+  @@map("sso_configs")
 }

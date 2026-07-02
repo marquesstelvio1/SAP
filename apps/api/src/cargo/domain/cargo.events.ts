@@ -211,12 +211,13 @@ export function createCargoDeliveryExceptionRecordedEvent(
   deliveryConditionStatus: string,
   previousShipmentStatus: string,
   currentShipmentStatus: string,
+  organizationId: string,
   appliedRules: string[],
   idempotencyKey: string,
   correlationId: string,
 ): DomainEvent {
   return {
-    organizationId: "",
+    organizationId,
     eventType: "cargo.delivery_exception.recorded",
     aggregateType: "cargo",
     aggregateId: cargoId,

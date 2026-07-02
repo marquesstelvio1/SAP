@@ -42,6 +42,7 @@ import {
   type SettingsRpcContext,
 } from "../settings/settings-rpc.router.js";
 import { createTariffRpcRouter, type TariffRpcContext } from "../tariff/tariff-rpc.router.js";
+import { createSsoRpcRouter, type SsoRpcContext } from "../sso/sso-rpc.router.js";
 import { createTeamsRpcRouter, type TeamsRpcContext } from "../teams/teams-rpc.router.js";
 import {
   createTrackingRpcRouter,
@@ -65,6 +66,7 @@ export type PlatformRpcContext = AdminRpcContext &
   PlanningRpcContext &
   ReportsRpcContext &
   SettingsRpcContext &
+  SsoRpcContext &
   TariffRpcContext &
   TeamsRpcContext &
   TrackingRpcContext &
@@ -84,6 +86,7 @@ export type CreatePlatformRpcRouterInput = Parameters<typeof createAdminRpcRoute
   Parameters<typeof createPlanningRpcRouter>[0] &
   Parameters<typeof createReportsRpcRouter>[0] &
   Parameters<typeof createSettingsRpcRouter>[0] &
+  Parameters<typeof createSsoRpcRouter>[0] &
   Parameters<typeof createTariffRpcRouter>[0] &
   Parameters<typeof createTrackingRpcRouter>[0] &
   Parameters<typeof createTeamsRpcRouter>[0] &
@@ -115,6 +118,7 @@ export function createPlatformRpcRouter(input: CreatePlatformRpcRouterInput) {
   const settingsRpcRouter = createSettingsRpcRouter(input);
   const tariffRpcRouter = createTariffRpcRouter(input);
   const trackingRpcRouter = createTrackingRpcRouter(input);
+  const ssoRpcRouter = createSsoRpcRouter(input);
   const teamsRpcRouter = createTeamsRpcRouter(input);
   const webhooksRpcRouter = createWebhooksRpcRouter(input);
   const privacyRpcRouter = createPrivacyRpcRouter(input);
@@ -141,6 +145,7 @@ export function createPlatformRpcRouter(input: CreatePlatformRpcRouterInput) {
     reports: reportsRpcRouter.reports,
     settings: settingsRpcRouter.settings,
     tariff: tariffRpcRouter.tariff,
+    sso: ssoRpcRouter.sso,
     teams: teamsRpcRouter.teams,
     tracking: trackingRpcRouter.tracking,
     webhooks: webhooksRpcRouter.webhooks,

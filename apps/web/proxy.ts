@@ -79,7 +79,7 @@ function buildCsp(
     : `'nonce-${nonce}' 'strict-dynamic'`;
 
   const reportUri = `${origin}/api/csp-report`;
-  const connectSources = [`'self'`, origin];
+  const connectSources = [`'self'`, origin, "https://vitals.vercel-analytics.com"];
   if (apiUrl !== origin) {
     connectSources.push(apiUrl);
   }
@@ -97,7 +97,7 @@ function buildCsp(
     `font-src 'self' data:`,
     `script-src 'self' ${scriptSrc}`,
     `style-src-attr 'unsafe-inline'`,
-    `style-src-elem 'self' 'nonce-${nonce}'`,
+    `style-src-elem 'self' 'unsafe-inline' 'nonce-${nonce}'`,
     `connect-src ${connectSources.join(" ")}`,
     `worker-src ${workerSrc}`,
     `frame-src 'none'`,

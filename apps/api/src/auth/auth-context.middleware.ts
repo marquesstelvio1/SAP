@@ -18,6 +18,11 @@ export class AuthContextMiddleware implements NestMiddleware {
       await this.authContext.resolveRequestContext(request);
       this.authContext.synchronizeTraceContext(request);
     } catch (error) {
+      console.error("[AUTH] auth resolution failed", {
+        path: request.url,
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      });
       request.authResolutionError = error;
     }
 

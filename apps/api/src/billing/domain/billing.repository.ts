@@ -94,7 +94,8 @@ export interface BillingRepository {
   upsertSubscription(organizationId: string, data: SubscriptionUpsertInput): Promise<void>;
   updateSubscriptionStatus(organizationId: string, status: string): Promise<void>;
 
-  findInvoices(organizationId: string, limit: number): Promise<InvoiceRecord[]>;
+  findInvoices(organizationId: string, limit: number, offset?: number): Promise<InvoiceRecord[]>;
+  countInvoices(organizationId: string): Promise<number>;
   createInvoice(data: InvoiceCreateInput): Promise<void>;
 
   findUsageRecords(organizationId: string): Promise<UsageRecordRecord[]>;

@@ -122,13 +122,19 @@ export interface CargoRepository {
       status: string | undefined;
     },
   ): Promise<number>;
-  getOverview(organizationId: string, limit: number, offset: number): Promise<CargoOverviewRawData>;
+  getOverview(
+    organizationId: string,
+    limit: number,
+    offset: number,
+    teamId?: string,
+  ): Promise<CargoOverviewRawData>;
 
   // Transactional write operations - receive a transaction client
   createCargo(
     tx: PrismaTx,
     data: {
       organizationId: string;
+      teamId?: string;
       cargoReference: string;
       cargoDescription: string;
       cargoType: string;

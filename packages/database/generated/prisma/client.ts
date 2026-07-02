@@ -256,3 +256,8 @@ export type Invoice = Prisma.InvoiceModel
  * 
  */
 export type UsageRecord = Prisma.UsageRecordModel
+/**
+ * Model SsoConfig
+ * 
+ */
+export type SsoConfig = Prisma.SsoConfigModel

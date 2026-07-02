@@ -60,6 +60,7 @@ export class GrossWeight {
 export interface CargoEntity {
   id: string;
   organizationId: string;
+  teamId: string | null;
   cargoReference: CargoReference;
   externalReference: string | null;
   cargoDescription: string;
@@ -117,6 +118,7 @@ export interface CargoEntity {
 export interface TrackingShipmentEntity {
   id: string;
   organizationId: string;
+  teamId: string | null;
   referenceCode: string;
   externalReference: string | null;
   cargoDescription: string;

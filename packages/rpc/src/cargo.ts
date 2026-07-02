@@ -97,6 +97,7 @@ export const cargoOverviewInputSchema = z
   .object({
     limit: z.number().int().min(1).max(50).default(10),
     offset: z.number().int().min(0).default(0),
+    teamId: z.string().optional(),
   })
   .default({
     limit: 10,
@@ -105,6 +106,7 @@ export const cargoOverviewInputSchema = z
 
 export const cargoRegisterInputSchema = z
   .object({
+    teamId: z.string().optional(),
     cargoReference: z.string().trim().min(3).max(80),
     externalReference: optionalCargoString(120),
     cargoDescription: z.string().trim().min(3).max(240),
@@ -377,6 +379,7 @@ export const cargoStatusCountSchema = z.object({
 export const cargoSummarySchema = z.object({
   id: z.string(),
   cargoReference: z.string(),
+  teamId: z.string().nullable().optional(),
   externalReference: z.string().nullable(),
   cargoDescription: z.string(),
   cargoType: z.enum(cargoTypes),

@@ -110,9 +110,15 @@ export class PrismaTrackingRepository implements TrackingRepository {
     });
   }
 
-  async findRecentShipments(organizationId: string, limit: number, offset: number) {
+  async findRecentShipments(organizationId: string, limit: number, offset: number, teamId?: string) {
+    const where: Record<string, unknown> = { organizationId };
+
+    if (teamId !== undefined) {
+      where.teamId = teamId;
+    }
+
     return this.database.trackingShipment.findMany({
-      where: { organizationId },
+      where: where as never,
       orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
       skip: offset,
       take: limit,

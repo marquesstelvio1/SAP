@@ -62,14 +62,21 @@ export class PrismaBillingRepository implements BillingRepository {
     });
   }
 
-  async findInvoices(organizationId: string, limit: number): Promise<InvoiceRecord[]> {
+  async findInvoices(organizationId: string, limit: number, offset = 0): Promise<InvoiceRecord[]> {
     const invoices = await this.database.invoice.findMany({
       where: { organizationId },
       orderBy: { createdAt: "desc" },
       take: limit,
+      skip: offset,
     });
 
     return invoices as unknown as InvoiceRecord[];
+  }
+
+  async countInvoices(organizationId: string): Promise<number> {
+    return this.database.invoice.count({
+      where: { organizationId },
+    });
   }
 
   async createInvoice(data: InvoiceCreateInput): Promise<void> {

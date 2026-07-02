@@ -93,7 +93,8 @@ export const ModelName = {
   Plan: 'Plan',
   Subscription: 'Subscription',
   Invoice: 'Invoice',
-  UsageRecord: 'UsageRecord'
+  UsageRecord: 'UsageRecord',
+  SsoConfig: 'SsoConfig'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -407,6 +408,7 @@ export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[k
 export const CargoScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
+  teamId: 'teamId',
   cargoReference: 'cargoReference',
   externalReference: 'externalReference',
   cargoDescription: 'cargoDescription',
@@ -836,6 +838,7 @@ export type CargoComplianceEvidenceScalarFieldEnum = (typeof CargoComplianceEvid
 export const TrackingShipmentScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
+  teamId: 'teamId',
   referenceCode: 'referenceCode',
   externalReference: 'externalReference',
   cargoDescription: 'cargoDescription',
@@ -992,6 +995,26 @@ export const UsageRecordScalarFieldEnum = {
 } as const
 
 export type UsageRecordScalarFieldEnum = (typeof UsageRecordScalarFieldEnum)[keyof typeof UsageRecordScalarFieldEnum]
+
+
+export const SsoConfigScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  domain: 'domain',
+  idpMetadataUrl: 'idpMetadataUrl',
+  idpEntityId: 'idpEntityId',
+  idpSsoUrl: 'idpSsoUrl',
+  idpCertificate: 'idpCertificate',
+  jitProvisioning: 'jitProvisioning',
+  jitDefaultRoleId: 'jitDefaultRoleId',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
+} as const
+
+export type SsoConfigScalarFieldEnum = (typeof SsoConfigScalarFieldEnum)[keyof typeof SsoConfigScalarFieldEnum]
 
 
 export const SortOrder = {

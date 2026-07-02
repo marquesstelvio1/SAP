@@ -43,6 +43,7 @@ export type CargoSumAggregateOutputType = {
 export type CargoMinAggregateOutputType = {
   id: string | null
   organizationId: string | null
+  teamId: string | null
   cargoReference: string | null
   externalReference: string | null
   cargoDescription: string | null
@@ -102,6 +103,7 @@ export type CargoMinAggregateOutputType = {
 export type CargoMaxAggregateOutputType = {
   id: string | null
   organizationId: string | null
+  teamId: string | null
   cargoReference: string | null
   externalReference: string | null
   cargoDescription: string | null
@@ -161,6 +163,7 @@ export type CargoMaxAggregateOutputType = {
 export type CargoCountAggregateOutputType = {
   id: number
   organizationId: number
+  teamId: number
   cargoReference: number
   externalReference: number
   cargoDescription: number
@@ -236,6 +239,7 @@ export type CargoSumAggregateInputType = {
 export type CargoMinAggregateInputType = {
   id?: true
   organizationId?: true
+  teamId?: true
   cargoReference?: true
   externalReference?: true
   cargoDescription?: true
@@ -295,6 +299,7 @@ export type CargoMinAggregateInputType = {
 export type CargoMaxAggregateInputType = {
   id?: true
   organizationId?: true
+  teamId?: true
   cargoReference?: true
   externalReference?: true
   cargoDescription?: true
@@ -354,6 +359,7 @@ export type CargoMaxAggregateInputType = {
 export type CargoCountAggregateInputType = {
   id?: true
   organizationId?: true
+  teamId?: true
   cargoReference?: true
   externalReference?: true
   cargoDescription?: true
@@ -500,6 +506,7 @@ export type CargoGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type CargoGroupByOutputType = {
   id: string
   organizationId: string
+  teamId: string | null
   cargoReference: string
   externalReference: string | null
   cargoDescription: string
@@ -582,6 +589,7 @@ export type CargoWhereInput = {
   NOT?: Prisma.CargoWhereInput | Prisma.CargoWhereInput[]
   id?: Prisma.StringFilter<"Cargo"> | string
   organizationId?: Prisma.StringFilter<"Cargo"> | string
+  teamId?: Prisma.StringNullableFilter<"Cargo"> | string | null
   cargoReference?: Prisma.StringFilter<"Cargo"> | string
   externalReference?: Prisma.StringNullableFilter<"Cargo"> | string | null
   cargoDescription?: Prisma.StringFilter<"Cargo"> | string
@@ -637,6 +645,7 @@ export type CargoWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"Cargo"> | Date | string | null
   deletedBy?: Prisma.StringNullableFilter<"Cargo"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  team?: Prisma.XOR<Prisma.TeamNullableScalarRelationFilter, Prisma.TeamWhereInput> | null
   complianceEvidences?: Prisma.CargoComplianceEvidenceListRelationFilter
   operationalHandoffs?: Prisma.CargoOperationalHandoffListRelationFilter
   deliveryExceptions?: Prisma.CargoDeliveryExceptionListRelationFilter
@@ -650,6 +659,7 @@ export type CargoWhereInput = {
 export type CargoOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
+  teamId?: Prisma.SortOrderInput | Prisma.SortOrder
   cargoReference?: Prisma.SortOrder
   externalReference?: Prisma.SortOrderInput | Prisma.SortOrder
   cargoDescription?: Prisma.SortOrder
@@ -705,6 +715,7 @@ export type CargoOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
+  team?: Prisma.TeamOrderByWithRelationInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceOrderByRelationAggregateInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffOrderByRelationAggregateInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionOrderByRelationAggregateInput
@@ -729,6 +740,7 @@ export type CargoWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CargoWhereInput[]
   NOT?: Prisma.CargoWhereInput | Prisma.CargoWhereInput[]
   organizationId?: Prisma.StringFilter<"Cargo"> | string
+  teamId?: Prisma.StringNullableFilter<"Cargo"> | string | null
   cargoReference?: Prisma.StringFilter<"Cargo"> | string
   externalReference?: Prisma.StringNullableFilter<"Cargo"> | string | null
   cargoDescription?: Prisma.StringFilter<"Cargo"> | string
@@ -783,6 +795,7 @@ export type CargoWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"Cargo"> | Date | string | null
   deletedBy?: Prisma.StringNullableFilter<"Cargo"> | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  team?: Prisma.XOR<Prisma.TeamNullableScalarRelationFilter, Prisma.TeamWhereInput> | null
   complianceEvidences?: Prisma.CargoComplianceEvidenceListRelationFilter
   operationalHandoffs?: Prisma.CargoOperationalHandoffListRelationFilter
   deliveryExceptions?: Prisma.CargoDeliveryExceptionListRelationFilter
@@ -796,6 +809,7 @@ export type CargoWhereUniqueInput = Prisma.AtLeast<{
 export type CargoOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
+  teamId?: Prisma.SortOrderInput | Prisma.SortOrder
   cargoReference?: Prisma.SortOrder
   externalReference?: Prisma.SortOrderInput | Prisma.SortOrder
   cargoDescription?: Prisma.SortOrder
@@ -863,6 +877,7 @@ export type CargoScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CargoScalarWhereWithAggregatesInput | Prisma.CargoScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Cargo"> | string
   organizationId?: Prisma.StringWithAggregatesFilter<"Cargo"> | string
+  teamId?: Prisma.StringNullableWithAggregatesFilter<"Cargo"> | string | null
   cargoReference?: Prisma.StringWithAggregatesFilter<"Cargo"> | string
   externalReference?: Prisma.StringNullableWithAggregatesFilter<"Cargo"> | string | null
   cargoDescription?: Prisma.StringWithAggregatesFilter<"Cargo"> | string
@@ -976,6 +991,7 @@ export type CargoCreateInput = {
   deletedAt?: Date | string | null
   deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoRecordsInput
+  team?: Prisma.TeamCreateNestedOneWithoutCargosInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceCreateNestedManyWithoutCargoInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffCreateNestedManyWithoutCargoInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionCreateNestedManyWithoutCargoInput
@@ -989,6 +1005,7 @@ export type CargoCreateInput = {
 export type CargoUncheckedCreateInput = {
   id?: string
   organizationId: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -1110,6 +1127,7 @@ export type CargoUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoRecordsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutCargosNestedInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceUpdateManyWithoutCargoNestedInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffUpdateManyWithoutCargoNestedInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionUpdateManyWithoutCargoNestedInput
@@ -1123,6 +1141,7 @@ export type CargoUpdateInput = {
 export type CargoUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1190,6 +1209,7 @@ export type CargoUncheckedUpdateInput = {
 export type CargoCreateManyInput = {
   id?: string
   organizationId: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -1307,6 +1327,7 @@ export type CargoUpdateManyMutationInput = {
 export type CargoUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1411,6 +1432,7 @@ export type CargoOrganizationIdDeliveryIdempotencyKeyCompoundUniqueInput = {
 export type CargoCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
+  teamId?: Prisma.SortOrder
   cargoReference?: Prisma.SortOrder
   externalReference?: Prisma.SortOrder
   cargoDescription?: Prisma.SortOrder
@@ -1477,6 +1499,7 @@ export type CargoAvgOrderByAggregateInput = {
 export type CargoMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
+  teamId?: Prisma.SortOrder
   cargoReference?: Prisma.SortOrder
   externalReference?: Prisma.SortOrder
   cargoDescription?: Prisma.SortOrder
@@ -1536,6 +1559,7 @@ export type CargoMaxOrderByAggregateInput = {
 export type CargoMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
+  teamId?: Prisma.SortOrder
   cargoReference?: Prisma.SortOrder
   externalReference?: Prisma.SortOrder
   cargoDescription?: Prisma.SortOrder
@@ -1648,6 +1672,48 @@ export type CargoUncheckedUpdateManyWithoutOrganizationNestedInput = {
   connect?: Prisma.CargoWhereUniqueInput | Prisma.CargoWhereUniqueInput[]
   update?: Prisma.CargoUpdateWithWhereUniqueWithoutOrganizationInput | Prisma.CargoUpdateWithWhereUniqueWithoutOrganizationInput[]
   updateMany?: Prisma.CargoUpdateManyWithWhereWithoutOrganizationInput | Prisma.CargoUpdateManyWithWhereWithoutOrganizationInput[]
+  deleteMany?: Prisma.CargoScalarWhereInput | Prisma.CargoScalarWhereInput[]
+}
+
+export type CargoCreateNestedManyWithoutTeamInput = {
+  create?: Prisma.XOR<Prisma.CargoCreateWithoutTeamInput, Prisma.CargoUncheckedCreateWithoutTeamInput> | Prisma.CargoCreateWithoutTeamInput[] | Prisma.CargoUncheckedCreateWithoutTeamInput[]
+  connectOrCreate?: Prisma.CargoCreateOrConnectWithoutTeamInput | Prisma.CargoCreateOrConnectWithoutTeamInput[]
+  createMany?: Prisma.CargoCreateManyTeamInputEnvelope
+  connect?: Prisma.CargoWhereUniqueInput | Prisma.CargoWhereUniqueInput[]
+}
+
+export type CargoUncheckedCreateNestedManyWithoutTeamInput = {
+  create?: Prisma.XOR<Prisma.CargoCreateWithoutTeamInput, Prisma.CargoUncheckedCreateWithoutTeamInput> | Prisma.CargoCreateWithoutTeamInput[] | Prisma.CargoUncheckedCreateWithoutTeamInput[]
+  connectOrCreate?: Prisma.CargoCreateOrConnectWithoutTeamInput | Prisma.CargoCreateOrConnectWithoutTeamInput[]
+  createMany?: Prisma.CargoCreateManyTeamInputEnvelope
+  connect?: Prisma.CargoWhereUniqueInput | Prisma.CargoWhereUniqueInput[]
+}
+
+export type CargoUpdateManyWithoutTeamNestedInput = {
+  create?: Prisma.XOR<Prisma.CargoCreateWithoutTeamInput, Prisma.CargoUncheckedCreateWithoutTeamInput> | Prisma.CargoCreateWithoutTeamInput[] | Prisma.CargoUncheckedCreateWithoutTeamInput[]
+  connectOrCreate?: Prisma.CargoCreateOrConnectWithoutTeamInput | Prisma.CargoCreateOrConnectWithoutTeamInput[]
+  upsert?: Prisma.CargoUpsertWithWhereUniqueWithoutTeamInput | Prisma.CargoUpsertWithWhereUniqueWithoutTeamInput[]
+  createMany?: Prisma.CargoCreateManyTeamInputEnvelope
+  set?: Prisma.CargoWhereUniqueInput | Prisma.CargoWhereUniqueInput[]
+  disconnect?: Prisma.CargoWhereUniqueInput | Prisma.CargoWhereUniqueInput[]
+  delete?: Prisma.CargoWhereUniqueInput | Prisma.CargoWhereUniqueInput[]
+  connect?: Prisma.CargoWhereUniqueInput | Prisma.CargoWhereUniqueInput[]
+  update?: Prisma.CargoUpdateWithWhereUniqueWithoutTeamInput | Prisma.CargoUpdateWithWhereUniqueWithoutTeamInput[]
+  updateMany?: Prisma.CargoUpdateManyWithWhereWithoutTeamInput | Prisma.CargoUpdateManyWithWhereWithoutTeamInput[]
+  deleteMany?: Prisma.CargoScalarWhereInput | Prisma.CargoScalarWhereInput[]
+}
+
+export type CargoUncheckedUpdateManyWithoutTeamNestedInput = {
+  create?: Prisma.XOR<Prisma.CargoCreateWithoutTeamInput, Prisma.CargoUncheckedCreateWithoutTeamInput> | Prisma.CargoCreateWithoutTeamInput[] | Prisma.CargoUncheckedCreateWithoutTeamInput[]
+  connectOrCreate?: Prisma.CargoCreateOrConnectWithoutTeamInput | Prisma.CargoCreateOrConnectWithoutTeamInput[]
+  upsert?: Prisma.CargoUpsertWithWhereUniqueWithoutTeamInput | Prisma.CargoUpsertWithWhereUniqueWithoutTeamInput[]
+  createMany?: Prisma.CargoCreateManyTeamInputEnvelope
+  set?: Prisma.CargoWhereUniqueInput | Prisma.CargoWhereUniqueInput[]
+  disconnect?: Prisma.CargoWhereUniqueInput | Prisma.CargoWhereUniqueInput[]
+  delete?: Prisma.CargoWhereUniqueInput | Prisma.CargoWhereUniqueInput[]
+  connect?: Prisma.CargoWhereUniqueInput | Prisma.CargoWhereUniqueInput[]
+  update?: Prisma.CargoUpdateWithWhereUniqueWithoutTeamInput | Prisma.CargoUpdateWithWhereUniqueWithoutTeamInput[]
+  updateMany?: Prisma.CargoUpdateManyWithWhereWithoutTeamInput | Prisma.CargoUpdateManyWithWhereWithoutTeamInput[]
   deleteMany?: Prisma.CargoScalarWhereInput | Prisma.CargoScalarWhereInput[]
 }
 
@@ -1853,6 +1919,7 @@ export type CargoCreateWithoutOrganizationInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   deletedBy?: string | null
+  team?: Prisma.TeamCreateNestedOneWithoutCargosInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceCreateNestedManyWithoutCargoInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffCreateNestedManyWithoutCargoInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionCreateNestedManyWithoutCargoInput
@@ -1865,6 +1932,7 @@ export type CargoCreateWithoutOrganizationInput = {
 
 export type CargoUncheckedCreateWithoutOrganizationInput = {
   id?: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -1961,6 +2029,7 @@ export type CargoScalarWhereInput = {
   NOT?: Prisma.CargoScalarWhereInput | Prisma.CargoScalarWhereInput[]
   id?: Prisma.StringFilter<"Cargo"> | string
   organizationId?: Prisma.StringFilter<"Cargo"> | string
+  teamId?: Prisma.StringNullableFilter<"Cargo"> | string | null
   cargoReference?: Prisma.StringFilter<"Cargo"> | string
   externalReference?: Prisma.StringNullableFilter<"Cargo"> | string | null
   cargoDescription?: Prisma.StringFilter<"Cargo"> | string
@@ -2015,6 +2084,166 @@ export type CargoScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Cargo"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Cargo"> | Date | string | null
   deletedBy?: Prisma.StringNullableFilter<"Cargo"> | string | null
+}
+
+export type CargoCreateWithoutTeamInput = {
+  id?: string
+  cargoReference: string
+  externalReference?: string | null
+  cargoDescription: string
+  cargoType: $Enums.CargoType
+  status?: $Enums.CargoStatus
+  customsStatus?: $Enums.CargoCustomsStatus
+  customsReference?: string | null
+  conditionStatus?: $Enums.CargoConditionStatus
+  grossWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
+  packageCount: number
+  volumeM3?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hazardous?: boolean
+  unNumber?: string | null
+  hazardClass?: string | null
+  requiresInspection?: boolean
+  shipperName: string
+  consigneeName: string
+  originName: string
+  destinationName: string
+  custodyOwnerName: string
+  priority?: number
+  expectedReadyAt?: Date | string | null
+  sourceSystem?: string
+  registrationIdempotencyKey?: string | null
+  releaseIdempotencyKey?: string | null
+  releaseReference?: string | null
+  releaseReason?: string | null
+  transportPlanIdempotencyKey?: string | null
+  departureIdempotencyKey?: string | null
+  arrivalIdempotencyKey?: string | null
+  deliveryIdempotencyKey?: string | null
+  transportPlanningReference?: string | null
+  transportOwnerTeam?: string | null
+  departureReference?: string | null
+  departureLocationName?: string | null
+  departureOperatorName?: string | null
+  carrierReference?: string | null
+  arrivalReference?: string | null
+  arrivalLocationName?: string | null
+  arrivalOperatorName?: string | null
+  deliveryReference?: string | null
+  receivedByName?: string | null
+  deliveryNotes?: string | null
+  trackingShipmentId?: string | null
+  registeredAt?: Date | string
+  releasedAt?: Date | string | null
+  transportPlannedAt?: Date | string | null
+  departedAt?: Date | string | null
+  arrivedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutCargoRecordsInput
+  complianceEvidences?: Prisma.CargoComplianceEvidenceCreateNestedManyWithoutCargoInput
+  operationalHandoffs?: Prisma.CargoOperationalHandoffCreateNestedManyWithoutCargoInput
+  deliveryExceptions?: Prisma.CargoDeliveryExceptionCreateNestedManyWithoutCargoInput
+  claimSettlements?: Prisma.CargoClaimSettlementCreateNestedManyWithoutCargoInput
+  capacityReservations?: Prisma.CapacitySlotReservationCreateNestedManyWithoutCargoInput
+  transportOrders?: Prisma.TransportOrderCreateNestedManyWithoutCargoInput
+  tariffQuotes?: Prisma.TariffQuoteCreateNestedManyWithoutCargoInput
+  trackingShipments?: Prisma.TrackingShipmentCreateNestedManyWithoutCargoInput
+}
+
+export type CargoUncheckedCreateWithoutTeamInput = {
+  id?: string
+  organizationId: string
+  cargoReference: string
+  externalReference?: string | null
+  cargoDescription: string
+  cargoType: $Enums.CargoType
+  status?: $Enums.CargoStatus
+  customsStatus?: $Enums.CargoCustomsStatus
+  customsReference?: string | null
+  conditionStatus?: $Enums.CargoConditionStatus
+  grossWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
+  packageCount: number
+  volumeM3?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hazardous?: boolean
+  unNumber?: string | null
+  hazardClass?: string | null
+  requiresInspection?: boolean
+  shipperName: string
+  consigneeName: string
+  originName: string
+  destinationName: string
+  custodyOwnerName: string
+  priority?: number
+  expectedReadyAt?: Date | string | null
+  sourceSystem?: string
+  registrationIdempotencyKey?: string | null
+  releaseIdempotencyKey?: string | null
+  releaseReference?: string | null
+  releaseReason?: string | null
+  transportPlanIdempotencyKey?: string | null
+  departureIdempotencyKey?: string | null
+  arrivalIdempotencyKey?: string | null
+  deliveryIdempotencyKey?: string | null
+  transportPlanningReference?: string | null
+  transportOwnerTeam?: string | null
+  departureReference?: string | null
+  departureLocationName?: string | null
+  departureOperatorName?: string | null
+  carrierReference?: string | null
+  arrivalReference?: string | null
+  arrivalLocationName?: string | null
+  arrivalOperatorName?: string | null
+  deliveryReference?: string | null
+  receivedByName?: string | null
+  deliveryNotes?: string | null
+  trackingShipmentId?: string | null
+  registeredAt?: Date | string
+  releasedAt?: Date | string | null
+  transportPlannedAt?: Date | string | null
+  departedAt?: Date | string | null
+  arrivedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
+  complianceEvidences?: Prisma.CargoComplianceEvidenceUncheckedCreateNestedManyWithoutCargoInput
+  operationalHandoffs?: Prisma.CargoOperationalHandoffUncheckedCreateNestedManyWithoutCargoInput
+  deliveryExceptions?: Prisma.CargoDeliveryExceptionUncheckedCreateNestedManyWithoutCargoInput
+  claimSettlements?: Prisma.CargoClaimSettlementUncheckedCreateNestedManyWithoutCargoInput
+  capacityReservations?: Prisma.CapacitySlotReservationUncheckedCreateNestedManyWithoutCargoInput
+  transportOrders?: Prisma.TransportOrderUncheckedCreateNestedManyWithoutCargoInput
+  tariffQuotes?: Prisma.TariffQuoteUncheckedCreateNestedManyWithoutCargoInput
+  trackingShipments?: Prisma.TrackingShipmentUncheckedCreateNestedManyWithoutCargoInput
+}
+
+export type CargoCreateOrConnectWithoutTeamInput = {
+  where: Prisma.CargoWhereUniqueInput
+  create: Prisma.XOR<Prisma.CargoCreateWithoutTeamInput, Prisma.CargoUncheckedCreateWithoutTeamInput>
+}
+
+export type CargoCreateManyTeamInputEnvelope = {
+  data: Prisma.CargoCreateManyTeamInput | Prisma.CargoCreateManyTeamInput[]
+  skipDuplicates?: boolean
+}
+
+export type CargoUpsertWithWhereUniqueWithoutTeamInput = {
+  where: Prisma.CargoWhereUniqueInput
+  update: Prisma.XOR<Prisma.CargoUpdateWithoutTeamInput, Prisma.CargoUncheckedUpdateWithoutTeamInput>
+  create: Prisma.XOR<Prisma.CargoCreateWithoutTeamInput, Prisma.CargoUncheckedCreateWithoutTeamInput>
+}
+
+export type CargoUpdateWithWhereUniqueWithoutTeamInput = {
+  where: Prisma.CargoWhereUniqueInput
+  data: Prisma.XOR<Prisma.CargoUpdateWithoutTeamInput, Prisma.CargoUncheckedUpdateWithoutTeamInput>
+}
+
+export type CargoUpdateManyWithWhereWithoutTeamInput = {
+  where: Prisma.CargoScalarWhereInput
+  data: Prisma.XOR<Prisma.CargoUpdateManyMutationInput, Prisma.CargoUncheckedUpdateManyWithoutTeamInput>
 }
 
 export type CargoCreateWithoutDeliveryExceptionsInput = {
@@ -2074,6 +2303,7 @@ export type CargoCreateWithoutDeliveryExceptionsInput = {
   deletedAt?: Date | string | null
   deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoRecordsInput
+  team?: Prisma.TeamCreateNestedOneWithoutCargosInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceCreateNestedManyWithoutCargoInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffCreateNestedManyWithoutCargoInput
   claimSettlements?: Prisma.CargoClaimSettlementCreateNestedManyWithoutCargoInput
@@ -2086,6 +2316,7 @@ export type CargoCreateWithoutDeliveryExceptionsInput = {
 export type CargoUncheckedCreateWithoutDeliveryExceptionsInput = {
   id?: string
   organizationId: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -2222,6 +2453,7 @@ export type CargoUpdateWithoutDeliveryExceptionsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoRecordsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutCargosNestedInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceUpdateManyWithoutCargoNestedInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffUpdateManyWithoutCargoNestedInput
   claimSettlements?: Prisma.CargoClaimSettlementUpdateManyWithoutCargoNestedInput
@@ -2234,6 +2466,7 @@ export type CargoUpdateWithoutDeliveryExceptionsInput = {
 export type CargoUncheckedUpdateWithoutDeliveryExceptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2354,6 +2587,7 @@ export type CargoCreateWithoutClaimSettlementsInput = {
   deletedAt?: Date | string | null
   deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoRecordsInput
+  team?: Prisma.TeamCreateNestedOneWithoutCargosInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceCreateNestedManyWithoutCargoInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffCreateNestedManyWithoutCargoInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionCreateNestedManyWithoutCargoInput
@@ -2366,6 +2600,7 @@ export type CargoCreateWithoutClaimSettlementsInput = {
 export type CargoUncheckedCreateWithoutClaimSettlementsInput = {
   id?: string
   organizationId: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -2502,6 +2737,7 @@ export type CargoUpdateWithoutClaimSettlementsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoRecordsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutCargosNestedInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceUpdateManyWithoutCargoNestedInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffUpdateManyWithoutCargoNestedInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionUpdateManyWithoutCargoNestedInput
@@ -2514,6 +2750,7 @@ export type CargoUpdateWithoutClaimSettlementsInput = {
 export type CargoUncheckedUpdateWithoutClaimSettlementsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2634,6 +2871,7 @@ export type CargoCreateWithoutCapacityReservationsInput = {
   deletedAt?: Date | string | null
   deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoRecordsInput
+  team?: Prisma.TeamCreateNestedOneWithoutCargosInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceCreateNestedManyWithoutCargoInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffCreateNestedManyWithoutCargoInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionCreateNestedManyWithoutCargoInput
@@ -2646,6 +2884,7 @@ export type CargoCreateWithoutCapacityReservationsInput = {
 export type CargoUncheckedCreateWithoutCapacityReservationsInput = {
   id?: string
   organizationId: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -2782,6 +3021,7 @@ export type CargoUpdateWithoutCapacityReservationsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoRecordsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutCargosNestedInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceUpdateManyWithoutCargoNestedInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffUpdateManyWithoutCargoNestedInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionUpdateManyWithoutCargoNestedInput
@@ -2794,6 +3034,7 @@ export type CargoUpdateWithoutCapacityReservationsInput = {
 export type CargoUncheckedUpdateWithoutCapacityReservationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2914,6 +3155,7 @@ export type CargoCreateWithoutTransportOrdersInput = {
   deletedAt?: Date | string | null
   deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoRecordsInput
+  team?: Prisma.TeamCreateNestedOneWithoutCargosInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceCreateNestedManyWithoutCargoInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffCreateNestedManyWithoutCargoInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionCreateNestedManyWithoutCargoInput
@@ -2926,6 +3168,7 @@ export type CargoCreateWithoutTransportOrdersInput = {
 export type CargoUncheckedCreateWithoutTransportOrdersInput = {
   id?: string
   organizationId: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -3062,6 +3305,7 @@ export type CargoUpdateWithoutTransportOrdersInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoRecordsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutCargosNestedInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceUpdateManyWithoutCargoNestedInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffUpdateManyWithoutCargoNestedInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionUpdateManyWithoutCargoNestedInput
@@ -3074,6 +3318,7 @@ export type CargoUpdateWithoutTransportOrdersInput = {
 export type CargoUncheckedUpdateWithoutTransportOrdersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3194,6 +3439,7 @@ export type CargoCreateWithoutTariffQuotesInput = {
   deletedAt?: Date | string | null
   deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoRecordsInput
+  team?: Prisma.TeamCreateNestedOneWithoutCargosInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceCreateNestedManyWithoutCargoInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffCreateNestedManyWithoutCargoInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionCreateNestedManyWithoutCargoInput
@@ -3206,6 +3452,7 @@ export type CargoCreateWithoutTariffQuotesInput = {
 export type CargoUncheckedCreateWithoutTariffQuotesInput = {
   id?: string
   organizationId: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -3342,6 +3589,7 @@ export type CargoUpdateWithoutTariffQuotesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoRecordsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutCargosNestedInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceUpdateManyWithoutCargoNestedInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffUpdateManyWithoutCargoNestedInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionUpdateManyWithoutCargoNestedInput
@@ -3354,6 +3602,7 @@ export type CargoUpdateWithoutTariffQuotesInput = {
 export type CargoUncheckedUpdateWithoutTariffQuotesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3474,6 +3723,7 @@ export type CargoCreateWithoutOperationalHandoffsInput = {
   deletedAt?: Date | string | null
   deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoRecordsInput
+  team?: Prisma.TeamCreateNestedOneWithoutCargosInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceCreateNestedManyWithoutCargoInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionCreateNestedManyWithoutCargoInput
   claimSettlements?: Prisma.CargoClaimSettlementCreateNestedManyWithoutCargoInput
@@ -3486,6 +3736,7 @@ export type CargoCreateWithoutOperationalHandoffsInput = {
 export type CargoUncheckedCreateWithoutOperationalHandoffsInput = {
   id?: string
   organizationId: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -3622,6 +3873,7 @@ export type CargoUpdateWithoutOperationalHandoffsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoRecordsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutCargosNestedInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceUpdateManyWithoutCargoNestedInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionUpdateManyWithoutCargoNestedInput
   claimSettlements?: Prisma.CargoClaimSettlementUpdateManyWithoutCargoNestedInput
@@ -3634,6 +3886,7 @@ export type CargoUpdateWithoutOperationalHandoffsInput = {
 export type CargoUncheckedUpdateWithoutOperationalHandoffsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3754,6 +4007,7 @@ export type CargoCreateWithoutComplianceEvidencesInput = {
   deletedAt?: Date | string | null
   deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoRecordsInput
+  team?: Prisma.TeamCreateNestedOneWithoutCargosInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffCreateNestedManyWithoutCargoInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionCreateNestedManyWithoutCargoInput
   claimSettlements?: Prisma.CargoClaimSettlementCreateNestedManyWithoutCargoInput
@@ -3766,6 +4020,7 @@ export type CargoCreateWithoutComplianceEvidencesInput = {
 export type CargoUncheckedCreateWithoutComplianceEvidencesInput = {
   id?: string
   organizationId: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -3902,6 +4157,7 @@ export type CargoUpdateWithoutComplianceEvidencesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoRecordsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutCargosNestedInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffUpdateManyWithoutCargoNestedInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionUpdateManyWithoutCargoNestedInput
   claimSettlements?: Prisma.CargoClaimSettlementUpdateManyWithoutCargoNestedInput
@@ -3914,6 +4170,7 @@ export type CargoUpdateWithoutComplianceEvidencesInput = {
 export type CargoUncheckedUpdateWithoutComplianceEvidencesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4034,6 +4291,7 @@ export type CargoCreateWithoutTrackingShipmentsInput = {
   deletedAt?: Date | string | null
   deletedBy?: string | null
   organization: Prisma.OrganizationCreateNestedOneWithoutCargoRecordsInput
+  team?: Prisma.TeamCreateNestedOneWithoutCargosInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceCreateNestedManyWithoutCargoInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffCreateNestedManyWithoutCargoInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionCreateNestedManyWithoutCargoInput
@@ -4046,6 +4304,7 @@ export type CargoCreateWithoutTrackingShipmentsInput = {
 export type CargoUncheckedCreateWithoutTrackingShipmentsInput = {
   id?: string
   organizationId: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -4182,6 +4441,7 @@ export type CargoUpdateWithoutTrackingShipmentsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoRecordsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutCargosNestedInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceUpdateManyWithoutCargoNestedInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffUpdateManyWithoutCargoNestedInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionUpdateManyWithoutCargoNestedInput
@@ -4194,6 +4454,7 @@ export type CargoUpdateWithoutTrackingShipmentsInput = {
 export type CargoUncheckedUpdateWithoutTrackingShipmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4259,6 +4520,7 @@ export type CargoUncheckedUpdateWithoutTrackingShipmentsInput = {
 
 export type CargoCreateManyOrganizationInput = {
   id?: string
+  teamId?: string | null
   cargoReference: string
   externalReference?: string | null
   cargoDescription: string
@@ -4371,6 +4633,7 @@ export type CargoUpdateWithoutOrganizationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team?: Prisma.TeamUpdateOneWithoutCargosNestedInput
   complianceEvidences?: Prisma.CargoComplianceEvidenceUpdateManyWithoutCargoNestedInput
   operationalHandoffs?: Prisma.CargoOperationalHandoffUpdateManyWithoutCargoNestedInput
   deliveryExceptions?: Prisma.CargoDeliveryExceptionUpdateManyWithoutCargoNestedInput
@@ -4383,6 +4646,7 @@ export type CargoUpdateWithoutOrganizationInput = {
 
 export type CargoUncheckedUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4449,6 +4713,259 @@ export type CargoUncheckedUpdateWithoutOrganizationInput = {
 
 export type CargoUncheckedUpdateManyWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  cargoType?: Prisma.EnumCargoTypeFieldUpdateOperationsInput | $Enums.CargoType
+  status?: Prisma.EnumCargoStatusFieldUpdateOperationsInput | $Enums.CargoStatus
+  customsStatus?: Prisma.EnumCargoCustomsStatusFieldUpdateOperationsInput | $Enums.CargoCustomsStatus
+  customsReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conditionStatus?: Prisma.EnumCargoConditionStatusFieldUpdateOperationsInput | $Enums.CargoConditionStatus
+  grossWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  packageCount?: Prisma.IntFieldUpdateOperationsInput | number
+  volumeM3?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hazardous?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hazardClass?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  shipperName?: Prisma.StringFieldUpdateOperationsInput | string
+  consigneeName?: Prisma.StringFieldUpdateOperationsInput | string
+  originName?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationName?: Prisma.StringFieldUpdateOperationsInput | string
+  custodyOwnerName?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  expectedReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSystem?: Prisma.StringFieldUpdateOperationsInput | string
+  registrationIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transportPlanIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transportPlanningReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transportOwnerTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureLocationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureOperatorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  carrierReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalLocationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalOperatorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receivedByName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingShipmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  transportPlannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  arrivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type CargoCreateManyTeamInput = {
+  id?: string
+  organizationId: string
+  cargoReference: string
+  externalReference?: string | null
+  cargoDescription: string
+  cargoType: $Enums.CargoType
+  status?: $Enums.CargoStatus
+  customsStatus?: $Enums.CargoCustomsStatus
+  customsReference?: string | null
+  conditionStatus?: $Enums.CargoConditionStatus
+  grossWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
+  packageCount: number
+  volumeM3?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hazardous?: boolean
+  unNumber?: string | null
+  hazardClass?: string | null
+  requiresInspection?: boolean
+  shipperName: string
+  consigneeName: string
+  originName: string
+  destinationName: string
+  custodyOwnerName: string
+  priority?: number
+  expectedReadyAt?: Date | string | null
+  sourceSystem?: string
+  registrationIdempotencyKey?: string | null
+  releaseIdempotencyKey?: string | null
+  releaseReference?: string | null
+  releaseReason?: string | null
+  transportPlanIdempotencyKey?: string | null
+  departureIdempotencyKey?: string | null
+  arrivalIdempotencyKey?: string | null
+  deliveryIdempotencyKey?: string | null
+  transportPlanningReference?: string | null
+  transportOwnerTeam?: string | null
+  departureReference?: string | null
+  departureLocationName?: string | null
+  departureOperatorName?: string | null
+  carrierReference?: string | null
+  arrivalReference?: string | null
+  arrivalLocationName?: string | null
+  arrivalOperatorName?: string | null
+  deliveryReference?: string | null
+  receivedByName?: string | null
+  deliveryNotes?: string | null
+  trackingShipmentId?: string | null
+  registeredAt?: Date | string
+  releasedAt?: Date | string | null
+  transportPlannedAt?: Date | string | null
+  departedAt?: Date | string | null
+  arrivedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
+}
+
+export type CargoUpdateWithoutTeamInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  cargoType?: Prisma.EnumCargoTypeFieldUpdateOperationsInput | $Enums.CargoType
+  status?: Prisma.EnumCargoStatusFieldUpdateOperationsInput | $Enums.CargoStatus
+  customsStatus?: Prisma.EnumCargoCustomsStatusFieldUpdateOperationsInput | $Enums.CargoCustomsStatus
+  customsReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conditionStatus?: Prisma.EnumCargoConditionStatusFieldUpdateOperationsInput | $Enums.CargoConditionStatus
+  grossWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  packageCount?: Prisma.IntFieldUpdateOperationsInput | number
+  volumeM3?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hazardous?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hazardClass?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  shipperName?: Prisma.StringFieldUpdateOperationsInput | string
+  consigneeName?: Prisma.StringFieldUpdateOperationsInput | string
+  originName?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationName?: Prisma.StringFieldUpdateOperationsInput | string
+  custodyOwnerName?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  expectedReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSystem?: Prisma.StringFieldUpdateOperationsInput | string
+  registrationIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transportPlanIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transportPlanningReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transportOwnerTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureLocationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureOperatorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  carrierReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalLocationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalOperatorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receivedByName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingShipmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  transportPlannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  arrivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutCargoRecordsNestedInput
+  complianceEvidences?: Prisma.CargoComplianceEvidenceUpdateManyWithoutCargoNestedInput
+  operationalHandoffs?: Prisma.CargoOperationalHandoffUpdateManyWithoutCargoNestedInput
+  deliveryExceptions?: Prisma.CargoDeliveryExceptionUpdateManyWithoutCargoNestedInput
+  claimSettlements?: Prisma.CargoClaimSettlementUpdateManyWithoutCargoNestedInput
+  capacityReservations?: Prisma.CapacitySlotReservationUpdateManyWithoutCargoNestedInput
+  transportOrders?: Prisma.TransportOrderUpdateManyWithoutCargoNestedInput
+  tariffQuotes?: Prisma.TariffQuoteUpdateManyWithoutCargoNestedInput
+  trackingShipments?: Prisma.TrackingShipmentUpdateManyWithoutCargoNestedInput
+}
+
+export type CargoUncheckedUpdateWithoutTeamInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  cargoType?: Prisma.EnumCargoTypeFieldUpdateOperationsInput | $Enums.CargoType
+  status?: Prisma.EnumCargoStatusFieldUpdateOperationsInput | $Enums.CargoStatus
+  customsStatus?: Prisma.EnumCargoCustomsStatusFieldUpdateOperationsInput | $Enums.CargoCustomsStatus
+  customsReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conditionStatus?: Prisma.EnumCargoConditionStatusFieldUpdateOperationsInput | $Enums.CargoConditionStatus
+  grossWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  packageCount?: Prisma.IntFieldUpdateOperationsInput | number
+  volumeM3?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hazardous?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hazardClass?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  shipperName?: Prisma.StringFieldUpdateOperationsInput | string
+  consigneeName?: Prisma.StringFieldUpdateOperationsInput | string
+  originName?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationName?: Prisma.StringFieldUpdateOperationsInput | string
+  custodyOwnerName?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  expectedReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSystem?: Prisma.StringFieldUpdateOperationsInput | string
+  registrationIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transportPlanIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transportPlanningReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transportOwnerTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureLocationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departureOperatorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  carrierReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalLocationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  arrivalOperatorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receivedByName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingShipmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  transportPlannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  arrivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complianceEvidences?: Prisma.CargoComplianceEvidenceUncheckedUpdateManyWithoutCargoNestedInput
+  operationalHandoffs?: Prisma.CargoOperationalHandoffUncheckedUpdateManyWithoutCargoNestedInput
+  deliveryExceptions?: Prisma.CargoDeliveryExceptionUncheckedUpdateManyWithoutCargoNestedInput
+  claimSettlements?: Prisma.CargoClaimSettlementUncheckedUpdateManyWithoutCargoNestedInput
+  capacityReservations?: Prisma.CapacitySlotReservationUncheckedUpdateManyWithoutCargoNestedInput
+  transportOrders?: Prisma.TransportOrderUncheckedUpdateManyWithoutCargoNestedInput
+  tariffQuotes?: Prisma.TariffQuoteUncheckedUpdateManyWithoutCargoNestedInput
+  trackingShipments?: Prisma.TrackingShipmentUncheckedUpdateManyWithoutCargoNestedInput
+}
+
+export type CargoUncheckedUpdateManyWithoutTeamInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   cargoReference?: Prisma.StringFieldUpdateOperationsInput | string
   externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cargoDescription?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4602,6 +5119,7 @@ export type CargoCountOutputTypeCountTrackingShipmentsArgs<ExtArgs extends runti
 export type CargoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   organizationId?: boolean
+  teamId?: boolean
   cargoReference?: boolean
   externalReference?: boolean
   cargoDescription?: boolean
@@ -4657,6 +5175,7 @@ export type CargoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   deletedAt?: boolean
   deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  team?: boolean | Prisma.Cargo$teamArgs<ExtArgs>
   complianceEvidences?: boolean | Prisma.Cargo$complianceEvidencesArgs<ExtArgs>
   operationalHandoffs?: boolean | Prisma.Cargo$operationalHandoffsArgs<ExtArgs>
   deliveryExceptions?: boolean | Prisma.Cargo$deliveryExceptionsArgs<ExtArgs>
@@ -4671,6 +5190,7 @@ export type CargoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type CargoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   organizationId?: boolean
+  teamId?: boolean
   cargoReference?: boolean
   externalReference?: boolean
   cargoDescription?: boolean
@@ -4726,11 +5246,13 @@ export type CargoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   deletedAt?: boolean
   deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  team?: boolean | Prisma.Cargo$teamArgs<ExtArgs>
 }, ExtArgs["result"]["cargo"]>
 
 export type CargoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   organizationId?: boolean
+  teamId?: boolean
   cargoReference?: boolean
   externalReference?: boolean
   cargoDescription?: boolean
@@ -4786,11 +5308,13 @@ export type CargoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   deletedAt?: boolean
   deletedBy?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  team?: boolean | Prisma.Cargo$teamArgs<ExtArgs>
 }, ExtArgs["result"]["cargo"]>
 
 export type CargoSelectScalar = {
   id?: boolean
   organizationId?: boolean
+  teamId?: boolean
   cargoReference?: boolean
   externalReference?: boolean
   cargoDescription?: boolean
@@ -4847,9 +5371,10 @@ export type CargoSelectScalar = {
   deletedBy?: boolean
 }
 
-export type CargoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "cargoReference" | "externalReference" | "cargoDescription" | "cargoType" | "status" | "customsStatus" | "customsReference" | "conditionStatus" | "grossWeightKg" | "packageCount" | "volumeM3" | "hazardous" | "unNumber" | "hazardClass" | "requiresInspection" | "shipperName" | "consigneeName" | "originName" | "destinationName" | "custodyOwnerName" | "priority" | "expectedReadyAt" | "sourceSystem" | "registrationIdempotencyKey" | "releaseIdempotencyKey" | "releaseReference" | "releaseReason" | "transportPlanIdempotencyKey" | "departureIdempotencyKey" | "arrivalIdempotencyKey" | "deliveryIdempotencyKey" | "transportPlanningReference" | "transportOwnerTeam" | "departureReference" | "departureLocationName" | "departureOperatorName" | "carrierReference" | "arrivalReference" | "arrivalLocationName" | "arrivalOperatorName" | "deliveryReference" | "receivedByName" | "deliveryNotes" | "trackingShipmentId" | "registeredAt" | "releasedAt" | "transportPlannedAt" | "departedAt" | "arrivedAt" | "deliveredAt" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["cargo"]>
+export type CargoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "teamId" | "cargoReference" | "externalReference" | "cargoDescription" | "cargoType" | "status" | "customsStatus" | "customsReference" | "conditionStatus" | "grossWeightKg" | "packageCount" | "volumeM3" | "hazardous" | "unNumber" | "hazardClass" | "requiresInspection" | "shipperName" | "consigneeName" | "originName" | "destinationName" | "custodyOwnerName" | "priority" | "expectedReadyAt" | "sourceSystem" | "registrationIdempotencyKey" | "releaseIdempotencyKey" | "releaseReference" | "releaseReason" | "transportPlanIdempotencyKey" | "departureIdempotencyKey" | "arrivalIdempotencyKey" | "deliveryIdempotencyKey" | "transportPlanningReference" | "transportOwnerTeam" | "departureReference" | "departureLocationName" | "departureOperatorName" | "carrierReference" | "arrivalReference" | "arrivalLocationName" | "arrivalOperatorName" | "deliveryReference" | "receivedByName" | "deliveryNotes" | "trackingShipmentId" | "registeredAt" | "releasedAt" | "transportPlannedAt" | "departedAt" | "arrivedAt" | "deliveredAt" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["cargo"]>
 export type CargoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  team?: boolean | Prisma.Cargo$teamArgs<ExtArgs>
   complianceEvidences?: boolean | Prisma.Cargo$complianceEvidencesArgs<ExtArgs>
   operationalHandoffs?: boolean | Prisma.Cargo$operationalHandoffsArgs<ExtArgs>
   deliveryExceptions?: boolean | Prisma.Cargo$deliveryExceptionsArgs<ExtArgs>
@@ -4862,15 +5387,18 @@ export type CargoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 }
 export type CargoIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  team?: boolean | Prisma.Cargo$teamArgs<ExtArgs>
 }
 export type CargoIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  team?: boolean | Prisma.Cargo$teamArgs<ExtArgs>
 }
 
 export type $CargoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Cargo"
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
+    team: Prisma.$TeamPayload<ExtArgs> | null
     complianceEvidences: Prisma.$CargoComplianceEvidencePayload<ExtArgs>[]
     operationalHandoffs: Prisma.$CargoOperationalHandoffPayload<ExtArgs>[]
     deliveryExceptions: Prisma.$CargoDeliveryExceptionPayload<ExtArgs>[]
@@ -4883,6 +5411,7 @@ export type $CargoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     organizationId: string
+    teamId: string | null
     cargoReference: string
     externalReference: string | null
     cargoDescription: string
@@ -5332,6 +5861,7 @@ readonly fields: CargoFieldRefs;
 export interface Prisma__CargoClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  team<T extends Prisma.Cargo$teamArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cargo$teamArgs<ExtArgs>>): Prisma.Prisma__TeamClient<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   complianceEvidences<T extends Prisma.Cargo$complianceEvidencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cargo$complianceEvidencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CargoComplianceEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   operationalHandoffs<T extends Prisma.Cargo$operationalHandoffsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cargo$operationalHandoffsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CargoOperationalHandoffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   deliveryExceptions<T extends Prisma.Cargo$deliveryExceptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cargo$deliveryExceptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CargoDeliveryExceptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5371,6 +5901,7 @@ export interface Prisma__CargoClient<T, Null = never, ExtArgs extends runtime.Ty
 export interface CargoFieldRefs {
   readonly id: Prisma.FieldRef<"Cargo", 'String'>
   readonly organizationId: Prisma.FieldRef<"Cargo", 'String'>
+  readonly teamId: Prisma.FieldRef<"Cargo", 'String'>
   readonly cargoReference: Prisma.FieldRef<"Cargo", 'String'>
   readonly externalReference: Prisma.FieldRef<"Cargo", 'String'>
   readonly cargoDescription: Prisma.FieldRef<"Cargo", 'String'>
@@ -5823,6 +6354,25 @@ export type CargoDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Cargos to delete.
    */
   limit?: number
+}
+
+/**
+ * Cargo.team
+ */
+export type Cargo$teamArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Team
+   */
+  select?: Prisma.TeamSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Team
+   */
+  omit?: Prisma.TeamOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TeamInclude<ExtArgs> | null
+  where?: Prisma.TeamWhereInput
 }
 
 /**

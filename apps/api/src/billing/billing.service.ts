@@ -165,6 +165,51 @@ export class BillingService {
     };
   }
 
+  async getSubscriptionDetail(organizationId: string) {
+    const [subscription, usage] = await Promise.all([
+      this.getSubscription(organizationId).catch(() => null),
+      this.getUsage(organizationId),
+    ]);
+
+    if (!subscription) throw new NotFoundException("assinatura.nao_encontrada");
+
+    return {
+      subscription: {
+        ...subscription,
+        usage: usage.metrics,
+      },
+    };
+  }
+
+  async getUsageDetail(organizationId: string) {
+    return this.getUsage(organizationId);
+  }
+
+  async getInvoicesList(organizationId: string, limit: number, offset: number) {
+    const invoices = await this.billingRepo.findInvoices(organizationId, limit, offset);
+    const totalCount = await this.billingRepo.countInvoices(organizationId);
+
+    return {
+      invoices: invoices.map((inv) => ({
+        id: inv.id,
+        stripeInvoiceId: inv.stripeInvoiceId,
+        amount: inv.amount,
+        currency: inv.currency,
+        status: inv.status as "paid" | "open" | "void" | "uncollectible",
+        periodStart: inv.periodStart?.toISOString() ?? null,
+        periodEnd: inv.periodEnd?.toISOString() ?? null,
+        paidAt: inv.paidAt?.toISOString() ?? null,
+        downloadUrl: inv.downloadUrl,
+        createdAt: inv.createdAt.toISOString(),
+      })),
+      pagination: {
+        totalCount,
+        limit,
+        offset,
+      },
+    };
+  }
+
   async getOverview(organizationId: string) {
     const [subscription, usage] = await Promise.all([
       this.getSubscription(organizationId).catch(() => null),

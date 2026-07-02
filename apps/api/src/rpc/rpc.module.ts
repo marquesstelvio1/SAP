@@ -18,6 +18,7 @@ import { PrivacyModule } from "../privacy/privacy.module.js";
 import { ReportsModule } from "../reports/reports.module.js";
 import { SettingsModule } from "../settings/settings.module.js";
 import { TariffModule } from "../tariff/tariff.module.js";
+import { SsoModule } from "../sso/sso.module.js";
 import { TeamsModule } from "../teams/teams.module.js";
 import { TrackingModule } from "../tracking/tracking.module.js";
 import { WebhooksModule } from "../webhooks/webhooks.module.js";
@@ -45,6 +46,7 @@ import { RpcHttpMiddleware } from "./rpc-http.middleware.js";
     ReportsModule,
     SettingsModule,
     TariffModule,
+    SsoModule,
     TeamsModule,
     WebhooksModule,
     PrivacyModule,

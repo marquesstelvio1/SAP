@@ -23,6 +23,7 @@ import { ReportsModule } from "./reports/reports.module.js";
 import { RpcModule } from "./rpc/rpc.module.js";
 import { SecurityModule } from "./security/security.module.js";
 import { SettingsModule } from "./settings/settings.module.js";
+import { SsoModule } from "./sso/sso.module.js";
 import { TariffModule } from "./tariff/tariff.module.js";
 import { TeamsModule } from "./teams/teams.module.js";
 import { TrackingModule } from "./tracking/tracking.module.js";
@@ -52,6 +53,7 @@ import { WebhooksModule } from "./webhooks/webhooks.module.js";
     ReportsModule,
     SecurityModule,
     SettingsModule,
+    SsoModule,
     TariffModule,
     TeamsModule,
     WebhooksModule,

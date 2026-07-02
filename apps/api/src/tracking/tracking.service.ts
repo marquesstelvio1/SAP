@@ -74,6 +74,7 @@ export type GetTrackingOverviewInput = {
   organizationId: string;
   limit?: number;
   offset?: number;
+  teamId?: string;
   generatedAt?: Date;
 };
 
@@ -167,7 +168,7 @@ export class TrackingService {
     const offset = input.offset ?? 0;
     const [statusGroups, recentShipments, totalCount] = await Promise.all([
       this.trackingRepo.countShipmentsByStatus(input.organizationId),
-      this.trackingRepo.findRecentShipments(input.organizationId, limit, offset),
+      this.trackingRepo.findRecentShipments(input.organizationId, limit, offset, input.teamId),
       this.trackingRepo.countShipments(input.organizationId),
     ]);
 
