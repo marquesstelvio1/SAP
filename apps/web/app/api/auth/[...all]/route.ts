@@ -3,6 +3,8 @@ import { toNextJsHandler } from "better-auth/next-js";
 
 import { extractClientIp, rateLimiter } from "@/lib/rate-limiter";
 
+const AUTH_LOG_PREFIX = "[SAPTM:AUTH:ROUTE]";
+
 export const runtime = "nodejs";
 
 /**
@@ -44,15 +46,18 @@ const AUTH_RATE_LIMITS: Record<string, { windowMs: number; max: number; message:
 
 const authHandler = async (request: Request): Promise<Response> => {
   const url = new URL(request.url);
+  const method = request.method;
+  const authPath = url.pathname.replace(/^\/api\/auth\//, "");
+  const ip = extractClientIp(request);
+
+  console.log(`${AUTH_LOG_PREFIX} ┌─ REQUEST`, { method, path: authPath, ip });
 
   // Map the Better Auth path to a rate‑limit key.
   // Better Auth paths are relative to the base path `/api/auth`.
   // For example: `/api/auth/sign-in/email` → `sign-in/email`
-  const authPath = url.pathname.replace(/^\/api\/auth\//, "");
   const limitConfig = AUTH_RATE_LIMITS[authPath];
 
   if (limitConfig !== undefined) {
-    const ip = extractClientIp(request);
     const result = rateLimiter.check(authPath, ip, {
       windowMs: limitConfig.windowMs,
       max: limitConfig.max,
@@ -60,6 +65,7 @@ const authHandler = async (request: Request): Promise<Response> => {
 
     if (!result.allowed) {
       const retryAfter = Math.ceil((result.resetEpochMs - Date.now()) / 1000);
+      console.log(`${AUTH_LOG_PREFIX} └─ RATE_LIMITED`, { path: authPath, ip, retryAfter });
       return new Response(limitConfig.message, {
         status: 429,
         headers: {
@@ -74,13 +80,34 @@ const authHandler = async (request: Request): Promise<Response> => {
   }
 
   try {
+    console.log(`${AUTH_LOG_PREFIX} │ creating auth handler...`, { envVars: { hasDbUrl: !!process.env.DATABASE_URL, hasAuthUrl: !!process.env.BETTER_AUTH_URL, hasSecret: !!process.env.BETTER_AUTH_SECRET } });
     const auth = createSaptmAuthFromEnv();
     const handlers = toNextJsHandler(auth);
-    if (request.method === "GET" && handlers.GET) return await handlers.GET(request);
-    if (request.method === "POST" && handlers.POST) return await handlers.POST(request);
-    return new Response("Method not allowed", { status: 405 });
-  } catch (error: any) {
-    return new Response(JSON.stringify({ error: error?.message || "Unknown error", stack: error?.stack }), {
+    console.log(`${AUTH_LOG_PREFIX} │ handler ready, calling ${method}...`, { path: authPath });
+
+    let response: Response;
+    if (method === "GET" && handlers.GET) {
+      response = await handlers.GET(request);
+    } else if (method === "POST" && handlers.POST) {
+      response = await handlers.POST(request);
+    } else {
+      console.log(`${AUTH_LOG_PREFIX} └─ METHOD_NOT_ALLOWED`, { method });
+      return new Response("Method not allowed", { status: 405 });
+    }
+
+    const setCookie = response.headers.get("set-cookie") ?? "";
+    console.log(`${AUTH_LOG_PREFIX} └─ RESPONSE`, {
+      status: response.status,
+      ok: response.ok,
+      hasSetCookie: !!setCookie,
+      setCookiePreview: setCookie.slice(0, 100),
+    });
+    return response;
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    const stack = error instanceof Error ? error.stack : undefined;
+    console.error(`${AUTH_LOG_PREFIX} └─ ERROR`, { message, stack });
+    return new Response(JSON.stringify({ error: message, stack }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
