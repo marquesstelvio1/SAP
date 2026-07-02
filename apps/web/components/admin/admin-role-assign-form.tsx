@@ -68,13 +68,12 @@ export function AdminRoleAssignForm({
           <Badge variant={canAssignRole ? "success" : "warning"}>
             {canAssignRole ? "Atribuicao autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">Atribuição de roles</Badge>
+          <Badge variant="outline">Atribuição de perfis</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Atribuir role</CardTitle>
+          <CardTitle>Atribuir perfil</CardTitle>
           <CardDescription className="leading-6">
-            Liga um membro ativo ou convidado a uma role da organização. O sistema impede escopo
-            fora da organização com registo de auditoria.
+            Liga um membro activo ou convidado a um perfil da organização com registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -98,25 +97,21 @@ export function AdminRoleAssignForm({
               </SelectNative>
             </Field>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="adminAssignRoleId">Role</FieldLabel>
+              <FieldLabel htmlFor="adminAssignRoleId">Perfil</FieldLabel>
               <SelectNative disabled={isDisabled} id="adminAssignRoleId" name="roleId" required>
                 {roles.map((role) => (
                   <option key={role.id} value={role.id}>
-                    {role.name} ({role.key})
+                    {role.name}
                   </option>
                 ))}
               </SelectNative>
               <FieldDescription>
-                Roles sao carregadas do contrato administrativo da organizacao.
+                Perfis disponíveis para esta organização.
               </FieldDescription>
             </Field>
             <Field>
               <FieldDescription>
-                {state.status === "success" && state.roleKey !== undefined
-                  ? `${state.message} Role: ${state.roleKey} · Membership: ${
-                      state.membershipId ?? "sem-id"
-                    } · Replay: ${state.replayed ? "sim" : "nao"}`
-                  : state.message}
+                {state.message}
               </FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
@@ -124,10 +119,10 @@ export function AdminRoleAssignForm({
         </CardContent>
         <CardFooter>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A atribuir..." : "Atribuir role"}
+            {isPending ? "A atribuir..." : "Atribuir perfil"}
           </Button>
           <span className="text-muted-foreground text-xs">
-            {canAssignRole ? "Atribuicao registada." : "Requer atribuicao de permissoes."}
+            {canAssignRole ? "Atribuicao registada." : "Sem autorizacao."}
           </span>
         </CardFooter>
       </form>

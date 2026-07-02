@@ -98,7 +98,7 @@ export function CargoRegisterForm({
           <Badge variant={canRegisterCargo ? "success" : "warning"}>
             {canRegisterCargo ? "Registo autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.register</Badge>
+          <Badge variant="outline">Registo de carga</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar carga</CardTitle>

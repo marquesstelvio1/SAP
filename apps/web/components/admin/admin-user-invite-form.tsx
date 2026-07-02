@@ -60,13 +60,13 @@ export function AdminUserInviteForm({
           <Badge variant={canInviteUser ? "success" : "warning"}>
             {canInviteUser ? "Convite autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">identity.user.invite</Badge>
+          <Badge variant="outline">Convite de utilizador</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Convidar utilizador</CardTitle>
           <CardDescription className="leading-6">
-            Cria ou reativa membership no tenant, associa uma role inicial opcional, grava audit e
-            notificacao para o fluxo de convite.
+            Cria ou reativa o membro da organização, associa um perfil inicial opcional e envia a
+            notificação de convite.
           </CardDescription>
         </div>
       </CardHeader>
@@ -96,26 +96,22 @@ export function AdminUserInviteForm({
               />
             </Field>
             <Field data-disabled={!canInviteUser}>
-              <FieldLabel htmlFor="adminInviteRoleKey">Role inicial</FieldLabel>
+              <FieldLabel htmlFor="adminInviteRoleKey">Perfil inicial</FieldLabel>
               <SelectNative disabled={isDisabled} id="adminInviteRoleKey" name="roleKey">
-                <option value="">Sem role inicial</option>
+                <option value="">Sem perfil inicial</option>
                 {roles.map((role) => (
                   <option key={role.key} value={role.key}>
-                    {role.name} ({role.key})
+                    {role.name}
                   </option>
                 ))}
               </SelectNative>
               <FieldDescription>
-                Use uma role existente da organização; novas roles são geridas pelo administrador.
+                Use um perfil existente da organização; novos perfis são geridos pelo administrador.
               </FieldDescription>
             </Field>
             <Field>
               <FieldDescription>
-                {state.status === "success" && state.email !== undefined
-                  ? `${state.message} Email: ${state.email} · Membership: ${
-                      state.membershipId ?? "sem-id"
-                    } · Replay: ${state.replayed ? "sim" : "nao"}`
-                  : state.message}
+                {state.message}
               </FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>

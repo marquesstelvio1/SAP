@@ -132,11 +132,7 @@ export function IntegrationEventRecordForm({
             </Field>
             <Field>
               <FieldDescription>
-                {state.status === "success" && state.eventId !== undefined
-                  ? `${state.message} Evento: ${state.eventId} · Idempotencia: ${
-                      state.idempotencyKey ?? "sem-chave"
-                    } · Replay: ${state.replayed ? "sim" : "nao"}`
-                  : state.message}
+                {state.message}
               </FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>

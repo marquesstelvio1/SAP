@@ -41,7 +41,8 @@
     "dotenv": "catalog:",
     "@saptm/config": "workspace:*",
     "@saptm/email": "workspace:*",
-    "@saptm/observability": "workspace:*"
+    "@saptm/observability": "workspace:*",
+    "pg": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

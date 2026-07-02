@@ -144,6 +144,9 @@ catalogs:
     next-themes:
       specifier: ^0.4.0
       version: 0.4.6
+    pg:
+      specifier: ^8.11.0
+      version: 8.22.0
     posthog-js:
       specifier: ^1.200.0
       version: 1.392.0
@@ -542,6 +545,9 @@ importers:
       dotenv:
         specifier: 'catalog:'
         version: 16.6.1
+      pg:
+        specifier: 'catalog:'
+        version: 8.22.0
     devDependencies:
       '@saptm/tsconfig':
         specifier: workspace:*

@@ -84,20 +84,20 @@ export function AdminUserRoleManageForm({
           <Badge variant={canAssignRole ? "success" : "warning"}>
             {canAssignRole ? "Atribuicao autorizada" : "Indisponivel"}
           </Badge>
-          <Badge variant="outline">Roles de utilizador</Badge>
+          <Badge variant="outline">Perfis de utilizador</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Gerir roles do utilizador</CardTitle>
+          <CardTitle>Gerir perfis do utilizador</CardTitle>
           <CardDescription className="leading-6">
-            Atribua ou revogue roles de membros da organizacao.
+            Atribua ou revogue perfis de membros da organizacao.
           </CardDescription>
         </div>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="assign">
           <TabsList>
-            <TabsTrigger value="assign">Atribuir role</TabsTrigger>
-            <TabsTrigger value="revoke">Revogar role</TabsTrigger>
+            <TabsTrigger value="assign">Atribuir perfil</TabsTrigger>
+            <TabsTrigger value="revoke">Revogar perfil</TabsTrigger>
           </TabsList>
           <TabsContent value="assign">
             <AssignSection
@@ -165,23 +165,21 @@ function AssignSection({
           </SelectNative>
         </Field>
         <Field data-disabled={isDisabled}>
-          <FieldLabel htmlFor="adminAssignRoleId">Role</FieldLabel>
+          <FieldLabel htmlFor="adminAssignRoleId">Perfil</FieldLabel>
           <SelectNative disabled={isDisabled} id="adminAssignRoleId" name="roleId" required>
             {roles.map((role) => (
               <option key={role.id} value={role.id}>
-                {role.name} ({role.key})
+                {role.name}
               </option>
             ))}
           </SelectNative>
           <FieldDescription>
-            Roles sao carregadas do contrato administrativo da organizacao.
+            Perfis disponíveis para esta organização.
           </FieldDescription>
         </Field>
         <Field>
           <FieldDescription>
-            {state.status === "success" && state.roleKey !== undefined
-              ? `${state.message} Role: ${state.roleKey} · Membership: ${state.membershipId ?? "sem-id"} · Replay: ${state.replayed ? "sim" : "nao"}`
-              : state.message}
+            {state.message}
           </FieldDescription>
           {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
         </Field>

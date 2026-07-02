@@ -181,11 +181,7 @@ export function IntegrationPortTosMovementForm({
             </Field>
             <Field>
               <FieldDescription>
-                {state.status === "success" && state.trackingEventId !== undefined
-                  ? `${state.message} Tracking event: ${state.trackingEventId} Â· Integracao: ${
-                      state.integrationEventId ?? "sem-evento"
-                    } Â· Replay: ${state.replayed ? "sim" : "nao"}`
-                  : state.message}
+                {state.message}
               </FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>

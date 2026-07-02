@@ -54,13 +54,13 @@ export function CargoTransportArriveForm({
           <Badge variant={canArriveTransport ? "success" : "warning"}>
             {canArriveTransport ? "Chegada autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.transport.arrive</Badge>
+          <Badge variant="outline">Chegada de transporte</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Confirmar chegada operacional</CardTitle>
           <CardDescription className="leading-6">
-            Move o shipment para arrived somente quando a carga ja esta in_transport e o tracking
-            esta in_transit.
+            Confirma a chegada apenas quando a carga ja esta em transporte e o tracking esta em
+            curso.
           </CardDescription>
         </div>
       </CardHeader>

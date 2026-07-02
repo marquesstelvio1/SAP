@@ -33,7 +33,7 @@ export function AdminOverviewHeader({ totals, organization }: AdminOverviewHeade
           <div className="flex flex-col gap-2">
             <CardTitle className="text-3xl">Administração</CardTitle>
             <CardDescription className="max-w-3xl text-base leading-7">
-              Gestão de organização, utilizadores, roles e permissões.
+              Gestão de organização, utilizadores, perfis e permissões.
             </CardDescription>
           </div>
         </CardHeader>
@@ -41,7 +41,7 @@ export function AdminOverviewHeader({ totals, organization }: AdminOverviewHeade
           <MetricTile label="Utilizadores" value={totals.users.toString()} />
           <MetricTile label="Ativos" value={totals.activeMemberships.toString()} />
           <MetricTile label="Convites" value={totals.invitedMemberships.toString()} />
-          <MetricTile label="Roles" value={totals.roles.toString()} />
+          <MetricTile label="Perfis" value={totals.roles.toString()} />
           <MetricTile label="Permissões" value={totals.permissions.toString()} />
         </CardContent>
       </Card>

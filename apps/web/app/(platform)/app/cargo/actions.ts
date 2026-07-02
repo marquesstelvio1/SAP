@@ -121,7 +121,7 @@ export async function registerCargoAction(
   if (!platformSession.viewer.permissions.includes(registerCargoPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui cargo.register para registar cargas.",
+      message: "A sessao nao tem autorizacao para registar cargas.",
     };
   }
 
@@ -532,7 +532,7 @@ export async function arriveCargoTransportAction(
   if (!platformSession.viewer.permissions.includes(arriveCargoTransportPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui cargo.transport.arrive para confirmar chegada.",
+      message: "A sessao nao tem autorizacao para confirmar chegadas.",
     };
   }
 

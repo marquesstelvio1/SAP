@@ -256,11 +256,7 @@ export function IntegrationTelematicsGpsPositionForm({
             </Field>
             <Field>
               <FieldDescription>
-                {state.status === "success" && state.trackingEventId !== undefined
-                  ? `${state.message} Tracking event: ${state.trackingEventId} / Integracao: ${
-                      state.integrationEventId ?? "sem-evento"
-                    } / Replay: ${state.replayed ? "sim" : "nao"}`
-                  : state.message}
+                {state.message}
               </FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
