@@ -6,6 +6,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 config({ path: resolve(__dirname, "../../../.env") });
 
+process.env.PRISMA_HIDE_QUERY_LOGS = "true";
+
 import type { PrismaClient } from "../generated/prisma/client.js";
 import { getPrismaClient, seedRbacBootstrap } from "../src/index.js";
 

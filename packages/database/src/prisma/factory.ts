@@ -49,9 +49,11 @@ export function createPrismaClient(poolSize?: number) {
   // biome-ignore lint/suspicious/noExplicitAny: internal PG casting
   const adapter = new PrismaPg(pool as any, { disposeExternalPool: true });
 
+  const hideQueryLogs = env.PRISMA_HIDE_QUERY_LOGS === "true";
+
   const baseClient = new PrismaClientClass({
     adapter,
-    log: env.NODE_ENV === "production" ? ["error"] : ["query", "warn", "error"],
+    log: env.NODE_ENV === "production" ? ["error"] : hideQueryLogs ? ["warn", "error"] : ["query", "warn", "error"],
   }) as PrismaClient;
 
   // The type assertion is required because Prisma v7 $extends returns a
