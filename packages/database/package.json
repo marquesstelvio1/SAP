@@ -31,6 +31,9 @@
     "validate:migrations": "node ../../scripts/validate-migrations.mjs",
     "worker:outbox": "node scripts/process-outbox.mjs"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@nestjs/common": "catalog:",
     "@prisma/adapter-pg": "catalog:",
@@ -41,7 +44,6 @@
     "@saptm/observability": "workspace:*"
   },
   "devDependencies": {
-
     "prisma": "catalog:",
     "@saptm/tsconfig": "workspace:*",
     "@types/node": "catalog:",

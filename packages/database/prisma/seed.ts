@@ -1,6 +1,6 @@
-import { config } from "dotenv";
-import { resolve, dirname } from "node:path";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { config } from "dotenv";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -802,7 +802,7 @@ async function seedPlanningDemoData(
     planningCancelCargo,
   ] = cargoRecords;
 
-  await database.transportOrderScheduleRevision.deleteMany({
+  await database.transportOrderScheduleRevision.updateMany({
     where: {
       orderId: {
         in: [
@@ -812,8 +812,11 @@ async function seedPlanningDemoData(
         ],
       },
     },
+    data: {
+      deletedAt: new Date(),
+    },
   });
-  await database.transportOrderDispatch.deleteMany({
+  await database.transportOrderDispatch.updateMany({
     where: {
       orderId: {
         in: [
@@ -822,6 +825,9 @@ async function seedPlanningDemoData(
           "local_demo_transport_order_cancel_001",
         ],
       },
+    },
+    data: {
+      deletedAt: new Date(),
     },
   });
 

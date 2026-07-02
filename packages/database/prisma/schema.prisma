@@ -1268,7 +1268,7 @@ model WebhookDelivery {
 
 model TrackingEvent {
   id             String            @id @default(cuid())
-  organizationId String       @map("orgId")
+  organizationId String
   shipmentId     String           
   eventType      TrackingEventType
   occurredAt     DateTime         
