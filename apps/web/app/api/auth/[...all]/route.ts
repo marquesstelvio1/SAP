@@ -1,4 +1,3 @@
-import type { SaptmAuth } from "@saptm/auth/server";
 import { createSaptmAuthFromEnv } from "@saptm/auth/server";
 import { toNextJsHandler } from "better-auth/next-js";
 
@@ -26,15 +25,8 @@ const AUTH_RATE_LIMITS: Record<string, { windowMs: number; max: number; message:
   },
 };
 
-let cachedAuth: SaptmAuth | undefined;
-
-function getAuth(): SaptmAuth {
-  if (cachedAuth === undefined) {
-    cachedAuth = createSaptmAuthFromEnv();
-  }
-
-  return cachedAuth;
-}
+const auth = createSaptmAuthFromEnv();
+const baseHandlers = toNextJsHandler(auth);
 
 const authHandler = async (request: Request): Promise<Response> => {
   const url = new URL(request.url);
@@ -69,14 +61,11 @@ const authHandler = async (request: Request): Promise<Response> => {
   }
 
   try {
-    const auth = getAuth();
-    const handlers = toNextJsHandler(auth);
-
     let response: Response;
-    if (method === "GET" && handlers.GET) {
-      response = await handlers.GET(request);
-    } else if (method === "POST" && handlers.POST) {
-      response = await handlers.POST(request);
+    if (method === "GET" && baseHandlers.GET) {
+      response = await baseHandlers.GET(request);
+    } else if (method === "POST" && baseHandlers.POST) {
+      response = await baseHandlers.POST(request);
     } else {
       console.log(`${AUTH_LOG_PREFIX} └─ METHOD_NOT_ALLOWED`, { method });
       return new Response("Method not allowed", { status: 405 });

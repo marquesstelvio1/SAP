@@ -172,7 +172,7 @@ export function createSaptmAuthOptions({
     secret: env.BETTER_AUTH_SECRET,
     trustedOrigins: getTrustedOrigins(env),
     onAPIError: {
-      throw: true,
+      throw: false,
       onError: (error: unknown) => {
         const isPrismaError = error != null && typeof error === "object" && "code" in error;
         if (isPrismaError) {
