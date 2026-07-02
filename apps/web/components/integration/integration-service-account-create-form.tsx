@@ -106,11 +106,7 @@ export function IntegrationServiceAccountCreateForm({
             </Field>
             <Field>
               <FieldDescription>
-                {state.status === "success" && state.serviceAccountId !== undefined
-                  ? `${state.message} Prefixo: ${
-                      state.apiKeyPrefix ?? "sem-prefixo"
-                    } · Replay: ${state.replayed ? "sim" : "nao"}`
-                  : state.message}
+                {state.message}
               </FieldDescription>
               {state.plaintextApiKey ? (
                 <div className="rounded-lg border border-warning/40 bg-warning/10 p-3 font-mono text-xs">

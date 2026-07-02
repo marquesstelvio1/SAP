@@ -113,11 +113,7 @@ export function AdminMembershipStatusForm({
             </Field>
             <Field>
               <FieldDescription>
-                {state.status === "success" && state.membershipStatus !== undefined
-                  ? `${state.message} Status: ${state.membershipStatus} · Replay: ${
-                      state.replayed ? "sim" : "nao"
-                    }`
-                  : state.message}
+                {state.message}
               </FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>

@@ -111,11 +111,7 @@ export function AdminInvitationLifecycleForm({
             ) : null}
             <Field>
               <FieldDescription>
-                {state.status === "success" && state.membershipId !== undefined
-                  ? `${state.message} Membership: ${state.membershipId} · Replay: ${
-                      state.replayed ? "sim" : "nao"
-                    }`
-                  : state.message}
+                {state.message}
               </FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>

@@ -107,11 +107,7 @@ export function AdminRoleRevokeForm({
             </Field>
             <Field>
               <FieldDescription>
-                {state.status === "success" && state.roleKey !== undefined
-                  ? `${state.message} Role: ${state.roleKey} · Replay: ${
-                      state.replayed ? "sim" : "nao"
-                    }`
-                  : state.message}
+                {state.message}
               </FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
