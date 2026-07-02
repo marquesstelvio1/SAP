@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { execSync } from "node:child_process";
-import { existsSync } from "node:fs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const FULL = process.argv.includes("--full");
@@ -17,7 +16,6 @@ const steps = FULL
     { cmd: "pnpm --filter @saptm/api build", label: "nest build (api)" },
   ]
   : [
-    { cmd: "pnpm install --frozen-lockfile", label: "pnpm install" },
     { cmd: "pnpm biome check .", label: "biome check" },
     { cmd: "pnpm lint", label: "pnpm lint" },
     { cmd: "pnpm typecheck", label: "pnpm typecheck" },
