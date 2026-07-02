@@ -73,7 +73,14 @@ const authHandler = async (request: Request): Promise<Response> => {
     }
   }
 
-  return await createSaptmAuthFromEnv().handler(request);
+  try {
+    return await createSaptmAuthFromEnv().handler(request);
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error?.message || "Unknown error", stack: error?.stack }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 };
 
 export const { GET, POST } = toNextJsHandler(authHandler);
