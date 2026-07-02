@@ -2,7 +2,6 @@ import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
 
-import { AdminInvitationLifecycleForm } from "../../../../components/admin/admin-invitation-lifecycle-form";
 import { AdminMembershipStatusForm } from "../../../../components/admin/admin-membership-status-form";
 import { AdminOverviewHeader } from "../../../../components/admin/admin-overview-header";
 import { AdminRoleAssignForm } from "../../../../components/admin/admin-role-assign-form";
@@ -20,17 +19,16 @@ import { registerCapacityResourceAction } from "../capacity/actions";
 import { initialCapacityResourceRegisterFormState } from "../capacity/form-state";
 import {
   assignAdminRoleAction,
-  cancelAdminInvitationAction,
+  cancelInvitationAction,
   createAdminRoleAction,
   deleteAdminRoleAction,
   inviteAdminUserAction,
-  resendAdminInvitationAction,
+  resendInvitationAction,
   revokeAdminRoleAction,
   updateAdminMembershipStatusAction,
   updateAdminRolePermissionsAction,
 } from "./actions";
 import {
-  initialAdminInvitationLifecycleFormState,
   initialAdminMembershipStatusFormState,
   initialAdminRoleAssignFormState,
   initialAdminRoleCreateFormState,
@@ -169,28 +167,10 @@ export default async function AdminIdentityPage(props: {
           members={options.memberLifecycleOptions}
         />
       </section>
-      <section className="grid gap-4 xl:grid-cols-2">
-        <AdminInvitationLifecycleForm
-          action={resendAdminInvitationAction}
-          actionLabel="Reenviar convite"
-          canManageInvitations={canInviteUser}
-          description="Reenvia notificacao de convite para utilizadores pendentes."
-          initialState={initialAdminInvitationLifecycleFormState}
-          members={options.invitedMemberOptions}
-          title="Reenviar convite"
-        />
-        <AdminInvitationLifecycleForm
-          action={cancelAdminInvitationAction}
-          actionLabel="Cancelar convite"
-          canManageInvitations={canInviteUser}
-          description="Cancela convite pendente, remove roles e fecha acesso antes de ativacao."
-          initialState={initialAdminInvitationLifecycleFormState}
-          members={options.invitedMemberOptions}
-          requiresReason
-          title="Cancelar convite"
-        />
-      </section>
       <AdminUsersTable
+        canInviteUser={canInviteUser}
+        onCancelInvitation={cancelInvitationAction}
+        onResendInvitation={resendInvitationAction}
         users={overview.users}
         pagination={{
           totalCount: overview.pagination.totalCount,

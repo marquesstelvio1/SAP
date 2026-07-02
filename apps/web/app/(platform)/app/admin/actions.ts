@@ -24,6 +24,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
 import { requirePlatformSession } from "../../../../lib/auth-session";
+import { initialAdminInvitationLifecycleFormState } from "./form-state";
 import type {
   AdminInvitationLifecycleFormState,
   AdminMembershipStatusFormState,
@@ -759,4 +760,12 @@ function readOptionalFormString(formData: FormData, name: string): string | unde
   const value = readRequiredFormString(formData, name);
 
   return value.length === 0 ? undefined : value;
+}
+
+export async function resendInvitationAction(formData: FormData): Promise<void> {
+  await resendAdminInvitationAction(initialAdminInvitationLifecycleFormState, formData);
+}
+
+export async function cancelInvitationAction(formData: FormData): Promise<void> {
+  await cancelAdminInvitationAction(initialAdminInvitationLifecycleFormState, formData);
 }
