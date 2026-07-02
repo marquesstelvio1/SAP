@@ -5,16 +5,17 @@ import { BillingService } from "./billing.service.js";
 import { BILLING_REPOSITORY } from "./domain/billing.repository.js";
 import { UsageEventHandler } from "./events/usage-event-handler.js";
 import { PrismaBillingRepository } from "./infrastructure/prisma-billing.repository.js";
+import { PlansModule } from "./plans/plans.module.js";
 import { UsageService } from "./usage.service.js";
 
 @Module({
-  imports: [EventBusModule],
+  imports: [EventBusModule, PlansModule],
   providers: [
     BillingService,
     UsageService,
     UsageEventHandler,
     { provide: BILLING_REPOSITORY, useClass: PrismaBillingRepository },
   ],
-  exports: [BillingService, UsageService, BILLING_REPOSITORY],
+  exports: [BillingService, UsageService, BILLING_REPOSITORY, PlansModule],
 })
 export class BillingModule {}

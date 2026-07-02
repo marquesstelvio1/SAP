@@ -187,7 +187,15 @@ export function proxy(request: NextRequest) {
     );
   }
 
-  const sessionCookie = request.cookies.get("better-auth.session_token")?.value;
+  const SESSION_COOKIE_NAMES = [
+    "better-auth.session_token",
+    "__Secure-better-auth.session_token",
+  ] as const;
+
+  const sessionCookie = SESSION_COOKIE_NAMES.reduce<string | undefined>(
+    (found, name) => found ?? request.cookies.get(name)?.value,
+    undefined,
+  );
 
   if (sessionCookie !== undefined) {
     return respondWithSecurityHeaders(
@@ -200,9 +208,9 @@ export function proxy(request: NextRequest) {
     );
   }
 
-  const chunkedPrefix = "better-auth.session_token.chunk";
+  const CHUNKED_PREFIXES = ["better-auth.session_token.chunk", "__Secure-better-auth.session_token.chunk"] as const;
   const hasChunkedSession = Array.from(request.cookies.getAll()).some((c) =>
-    c.name.startsWith(chunkedPrefix),
+    CHUNKED_PREFIXES.some((p) => c.name.startsWith(p)),
   );
 
   if (hasChunkedSession) {

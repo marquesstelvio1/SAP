@@ -1293,6 +1293,29 @@ model TrackingEvent {
   @@index([correlationId])
 }
 
+model Plan {
+  id            String    @id @default(cuid())
+  slug          String    @unique       // "free", "pro", "enterprise"
+  name          String                  // "Free", "Pro", "Enterprise"
+  description   String?
+  price         Int       @default(0)   // Price in cents
+  currency      String    @default("eur")
+  interval      String    @default("month") // "month" | "year"
+  features      Json      @default("[]")    // Feature flag keys
+  limits        Json      @default("{}")    // Plan limits as JSON
+  isPublic      Boolean   @default(true)
+  sortOrder     Int       @default(0)
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+  deletedBy     String?
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
 model Subscription {
   id                   String       @id @default(cuid())
   organizationId       String       @unique
@@ -1300,6 +1323,8 @@ model Subscription {
   stripeCustomerId     String?
   stripeSubscriptionId String?
   plan                 String       @default("free")
+  planId               String?      @default("plan_free")
+  planRel              Plan?        @relation(fields: [planId], references: [id])
   status               String       @default("active")
   currentPeriodStart   DateTime?
   currentPeriodEnd     DateTime?

@@ -22,8 +22,8 @@
 
   --success: oklch(0.59 0.15 155);
   --success-foreground: oklch(0.98 0.005 155);
-  --warning: oklch(0.77 0.16 75);
-  --warning-foreground: oklch(0.21 0.04 75);
+  --warning: oklch(0.65 0.18 75);
+  --warning-foreground: oklch(0.98 0.005 75);
   --risk: oklch(0.62 0.18 40);
   --risk-foreground: oklch(0.98 0.005 40);
   --info: oklch(0.61 0.14 230);
@@ -143,8 +143,8 @@
 
   --success: oklch(0.62 0.18 150);
   --success-foreground: oklch(0.98 0.005 150);
-  --warning: oklch(0.8 0.15 70);
-  --warning-foreground: oklch(0.15 0.03 70);
+  --warning: oklch(0.72 0.15 70);
+  --warning-foreground: oklch(0.98 0.005 70);
   --risk: oklch(0.68 0.2 35);
   --risk-foreground: oklch(0.98 0.005 35);
   --info: oklch(0.65 0.16 225);
@@ -267,6 +267,22 @@
   --duration-fast: var(--motion-duration-fast);
   --duration-normal: var(--motion-duration-normal);
   --duration-slow: var(--motion-duration-slow);
+
+  /* Density tokens */
+  --density-row-height: var(--density-row-height);
+  --density-comfortable-control-height: var(--density-comfortable-control-height);
+  --density-comfortable-row-height: var(--density-comfortable-row-height);
+  --density-comfortable-panel-padding: var(--density-comfortable-panel-padding);
+  --density-compact-control-height: var(--density-compact-control-height);
+  --density-compact-row-height: var(--density-compact-row-height);
+  --density-compact-panel-padding: var(--density-compact-panel-padding);
+  --density-operational-control-height: var(--density-operational-control-height);
+  --density-operational-row-height: var(--density-operational-row-height);
+  --density-operational-panel-padding: var(--density-operational-panel-padding);
+
+  /* Additional radius for consistency */
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
 }
 
 * {
@@ -312,11 +328,27 @@ body {
     --border: oklch(0.5 0.05 255);
     --ring: oklch(0.3 0.1 248);
     --input: oklch(0.5 0.05 255);
+    --warning: oklch(0.55 0.2 75);
+    --warning-foreground: oklch(0.99 0 75);
+    --success: oklch(0.48 0.18 155);
+    --success-foreground: oklch(0.99 0 155);
+    --risk: oklch(0.5 0.22 40);
+    --risk-foreground: oklch(0.99 0 40);
+    --info: oklch(0.48 0.18 230);
+    --info-foreground: oklch(0.99 0 230);
   }
   .dark {
     --border: oklch(0.7 0.05 255);
     --ring: oklch(0.7 0.1 215);
     --input: oklch(0.7 0.05 255);
+    --warning: oklch(0.78 0.15 70);
+    --warning-foreground: oklch(0.05 0 70);
+    --success: oklch(0.78 0.15 150);
+    --success-foreground: oklch(0.05 0 150);
+    --risk: oklch(0.78 0.18 35);
+    --risk-foreground: oklch(0.05 0 35);
+    --info: oklch(0.78 0.15 225);
+    --info-foreground: oklch(0.05 0 225);
   }
 }
 
@@ -327,11 +359,27 @@ body {
   --border: oklch(0.5 0.05 255);
   --ring: oklch(0.3 0.1 248);
   --input: oklch(0.5 0.05 255);
+  --warning: oklch(0.55 0.2 75);
+  --warning-foreground: oklch(0.99 0 75);
+  --success: oklch(0.48 0.18 155);
+  --success-foreground: oklch(0.99 0 155);
+  --risk: oklch(0.5 0.22 40);
+  --risk-foreground: oklch(0.99 0 40);
+  --info: oklch(0.48 0.18 230);
+  --info-foreground: oklch(0.99 0 230);
 }
 .high-contrast.dark {
   --border: oklch(0.7 0.05 255);
   --ring: oklch(0.7 0.1 215);
   --input: oklch(0.7 0.05 255);
+  --warning: oklch(0.78 0.15 70);
+  --warning-foreground: oklch(0.05 0 70);
+  --success: oklch(0.78 0.15 150);
+  --success-foreground: oklch(0.05 0 150);
+  --risk: oklch(0.78 0.18 35);
+  --risk-foreground: oklch(0.05 0 35);
+  --info: oklch(0.78 0.15 225);
+  --info-foreground: oklch(0.05 0 225);
 }
 
 /* ------------------------------------------------------------------ */
