@@ -26,21 +26,7 @@ try {
   });
   const demoResult = await seedLocalDemoData(database);
 
-  console.log(
-    [
-      "SAPTM RBAC bootstrap seed completed.",
-      `permissions=${rbacResult.permissionsSeeded}`,
-      `roleTemplates=${rbacResult.roleTemplatesAvailable}`,
-      `organizationRoles=${rbacResult.organizationRolesSeeded}`,
-      `rolePermissionLinks=${rbacResult.rolePermissionLinksSeeded}`,
-      `demoOrganization=${demoResult.organizationSlug}`,
-      `demoCargo=${demoResult.cargoRecords}`,
-      `demoTrackingShipments=${demoResult.trackingShipments}`,
-      `demoCapacitySlots=${demoResult.capacitySlots}`,
-      `demoTransportOrders=${demoResult.transportOrders}`,
-      `demoTariffQuotes=${demoResult.tariffQuotes}`,
-    ].join(" "),
-  );
+  console.log("✅ Seed concluído com sucesso.");
 } finally {
   await database.$disconnect();
 }
