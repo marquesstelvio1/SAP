@@ -296,6 +296,7 @@ export class CapacityService {
         eventType: "capacity.resource.registered",
         aggregateType: "capacity",
         aggregateId: createdResource.id,
+        eventVersion: 1,
         payload: {
           resourceId: createdResource.id,
           resourceCode: createdResource.resourceCode,
@@ -400,6 +401,7 @@ export class CapacityService {
         eventType: "capacity.slot.opened",
         aggregateType: "capacity",
         aggregateId: createdSlot.id,
+        eventVersion: 1,
         payload: {
           slotId: createdSlot.id,
           resourceId: createdSlot.resourceId,
@@ -540,6 +542,7 @@ export class CapacityService {
         eventType: "capacity.slot.reserved",
         aggregateType: "capacity",
         aggregateId: createdReservation.id,
+        eventVersion: 1,
         payload: {
           reservationId: createdReservation.id,
           reservationReference: createdReservation.reservationReference,
@@ -670,6 +673,7 @@ export class CapacityService {
         eventType: "capacity.slot_reservation.cancelled",
         aggregateType: "capacity",
         aggregateId: updatedReservation.id,
+        eventVersion: 1,
         payload: {
           reservationId: updatedReservation.id,
           reservationReference: updatedReservation.reservationReference,
@@ -799,6 +803,7 @@ export class CapacityService {
         eventType: "capacity.advisory.decision.recorded",
         aggregateType: "capacity",
         aggregateId: createdDecision.id,
+        eventVersion: 1,
         payload: {
           decisionId: createdDecision.id,
           recommendationId: createdDecision.recommendationId,

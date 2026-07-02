@@ -101,7 +101,7 @@ All API communication goes through `@saptm/rpc` — no direct HTTP endpoints.
 ## Security
 
 - CSRF: double-submit cookie (csrf-csrf). Excluded paths: `/health`, `/api/auth`, `/billing/webhook`
-- CSP: nonce-based via `apps/web/src/proxy.ts` (Next.js 16 proxy convention); nonce is consumed in the root layout and passed to `ThemeProvider` and inline scripts/styles
+- CSP: nonce-based via `apps/web/proxy.ts` (Next.js 16 proxy convention); nonce is consumed in the root layout and passed to `ThemeProvider` and inline scripts/styles
 - CORS: restricted to trusted origins (configured via env)
 - Rate limiting: `@nestjs/throttler` with Redis storage — 3 tiers (api 200/min, org 1000/min, user 100/min)
 - OAuth tokens: encrypted via `encryptOAuthTokens: true` in Better Auth config

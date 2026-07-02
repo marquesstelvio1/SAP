@@ -16,8 +16,6 @@ import type {
   TrackingShipmentDetailOutput,
 } from "@saptm/rpc";
 // biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
-import { UsageService } from "../billing/usage.service.js";
-// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
 import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createTrackingEventAuditAfter,
@@ -162,7 +160,6 @@ export class TrackingService {
   constructor(
     @Inject(TRACKING_REPOSITORY) private readonly trackingRepo: TrackingRepository,
     private readonly eventBus: OutboxEventBusAdapter,
-    private readonly usageService: UsageService,
   ) {}
 
   async getOverview(input: GetTrackingOverviewInput): Promise<TrackingOverviewOutput> {
@@ -496,6 +493,7 @@ export class TrackingService {
         eventType: "tracking.exception.managed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: 1,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -633,6 +631,7 @@ export class TrackingService {
         eventType: "tracking.exception.resolved",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: 1,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -751,6 +750,7 @@ export class TrackingService {
         eventType: "tracking.event.recorded",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: 1,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -772,8 +772,6 @@ export class TrackingService {
         },
       } as never;
     });
-
-    await this.usageService.trackUsage(input.organizationId, "tracking_events", 1);
 
     return createRecordEventOutput({
       organizationId: input.organizationId,

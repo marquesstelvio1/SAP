@@ -18,6 +18,7 @@ export class OutboxEventBusAdapter implements EventBus {
         eventType: event.eventType,
         aggregateType: event.aggregateType,
         aggregateId: event.aggregateId,
+        eventVersion: event.eventVersion,
         payload: event.payload as never,
       },
     });
@@ -32,6 +33,7 @@ export class OutboxEventBusAdapter implements EventBus {
         eventType: event.eventType,
         aggregateType: event.aggregateType,
         aggregateId: event.aggregateId,
+        eventVersion: event.eventVersion,
         payload: event.payload as never,
       },
     });

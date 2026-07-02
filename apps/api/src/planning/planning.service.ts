@@ -260,6 +260,7 @@ export class PlanningService {
         eventType: "planning.transport_order.confirmed",
         aggregateType: "planning",
         aggregateId: createdOrder.id,
+        eventVersion: 1,
         payload: {
           transportOrderId: createdOrder.id,
           orderReference: createdOrder.orderReference,
@@ -391,6 +392,7 @@ export class PlanningService {
         eventType: "planning.transport_order.cancelled",
         aggregateType: "planning",
         aggregateId: updatedOrder.id,
+        eventVersion: 1,
         payload: {
           transportOrderId: updatedOrder.id,
           orderReference: updatedOrder.orderReference,
@@ -564,6 +566,7 @@ export class PlanningService {
           eventType: "planning.transport_order.rescheduled",
           aggregateType: "planning",
           aggregateId: nextOrder.id,
+          eventVersion: 1,
           payload: {
             transportOrderId: nextOrder.id,
             orderReference: nextOrder.orderReference,
@@ -726,6 +729,7 @@ export class PlanningService {
           eventType: "planning.transport_order.dispatched",
           aggregateType: "planning",
           aggregateId: nextOrder.id,
+          eventVersion: 1,
           payload: {
             transportOrderId: nextOrder.id,
             orderReference: nextOrder.orderReference,

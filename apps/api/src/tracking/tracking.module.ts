@@ -1,13 +1,15 @@
 import { Module } from "@nestjs/common";
-import { BillingModule } from "../billing/billing.module.js";
+import { EventBusModule } from "../event-bus/event-bus.module.js";
 import { TRACKING_REPOSITORY } from "./domain/tracking.repository.js";
+import { CargoTrackingEventHandler } from "./events/cargo-event.handler.js";
 import { PrismaTrackingRepository } from "./infrastructure/prisma-tracking.repository.js";
 import { TrackingService } from "./tracking.service.js";
 
 @Module({
-  imports: [BillingModule],
+  imports: [EventBusModule],
   providers: [
     TrackingService,
+    CargoTrackingEventHandler,
     {
       provide: TRACKING_REPOSITORY,
       useClass: PrismaTrackingRepository,

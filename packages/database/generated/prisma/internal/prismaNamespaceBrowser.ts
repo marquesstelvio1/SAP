@@ -369,6 +369,7 @@ export const OutboxEventScalarFieldEnum = {
   eventType: 'eventType',
   aggregateType: 'aggregateType',
   aggregateId: 'aggregateId',
+  eventVersion: 'eventVersion',
   payload: 'payload',
   status: 'status',
   attempts: 'attempts',
@@ -848,7 +849,8 @@ export const TrackingShipmentScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
-  deletedBy: 'deletedBy'
+  deletedBy: 'deletedBy',
+  cargoId: 'cargoId'
 } as const
 
 export type TrackingShipmentScalarFieldEnum = (typeof TrackingShipmentScalarFieldEnum)[keyof typeof TrackingShipmentScalarFieldEnum]

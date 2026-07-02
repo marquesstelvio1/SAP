@@ -27,10 +27,12 @@ export type AggregateOutboxEvent = {
 }
 
 export type OutboxEventAvgAggregateOutputType = {
+  eventVersion: number | null
   attempts: number | null
 }
 
 export type OutboxEventSumAggregateOutputType = {
+  eventVersion: number | null
   attempts: number | null
 }
 
@@ -40,6 +42,7 @@ export type OutboxEventMinAggregateOutputType = {
   eventType: string | null
   aggregateType: string | null
   aggregateId: string | null
+  eventVersion: number | null
   status: $Enums.OutboxEventStatus | null
   attempts: number | null
   availableAt: Date | null
@@ -53,6 +56,7 @@ export type OutboxEventMaxAggregateOutputType = {
   eventType: string | null
   aggregateType: string | null
   aggregateId: string | null
+  eventVersion: number | null
   status: $Enums.OutboxEventStatus | null
   attempts: number | null
   availableAt: Date | null
@@ -66,6 +70,7 @@ export type OutboxEventCountAggregateOutputType = {
   eventType: number
   aggregateType: number
   aggregateId: number
+  eventVersion: number
   payload: number
   status: number
   attempts: number
@@ -77,10 +82,12 @@ export type OutboxEventCountAggregateOutputType = {
 
 
 export type OutboxEventAvgAggregateInputType = {
+  eventVersion?: true
   attempts?: true
 }
 
 export type OutboxEventSumAggregateInputType = {
+  eventVersion?: true
   attempts?: true
 }
 
@@ -90,6 +97,7 @@ export type OutboxEventMinAggregateInputType = {
   eventType?: true
   aggregateType?: true
   aggregateId?: true
+  eventVersion?: true
   status?: true
   attempts?: true
   availableAt?: true
@@ -103,6 +111,7 @@ export type OutboxEventMaxAggregateInputType = {
   eventType?: true
   aggregateType?: true
   aggregateId?: true
+  eventVersion?: true
   status?: true
   attempts?: true
   availableAt?: true
@@ -116,6 +125,7 @@ export type OutboxEventCountAggregateInputType = {
   eventType?: true
   aggregateType?: true
   aggregateId?: true
+  eventVersion?: true
   payload?: true
   status?: true
   attempts?: true
@@ -217,6 +227,7 @@ export type OutboxEventGroupByOutputType = {
   eventType: string
   aggregateType: string
   aggregateId: string
+  eventVersion: number
   payload: runtime.JsonValue
   status: $Enums.OutboxEventStatus
   attempts: number
@@ -254,6 +265,7 @@ export type OutboxEventWhereInput = {
   eventType?: Prisma.StringFilter<"OutboxEvent"> | string
   aggregateType?: Prisma.StringFilter<"OutboxEvent"> | string
   aggregateId?: Prisma.StringFilter<"OutboxEvent"> | string
+  eventVersion?: Prisma.IntFilter<"OutboxEvent"> | number
   payload?: Prisma.JsonFilter<"OutboxEvent">
   status?: Prisma.EnumOutboxEventStatusFilter<"OutboxEvent"> | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFilter<"OutboxEvent"> | number
@@ -270,6 +282,7 @@ export type OutboxEventOrderByWithRelationInput = {
   eventType?: Prisma.SortOrder
   aggregateType?: Prisma.SortOrder
   aggregateId?: Prisma.SortOrder
+  eventVersion?: Prisma.SortOrder
   payload?: Prisma.SortOrder
   status?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -289,6 +302,7 @@ export type OutboxEventWhereUniqueInput = Prisma.AtLeast<{
   eventType?: Prisma.StringFilter<"OutboxEvent"> | string
   aggregateType?: Prisma.StringFilter<"OutboxEvent"> | string
   aggregateId?: Prisma.StringFilter<"OutboxEvent"> | string
+  eventVersion?: Prisma.IntFilter<"OutboxEvent"> | number
   payload?: Prisma.JsonFilter<"OutboxEvent">
   status?: Prisma.EnumOutboxEventStatusFilter<"OutboxEvent"> | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFilter<"OutboxEvent"> | number
@@ -305,6 +319,7 @@ export type OutboxEventOrderByWithAggregationInput = {
   eventType?: Prisma.SortOrder
   aggregateType?: Prisma.SortOrder
   aggregateId?: Prisma.SortOrder
+  eventVersion?: Prisma.SortOrder
   payload?: Prisma.SortOrder
   status?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -327,6 +342,7 @@ export type OutboxEventScalarWhereWithAggregatesInput = {
   eventType?: Prisma.StringWithAggregatesFilter<"OutboxEvent"> | string
   aggregateType?: Prisma.StringWithAggregatesFilter<"OutboxEvent"> | string
   aggregateId?: Prisma.StringWithAggregatesFilter<"OutboxEvent"> | string
+  eventVersion?: Prisma.IntWithAggregatesFilter<"OutboxEvent"> | number
   payload?: Prisma.JsonWithAggregatesFilter<"OutboxEvent">
   status?: Prisma.EnumOutboxEventStatusWithAggregatesFilter<"OutboxEvent"> | $Enums.OutboxEventStatus
   attempts?: Prisma.IntWithAggregatesFilter<"OutboxEvent"> | number
@@ -340,6 +356,7 @@ export type OutboxEventCreateInput = {
   eventType: string
   aggregateType: string
   aggregateId: string
+  eventVersion?: number
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.OutboxEventStatus
   attempts?: number
@@ -356,6 +373,7 @@ export type OutboxEventUncheckedCreateInput = {
   eventType: string
   aggregateType: string
   aggregateId: string
+  eventVersion?: number
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.OutboxEventStatus
   attempts?: number
@@ -370,6 +388,7 @@ export type OutboxEventUpdateInput = {
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventVersion?: Prisma.IntFieldUpdateOperationsInput | number
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumOutboxEventStatusFieldUpdateOperationsInput | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -386,6 +405,7 @@ export type OutboxEventUncheckedUpdateInput = {
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventVersion?: Prisma.IntFieldUpdateOperationsInput | number
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumOutboxEventStatusFieldUpdateOperationsInput | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -401,6 +421,7 @@ export type OutboxEventCreateManyInput = {
   eventType: string
   aggregateType: string
   aggregateId: string
+  eventVersion?: number
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.OutboxEventStatus
   attempts?: number
@@ -414,6 +435,7 @@ export type OutboxEventUpdateManyMutationInput = {
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventVersion?: Prisma.IntFieldUpdateOperationsInput | number
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumOutboxEventStatusFieldUpdateOperationsInput | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -428,6 +450,7 @@ export type OutboxEventUncheckedUpdateManyInput = {
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventVersion?: Prisma.IntFieldUpdateOperationsInput | number
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumOutboxEventStatusFieldUpdateOperationsInput | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -452,6 +475,7 @@ export type OutboxEventCountOrderByAggregateInput = {
   eventType?: Prisma.SortOrder
   aggregateType?: Prisma.SortOrder
   aggregateId?: Prisma.SortOrder
+  eventVersion?: Prisma.SortOrder
   payload?: Prisma.SortOrder
   status?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -461,6 +485,7 @@ export type OutboxEventCountOrderByAggregateInput = {
 }
 
 export type OutboxEventAvgOrderByAggregateInput = {
+  eventVersion?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
 }
 
@@ -470,6 +495,7 @@ export type OutboxEventMaxOrderByAggregateInput = {
   eventType?: Prisma.SortOrder
   aggregateType?: Prisma.SortOrder
   aggregateId?: Prisma.SortOrder
+  eventVersion?: Prisma.SortOrder
   status?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
   availableAt?: Prisma.SortOrder
@@ -483,6 +509,7 @@ export type OutboxEventMinOrderByAggregateInput = {
   eventType?: Prisma.SortOrder
   aggregateType?: Prisma.SortOrder
   aggregateId?: Prisma.SortOrder
+  eventVersion?: Prisma.SortOrder
   status?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
   availableAt?: Prisma.SortOrder
@@ -491,6 +518,7 @@ export type OutboxEventMinOrderByAggregateInput = {
 }
 
 export type OutboxEventSumOrderByAggregateInput = {
+  eventVersion?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
 }
 
@@ -541,16 +569,16 @@ export type OutboxEventUncheckedUpdateManyWithoutOrganizationNestedInput = {
   deleteMany?: Prisma.OutboxEventScalarWhereInput | Prisma.OutboxEventScalarWhereInput[]
 }
 
-export type EnumOutboxEventStatusFieldUpdateOperationsInput = {
-  set?: $Enums.OutboxEventStatus
-}
-
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type EnumOutboxEventStatusFieldUpdateOperationsInput = {
+  set?: $Enums.OutboxEventStatus
 }
 
 export type OutboxEventCreateNestedOneWithoutNotificationInput = {
@@ -574,6 +602,7 @@ export type OutboxEventCreateWithoutOrganizationInput = {
   eventType: string
   aggregateType: string
   aggregateId: string
+  eventVersion?: number
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.OutboxEventStatus
   attempts?: number
@@ -588,6 +617,7 @@ export type OutboxEventUncheckedCreateWithoutOrganizationInput = {
   eventType: string
   aggregateType: string
   aggregateId: string
+  eventVersion?: number
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.OutboxEventStatus
   attempts?: number
@@ -632,6 +662,7 @@ export type OutboxEventScalarWhereInput = {
   eventType?: Prisma.StringFilter<"OutboxEvent"> | string
   aggregateType?: Prisma.StringFilter<"OutboxEvent"> | string
   aggregateId?: Prisma.StringFilter<"OutboxEvent"> | string
+  eventVersion?: Prisma.IntFilter<"OutboxEvent"> | number
   payload?: Prisma.JsonFilter<"OutboxEvent">
   status?: Prisma.EnumOutboxEventStatusFilter<"OutboxEvent"> | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFilter<"OutboxEvent"> | number
@@ -645,6 +676,7 @@ export type OutboxEventCreateWithoutNotificationInput = {
   eventType: string
   aggregateType: string
   aggregateId: string
+  eventVersion?: number
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.OutboxEventStatus
   attempts?: number
@@ -660,6 +692,7 @@ export type OutboxEventUncheckedCreateWithoutNotificationInput = {
   eventType: string
   aggregateType: string
   aggregateId: string
+  eventVersion?: number
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.OutboxEventStatus
   attempts?: number
@@ -689,6 +722,7 @@ export type OutboxEventUpdateWithoutNotificationInput = {
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventVersion?: Prisma.IntFieldUpdateOperationsInput | number
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumOutboxEventStatusFieldUpdateOperationsInput | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -704,6 +738,7 @@ export type OutboxEventUncheckedUpdateWithoutNotificationInput = {
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventVersion?: Prisma.IntFieldUpdateOperationsInput | number
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumOutboxEventStatusFieldUpdateOperationsInput | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -717,6 +752,7 @@ export type OutboxEventCreateManyOrganizationInput = {
   eventType: string
   aggregateType: string
   aggregateId: string
+  eventVersion?: number
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.OutboxEventStatus
   attempts?: number
@@ -730,6 +766,7 @@ export type OutboxEventUpdateWithoutOrganizationInput = {
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventVersion?: Prisma.IntFieldUpdateOperationsInput | number
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumOutboxEventStatusFieldUpdateOperationsInput | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -744,6 +781,7 @@ export type OutboxEventUncheckedUpdateWithoutOrganizationInput = {
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventVersion?: Prisma.IntFieldUpdateOperationsInput | number
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumOutboxEventStatusFieldUpdateOperationsInput | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -758,6 +796,7 @@ export type OutboxEventUncheckedUpdateManyWithoutOrganizationInput = {
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventVersion?: Prisma.IntFieldUpdateOperationsInput | number
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumOutboxEventStatusFieldUpdateOperationsInput | $Enums.OutboxEventStatus
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -774,6 +813,7 @@ export type OutboxEventSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   eventType?: boolean
   aggregateType?: boolean
   aggregateId?: boolean
+  eventVersion?: boolean
   payload?: boolean
   status?: boolean
   attempts?: boolean
@@ -790,6 +830,7 @@ export type OutboxEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   eventType?: boolean
   aggregateType?: boolean
   aggregateId?: boolean
+  eventVersion?: boolean
   payload?: boolean
   status?: boolean
   attempts?: boolean
@@ -805,6 +846,7 @@ export type OutboxEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   eventType?: boolean
   aggregateType?: boolean
   aggregateId?: boolean
+  eventVersion?: boolean
   payload?: boolean
   status?: boolean
   attempts?: boolean
@@ -820,6 +862,7 @@ export type OutboxEventSelectScalar = {
   eventType?: boolean
   aggregateType?: boolean
   aggregateId?: boolean
+  eventVersion?: boolean
   payload?: boolean
   status?: boolean
   attempts?: boolean
@@ -828,7 +871,7 @@ export type OutboxEventSelectScalar = {
   publishedAt?: boolean
 }
 
-export type OutboxEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "eventType" | "aggregateType" | "aggregateId" | "payload" | "status" | "attempts" | "availableAt" | "createdAt" | "publishedAt", ExtArgs["result"]["outboxEvent"]>
+export type OutboxEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "eventType" | "aggregateType" | "aggregateId" | "eventVersion" | "payload" | "status" | "attempts" | "availableAt" | "createdAt" | "publishedAt", ExtArgs["result"]["outboxEvent"]>
 export type OutboxEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OutboxEvent$organizationArgs<ExtArgs>
   notification?: boolean | Prisma.OutboxEvent$notificationArgs<ExtArgs>
@@ -852,6 +895,7 @@ export type $OutboxEventPayload<ExtArgs extends runtime.Types.Extensions.Interna
     eventType: string
     aggregateType: string
     aggregateId: string
+    eventVersion: number
     payload: runtime.JsonValue
     status: $Enums.OutboxEventStatus
     attempts: number
@@ -1288,6 +1332,7 @@ export interface OutboxEventFieldRefs {
   readonly eventType: Prisma.FieldRef<"OutboxEvent", 'String'>
   readonly aggregateType: Prisma.FieldRef<"OutboxEvent", 'String'>
   readonly aggregateId: Prisma.FieldRef<"OutboxEvent", 'String'>
+  readonly eventVersion: Prisma.FieldRef<"OutboxEvent", 'Int'>
   readonly payload: Prisma.FieldRef<"OutboxEvent", 'Json'>
   readonly status: Prisma.FieldRef<"OutboxEvent", 'OutboxEventStatus'>
   readonly attempts: Prisma.FieldRef<"OutboxEvent", 'Int'>

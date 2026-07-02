@@ -528,38 +528,6 @@ export class PrismaCargoRepository implements CargoRepository {
     return this.mapCargo(raw as unknown as Record<string, unknown>);
   }
 
-  async createTrackingShipment(
-    tx: PrismaTx,
-    data: {
-      organizationId: string;
-      referenceCode: string;
-      externalReference: string | null;
-      cargoDescription: string;
-      originName: string;
-      destinationName: string;
-      transportMode: string;
-      status: string;
-      priority: number;
-      plannedDepartureAt: Date;
-      estimatedArrivalAt: Date;
-    },
-  ): Promise<TrackingShipmentRecord> {
-    const raw = await tx.trackingShipment.create({ data: data as never });
-    return this.mapTrackingShipment(raw as unknown as Record<string, unknown>);
-  }
-
-  async createTrackingEvent(tx: PrismaTx, data: Record<string, unknown>): Promise<void> {
-    await tx.trackingEvent.create({ data: data as never });
-  }
-
-  async updateTrackingShipment(
-    tx: PrismaTx,
-    id: string,
-    data: Record<string, unknown>,
-  ): Promise<void> {
-    await tx.trackingShipment.update({ where: { id }, data: data as never });
-  }
-
   async createDeliveryException(
     tx: PrismaTx,
     data: Record<string, unknown>,

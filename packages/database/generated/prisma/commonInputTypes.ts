@@ -318,13 +318,6 @@ export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
   _max?: Prisma.NestedJsonFilter<$PrismaModel>
 }
 
-export type EnumOutboxEventStatusFilter<$PrismaModel = never> = {
-  equals?: $Enums.OutboxEventStatus | Prisma.EnumOutboxEventStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.OutboxEventStatus[] | Prisma.ListEnumOutboxEventStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OutboxEventStatus[] | Prisma.ListEnumOutboxEventStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel> | $Enums.OutboxEventStatus
-}
-
 export type IntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -336,14 +329,11 @@ export type IntFilter<$PrismaModel = never> = {
   not?: Prisma.NestedIntFilter<$PrismaModel> | number
 }
 
-export type EnumOutboxEventStatusWithAggregatesFilter<$PrismaModel = never> = {
+export type EnumOutboxEventStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.OutboxEventStatus | Prisma.EnumOutboxEventStatusFieldRefInput<$PrismaModel>
   in?: $Enums.OutboxEventStatus[] | Prisma.ListEnumOutboxEventStatusFieldRefInput<$PrismaModel>
   notIn?: $Enums.OutboxEventStatus[] | Prisma.ListEnumOutboxEventStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOutboxEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutboxEventStatus
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
+  not?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel> | $Enums.OutboxEventStatus
 }
 
 export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -360,6 +350,16 @@ export type IntWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedIntFilter<$PrismaModel>
   _max?: Prisma.NestedIntFilter<$PrismaModel>
+}
+
+export type EnumOutboxEventStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OutboxEventStatus | Prisma.EnumOutboxEventStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OutboxEventStatus[] | Prisma.ListEnumOutboxEventStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OutboxEventStatus[] | Prisma.ListEnumOutboxEventStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOutboxEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutboxEventStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
 }
 
 export type EnumNotificationStatusFilter<$PrismaModel = never> = {
@@ -1206,16 +1206,6 @@ export type NestedEnumOutboxEventStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel> | $Enums.OutboxEventStatus
 }
 
-export type NestedEnumOutboxEventStatusWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.OutboxEventStatus | Prisma.EnumOutboxEventStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.OutboxEventStatus[] | Prisma.ListEnumOutboxEventStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OutboxEventStatus[] | Prisma.ListEnumOutboxEventStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOutboxEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutboxEventStatus
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
-}
-
 export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -1241,6 +1231,16 @@ export type NestedFloatFilter<$PrismaModel = never> = {
   gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   not?: Prisma.NestedFloatFilter<$PrismaModel> | number
+}
+
+export type NestedEnumOutboxEventStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OutboxEventStatus | Prisma.EnumOutboxEventStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OutboxEventStatus[] | Prisma.ListEnumOutboxEventStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OutboxEventStatus[] | Prisma.ListEnumOutboxEventStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOutboxEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutboxEventStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumNotificationStatusFilter<$PrismaModel = never> = {

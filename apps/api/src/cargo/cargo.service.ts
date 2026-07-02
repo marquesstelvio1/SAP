@@ -33,9 +33,11 @@ import type {
   CargoTransportPlanOutput,
 } from "@saptm/rpc";
 // biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
-import { UsageService } from "../billing/usage.service.js";
-// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
 import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+import {
+  TRACKING_REPOSITORY,
+  type TrackingRepository,
+} from "../tracking/domain/tracking.repository.js";
 import {
   createCargoClaimSettlementRecordAuditAfter,
   createCargoClaimSettlementRecordAuditBefore,
@@ -96,6 +98,7 @@ import {
   readCargoStatusCount,
   sumActiveCargo,
   sumCargoStatusCounts,
+  type TrackingShipmentRecord,
 } from "./domain/dto.js";
 
 export type GetCargoOverviewInput = {
@@ -219,8 +222,8 @@ export class CargoService {
 
   constructor(
     @Inject(CARGO_REPOSITORY) private readonly cargoRepo: CargoRepository,
+    @Inject(TRACKING_REPOSITORY) private readonly trackingRepo: TrackingRepository,
     private readonly eventBus: OutboxEventBusAdapter,
-    private readonly usageService: UsageService,
   ) {}
 
   async getOverview(input: GetCargoOverviewInput): Promise<CargoOverviewOutput> {
@@ -338,6 +341,7 @@ export class CargoService {
         eventType: "cargo.registered",
         aggregateType: "cargo",
         aggregateId: createdCargo.id,
+        eventVersion: 1,
         payload: {
           cargoId: createdCargo.id,
           cargoReference: createdCargo.cargoReference,
@@ -356,8 +360,6 @@ export class CargoService {
 
       return createdCargo;
     });
-
-    await this.usageService.trackUsage(input.organizationId, "cargo_shipments", 1);
 
     return createCargoRegisterOutput({
       organizationId: input.organizationId,
@@ -446,6 +448,7 @@ export class CargoService {
         eventType: "cargo.released",
         aggregateType: "cargo",
         aggregateId: releasedCargo.id,
+        eventVersion: 1,
         payload: {
           cargoId: releasedCargo.id,
           cargoReference: releasedCargo.cargoReference,
@@ -531,7 +534,7 @@ export class CargoService {
     const transportPlannedAt = new Date();
     const previousAuditState = createCargoTransportPlanAuditBefore(cargo, businessRules);
     const result = await this.database.$transaction(async (tx: PrismaTx) => {
-      const shipment = await this.cargoRepo.createTrackingShipment(tx, {
+      const shipment = (await this.trackingRepo.createShipment(tx, {
         organizationId: input.organizationId,
         referenceCode,
         externalReference: input.planningReference ?? cargo.externalReference,
@@ -543,9 +546,9 @@ export class CargoService {
         priority: cargo.priority,
         plannedDepartureAt,
         estimatedArrivalAt,
-      });
+      })) as unknown as TrackingShipmentRecord;
 
-      await this.cargoRepo.createTrackingEvent(tx, {
+      await this.trackingRepo.createEvent(tx, {
         organizationId: input.organizationId,
         shipmentId: shipment.id,
         eventType: "created",
@@ -603,6 +606,7 @@ export class CargoService {
         eventType: "cargo.transport_planned",
         aggregateType: "cargo",
         aggregateId: plannedCargo.id,
+        eventVersion: 1,
         payload: {
           cargoId: plannedCargo.id,
           cargoReference: plannedCargo.cargoReference,
@@ -663,7 +667,14 @@ export class CargoService {
         cargo: replayedCargo,
         shipment,
         event,
-        previousShipmentStatus: shipment.status,
+        previousShipmentStatus: shipment.status as
+          | "exception"
+          | "cancelled"
+          | "arrived"
+          | "delayed"
+          | "planned"
+          | "in_transit"
+          | "completed",
         replayed: true,
       });
     }
@@ -712,7 +723,7 @@ export class CargoService {
       complianceEvidenceCounts,
     });
     const result = await this.database.$transaction(async (tx: PrismaTx) => {
-      await this.cargoRepo.createTrackingEvent(tx, {
+      await this.trackingRepo.createEvent(tx, {
         organizationId: input.organizationId,
         shipmentId: shipment.id,
         eventType: "departed",
@@ -746,7 +757,7 @@ export class CargoService {
           : { carrierReference: input.carrierReference.trim() }),
       });
 
-      await this.cargoRepo.updateTrackingShipment(tx, shipment.id, {
+      await this.trackingRepo.updateShipmentStatus(tx, shipment.id, {
         status: "in_transit",
       });
 
@@ -799,6 +810,7 @@ export class CargoService {
         eventType: "cargo.transport_departed",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: 1,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -808,7 +820,14 @@ export class CargoService {
           departedAt: departedAt.toISOString(),
           departureLocationName: departedCargo.departureLocationName,
           operatorName: departedCargo.departureOperatorName,
-          previousShipmentStatus: shipment.status,
+          previousShipmentStatus: shipment.status as
+            | "exception"
+            | "cancelled"
+            | "arrived"
+            | "delayed"
+            | "planned"
+            | "in_transit"
+            | "completed",
           currentShipmentStatus: departedShipment.status,
           appliedRules: businessRules.appliedRules,
           idempotencyKey: input.idempotencyKey,
@@ -863,7 +882,14 @@ export class CargoService {
         cargo: replayedCargo,
         shipment,
         event,
-        previousShipmentStatus: shipment.status,
+        previousShipmentStatus: shipment.status as
+          | "exception"
+          | "cancelled"
+          | "arrived"
+          | "delayed"
+          | "planned"
+          | "in_transit"
+          | "completed",
         replayed: true,
       });
     }
@@ -900,7 +926,7 @@ export class CargoService {
       businessRules,
     });
     const result = await this.database.$transaction(async (tx: PrismaTx) => {
-      await this.cargoRepo.createTrackingEvent(tx, {
+      await this.trackingRepo.createEvent(tx, {
         organizationId: input.organizationId,
         shipmentId: shipment.id,
         eventType: "arrived",
@@ -930,7 +956,7 @@ export class CargoService {
           : { arrivalReference: input.arrivalReference.trim() }),
       });
 
-      await this.cargoRepo.updateTrackingShipment(tx, shipment.id, {
+      await this.trackingRepo.updateShipmentStatus(tx, shipment.id, {
         status: "arrived",
         actualArrivalAt: arrivedAt,
       });
@@ -984,6 +1010,7 @@ export class CargoService {
         eventType: "cargo.transport_arrived",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: 1,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -993,7 +1020,14 @@ export class CargoService {
           arrivedAt: arrivedAt.toISOString(),
           arrivalLocationName: arrivedCargo.arrivalLocationName,
           operatorName: arrivedCargo.arrivalOperatorName,
-          previousShipmentStatus: shipment.status,
+          previousShipmentStatus: shipment.status as
+            | "exception"
+            | "cancelled"
+            | "arrived"
+            | "delayed"
+            | "planned"
+            | "in_transit"
+            | "completed",
           currentShipmentStatus: arrivedShipment.status,
           appliedRules: businessRules.appliedRules,
           idempotencyKey: input.idempotencyKey,
@@ -1052,7 +1086,14 @@ export class CargoService {
         handoff: replayedHandoff,
         shipment,
         event,
-        previousShipmentStatus: shipment.status,
+        previousShipmentStatus: shipment.status as
+          | "exception"
+          | "cancelled"
+          | "arrived"
+          | "delayed"
+          | "planned"
+          | "in_transit"
+          | "completed",
         replayed: true,
       });
     }
@@ -1112,7 +1153,7 @@ export class CargoService {
         ...(input.handoffNotes === undefined ? {} : { handoffNotes: input.handoffNotes.trim() }),
       });
 
-      await this.cargoRepo.createTrackingEvent(tx, {
+      await this.trackingRepo.createEvent(tx, {
         organizationId: input.organizationId,
         shipmentId: shipment.id,
         eventType: "location_updated",
@@ -1183,6 +1224,7 @@ export class CargoService {
         eventType: "cargo.operational_handoff.recorded",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: 1,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -1194,7 +1236,14 @@ export class CargoService {
           handoffReference: handoff.handoffReference,
           fromCustodyOwnerName: handoff.fromCustodyOwnerName,
           toCustodyOwnerName: handoff.toCustodyOwnerName,
-          previousShipmentStatus: shipment.status,
+          previousShipmentStatus: shipment.status as
+            | "exception"
+            | "cancelled"
+            | "arrived"
+            | "delayed"
+            | "planned"
+            | "in_transit"
+            | "completed",
           currentShipmentStatus: shipment.status,
           appliedRules: businessRules.appliedRules,
           idempotencyKey: input.idempotencyKey,
@@ -1250,7 +1299,14 @@ export class CargoService {
         cargo: replayedCargo,
         shipment,
         event,
-        previousShipmentStatus: shipment.status,
+        previousShipmentStatus: shipment.status as
+          | "exception"
+          | "cancelled"
+          | "arrived"
+          | "delayed"
+          | "planned"
+          | "in_transit"
+          | "completed",
         replayed: true,
       });
     }
@@ -1288,7 +1344,7 @@ export class CargoService {
       businessRules,
     });
     const result = await this.database.$transaction(async (tx: PrismaTx) => {
-      await this.cargoRepo.createTrackingEvent(tx, {
+      await this.trackingRepo.createEvent(tx, {
         organizationId: input.organizationId,
         shipmentId: shipment.id,
         eventType: "handover_completed",
@@ -1319,7 +1375,7 @@ export class CargoService {
         deliveredAt,
       });
 
-      await this.cargoRepo.updateTrackingShipment(tx, shipment.id, {
+      await this.trackingRepo.updateShipmentStatus(tx, shipment.id, {
         status: "completed",
       });
 
@@ -1373,6 +1429,7 @@ export class CargoService {
         eventType: "cargo.delivery_completed",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: 1,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -1382,7 +1439,14 @@ export class CargoService {
           deliveredAt: deliveredAt.toISOString(),
           deliveryReference: deliveredCargo.deliveryReference,
           receivedByName: deliveredCargo.receivedByName,
-          previousShipmentStatus: shipment.status,
+          previousShipmentStatus: shipment.status as
+            | "exception"
+            | "cancelled"
+            | "arrived"
+            | "delayed"
+            | "planned"
+            | "in_transit"
+            | "completed",
           currentShipmentStatus: completedShipment.status,
           appliedRules: businessRules.appliedRules,
           idempotencyKey: input.idempotencyKey,
@@ -1441,7 +1505,14 @@ export class CargoService {
         exception: replayedException,
         shipment,
         event,
-        previousShipmentStatus: shipment.status,
+        previousShipmentStatus: shipment.status as
+          | "exception"
+          | "cancelled"
+          | "arrived"
+          | "delayed"
+          | "planned"
+          | "in_transit"
+          | "completed",
         replayed: true,
       });
     }
@@ -1498,7 +1569,7 @@ export class CargoService {
           : { claimReference: input.claimReference.trim() }),
       });
 
-      await this.cargoRepo.createTrackingEvent(tx, {
+      await this.trackingRepo.createEvent(tx, {
         organizationId: input.organizationId,
         shipmentId: shipment.id,
         eventType: "exception",
@@ -1527,7 +1598,7 @@ export class CargoService {
         requiresInspection: true,
       });
 
-      await this.cargoRepo.updateTrackingShipment(tx, shipment.id, {
+      await this.trackingRepo.updateShipmentStatus(tx, shipment.id, {
         status: "exception",
       });
 
@@ -1581,6 +1652,7 @@ export class CargoService {
         eventType: "cargo.delivery_exception.recorded",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: 1,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -1590,7 +1662,14 @@ export class CargoService {
           eventId: event.id,
           exceptionType: exception.exceptionType,
           deliveryConditionStatus: exception.deliveryConditionStatus,
-          previousShipmentStatus: shipment.status,
+          previousShipmentStatus: shipment.status as
+            | "exception"
+            | "cancelled"
+            | "arrived"
+            | "delayed"
+            | "planned"
+            | "in_transit"
+            | "completed",
           currentShipmentStatus: exceptionShipment.status,
           appliedRules: businessRules.appliedRules,
           idempotencyKey: input.idempotencyKey,
@@ -1650,7 +1729,14 @@ export class CargoService {
         exception: replayedException,
         shipment,
         event,
-        previousShipmentStatus: shipment.status,
+        previousShipmentStatus: shipment.status as
+          | "exception"
+          | "cancelled"
+          | "arrived"
+          | "delayed"
+          | "planned"
+          | "in_transit"
+          | "completed",
         replayed: true,
       });
     }
@@ -1706,7 +1792,7 @@ export class CargoService {
         resolveIdempotencyKey: input.idempotencyKey,
       });
 
-      await this.cargoRepo.createTrackingEvent(tx, {
+      await this.trackingRepo.createEvent(tx, {
         organizationId: input.organizationId,
         shipmentId: shipment.id,
         eventType: "released",
@@ -1734,7 +1820,7 @@ export class CargoService {
         requiresInspection: false,
       });
 
-      await this.cargoRepo.updateTrackingShipment(tx, shipment.id, {
+      await this.trackingRepo.updateShipmentStatus(tx, shipment.id, {
         status: "arrived",
       });
 
@@ -1797,6 +1883,7 @@ export class CargoService {
         eventType: "cargo.delivery_exception.resolved",
         aggregateType: "cargo",
         aggregateId: exception.cargo.id,
+        eventVersion: 1,
         payload: {
           cargoId: exception.cargo.id,
           cargoReference: exception.cargo.cargoReference,
@@ -1806,7 +1893,14 @@ export class CargoService {
           eventId: event.id,
           resolutionCode: input.resolutionCode,
           resolutionReference: resolvedException.resolutionReference,
-          previousShipmentStatus: shipment.status,
+          previousShipmentStatus: shipment.status as
+            | "exception"
+            | "cancelled"
+            | "arrived"
+            | "delayed"
+            | "planned"
+            | "in_transit"
+            | "completed",
           currentShipmentStatus: restoredShipment.status,
           appliedRules: businessRules.appliedRules,
           idempotencyKey: input.idempotencyKey,
@@ -1949,6 +2043,7 @@ export class CargoService {
         eventType: "cargo.claim_settlement.recorded",
         aggregateType: "cargo",
         aggregateId: exception.cargoId,
+        eventVersion: 1,
         payload: {
           cargoId: exception.cargoId,
           cargoReference: exception.cargo.cargoReference,
@@ -2073,6 +2168,7 @@ export class CargoService {
         eventType: "cargo.compliance_evidence.recorded",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: 1,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -2200,6 +2296,7 @@ export class CargoService {
         eventType: "cargo.compliance_evidence.verified",
         aggregateType: "cargo",
         aggregateId: evidence.cargoId,
+        eventVersion: 1,
         payload: {
           cargoId: evidence.cargoId,
           evidenceId: updatedEvidence.id,

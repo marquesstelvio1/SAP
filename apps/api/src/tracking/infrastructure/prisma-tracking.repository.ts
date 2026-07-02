@@ -250,6 +250,37 @@ export class PrismaTrackingRepository implements TrackingRepository {
     >;
   }
 
+  async createShipment(
+    tx: PrismaTx,
+    data: {
+      organizationId: string;
+      referenceCode: string;
+      externalReference: string | null;
+      cargoDescription: string;
+      originName: string;
+      destinationName: string;
+      transportMode: string;
+      status: string;
+      priority: number;
+      plannedDepartureAt: Date;
+      estimatedArrivalAt: Date;
+    },
+  ) {
+    return tx.trackingShipment.create({
+      data,
+      select: {
+        id: true,
+        organizationId: true,
+        referenceCode: true,
+        status: true,
+        transportMode: true,
+        plannedDepartureAt: true,
+        estimatedArrivalAt: true,
+        actualArrivalAt: true,
+      },
+    });
+  }
+
   async createEvent(tx: PrismaTx, data: Record<string, unknown>) {
     const event = await tx.trackingEvent.create({
       data: data as never,

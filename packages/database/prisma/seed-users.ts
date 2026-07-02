@@ -7,10 +7,7 @@ const __dirname = dirname(__filename);
 config({ path: resolve(__dirname, "../../../.env") });
 
 import { getPrismaClient } from "../src/index.js";
-import {
-  rbacBootstrapPermissions,
-  rbacBootstrapRoleTemplates,
-} from "../src/rbac-bootstrap.js";
+import { rbacBootstrapPermissions, rbacBootstrapRoleTemplates } from "../src/rbac-bootstrap.js";
 
 const database = getPrismaClient();
 

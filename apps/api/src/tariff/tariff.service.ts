@@ -165,6 +165,7 @@ export class TariffService {
         eventType: "tariff.rate_card.registered",
         aggregateType: "tariff",
         aggregateId: rateCard.id,
+        eventVersion: 1,
         payload: createTariffRateCardRegisterAuditAfter({
           rateCard,
           businessRules,
@@ -276,6 +277,7 @@ export class TariffService {
         eventType: "tariff.rate_rule.added",
         aggregateType: "tariff",
         aggregateId: rule.id,
+        eventVersion: 1,
         payload: createTariffRateRuleAddAuditAfter({
           rule,
           businessRules,
@@ -424,6 +426,7 @@ export class TariffService {
         eventType: "tariff.quote.calculated",
         aggregateType: "tariff",
         aggregateId: quote.id,
+        eventVersion: 1,
         payload: createTariffQuoteCalculateAuditAfter({
           quote,
           lineItems: calculation.lineItems,
@@ -520,6 +523,7 @@ export class TariffService {
         eventType: "tariff.quote.approved",
         aggregateType: "tariff",
         aggregateId: approvedQuote.id,
+        eventVersion: 1,
         payload: createTariffQuoteApproveAuditAfter({
           quote: approvedQuote,
           businessRules,

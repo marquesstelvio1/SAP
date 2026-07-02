@@ -202,6 +202,7 @@ export class IntegrationsService {
         eventType: "integration.api_key.created",
         aggregateType: "integration.service_account",
         aggregateId: serviceAccount.id,
+        eventVersion: 1,
         payload: {
           serviceAccountId: serviceAccount.id,
           name: normalizedName,
@@ -318,6 +319,7 @@ export class IntegrationsService {
         eventType: "integration.event.received",
         aggregateType: "integration.event",
         aggregateId: event.id,
+        eventVersion: 1,
         payload: {
           serviceAccountId: serviceAccount.id,
           sourceSystem: input.sourceSystem,
@@ -509,6 +511,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.port_tos.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: 1,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,
@@ -706,6 +709,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.rail_tms.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: 1,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,
@@ -907,6 +911,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.carrier_tms.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: 1,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,
@@ -1113,6 +1118,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.telematics_gps.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: 1,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,
@@ -1319,6 +1325,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.customs_erp.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: 1,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,
@@ -1525,6 +1532,7 @@ export class IntegrationsService {
         eventType: "integration.adapter.warehouse_wms.processed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: 1,
         payload: {
           integrationEventId: integrationEvent.id,
           trackingEventId: trackingEvent.id,

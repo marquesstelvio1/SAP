@@ -161,27 +161,6 @@ export interface CargoRepository {
 
   updateCargo(tx: PrismaTx, id: string, data: Record<string, unknown>): Promise<CargoRecord>;
 
-  createTrackingShipment(
-    tx: PrismaTx,
-    data: {
-      organizationId: string;
-      referenceCode: string;
-      externalReference: string | null;
-      cargoDescription: string;
-      originName: string;
-      destinationName: string;
-      transportMode: string;
-      status: string;
-      priority: number;
-      plannedDepartureAt: Date;
-      estimatedArrivalAt: Date;
-    },
-  ): Promise<TrackingShipmentRecord>;
-
-  createTrackingEvent(tx: PrismaTx, data: Record<string, unknown>): Promise<void>;
-
-  updateTrackingShipment(tx: PrismaTx, id: string, data: Record<string, unknown>): Promise<void>;
-
   createDeliveryException(
     tx: PrismaTx,
     data: Record<string, unknown>,
