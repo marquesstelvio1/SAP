@@ -15,8 +15,8 @@ import type {
   TrackingOverviewOutput,
   TrackingShipmentDetailOutput,
 } from "@saptm/rpc";
-import type { UsageService } from "../billing/usage.service.js";
-import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+import { UsageService } from "../billing/usage.service.js";
+import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createTrackingEventAuditAfter,
   createTrackingExceptionAuditAfter,
