@@ -21,7 +21,7 @@ type Profile = {
   description: string;
 };
 
-const PASSWORD = "saptm123";
+const PASSWORD = "LocalAdmin!2026";
 const ORG_SLUG = process.env.SAPTM_LOCAL_ORGANIZATION_SLUG ?? "saptm-local";
 
 const PROFILES: Profile[] = [
