@@ -1,13 +1,13 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import type { DomainEvent, EventBus, PrismaTx, SaptmPrismaClient } from "@saptm/database";
 import { getPrismaClient } from "@saptm/database";
-import type { EventBusService } from "./event-bus.service.js";
+import { EventBusService } from "./event-bus.service.js";
 
 @Injectable()
 export class OutboxEventBusAdapter implements EventBus {
   private readonly database: SaptmPrismaClient = getPrismaClient();
 
-  constructor(private readonly eventBus: EventBusService) {}
+  constructor(@Inject(EventBusService) private readonly eventBus: EventBusService) {}
 
   async publish(tx: PrismaTx, event: DomainEvent): Promise<void> {
     await tx.outboxEvent.create({
