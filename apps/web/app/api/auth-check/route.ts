@@ -53,11 +53,12 @@ export async function GET(request: Request) {
   }
 
   // DB connectivity via Prisma
+  // NOTE: do NOT call prisma.$disconnect() — the pool is a singleton shared
+  // across all requests. Disconnecting would leave a stale dead pool in the
+  // global __saptmPrismaClient, breaking subsequent requests.
   try {
     const prisma = getPrismaClient();
-    await prisma.$connect();
-    const result = await prisma.$queryRaw<Array<{ ok: number }>>`SELECT 1 AS ok`;
-    await prisma.$disconnect();
+    const result = await prisma.$queryRaw`SELECT 1 AS ok`;
     checks.push({
       name: "prisma.query",
       status: "ok",
