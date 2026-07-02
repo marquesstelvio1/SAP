@@ -74,8 +74,12 @@ const authHandler = async (request: Request): Promise<Response> => {
   }
 
   try {
-    return await createSaptmAuthFromEnv().handler(request);
-  } catch (error) {
+    const auth = createSaptmAuthFromEnv();
+    const handlers = toNextJsHandler(auth);
+    if (request.method === "GET" && handlers.GET) return await handlers.GET(request);
+    if (request.method === "POST" && handlers.POST) return await handlers.POST(request);
+    return new Response("Method not allowed", { status: 405 });
+  } catch (error: any) {
     return new Response(JSON.stringify({ error: error?.message || "Unknown error", stack: error?.stack }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -83,4 +87,5 @@ const authHandler = async (request: Request): Promise<Response> => {
   }
 };
 
-export const { GET, POST } = toNextJsHandler(authHandler);
+export const GET = authHandler;
+export const POST = authHandler;
