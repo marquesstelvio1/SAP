@@ -10,7 +10,6 @@ catalog:
   '@biomejs/biome': ^2.0.0
   c8: ^10.0.0
   '@changesets/cli': ^2.29.0
-  simple-git-hooks: ^2.11.1
   dotenv: ^16.0.0
   '@nestjs/common': ^11.0.0
   '@nestjs/core': ^11.0.0

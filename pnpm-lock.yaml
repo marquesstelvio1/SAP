@@ -177,9 +177,6 @@ catalogs:
     rxjs:
       specifier: ^7.8.0
       version: 7.8.2
-    simple-git-hooks:
-      specifier: ^2.11.1
-      version: 2.13.1
     sonner:
       specifier: ^2.0.0
       version: 2.0.7
@@ -247,9 +244,6 @@ importers:
       prisma:
         specifier: 'catalog:'
         version: 7.8.0(@types/react-dom@19.2.3(@types/react@19.2.16))(@types/react@19.2.16)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)
-      simple-git-hooks:
-        specifier: 'catalog:'
-        version: 2.13.1
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.43)(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(typescript@5.9.3)(yaml@2.9.0)
@@ -7022,10 +7016,6 @@ packages:
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
-
-  simple-git-hooks@2.13.1:
-    resolution: {integrity: sha512-WszCLXwT4h2k1ufIXAgsbiTOazqqevFCIncOuUBZJ91DdvWcC5+OFkluWRQPrcuSYd8fjq+o2y1QfWqYMoAToQ==}
-    hasBin: true
 
   sirv@2.0.4:
     resolution: {integrity: sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==}
@@ -14302,8 +14292,6 @@ snapshots:
   signal-exit@3.0.7: {}
 
   signal-exit@4.1.0: {}
-
-  simple-git-hooks@2.13.1: {}
 
   sirv@2.0.4:
     dependencies:
