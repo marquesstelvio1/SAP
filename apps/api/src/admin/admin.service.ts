@@ -20,7 +20,7 @@ import type {
   AdminUserInviteInput,
   AdminUserInviteOutput,
 } from "@saptm/rpc";
-import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import { writeAdminAuditAndOutbox } from "./domain/admin.audit-trail.js";
 import {
   arraysEqualIgnoringOrder,

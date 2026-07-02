@@ -16,7 +16,7 @@ import type {
   TransportOrderRescheduleInput,
   TransportOrderRescheduleOutput,
 } from "@saptm/rpc";
-import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createTransportOrderCancelAuditAfter,
   createTransportOrderCancelAuditBefore,
