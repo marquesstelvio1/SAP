@@ -2,7 +2,8 @@ import type { OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
 import { getPrismaClient, type PrismaTx } from "@saptm/database";
 import type { Subscription } from "rxjs";
-import type { EventBusService } from "../../event-bus/event-bus.service.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { EventBusService } from "../../event-bus/event-bus.service.js";
 // biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
 import { OutboxEventBusAdapter } from "../../event-bus/outbox-event-bus.adapter.js";
 import type {
