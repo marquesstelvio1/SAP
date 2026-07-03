@@ -418,17 +418,12 @@ export class BillingService {
     plan: string,
   ): void {
     const event: DomainEvent = {
-      id: crypto.randomUUID(),
       eventType,
       aggregateType: "subscription",
       aggregateId: organizationId,
+      eventVersion: 1,
       organizationId,
-      actorId: "stripe-webhook",
-      actorType: "integration",
       payload: { plan, eventType },
-      metadata: { source: "stripe-webhook" },
-      correlationId: crypto.randomUUID(),
-      occurredAt: new Date(),
     };
     this.eventBus.emit(event);
   }
