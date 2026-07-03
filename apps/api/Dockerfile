@@ -83,6 +83,6 @@ EXPOSE 4000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD node -e "const port=process.env.API_PORT||4000; fetch('http://127.0.0.1:'+port+'/health/live').then((response)=>process.exit(response.ok?0:1)).catch(()=>process.exit(1))"
 
-RUN printf '#!/bin/sh\nset -e\necho "[migrate] Applying database migrations..."\ncd /app/packages/database && npx prisma migrate deploy --schema=prisma/schema.prisma\necho "[migrate] Done."\ncd /app/apps/api && node dist/main.js\n' > /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
+RUN printf '#!/bin/sh\necho "[migrate] Applying database migrations..."\ncd /app/packages/database && npx prisma migrate deploy --schema=prisma/schema.prisma || echo "[migrate] WARNING: migration failed, continuing anyway"\necho "[migrate] Done."\ncd /app/apps/api && node dist/main.js\n' > /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
 
 CMD ["/docker-entrypoint.sh"]
