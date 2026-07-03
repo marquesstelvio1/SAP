@@ -7,4 +7,5 @@ function ThemeProvider({ children, ...props }: React.ComponentProps<typeof NextT
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
 
+ThemeProvider.displayName = "ThemeProvider";
 export { ThemeProvider };

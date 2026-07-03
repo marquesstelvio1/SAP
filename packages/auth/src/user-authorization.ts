@@ -36,30 +36,31 @@ export async function resolveDefaultUserAuthorization(
     },
   });
 
-  if (memberships.length !== 1) {
+  // No active memberships — user has no org affiliation, no permissions
+  if (memberships.length === 0) {
     return {
       permissions: [],
     };
   }
 
-  const membership = memberships[0];
-
-  if (membership === undefined) {
-    return {
-      permissions: [],
-    };
-  }
-
-  return {
-    organizationId: membership.organizationId,
-    permissions: uniquePlatformPermissions(
-      filterPlatformPermissions(
-        membership.roles.flatMap((membershipRole) =>
-          membershipRole.role.permissions.map((rolePermission) => rolePermission.permission.key),
-        ),
-      ),
+  // Merge permissions from ALL active memberships and use the first org as default
+  const allPermissions = memberships.flatMap((membership) =>
+    membership.roles.flatMap((membershipRole) =>
+      membershipRole.role.permissions.map((rolePermission) => rolePermission.permission.key),
     ),
+  );
+
+  const firstMembership = memberships[0];
+
+  const result: ResolvedUserAuthorization = {
+    permissions: uniquePlatformPermissions(filterPlatformPermissions(allPermissions)),
   };
+
+  if (firstMembership?.organizationId) {
+    result.organizationId = firstMembership.organizationId;
+  }
+
+  return result;
 }
 
 export function uniquePlatformPermissions(

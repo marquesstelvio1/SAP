@@ -60,4 +60,11 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+Card.displayName = "Card";
+CardHeader.displayName = "CardHeader";
+CardTitle.displayName = "CardTitle";
+CardDescription.displayName = "CardDescription";
+CardContent.displayName = "CardContent";
+CardFooter.displayName = "CardFooter";
+
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };

@@ -4,7 +4,10 @@ import { RpcError } from "../lib/rpc-client";
 import { getTrackingAdvisory } from "../lib/tracking-advisory";
 import { useRpcQuery } from "./use-rpc";
 
-export function useTrackingAdvisory(limit = 5) {
+export function useTrackingAdvisory(options?: { limit?: number; enabled?: boolean }) {
+  const limit = options?.limit ?? 5;
+  const enabled = options?.enabled ?? true;
+
   return useRpcQuery({
     queryKey: ["tracking-advisory", limit],
     queryFn: async () => {
@@ -14,5 +17,7 @@ export function useTrackingAdvisory(limit = 5) {
       }
       return result.advisory;
     },
+    enabled,
+    staleTime: 2 * 60_000,
   });
 }

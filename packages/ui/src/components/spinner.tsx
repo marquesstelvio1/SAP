@@ -37,4 +37,6 @@ function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
+Spinner.displayName = "Spinner";
+
 export { Spinner };

@@ -20,6 +20,7 @@ import { applySecurityHeaders } from "./security/security-headers.js";
 const logger = new Logger("Bootstrap");
 
 async function bootstrap() {
+  logger.log("Starting API server bootstrap sequence...");
   const env = getServerEnv();
   const apiPort = env.API_PORT ?? 3001;
 
@@ -36,6 +37,7 @@ async function bootstrap() {
     abortOnError: false,
   });
 
+  // Enable graceful shutdown
   app.enableShutdownHooks();
 
   // trust proxy — required for correct req.ip behind reverse proxies (rate limiting)
@@ -51,15 +53,40 @@ async function bootstrap() {
   app.enableCors(createCorsOptions(env));
   app.useGlobalFilters(new RpcExceptionFilter());
 
+  logger.log(`Binding API server to port ${apiPort}...`);
   await app.listen(apiPort);
 
   // Increase server timeout for cold starts / slow queries
   const httpServer = app.getHttpServer() as import("node:http").Server;
+  
+  // Implement connection draining for graceful shutdown
+  const activeConnections = new Set<import("node:net").Socket>();
+  
+  httpServer.on('connection', (socket) => {
+    activeConnections.add(socket);
+    socket.once('close', () => activeConnections.delete(socket));
+  });
+
+  process.on('SIGTERM', () => {
+    logger.log('SIGTERM received. Starting graceful shutdown...');
+    httpServer.close(() => {
+      logger.log('HTTP server closed.');
+    });
+
+    // Timeout to force close connections if they don't drain naturally
+    setTimeout(() => {
+      logger.warn(`Force closing ${activeConnections.size} remaining connections...`);
+      for (const socket of activeConnections) {
+        socket.destroy();
+      }
+    }, 10_000).unref();
+  });
+
   httpServer.setTimeout(120_000);
   httpServer.keepAliveTimeout = 65_000;
   httpServer.headersTimeout = 66_000;
 
-  console.log(`[Bootstrap] API listening on port ${apiPort}`);
+  logger.log(`[Bootstrap] API successfully listening on port ${apiPort}`);
 }
 
 bootstrap().catch((err) => {

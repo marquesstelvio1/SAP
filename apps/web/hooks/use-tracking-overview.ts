@@ -17,5 +17,6 @@ export function useTrackingOverview(options?: { offset?: number; limit?: number 
       }
       return result.overview;
     },
+    staleTime: 2 * 60_000,
   });
 }

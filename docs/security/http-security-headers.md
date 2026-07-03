@@ -44,7 +44,7 @@ upgrade-insecure-requests
 
 > **Tailwind v4 note:** `style-src 'unsafe-inline'` is required because Tailwind v4 injects
 > CSS custom properties at runtime for animations, transitions, and JIT utilities.
-> The nonce-based upgrade path is available in `apps/web/src/proxy.ts` for environments that
+> The nonce-based upgrade path is available in `apps/web/proxy.ts` for environments that
 > enforce strict CSP (script nonce + `strict-dynamic`). When adopting the nonce approach,
 > `style-src 'unsafe-inline'` must still be retained unless every inline style is hashed.
 

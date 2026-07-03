@@ -9,7 +9,7 @@ import type { contracts } from "@saptm/rpc/contracts";
 const INTERNAL_REQUEST_HEADER = "x-internal-request" as const;
 const ORG_HEADER = "x-saptm-org-id" as const;
 
-export type RpcStatus = "unauthorized" | "forbidden" | "not_found" | "unavailable" | "invalid";
+export type RpcStatus = "unauthorized" | "forbidden" | "not_found" | "unavailable" | "invalid" | "rate_limited";
 
 export class RpcError extends Error {
   constructor(
@@ -23,7 +23,7 @@ export class RpcError extends Error {
 
 export type RpcSuccess<T> = { status: "ok"; data: T };
 
-export type RpcFailure = { status: RpcStatus; message: string };
+export type RpcFailure = { status: RpcStatus; message: string; retryAfterMs?: number };
 
 export type RpcResult<T> = RpcSuccess<T> | RpcFailure;
 
@@ -187,6 +187,16 @@ async function parseRpcResponse<T>(response: Response, schema: Schema<T>): Promi
     };
   }
 
+  if (response.status === 429) {
+    const retryAfter = response.headers.get("Retry-After");
+    const retryAfterMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : undefined;
+    return {
+      status: "rate_limited",
+      message: "Muitas requisicoes. Tente novamente mais tarde.",
+      ...(retryAfterMs !== undefined ? { retryAfterMs } : {}),
+    } as RpcResult<T>;
+  }
+
   if (!response.ok) {
     let errorText: string;
     try {
@@ -227,7 +237,7 @@ async function parseRpcResponse<T>(response: Response, schema: Schema<T>): Promi
 // ── Typed oRPC client (contract-first) ──────────────────────────────
 
 const link = new RPCLink({
-  url: `${typeof window !== "undefined" ? window.location.origin : ""}/api/rpc`,
+  url: `${typeof window !== "undefined" ? window.location.origin : (getClientEnv().NEXT_PUBLIC_APP_URL || "http://localhost:3000")}/api/rpc`,
   headers: {},
 });
 

@@ -35,4 +35,7 @@ function AlertDescription({ className, ...props }: React.ComponentProps<"div">) 
   );
 }
 
+Alert.displayName = "Alert";
+AlertTitle.displayName = "AlertTitle";
+AlertDescription.displayName = "AlertDescription";
 export { Alert, AlertDescription, AlertTitle };

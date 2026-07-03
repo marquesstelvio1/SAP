@@ -33,6 +33,7 @@ export interface ReportsRepository {
   findTransportOrderRows(organizationId: string, limit: number): Promise<ReportRowRaw[]>;
   findTariffRateCardRows(organizationId: string, limit: number): Promise<ReportRowRaw[]>;
 
+  transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T>;
   createAuditRecord(tx: PrismaTx, input: PrismaAuditRecordCreateInput): Promise<void>;
   createOutboxEvent(tx: PrismaTx, input: PrismaOutboxEventCreateInput): Promise<void>;
 }

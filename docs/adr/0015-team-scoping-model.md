@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted.
+Accepted — partially implemented.
+
+> **Nota de actualização (2026-07-03):** O ficheiro `packages/database/src/tenant-scoping.ts` referenciado na secção 2 **não existe** actualmente. A extensão Prisma Client com injecção de `teamId` não foi implementada. Os modelos `Team`, `TeamMember`, `teamId` em `Cargo`/`TrackingShipment` existem no schema. A injecção automática de `teamId` via Prisma Extension está pendente.
 
 ## Context
 

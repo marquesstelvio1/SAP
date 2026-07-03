@@ -39,7 +39,7 @@ export class AuthContextService {
       headers: createCookieHeaders(request.headers),
       traceContext: request.traceContext,
       disableCookieCache: true,
-      disableRefresh: true,
+      disableRefresh: false,
     });
 
     if (!authContext) {

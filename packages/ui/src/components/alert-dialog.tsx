@@ -127,6 +127,17 @@ function AlertDialogCancel({
   );
 }
 
+AlertDialog.displayName = "AlertDialog";
+AlertDialogTrigger.displayName = "AlertDialogTrigger";
+AlertDialogPortal.displayName = "AlertDialogPortal";
+AlertDialogOverlay.displayName = "AlertDialogOverlay";
+AlertDialogContent.displayName = "AlertDialogContent";
+AlertDialogHeader.displayName = "AlertDialogHeader";
+AlertDialogFooter.displayName = "AlertDialogFooter";
+AlertDialogTitle.displayName = "AlertDialogTitle";
+AlertDialogDescription.displayName = "AlertDialogDescription";
+AlertDialogAction.displayName = "AlertDialogAction";
+AlertDialogCancel.displayName = "AlertDialogCancel";
 export {
   AlertDialog,
   AlertDialogAction,

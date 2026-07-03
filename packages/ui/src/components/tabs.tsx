@@ -61,4 +61,9 @@ function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPr
   );
 }
 
+Tabs.displayName = "Tabs";
+TabsList.displayName = "TabsList";
+TabsTrigger.displayName = "TabsTrigger";
+TabsContent.displayName = "TabsContent";
+
 export { Tabs, TabsContent, TabsList, TabsTrigger };

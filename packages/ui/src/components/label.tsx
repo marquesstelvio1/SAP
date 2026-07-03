@@ -17,5 +17,6 @@ function Label({ className, ...props }: React.ComponentProps<typeof LabelPrimiti
     />
   );
 }
+Label.displayName = "Label";
 
 export { Label };

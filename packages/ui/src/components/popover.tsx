@@ -35,4 +35,7 @@ function PopoverContent({
   );
 }
 
+Popover.displayName = "Popover";
+PopoverTrigger.displayName = "PopoverTrigger";
+PopoverContent.displayName = "PopoverContent";
 export { Popover, PopoverContent, PopoverTrigger };

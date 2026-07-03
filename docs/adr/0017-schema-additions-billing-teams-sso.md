@@ -2,7 +2,14 @@
 
 ## Status
 
-Accepted.
+Accepted — partially implemented.
+
+> **Nota de actualização (2026-07-03):** A checklist de compliance está toda por preencher (`[ ]`). Diferenças entre ADR e implementação real:
+> - `Plan` model: usa JSON fields (`features`, `limits`) em vez dos campos escalares propostos. Implementado correctamente.
+> - `SsoConfig` model: `domain` é nullable (não non-null/unique como proposto). Campo `idpBinding` não existe. Campos adicionais: `idpMetadataUrl`. JIT provisioning fields existem.
+> - `Subscription.planId`: é nullable (`String?`) com default `"plan_free"`, mantendo o campo `plan` legacy. ADR propunha FK obrigatória.
+> - Feature gating: ainda usa `getPlanLimits()` hardcoded, não `Plan.features`.
+> - Migração SQL: a migration proposta no ADR foi substituída pela migração Prisma real.
 
 ## Context
 

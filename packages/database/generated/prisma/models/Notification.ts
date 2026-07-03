@@ -215,7 +215,7 @@ export type NotificationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type NotificationGroupByOutputType = {
   id: string
-  organizationId: string
+  organizationId: string | null
   sourceOutboxEventId: string | null
   eventType: string
   aggregateType: string
@@ -255,7 +255,7 @@ export type NotificationWhereInput = {
   OR?: Prisma.NotificationWhereInput[]
   NOT?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
   id?: Prisma.StringFilter<"Notification"> | string
-  organizationId?: Prisma.StringFilter<"Notification"> | string
+  organizationId?: Prisma.StringNullableFilter<"Notification"> | string | null
   sourceOutboxEventId?: Prisma.StringNullableFilter<"Notification"> | string | null
   eventType?: Prisma.StringFilter<"Notification"> | string
   aggregateType?: Prisma.StringFilter<"Notification"> | string
@@ -270,13 +270,13 @@ export type NotificationWhereInput = {
   deletedBy?: Prisma.StringNullableFilter<"Notification"> | string | null
   readAt?: Prisma.DateTimeNullableFilter<"Notification"> | Date | string | null
   archivedAt?: Prisma.DateTimeNullableFilter<"Notification"> | Date | string | null
-  organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   sourceOutboxEvent?: Prisma.XOR<Prisma.OutboxEventNullableScalarRelationFilter, Prisma.OutboxEventWhereInput> | null
 }
 
 export type NotificationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  organizationId?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceOutboxEventId?: Prisma.SortOrderInput | Prisma.SortOrder
   eventType?: Prisma.SortOrder
   aggregateType?: Prisma.SortOrder
@@ -301,7 +301,7 @@ export type NotificationWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
   OR?: Prisma.NotificationWhereInput[]
   NOT?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
-  organizationId?: Prisma.StringFilter<"Notification"> | string
+  organizationId?: Prisma.StringNullableFilter<"Notification"> | string | null
   eventType?: Prisma.StringFilter<"Notification"> | string
   aggregateType?: Prisma.StringFilter<"Notification"> | string
   aggregateId?: Prisma.StringFilter<"Notification"> | string
@@ -315,13 +315,13 @@ export type NotificationWhereUniqueInput = Prisma.AtLeast<{
   deletedBy?: Prisma.StringNullableFilter<"Notification"> | string | null
   readAt?: Prisma.DateTimeNullableFilter<"Notification"> | Date | string | null
   archivedAt?: Prisma.DateTimeNullableFilter<"Notification"> | Date | string | null
-  organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   sourceOutboxEvent?: Prisma.XOR<Prisma.OutboxEventNullableScalarRelationFilter, Prisma.OutboxEventWhereInput> | null
 }, "id" | "sourceOutboxEventId">
 
 export type NotificationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  organizationId?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceOutboxEventId?: Prisma.SortOrderInput | Prisma.SortOrder
   eventType?: Prisma.SortOrder
   aggregateType?: Prisma.SortOrder
@@ -346,7 +346,7 @@ export type NotificationScalarWhereWithAggregatesInput = {
   OR?: Prisma.NotificationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.NotificationScalarWhereWithAggregatesInput | Prisma.NotificationScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Notification"> | string
-  organizationId?: Prisma.StringWithAggregatesFilter<"Notification"> | string
+  organizationId?: Prisma.StringNullableWithAggregatesFilter<"Notification"> | string | null
   sourceOutboxEventId?: Prisma.StringNullableWithAggregatesFilter<"Notification"> | string | null
   eventType?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   aggregateType?: Prisma.StringWithAggregatesFilter<"Notification"> | string
@@ -378,13 +378,13 @@ export type NotificationCreateInput = {
   deletedBy?: string | null
   readAt?: Date | string | null
   archivedAt?: Date | string | null
-  organization: Prisma.OrganizationCreateNestedOneWithoutNotificationsInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutNotificationsInput
   sourceOutboxEvent?: Prisma.OutboxEventCreateNestedOneWithoutNotificationInput
 }
 
 export type NotificationUncheckedCreateInput = {
   id?: string
-  organizationId: string
+  organizationId?: string | null
   sourceOutboxEventId?: string | null
   eventType: string
   aggregateType: string
@@ -416,13 +416,13 @@ export type NotificationUpdateInput = {
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  organization?: Prisma.OrganizationUpdateOneRequiredWithoutNotificationsNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutNotificationsNestedInput
   sourceOutboxEvent?: Prisma.OutboxEventUpdateOneWithoutNotificationNestedInput
 }
 
 export type NotificationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceOutboxEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -441,7 +441,7 @@ export type NotificationUncheckedUpdateInput = {
 
 export type NotificationCreateManyInput = {
   id?: string
-  organizationId: string
+  organizationId?: string | null
   sourceOutboxEventId?: string | null
   eventType: string
   aggregateType: string
@@ -477,7 +477,7 @@ export type NotificationUpdateManyMutationInput = {
 
 export type NotificationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceOutboxEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -711,7 +711,7 @@ export type NotificationScalarWhereInput = {
   OR?: Prisma.NotificationScalarWhereInput[]
   NOT?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
   id?: Prisma.StringFilter<"Notification"> | string
-  organizationId?: Prisma.StringFilter<"Notification"> | string
+  organizationId?: Prisma.StringNullableFilter<"Notification"> | string | null
   sourceOutboxEventId?: Prisma.StringNullableFilter<"Notification"> | string | null
   eventType?: Prisma.StringFilter<"Notification"> | string
   aggregateType?: Prisma.StringFilter<"Notification"> | string
@@ -743,12 +743,12 @@ export type NotificationCreateWithoutSourceOutboxEventInput = {
   deletedBy?: string | null
   readAt?: Date | string | null
   archivedAt?: Date | string | null
-  organization: Prisma.OrganizationCreateNestedOneWithoutNotificationsInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutNotificationsInput
 }
 
 export type NotificationUncheckedCreateWithoutSourceOutboxEventInput = {
   id?: string
-  organizationId: string
+  organizationId?: string | null
   eventType: string
   aggregateType: string
   aggregateId: string
@@ -795,12 +795,12 @@ export type NotificationUpdateWithoutSourceOutboxEventInput = {
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  organization?: Prisma.OrganizationUpdateOneRequiredWithoutNotificationsNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutNotificationsNestedInput
 }
 
 export type NotificationUncheckedUpdateWithoutSourceOutboxEventInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateType?: Prisma.StringFieldUpdateOperationsInput | string
   aggregateId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -907,7 +907,7 @@ export type NotificationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   deletedBy?: boolean
   readAt?: boolean
   archivedAt?: boolean
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.Notification$organizationArgs<ExtArgs>
   sourceOutboxEvent?: boolean | Prisma.Notification$sourceOutboxEventArgs<ExtArgs>
 }, ExtArgs["result"]["notification"]>
 
@@ -928,7 +928,7 @@ export type NotificationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   deletedBy?: boolean
   readAt?: boolean
   archivedAt?: boolean
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.Notification$organizationArgs<ExtArgs>
   sourceOutboxEvent?: boolean | Prisma.Notification$sourceOutboxEventArgs<ExtArgs>
 }, ExtArgs["result"]["notification"]>
 
@@ -949,7 +949,7 @@ export type NotificationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   deletedBy?: boolean
   readAt?: boolean
   archivedAt?: boolean
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.Notification$organizationArgs<ExtArgs>
   sourceOutboxEvent?: boolean | Prisma.Notification$sourceOutboxEventArgs<ExtArgs>
 }, ExtArgs["result"]["notification"]>
 
@@ -974,27 +974,27 @@ export type NotificationSelectScalar = {
 
 export type NotificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "sourceOutboxEventId" | "eventType" | "aggregateType" | "aggregateId" | "title" | "message" | "severity" | "status" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy" | "readAt" | "archivedAt", ExtArgs["result"]["notification"]>
 export type NotificationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.Notification$organizationArgs<ExtArgs>
   sourceOutboxEvent?: boolean | Prisma.Notification$sourceOutboxEventArgs<ExtArgs>
 }
 export type NotificationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.Notification$organizationArgs<ExtArgs>
   sourceOutboxEvent?: boolean | Prisma.Notification$sourceOutboxEventArgs<ExtArgs>
 }
 export type NotificationIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.Notification$organizationArgs<ExtArgs>
   sourceOutboxEvent?: boolean | Prisma.Notification$sourceOutboxEventArgs<ExtArgs>
 }
 
 export type $NotificationPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Notification"
   objects: {
-    organization: Prisma.$OrganizationPayload<ExtArgs>
+    organization: Prisma.$OrganizationPayload<ExtArgs> | null
     sourceOutboxEvent: Prisma.$OutboxEventPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    organizationId: string
+    organizationId: string | null
     sourceOutboxEventId: string | null
     eventType: string
     aggregateType: string
@@ -1403,7 +1403,7 @@ readonly fields: NotificationFieldRefs;
  */
 export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  organization<T extends Prisma.Notification$organizationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Notification$organizationArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   sourceOutboxEvent<T extends Prisma.Notification$sourceOutboxEventArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Notification$sourceOutboxEventArgs<ExtArgs>>): Prisma.Prisma__OutboxEventClient<runtime.Types.Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1848,6 +1848,25 @@ export type NotificationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many Notifications to delete.
    */
   limit?: number
+}
+
+/**
+ * Notification.organization
+ */
+export type Notification$organizationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Organization
+   */
+  select?: Prisma.OrganizationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Organization
+   */
+  omit?: Prisma.OrganizationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizationInclude<ExtArgs> | null
+  where?: Prisma.OrganizationWhereInput
 }
 
 /**

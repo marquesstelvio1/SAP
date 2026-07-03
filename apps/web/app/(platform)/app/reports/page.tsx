@@ -3,6 +3,7 @@ import { AccessState, Card, CardContent, CardDescription, CardHeader, CardTitle 
 import { ArrowRight, Box, Container, DollarSign, Gauge, Route } from "lucide-react";
 import type { Metadata, Route as RouteType } from "next";
 import Link from "next/link";
+import React from "react";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 
 export const dynamic = "force-dynamic";

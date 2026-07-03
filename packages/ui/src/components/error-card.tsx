@@ -19,7 +19,13 @@ export const ErrorCard = forwardRef<
     >
       <h2 className="text-lg font-semibold">{title}</h2>
       {message && <p className="text-muted-foreground text-sm">{message}</p>}
-      {onRetry && <Button onClick={onRetry}>Tentar novamente</Button>}
+      {onRetry && (
+        <Button onClick={onRetry} aria-label="Tentar novamente">
+          Tentar novamente
+        </Button>
+      )}
     </Card>
   );
 });
+
+ErrorCard.displayName = "ErrorCard";

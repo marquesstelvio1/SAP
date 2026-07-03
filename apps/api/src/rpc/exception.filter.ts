@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Logger,
 } from "@nestjs/common";
+import { ORPCError } from "@orpc/server";
 import type { TraceContext } from "@saptm/observability";
 import {
   createRpcErrorEnvelope,
@@ -139,6 +140,25 @@ export class RpcExceptionFilter implements ExceptionFilter {
       });
 
       sendJsonResponse(response, HttpStatus.BAD_REQUEST, envelope);
+      return;
+    }
+
+    // Handle oRPC errors (can occur before NestJS HTTP layer)
+    if (exception instanceof ORPCError) {
+      const status = exception.status ?? HttpStatus.INTERNAL_SERVER_ERROR;
+      const errorCode = exception.code as RpcErrorCode;
+      const httpStatus = getHttpStatusFromRpcErrorCode(errorCode) ?? status;
+
+      this.logger.warn(`oRPC error [${errorCode}]: ${exception.message}`);
+
+      const envelope = createRpcErrorEnvelope({
+        code: errorCode,
+        message: exception.message,
+        ...(traceId !== undefined ? { traceId } : {}),
+        ...(requestId !== undefined ? { requestId } : {}),
+      });
+
+      sendJsonResponse(response, httpStatus, envelope);
       return;
     }
 

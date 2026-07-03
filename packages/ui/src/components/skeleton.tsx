@@ -62,5 +62,9 @@ function SkeletonMetricTile({ className, ...props }: React.ComponentProps<"div">
     </div>
   );
 }
+Skeleton.displayName = "Skeleton";
+SkeletonCard.displayName = "SkeletonCard";
+SkeletonTable.displayName = "SkeletonTable";
+SkeletonMetricTile.displayName = "SkeletonMetricTile";
 
 export { Skeleton, SkeletonCard, SkeletonMetricTile, SkeletonTable };

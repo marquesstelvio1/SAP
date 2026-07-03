@@ -14,15 +14,12 @@ import {
 } from "@saptm/ui";
 import type { Route } from "next";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import { formatDateTime } from "@/lib/format";
 import { useTrackingOverview } from "../../../hooks/use-tracking-overview";
 import { RpcError } from "../../../lib/rpc-client";
 
 export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boolean }) {
-  const router = useRouter();
-
   if (!canReadTracking) {
     return (
       <AccessState
@@ -62,8 +59,19 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
     const error = overviewQuery.error;
 
     if (error instanceof RpcError && error.status === "unauthorized") {
-      router.push("/sign-in?reason=session_expired");
-      return null;
+      return (
+        <AccessState
+          badgeLabel="Sessão expirada"
+          description="A sua sessão expirou ou é inválida. Re-autentique para continuar."
+          role="alert"
+          title="Sessão expirada"
+          variant="error"
+        >
+          <Button asChild size="sm" variant="outline">
+            <Link href={"/sign-in?reason=session_expired" as Route}>Re-autenticar</Link>
+          </Button>
+        </AccessState>
+      );
     }
 
     if (error instanceof RpcError && error.status === "forbidden") {

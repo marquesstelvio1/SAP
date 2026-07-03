@@ -8,18 +8,8 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { RpcError } from "../lib/rpc-client";
+import { RpcError, type RpcFailure } from "../lib/rpc-client";
 
-/**
- * Hook para queries RPC com defaults de resiliência.
- * Defaults são aplicados APÓS o spread de options para evitar que callers
- * os sobrescrevam e causem request storms (429).
- *
- * - staleTime: 60s para evitar refetches frequentes
- * - gcTime: 10min para cache persistente entre navegações
- * - retry: máximo 1 tentativa com backoff exponencial (1s, 2s, 4s)
- * - refetchOnWindowFocus/refetchOnReconnect: false para evitar storms
- */
 export function useRpcQuery<TData>(options: UseQueryOptions<TData, Error, TData, QueryKey>) {
   const queryOptions = options;
 
@@ -27,7 +17,20 @@ export function useRpcQuery<TData>(options: UseQueryOptions<TData, Error, TData,
     if (error instanceof RpcError && (error.status === "unauthorized" || error.status === "forbidden")) {
       return false;
     }
+    if (error instanceof RpcError && error.status === "rate_limited") {
+      return failureCount < 1;
+    }
     return failureCount < 1;
+  };
+
+  const defaultRetryDelay = (failureCount: number, error: Error): number => {
+    if (error instanceof RpcError && error.status === "rate_limited") {
+      const errorWithRetryAfter = error as unknown as RpcFailure;
+      const baseDelay = errorWithRetryAfter.retryAfterMs ?? 10_000;
+      const jitter = Math.random() * 1000;
+      return baseDelay * (2 ** failureCount) + jitter;
+    }
+    return Math.min(2000 * 2 ** failureCount, 30000);
   };
 
   return useQuery<TData, Error, TData, QueryKey>({
@@ -35,7 +38,7 @@ export function useRpcQuery<TData>(options: UseQueryOptions<TData, Error, TData,
     staleTime: queryOptions.staleTime ?? 60_000,
     gcTime: queryOptions.gcTime ?? 10 * 60_000,
     retry: queryOptions.retry ?? defaultRetry,
-    retryDelay: queryOptions.retryDelay ?? (() => 1_000),
+    retryDelay: queryOptions.retryDelay ?? defaultRetryDelay,
     refetchOnWindowFocus: queryOptions.refetchOnWindowFocus ?? false,
     refetchOnReconnect: queryOptions.refetchOnReconnect ?? false,
     refetchInterval: queryOptions.refetchInterval ?? false,

@@ -32,4 +32,12 @@ export class HealthController {
 
     return report;
   }
+
+  @Get("startup")
+  @HttpCode(200)
+  startup(): RuntimeHealthReport {
+    // Startup probe must be lightweight — checks only if process is alive
+    // NOT database connectivity, to avoid killing the container during cold start
+    return this.health.getLiveness();
+  }
 }

@@ -3,6 +3,7 @@ import { Slot } from "radix-ui";
 import type * as React from "react";
 
 import { cn } from "../lib/utils.js";
+import { Spinner } from "./spinner.js";
 
 const densityHeightMap = {
   comfortable: "h-[var(--density-comfortable-control-height)]",
@@ -68,14 +69,19 @@ function Button({
   size,
   density = "compact",
   asChild = false,
+  loading = false,
+  disabled,
+  children,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     density?: "comfortable" | "compact" | "operational";
+    loading?: boolean;
   }) {
   const Component = asChild ? Slot.Root : "button";
   const resolvedSize = size ?? "default";
+  const isDisabled = disabled || loading;
 
   return (
     <Component
@@ -86,9 +92,16 @@ function Button({
         className,
       )}
       style={sizeStyles[resolvedSize]}
+      disabled={isDisabled}
+      aria-busy={loading || undefined}
       {...props}
-    />
+    >
+      {loading ? <Spinner className="size-4" aria-hidden="true" /> : null}
+      {children}
+    </Component>
   );
 }
+
+Button.displayName = "Button";
 
 export { Button, buttonVariants };

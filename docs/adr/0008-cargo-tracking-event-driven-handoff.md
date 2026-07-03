@@ -2,7 +2,9 @@
 
 ## Status
 
-Proposed.
+Accepted — implemented as dual-write pattern (Phase 1). Cutover to pure event-driven (Phase 2) pending.
+
+> **Nota de actualização (2026-07-03):** O handler `cargo-event.handler.ts` existe em `apps/api/src/tracking/events/`, confirmando que a Fase 1 (dual-write) foi implementada. A Fase 2 (cutover completo) requer que o `CargoRepository` remova os métodos de tracking e que o handler seja a única fonte de dados de tracking. ADR foi alterado de "Proposed" para "Accepted" com base na evidência de implementação.
 
 ## Context
 

@@ -130,6 +130,15 @@ function SelectSeparator({
   );
 }
 
+Select.displayName = "Select";
+SelectGroup.displayName = "SelectGroup";
+SelectValue.displayName = "SelectValue";
+SelectTrigger.displayName = "SelectTrigger";
+SelectContent.displayName = "SelectContent";
+SelectLabel.displayName = "SelectLabel";
+SelectItem.displayName = "SelectItem";
+SelectSeparator.displayName = "SelectSeparator";
+
 export {
   Select,
   SelectContent,

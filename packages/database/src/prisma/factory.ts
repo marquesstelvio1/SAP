@@ -124,8 +124,14 @@ export function createPrismaClient() {
   const env = getRuntimeEnv();
   const connectionString = env.DATABASE_URL ?? "";
 
-  const poolConfig: { connectionString: string; max?: number; idleTimeoutMillis?: number } = {
+  const poolConfig: {
+    connectionString: string;
+    max?: number;
+    idleTimeoutMillis?: number;
+    connectionTimeoutMillis?: number;
+  } = {
     connectionString,
+    connectionTimeoutMillis: 30_000,
   };
 
   const poolMax = env.DATABASE_POOL_MAX !== undefined ? Number(env.DATABASE_POOL_MAX) : undefined;

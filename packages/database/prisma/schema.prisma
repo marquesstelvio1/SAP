@@ -367,6 +367,8 @@ model Organization {
   deletedAt DateTime?
   deletedBy String?
 
+  @@index([status, deletedAt])
+
   memberships                     Membership[]
   roles                           Role[]
   auditRecords                    AuditRecord[]
@@ -405,7 +407,7 @@ model Team {
   description    String?
   slug           String
   organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: NoAction)
   members            TeamMember[]
   cargos             Cargo[]
   trackingShipments  TrackingShipment[]
@@ -425,7 +427,7 @@ model TeamMember {
   teamId String
   userId String
   role   String @default("member") // "admin" | "member" | "viewer"
-  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: NoAction)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([teamId, userId])
@@ -576,7 +578,7 @@ model ApiKey {
 
 model IntegrationEvent {
   id               String          @id @default(cuid())
-  organizationId   String
+  organizationId   String?
   serviceAccountId String?
   sourceSystem     String
   externalId       String
@@ -586,7 +588,7 @@ model IntegrationEvent {
   processedAt      DateTime?
   deletedAt        DateTime?
   deletedBy        String?
-  organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization     Organization?   @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   serviceAccount   ServiceAccount? @relation(fields: [serviceAccountId], references: [id], onDelete: SetNull)
 
   @@unique([organizationId, sourceSystem, externalId])
@@ -618,7 +620,7 @@ model OutboxEvent {
 
 model Notification {
   id                  String             @id @default(cuid())
-  organizationId      String
+  organizationId      String?
   sourceOutboxEventId String?            @unique
   eventType           String
   aggregateType       String
@@ -634,7 +636,7 @@ model Notification {
   readAt              DateTime?
   archivedAt          DateTime?
 
-  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization      Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   sourceOutboxEvent OutboxEvent? @relation(fields: [sourceOutboxEventId], references: [id], onDelete: SetNull)
 
   @@index([organizationId, status, createdAt])
@@ -701,7 +703,7 @@ model Cargo {
   deletedAt                   DateTime?
   deletedBy                   String?
 
-  organization         Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization         Organization              @relation(fields: [organizationId], references: [id], onDelete: NoAction)
   team                 Team?                     @relation(fields: [teamId], references: [id], onDelete: SetNull)
   // Logical reference to TrackingShipment (no FK constraint for bounded context decoupling)
   complianceEvidences  CargoComplianceEvidence[]
@@ -759,8 +761,8 @@ model CargoDeliveryException {
   deletedAt               DateTime?
   deletedBy               String?
 
-  organization    Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo           Cargo                 @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  organization    Organization          @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  cargo           Cargo                 @relation(fields: [cargoId], references: [id], onDelete: NoAction)
   claimSettlement CargoClaimSettlement?
 
   @@unique([organizationId, recordIdempotencyKey])
@@ -792,9 +794,9 @@ model CargoClaimSettlement {
   deletedAt            DateTime?
   deletedBy            String?
 
-  organization      Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo             Cargo                  @relation(fields: [cargoId], references: [id], onDelete: Cascade)
-  deliveryException CargoDeliveryException @relation(fields: [deliveryExceptionId], references: [id], onDelete: Cascade)
+  organization      Organization           @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  cargo             Cargo                  @relation(fields: [cargoId], references: [id], onDelete: NoAction)
+  deliveryException CargoDeliveryException @relation(fields: [deliveryExceptionId], references: [id], onDelete: NoAction)
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, settlementReference])
@@ -818,7 +820,7 @@ model CapacityResource {
   deletedAt             DateTime?
   deletedBy             String?
 
-  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: NoAction)
   slots        CapacitySlot[]
 
   @@unique([organizationId, recordIdempotencyKey])
@@ -843,8 +845,8 @@ model CapacitySlot {
   deletedAt            DateTime?
   deletedBy            String?
 
-  organization      Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  resource          CapacityResource           @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  organization      Organization               @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  resource          CapacityResource           @relation(fields: [resourceId], references: [id], onDelete: NoAction)
   reservations      CapacitySlotReservation[]
   advisoryDecisions CapacityAdvisoryDecision[]
 
@@ -877,9 +879,9 @@ model CapacitySlotReservation {
   deletedAt             DateTime?
   deletedBy             String?
 
-  organization      Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo             Cargo                      @relation(fields: [cargoId], references: [id], onDelete: Cascade)
-  slot              CapacitySlot               @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  organization      Organization               @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  cargo             Cargo                      @relation(fields: [cargoId], references: [id], onDelete: NoAction)
+  slot              CapacitySlot               @relation(fields: [slotId], references: [id], onDelete: NoAction)
   advisoryDecisions CapacityAdvisoryDecision[]
   transportOrders   TransportOrder[]
 
@@ -912,7 +914,7 @@ model CapacityAdvisoryDecision {
   deletedAt              DateTime?
   deletedBy              String?
 
-  organization Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization Organization             @relation(fields: [organizationId], references: [id], onDelete: NoAction)
   slot         CapacitySlot?            @relation(fields: [slotId], references: [id], onDelete: SetNull)
   reservation  CapacitySlotReservation? @relation(fields: [reservationId], references: [id], onDelete: SetNull)
 
@@ -954,13 +956,13 @@ model TransportOrder {
   deletedAt              DateTime?
   deletedBy              String?
 
-  organization        Organization                     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo               Cargo                            @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  organization        Organization                     @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  cargo               Cargo                            @relation(fields: [cargoId], references: [id], onDelete: NoAction)
   // Logical reference to TrackingShipment (no FK constraint for bounded context decoupling)
   capacityReservation CapacitySlotReservation?         @relation(fields: [capacityReservationId], references: [id], onDelete: SetNull)
   scheduleRevisions   TransportOrderScheduleRevision[]
   dispatches          TransportOrderDispatch[]
-  trackingShipment    TrackingShipment?                @relation(fields: [trackingShipmentId], references: [id])
+  // Logical reference to TrackingShipment (no FK constraint for bounded context decoupling)
 
   @@unique([organizationId, confirmIdempotencyKey])
   @@unique([organizationId, cancelIdempotencyKey])
@@ -988,8 +990,8 @@ model TransportOrderDispatch {
   deletedAt            DateTime?
   deletedBy            String?
 
-  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  transportOrder TransportOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  transportOrder TransportOrder @relation(fields: [orderId], references: [id], onDelete: NoAction)
 
   @@unique([organizationId, dispatchReference])
   @@unique([organizationId, idempotencyKey])
@@ -1026,8 +1028,8 @@ model TransportOrderScheduleRevision {
   deletedAt                  DateTime?
   deletedBy                  String?
 
-  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  transportOrder TransportOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  transportOrder TransportOrder @relation(fields: [orderId], references: [id], onDelete: NoAction)
 
   @@unique([organizationId, revisionReference])
   @@unique([organizationId, idempotencyKey])
@@ -1050,7 +1052,7 @@ model TariffRateCard {
   deletedAt            DateTime?
   deletedBy            String?
 
-  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: NoAction)
   rules        TariffRateRule[]
   quotes       TariffQuote[]
 
@@ -1084,8 +1086,8 @@ model TariffRateRule {
   deletedAt            DateTime?
   deletedBy            String?
 
-  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  rateCard     TariffRateCard @relation(fields: [rateCardId], references: [id], onDelete: Cascade)
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  rateCard     TariffRateCard @relation(fields: [rateCardId], references: [id], onDelete: NoAction)
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, rateCardId, ruleCode])
@@ -1118,9 +1120,9 @@ model TariffQuote {
   deletedAt               DateTime?
   deletedBy               String?
 
-  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo        Cargo          @relation(fields: [cargoId], references: [id], onDelete: Cascade)
-  rateCard     TariffRateCard @relation(fields: [rateCardId], references: [id], onDelete: Cascade)
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  cargo        Cargo          @relation(fields: [cargoId], references: [id], onDelete: NoAction)
+  rateCard     TariffRateCard @relation(fields: [rateCardId], references: [id], onDelete: NoAction)
 
   @@unique([organizationId, calculateIdempotencyKey])
   @@unique([organizationId, approveIdempotencyKey])
@@ -1152,8 +1154,8 @@ model CargoOperationalHandoff {
   deletedAt            DateTime?
   deletedBy            String?
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo        Cargo        @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  cargo        Cargo        @relation(fields: [cargoId], references: [id], onDelete: NoAction)
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, handoffReference])
@@ -1189,8 +1191,8 @@ model CargoComplianceEvidence {
   deletedAt            DateTime?
   deletedBy            String?
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  cargo        Cargo        @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  cargo        Cargo        @relation(fields: [cargoId], references: [id], onDelete: NoAction)
 
   @@unique([organizationId, recordIdempotencyKey])
   @@unique([organizationId, verifyIdempotencyKey])
@@ -1220,11 +1222,10 @@ model TrackingShipment {
   deletedAt          DateTime?
   deletedBy          String?
 
-  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: NoAction)
   team            Team?            @relation(fields: [teamId], references: [id], onDelete: SetNull)
   events          TrackingEvent[]
   cargo           Cargo?           @relation(fields: [cargoId], references: [id])
-  transportOrders TransportOrder[]
   cargoId         String?
 
   @@unique([organizationId, referenceCode])
@@ -1238,7 +1239,7 @@ model TrackingShipment {
 model WebhookEndpoint {
   id              String       @id @default(cuid())
   organizationId  String
-  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: NoAction)
   name            String
   url             String
   secret          String?
@@ -1260,7 +1261,7 @@ model WebhookEndpoint {
 model WebhookDelivery {
   id           String          @id @default(cuid())
   webhookId    String
-  webhook      WebhookEndpoint @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+  webhook      WebhookEndpoint @relation(fields: [webhookId], references: [id], onDelete: NoAction)
   eventType    String
   payload      Json
   status       String          @default("pending")
@@ -1270,6 +1271,7 @@ model WebhookDelivery {
   nextRetryAt  DateTime?
   deliveredAt  DateTime?
   createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
   deletedAt    DateTime?
   deletedBy    String?
 
@@ -1295,8 +1297,8 @@ model TrackingEvent {
   deletedAt      DateTime?
   deletedBy      String?
 
-  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  shipment     TrackingShipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: NoAction)
+  shipment     TrackingShipment @relation(fields: [shipmentId], references: [id], onDelete: NoAction)
 
   @@unique([organizationId, idempotencyKey])
   @@index([organizationId, eventType, occurredAt])
@@ -1367,6 +1369,7 @@ model Invoice {
   paidAt          DateTime?
   downloadUrl     String?
   createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
   deletedAt       DateTime?
   deletedBy       String?
 

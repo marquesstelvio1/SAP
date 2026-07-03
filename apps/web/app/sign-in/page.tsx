@@ -9,18 +9,26 @@ export const dynamic = "force-dynamic";
 type SignInPageProps = {
   searchParams: Promise<{
     next?: string | string[];
+    reason?: string;
   }>;
 };
 
 export default async function SignInPage({ searchParams }: SignInPageProps) {
-  const platformSession = await getCurrentPlatformSession();
-
-  if (platformSession !== undefined) {
-    redirect("/app" as Route);
-  }
-
   const params = await searchParams;
+  const reason = readSafeStringParam(params.reason);
   const nextPath = readSafeNextPath(params.next);
+
+  // If the user was redirected here due to session expiry (reason=session_expired),
+  // skip the automatic redirect even if the server-side session check still returns
+  // a cached session (Better Auth cookie cache). The client detected that the API
+  // rejected the session, so force re-authentication.
+  if (reason !== "session_expired") {
+    const platformSession = await getCurrentPlatformSession();
+
+    if (platformSession !== undefined) {
+      redirect("/app" as Route);
+    }
+  }
 
   return (
     <main className="min-h-screen bg-sidebar text-sidebar-foreground" id="main-content">
@@ -67,6 +75,11 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
       </div>
     </main>
   );
+}
+
+function readSafeStringParam(value: string | string[] | undefined): string | undefined {
+  const str = Array.isArray(value) ? value[0] : value;
+  return str ?? undefined;
 }
 
 function readSafeNextPath(value: string | string[] | undefined): string {

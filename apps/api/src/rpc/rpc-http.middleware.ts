@@ -77,6 +77,10 @@ export class RpcHttpMiddleware implements NestMiddleware {
 
       next();
     } catch (error) {
+      // If oRPC already sent an error response, do not try to send another
+      if (response.headersSent) {
+        return;
+      }
       next(error);
     }
   }

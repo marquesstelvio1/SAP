@@ -1,9 +1,10 @@
 "use client";
 
-import { AccessState, EmptyState } from "@saptm/ui";
+import { AccessState, Button, EmptyState } from "@saptm/ui";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Suspense } from "react";
+import type { Route } from "next";
 import { LifecycleProgressIndicator } from "../../../../components/cargo/cargo-lifecycle-group";
 import { CargoOverviewHeader } from "../../../../components/cargo/cargo-overview-header";
 import {
@@ -50,7 +51,6 @@ export function CargoOverviewClient({
   canRecordComplianceEvidence: boolean;
   canVerifyComplianceEvidence: boolean;
 }) {
-  const router = useRouter();
   const cargoQuery = useCargoOverview({ offset, limit });
 
   if (cargoQuery.isLoading) {
@@ -68,8 +68,19 @@ export function CargoOverviewClient({
     const error = cargoQuery.error;
 
     if (error instanceof RpcError && error.status === "unauthorized") {
-      router.push("/sign-in?reason=session_expired");
-      return null;
+      return (
+        <AccessState
+          badgeLabel="Sessão expirada"
+          description="A sua sessão expirou ou é inválida. Re-autentique para continuar."
+          role="alert"
+          title="Sessão expirada"
+          variant="error"
+        >
+          <Button asChild size="sm" variant="outline">
+            <Link href={"/sign-in?reason=session_expired" as Route}>Re-autenticar</Link>
+          </Button>
+        </AccessState>
+      );
     }
 
     if (error instanceof RpcError && error.status === "forbidden") {

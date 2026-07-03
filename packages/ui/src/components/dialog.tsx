@@ -115,6 +115,17 @@ function DialogDescription({
   );
 }
 
+Dialog.displayName = "Dialog";
+DialogTrigger.displayName = "DialogTrigger";
+DialogPortal.displayName = "DialogPortal";
+DialogClose.displayName = "DialogClose";
+DialogOverlay.displayName = "DialogOverlay";
+DialogContent.displayName = "DialogContent";
+DialogHeader.displayName = "DialogHeader";
+DialogFooter.displayName = "DialogFooter";
+DialogTitle.displayName = "DialogTitle";
+DialogDescription.displayName = "DialogDescription";
+
 export {
   Dialog,
   DialogClose,

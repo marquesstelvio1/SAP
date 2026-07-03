@@ -16,7 +16,7 @@ export async function getTrackingOverview(options?: {
   const result = await rpcGet(
     "/rpc/tracking/overview",
     trackingOverviewOutputSchema,
-    options === undefined ? {} : { searchParams: options },
+    options === undefined ? {} : { searchParams: options as Record<string, string | number | undefined> },
   );
 
   if (result.status !== "ok") {

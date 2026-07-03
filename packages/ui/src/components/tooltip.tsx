@@ -37,4 +37,8 @@ function TooltipContent({
   );
 }
 
+TooltipProvider.displayName = "TooltipProvider";
+Tooltip.displayName = "Tooltip";
+TooltipTrigger.displayName = "TooltipTrigger";
+TooltipContent.displayName = "TooltipContent";
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger };

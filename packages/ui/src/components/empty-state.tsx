@@ -31,4 +31,5 @@ function EmptyState({ icon, title, description, action, className, ...props }: E
   );
 }
 
+EmptyState.displayName = "EmptyState";
 export { EmptyState };
