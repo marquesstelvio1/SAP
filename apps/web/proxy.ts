@@ -36,10 +36,12 @@ function isStaticAsset(pathname: string): boolean {
 }
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX = 200;
+const RATE_LIMIT_MAX = 600;
+const RATE_LIMIT_BURST = 50;
 
 type IpEntry = {
   count: number;
+  burstRemaining: number;
   resetAt: number;
 };
 
@@ -50,17 +52,26 @@ function isRateLimited(ip: string): boolean {
   const entry = localRateMap.get(ip);
 
   if (entry === undefined || now >= entry.resetAt) {
-    localRateMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    localRateMap.set(ip, {
+      count: 1,
+      burstRemaining: RATE_LIMIT_BURST,
+      resetAt: now + RATE_LIMIT_WINDOW_MS,
+    });
     return false;
   }
 
   entry.count++;
 
-  if (entry.count > RATE_LIMIT_MAX) {
-    return true;
+  if (entry.count <= RATE_LIMIT_MAX) {
+    return false;
   }
 
-  return false;
+  if (entry.burstRemaining > 0) {
+    entry.burstRemaining--;
+    return false;
+  }
+
+  return true;
 }
 
 function isAuthPath(pathname: string): boolean {
@@ -87,6 +98,13 @@ function buildCsp(
   const imgSrc = isAuthPath ? `'self' data:` : `'self' data: blob: https:`;
   const workerSrc = isAuthPath ? `'none'` : `'self' blob:`;
 
+  // style-src-elem uses 'unsafe-inline' because:
+  // 1. Tailwind v4 generates inline <style> tags during RSC streaming without nonces
+  // 2. Next.js SSR injects critical CSS as inline <style> without nonce support
+  // 3. Radix UI / floating-ui use inline style attributes (covered by style-src-attr)
+  // CSS injection is a negligible attack vector vs page breakage from missing nonces
+  const styleSrcElem = "'self' 'unsafe-inline'";
+
   const directives = [
     `default-src 'self'`,
     `base-uri 'self'`,
@@ -97,7 +115,7 @@ function buildCsp(
     `font-src 'self' data:`,
     `script-src 'self' ${scriptSrc}`,
     `style-src-attr 'unsafe-inline'`,
-    `style-src-elem 'self' 'nonce-${nonce}' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='`,
+    `style-src-elem ${styleSrcElem}`,
     `connect-src ${connectSources.join(" ")}`,
     `worker-src ${workerSrc}`,
     `frame-src 'none'`,
@@ -192,20 +210,23 @@ export function proxy(request: NextRequest) {
     "__Secure-better-auth.session_token",
   ] as const;
 
-  const sessionCookie = SESSION_COOKIE_NAMES.reduce<string | undefined>(
-    (found, name) => found ?? request.cookies.get(name)?.value,
-    undefined,
-  );
+  const sessionCookie = SESSION_COOKIE_NAMES.reduce<string | undefined>((found, name) => {
+    const cookie = request.cookies.get(name);
+    return found ?? (cookie?.value && cookie.value.length > 0 ? cookie.value : undefined);
+  }, undefined);
 
   if (sessionCookie !== undefined) {
-    return respondWithSecurityHeaders(
-      nonce,
-      url.origin,
-      apiUrl,
-      isDev,
-      request,
-      isAuthPath(pathname),
-    );
+    // Check if session cookie value looks valid (Better Auth sets empty values on logout)
+    if (sessionCookie.length > 20) {
+      return respondWithSecurityHeaders(
+        nonce,
+        url.origin,
+        apiUrl,
+        isDev,
+        request,
+        isAuthPath(pathname),
+      );
+    }
   }
 
   const CHUNKED_PREFIXES = [

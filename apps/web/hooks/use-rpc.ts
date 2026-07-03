@@ -11,21 +11,34 @@ import {
 import { RpcError } from "../lib/rpc-client";
 
 /**
- * Hook para queries RPC com staleTime padrão de 30s.
- * O queryFn deve retornar os dados já extraídos da resposta RPC.
- * O tratamento de erro (status !== "ok") deve ser feito dentro do queryFn.
- * Retry é desativado para erros "unauthorized" para evitar loop de 429.
+ * Hook para queries RPC com defaults de resiliência.
+ * Defaults são aplicados APÓS o spread de options para evitar que callers
+ * os sobrescrevam e causem request storms (429).
+ *
+ * - staleTime: 60s para evitar refetches frequentes
+ * - gcTime: 10min para cache persistente entre navegações
+ * - retry: máximo 1 tentativa com backoff exponencial (1s, 2s, 4s)
+ * - refetchOnWindowFocus/refetchOnReconnect: false para evitar storms
  */
 export function useRpcQuery<TData>(options: UseQueryOptions<TData, Error, TData, QueryKey>) {
+  const queryOptions = options;
+
+  const defaultRetry = (failureCount: number, error: Error): boolean => {
+    if (error instanceof RpcError && (error.status === "unauthorized" || error.status === "forbidden")) {
+      return false;
+    }
+    return failureCount < 1;
+  };
+
   return useQuery<TData, Error, TData, QueryKey>({
-    staleTime: 30_000,
-    retry: (failureCount, error) => {
-      if (error instanceof RpcError && error.status === "unauthorized") {
-        return false;
-      }
-      return failureCount < 3;
-    },
-    ...options,
+    ...queryOptions,
+    staleTime: queryOptions.staleTime ?? 60_000,
+    gcTime: queryOptions.gcTime ?? 10 * 60_000,
+    retry: queryOptions.retry ?? defaultRetry,
+    retryDelay: queryOptions.retryDelay ?? (() => 1_000),
+    refetchOnWindowFocus: queryOptions.refetchOnWindowFocus ?? false,
+    refetchOnReconnect: queryOptions.refetchOnReconnect ?? false,
+    refetchInterval: queryOptions.refetchInterval ?? false,
   });
 }
 

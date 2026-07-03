@@ -42,6 +42,18 @@ function mapPrismaCodeToErrorCode(prismaCode: string): RpcErrorCode {
       return "CONFLICT";
     case "P2025":
       return "NOT_FOUND";
+    case "P1000":
+    case "P1001":
+    case "P1002":
+    case "P1003":
+    case "P1008":
+      return "DEPENDENCY_FAILURE";
+    case "P2010":
+    case "P2011":
+    case "P2012":
+    case "P2015":
+    case "P2016":
+      return "VALIDATION_ERROR";
     default:
       return "INTERNAL_ERROR";
   }
@@ -68,11 +80,29 @@ export class RpcExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(RpcExceptionFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost): void {
+    try {
+      this.handleException(exception, host);
+    } catch (sendError) {
+      this.logger.error(
+        "Failed to send RPC error response",
+        sendError instanceof Error ? sendError.stack : undefined,
+      );
+    }
+  }
+
+  private handleException(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const response: Record<string, unknown> = ctx.getResponse();
+    const response = ctx.getResponse<Record<string, unknown>>();
     const traceContext = getTraceContext(host);
     const traceId = traceContext?.traceId;
     const requestId = traceContext?.requestId;
+
+    // Check if headers are already sent to avoid double-send crash
+    const res = response as { headersSent?: boolean };
+    if (res.headersSent === true) {
+      this.logger.warn("RPC exception after headers sent — skipping response");
+      return;
+    }
 
     // Handle Prisma client known request errors
     if (isPrismaClientKnownRequestError(exception)) {
@@ -80,7 +110,7 @@ export class RpcExceptionFilter implements ExceptionFilter {
       const errorCode = mapPrismaCodeToErrorCode(prismaCode);
       const httpStatus = getHttpStatusFromRpcErrorCode(errorCode);
 
-      this.logger.warn(`Prisma error [${prismaCode}]: ${exception.message}`);
+      this.logger.warn(`Prisma error [${prismaCode}]: ${exception.message ?? "Database error"}`);
 
       const envelope = createRpcErrorEnvelope({
         code: errorCode,
@@ -164,10 +194,14 @@ function sendJsonResponse(
   status: number,
   data: Record<string, unknown>,
 ): void {
-  // NestJS Express response has status() and json() methods
   const res = response as {
     status: (code: number) => { json: (body: Record<string, unknown>) => void };
+    headersSent?: boolean;
   };
+
+  if (res.headersSent) {
+    return;
+  }
 
   res.status(status).json(data);
 }

@@ -35,7 +35,7 @@ type Schema<T> = {
   safeParse: (data: unknown) => { success: true; data: T } | { success: false };
 };
 
-const RPC_TIMEOUT_MS = 15_000;
+const RPC_TIMEOUT_MS = 30_000;
 
 type RpcQueryOptions = {
   searchParams?: Record<string, string | number | undefined>;
@@ -188,13 +188,30 @@ async function parseRpcResponse<T>(response: Response, schema: Schema<T>): Promi
   }
 
   if (!response.ok) {
+    let errorText: string;
+    try {
+      const errorBody = await response.text();
+      errorText = errorBody || `API retornou HTTP ${response.status}.`;
+    } catch {
+      errorText = `API retornou HTTP ${response.status}.`;
+    }
     return {
       status: "unavailable",
-      message: `API indisponivel: HTTP ${response.status}.`,
+      message: errorText,
     };
   }
 
-  const envelope = (await response.json()) as RpcJsonEnvelope;
+  let responseBody: unknown;
+  try {
+    responseBody = await response.json();
+  } catch {
+    return {
+      status: "unavailable",
+      message: "API retornou resposta invalida (nao JSON).",
+    };
+  }
+
+  const envelope = responseBody as RpcJsonEnvelope;
   const parsed = schema.safeParse(envelope.json);
 
   if (!parsed.success) {
