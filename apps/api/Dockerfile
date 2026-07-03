@@ -83,6 +83,17 @@ EXPOSE 4000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD node -e "const port=process.env.API_PORT||4000; fetch('http://127.0.0.1:'+port+'/health/live').then((response)=>process.exit(response.ok?0:1)).catch(()=>process.exit(1))"
 
-RUN printf '#!/bin/sh\necho "[migrate] Applying database migrations..."\ncd /app/packages/database && npx prisma migrate deploy --schema=prisma/schema.prisma || echo "[migrate] WARNING: migration failed, continuing anyway"\necho "[migrate] Done."\ncd /app/apps/api && node dist/main.js\n' > /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
+RUN printf '#!/bin/sh\n\
+echo "[migrate] Applying database migrations..."\n\
+cd /app/packages/database && npx prisma migrate deploy --schema=prisma/schema.prisma || echo "[migrate] WARNING: migration failed, continuing anyway"\n\
+\n\
+if [ "${RUN_DB_SEED}" = "true" ]; then\n\
+  echo "[seed] Running database seed..."\n\
+  npx tsx prisma/seed-users.ts 2>/dev/null || echo "[seed] WARNING: users seed skipped (not critical)"\n\
+  echo "[seed] Done."\n\
+fi\n\
+\n\
+echo "[start] Starting API server..."\n\
+cd /app/apps/api && node dist/main.js\n' > /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
 
 CMD ["/docker-entrypoint.sh"]

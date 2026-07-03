@@ -52,6 +52,14 @@ export class AuthContextService {
       authContext.userId,
     );
 
+    if (authorization.permissions.length === 0) {
+      console.warn(
+        `[AUTH] User ${authContext.userId} has zero permissions — ` +
+          `no active membership with role assignments found. ` +
+          `correlationId=${request.traceContext?.correlationId}`,
+      );
+    }
+
     return this.attachContext(request, {
       ...authContext,
       permissions: authorization.permissions,

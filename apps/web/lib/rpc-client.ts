@@ -8,7 +8,7 @@ import type { contracts } from "@saptm/rpc/contracts";
 
 const INTERNAL_REQUEST_HEADER = "x-internal-request" as const;
 
-export type RpcStatus = "forbidden" | "not_found" | "unavailable" | "invalid";
+export type RpcStatus = "unauthorized" | "forbidden" | "not_found" | "unavailable" | "invalid";
 
 export type RpcSuccess<T> = { status: "ok"; data: T };
 
@@ -146,7 +146,14 @@ export async function rpcPost<T>(
 }
 
 async function parseRpcResponse<T>(response: Response, schema: Schema<T>): Promise<RpcResult<T>> {
-  if (response.status === 401 || response.status === 403) {
+  if (response.status === 401) {
+    return {
+      status: "unauthorized",
+      message: "Sessao expirada ou invalida. Faca login novamente.",
+    };
+  }
+
+  if (response.status === 403) {
     return {
       status: "forbidden",
       message: "Sessao sem permissao para esta operacao.",
