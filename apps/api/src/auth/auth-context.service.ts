@@ -33,7 +33,7 @@ export class AuthContextService {
     }
 
     const authContext = await resolveAuthContextFromBetterAuthSession({
-      getSession: this.betterAuthSession.getSession,
+      getSession: this.betterAuthSession.getSession.bind(this.betterAuthSession),
       headers: createCookieHeaders(request.headers),
       traceContext: request.traceContext,
       disableCookieCache: true,
