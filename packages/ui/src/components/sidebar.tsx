@@ -1,6 +1,7 @@
 "use client";
 
 import { cva } from "class-variance-authority";
+import { PanelLeftIcon } from "lucide-react";
 import { Slot } from "radix-ui";
 import * as React from "react";
 
@@ -297,21 +298,7 @@ function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<"
       )}
       {...props}
     >
-      <svg
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M21 12H3" />
-        <path d="M15 6l-6 6 6 6" />
-      </svg>
+      <PanelLeftIcon className="size-4" aria-hidden="true" />
     </button>
   );
 }
