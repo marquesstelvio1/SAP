@@ -52,6 +52,12 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   serverExternalPackages: ["@better-auth/kysely-adapter", "better-auth", "kysely"],
   typedRoutes: true,
+  webpack: (config) => {
+    config.externals = [...(Array.isArray(config.externals) ? config.externals : config.externals ? [config.externals] : []),
+      { "kysely": "commonjs kysely" },
+    ];
+    return config;
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
@@ -84,5 +90,6 @@ export default withBundleAnalyzer(
     hideSourceMaps: true,
     disableLogger: true,
     automaticVercelMonitors: false,
+    SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: "1",
   }),
 );
