@@ -21,7 +21,7 @@ export function ContextRow({
     <div
       className={cn(
         "flex items-center justify-between rounded-md px-3 py-2",
-        muted && "bg-muted/30",
+        muted && "bg-muted",
         className,
       )}
     >

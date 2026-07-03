@@ -288,7 +288,7 @@ function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) 
           <SelectNative
             value={String(table.getState().pagination.pageSize)}
             onChange={(e) => table.setPageSize(Number(e.target.value))}
-            className="h-7 w-16 text-xs [&_svg]:size-3"
+            className="w-16 text-xs [&_svg]:size-3"
           >
             {[10, 25, 50].map((size) => (
               <option key={size} value={size}>
@@ -304,7 +304,7 @@ function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) 
           <Button
             variant="outline"
             size="icon"
-            className="hidden size-7 lg:flex"
+            className="hidden lg:inline-flex"
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
@@ -313,7 +313,6 @@ function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) 
           <Button
             variant="outline"
             size="icon"
-            className="size-7"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -322,7 +321,6 @@ function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) 
           <Button
             variant="outline"
             size="icon"
-            className="size-7"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
@@ -331,7 +329,7 @@ function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) 
           <Button
             variant="outline"
             size="icon"
-            className="hidden size-7 lg:flex"
+            className="hidden lg:inline-flex"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >

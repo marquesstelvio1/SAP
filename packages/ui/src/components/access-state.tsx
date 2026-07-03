@@ -16,7 +16,9 @@ export type AccessStateProps = {
   granted?: boolean;
   icon?: LucideIcon;
   label?: string;
+  message?: string;
   role?: "alert";
+  status?: string;
   title?: string;
   variant?: "blocked" | "empty" | "error";
   children?: ReactNode;
@@ -37,7 +39,9 @@ export function AccessState({
   granted,
   icon: Icon = ShieldBan,
   label,
+  message,
   role,
+  status,
   title,
   variant = "blocked",
   children,
@@ -80,9 +84,10 @@ export function AccessState({
         aria-hidden="true"
       />
       <div className="text-center">
+        {status && <p className="text-muted-foreground/60 mb-1 text-xs">{status}</p>}
         {title && <h3 className="text-lg font-semibold">{title}</h3>}
-        {description && (
-          <p className="text-muted-foreground mt-1 text-sm">{description}</p>
+        {(description ?? message) && (
+          <p className="text-muted-foreground mt-1 text-sm">{description ?? message}</p>
         )}
         {children ? (
           <div className="mt-4">{children}</div>

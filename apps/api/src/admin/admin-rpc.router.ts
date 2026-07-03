@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   adminInvitationCancelInputSchema,
@@ -32,13 +31,12 @@ import {
   adminUserInviteOutputSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthBuilder } from "../rpc/rpc-auth.middleware.js";
 import type { AdminService } from "./admin.service.js";
 
 export type AdminRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreateAdminRpcRouterInput = {
   adminService: Pick<
@@ -54,12 +52,12 @@ export type CreateAdminRpcRouterInput = {
     | "updateMembershipStatus"
     | "updateRolePermissions"
   >;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthBuilder;
 };
 
-const adminRpc = os.$context<AdminRpcContext>();
-
 export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
+  const adminRpc = os.$context<AdminRpcContext>().use(deps.authMiddleware);
+
   return adminRpc.router({
     admin: {
       overview: adminRpc
@@ -68,18 +66,8 @@ export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
         .input(adminOverviewInputSchema)
         .output(adminOverviewOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            adminOverviewMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("admin.organization_required");
-          }
-
           return deps.adminService.getOverview({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
             offset: input.offset,
           });
@@ -90,28 +78,14 @@ export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
         .input(adminUserInviteInputSchema)
         .output(adminUserInviteOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            adminUserInviteMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("admin.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.adminService.inviteUser({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       assignRole: adminRpc
@@ -120,28 +94,14 @@ export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
         .input(adminRoleAssignInputSchema)
         .output(adminRoleAssignOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            adminRoleAssignMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("admin.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.adminService.assignRole({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       createRole: adminRpc
@@ -150,15 +110,14 @@ export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
         .input(adminRoleCreateInputSchema)
         .output(adminRoleMutationOutputSchema)
         .handler(async ({ context, input }) => {
-          const requestInput = await resolveAdminMutationContext(
-            context.request,
-            deps.rpcContextService,
-            adminRoleCreateMetadata,
-          );
-
           return deps.adminService.createRole({
             ...input,
-            ...requestInput,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       updateRolePermissions: adminRpc
@@ -167,15 +126,14 @@ export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
         .input(adminRolePermissionsUpdateInputSchema)
         .output(adminRoleMutationOutputSchema)
         .handler(async ({ context, input }) => {
-          const requestInput = await resolveAdminMutationContext(
-            context.request,
-            deps.rpcContextService,
-            adminRolePermissionsUpdateMetadata,
-          );
-
           return deps.adminService.updateRolePermissions({
             ...input,
-            ...requestInput,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       deleteRole: adminRpc
@@ -184,15 +142,14 @@ export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
         .input(adminRoleDeleteInputSchema)
         .output(adminRoleDeleteOutputSchema)
         .handler(async ({ context, input }) => {
-          const requestInput = await resolveAdminMutationContext(
-            context.request,
-            deps.rpcContextService,
-            adminRoleDeleteMetadata,
-          );
-
           return deps.adminService.deleteRole({
             ...input,
-            ...requestInput,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       revokeRole: adminRpc
@@ -201,15 +158,14 @@ export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
         .input(adminRoleRevokeInputSchema)
         .output(adminRoleRevokeOutputSchema)
         .handler(async ({ context, input }) => {
-          const requestInput = await resolveAdminMutationContext(
-            context.request,
-            deps.rpcContextService,
-            adminRoleRevokeMetadata,
-          );
-
           return deps.adminService.revokeRole({
             ...input,
-            ...requestInput,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       updateMembershipStatus: adminRpc
@@ -218,15 +174,14 @@ export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
         .input(adminMembershipStatusUpdateInputSchema)
         .output(adminMembershipStatusUpdateOutputSchema)
         .handler(async ({ context, input }) => {
-          const requestInput = await resolveAdminMutationContext(
-            context.request,
-            deps.rpcContextService,
-            adminMembershipStatusUpdateMetadata,
-          );
-
           return deps.adminService.updateMembershipStatus({
             ...input,
-            ...requestInput,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       resendInvitation: adminRpc
@@ -235,15 +190,14 @@ export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
         .input(adminInvitationResendInputSchema)
         .output(adminInvitationLifecycleOutputSchema)
         .handler(async ({ context, input }) => {
-          const requestInput = await resolveAdminMutationContext(
-            context.request,
-            deps.rpcContextService,
-            adminInvitationResendMetadata,
-          );
-
           return deps.adminService.resendInvitation({
             ...input,
-            ...requestInput,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       cancelInvitation: adminRpc
@@ -252,63 +206,16 @@ export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {
         .input(adminInvitationCancelInputSchema)
         .output(adminInvitationLifecycleOutputSchema)
         .handler(async ({ context, input }) => {
-          const requestInput = await resolveAdminMutationContext(
-            context.request,
-            deps.rpcContextService,
-            adminInvitationCancelMetadata,
-          );
-
           return deps.adminService.cancelInvitation({
             ...input,
-            ...requestInput,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
     },
   });
-}
-
-async function resolveAdminMutationContext(
-  request: IncomingMessage & RpcRequestWithAuthContext,
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">,
-  metadata: Parameters<RpcContextService["authorizeRequest"]>[1],
-) {
-  const authorizedContext = await rpcContextService.authorizeRequest(request, metadata);
-  const authContext = authorizedContext.authContext;
-  const organizationId = authContext?.organizationId;
-
-  if (authContext === undefined || organizationId === undefined) {
-    throw new ForbiddenException("admin.organization_required");
-  }
-
-  const userAgent = readRequestHeader(request, "user-agent");
-  const ipAddress = readRequestIp(request);
-
-  return {
-    organizationId,
-    actorId: authContext.actorId,
-    actorType: authContext.actorType,
-    correlationId: authContext.correlationId,
-    ...(userAgent === undefined ? {} : { userAgent }),
-    ...(ipAddress === undefined ? {} : { ipAddress }),
-  };
-}
-
-function readRequestHeader(request: IncomingMessage, name: string): string | undefined {
-  const value = request.headers[name] ?? request.headers[name.toLowerCase()];
-
-  if (Array.isArray(value)) {
-    return value.at(0);
-  }
-
-  return value;
-}
-
-function readRequestIp(request: IncomingMessage): string | undefined {
-  const forwardedFor = readRequestHeader(request, "x-forwarded-for");
-
-  if (forwardedFor !== undefined) {
-    return forwardedFor.split(",").at(0)?.trim();
-  }
-
-  return request.socket?.remoteAddress;
 }

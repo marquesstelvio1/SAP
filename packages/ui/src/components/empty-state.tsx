@@ -20,7 +20,7 @@ function EmptyState({ icon, title, description, action, className, ...props }: E
       {...props}
     >
       {icon ? (
-        <div className="mb-1 flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground [&_svg]:size-6">
+        <div className="mb-1 flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground [&_svg]:size-5">
           {icon}
         </div>
       ) : null}

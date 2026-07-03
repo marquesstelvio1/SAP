@@ -1,19 +1,18 @@
-import { forwardRef } from "react";
 import { Button } from "./button.js";
 import { Card } from "./card.js";
 
-export const ErrorCard = forwardRef<
-  HTMLDivElement,
-  {
-    title?: string;
-    message?: string;
-    onRetry?: () => void;
-  }
->(function ErrorCard({ title = "Erro inesperado", message, onRetry }, ref) {
+function ErrorCard({
+  title = "Erro inesperado",
+  message,
+  onRetry,
+}: {
+  title?: string;
+  message?: string;
+  onRetry?: () => void;
+}) {
   return (
     <Card
-      ref={ref}
-      className="flex flex-col items-center justify-center gap-4 p-8"
+      className="flex flex-col items-center justify-center gap-4 p-[var(--density-comfortable-panel-padding)]"
       role="alert"
       tabIndex={-1}
     >
@@ -26,6 +25,6 @@ export const ErrorCard = forwardRef<
       )}
     </Card>
   );
-});
+}
 
 ErrorCard.displayName = "ErrorCard";
