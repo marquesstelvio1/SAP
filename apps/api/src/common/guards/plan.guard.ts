@@ -1,4 +1,3 @@
-import { z } from "zod";
 import {
   type CanActivate,
   type ExecutionContext,
@@ -9,6 +8,7 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { getCurrentOrganizationId, getPrismaClient } from "@saptm/database";
+import { z } from "zod";
 
 import { PLAN_FEATURE_KEY } from "../decorators/plan-feature.decorator.js";
 import { PlanCacheService } from "./plan-cache.service.js";
@@ -32,9 +32,7 @@ function parsePlanFeatures(raw: unknown): PlanFeatureEntry[] {
   if (!result.success) {
     // SECURITY: Fail-closed — malformed features block access instead of
     // allowing silent bypass. Log the error for operational awareness.
-    console.error(
-      `[PLAN_GUARD] Invalid plan features structure: ${result.error.message}`,
-    );
+    console.error(`[PLAN_GUARD] Invalid plan features structure: ${result.error.message}`);
     throw new InternalServerErrorException("plan.features_invalid");
   }
   return result.data;
@@ -48,10 +46,10 @@ export class PlanGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredFeature = this.reflector.getAllAndOverride<string>(
-      PLAN_FEATURE_KEY,
-      [context.getHandler(), context.getClass()],
-    );
+    const requiredFeature = this.reflector.getAllAndOverride<string>(PLAN_FEATURE_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
     if (requiredFeature === undefined) {
       return true;
@@ -77,29 +75,24 @@ export class PlanGuard implements CanActivate {
     const planSlug = subscription.plan;
 
     // Plan lookups cached with 60s TTL + stale-while-revalidate
-    const plan = await this.planCache.getPlanWithStaleRevalidate(
-      planSlug,
-      async () => {
-        const p = await prisma.plan.findUnique({
-          where: { slug: planSlug },
-        });
-        if (p === null) {
-          throw new ForbiddenException("plan.nao_encontrado");
-        }
-        return {
-          id: p.id,
-          slug: p.slug,
-          name: p.name,
-          features: p.features,
-        };
-      },
-    );
+    const plan = await this.planCache.getPlanWithStaleRevalidate(planSlug, async () => {
+      const p = await prisma.plan.findUnique({
+        where: { slug: planSlug },
+      });
+      if (p === null) {
+        throw new ForbiddenException("plan.nao_encontrado");
+      }
+      return {
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        features: p.features,
+      };
+    });
 
     // SECURITY: Validate features with Zod instead of unsafe `as` cast
     const features = parsePlanFeatures(plan.features);
-    const hasFeature = features.some(
-      (f) => f.key === requiredFeature && f.included,
-    );
+    const hasFeature = features.some((f) => f.key === requiredFeature && f.included);
 
     if (!hasFeature) {
       const planName = plan.name ?? planSlug;
@@ -111,33 +104,26 @@ export class PlanGuard implements CanActivate {
     return true;
   }
 
-  private async checkFreePlan(
-    requiredFeature: string,
-  ): Promise<boolean> {
-    const freePlan = await this.planCache.getPlanWithStaleRevalidate(
-      "free",
-      async () => {
-        const prisma = getPrismaClient();
-        const p = await prisma.plan.findUnique({
-          where: { slug: "free" },
-        });
-        if (p === null) {
-          throw new ForbiddenException("plan.nao_disponivel");
-        }
-        return {
-          id: p.id,
-          slug: p.slug,
-          name: p.name,
-          features: p.features,
-        };
-      },
-    );
+  private async checkFreePlan(requiredFeature: string): Promise<boolean> {
+    const freePlan = await this.planCache.getPlanWithStaleRevalidate("free", async () => {
+      const prisma = getPrismaClient();
+      const p = await prisma.plan.findUnique({
+        where: { slug: "free" },
+      });
+      if (p === null) {
+        throw new ForbiddenException("plan.nao_disponivel");
+      }
+      return {
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        features: p.features,
+      };
+    });
 
     // SECURITY: Validate features with Zod instead of unsafe `as` cast
     const features = parsePlanFeatures(freePlan.features);
-    const hasFeature = features.some(
-      (f) => f.key === requiredFeature && f.included,
-    );
+    const hasFeature = features.some((f) => f.key === requiredFeature && f.included);
 
     if (!hasFeature) {
       throw new ForbiddenException("plan.feature_nao_disponivel");

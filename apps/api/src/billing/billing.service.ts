@@ -384,11 +384,11 @@ export class BillingService {
           // SECURITY: Preserve existing stripeCustomerId — do NOT set to null
           // on subscription updates. Nullifying it would orphan the Stripe customer
           // record and break billing portal session creation.
-          const existingSubscription =
-            await this.billingRepo.findSubscription(subOrgId);
+          const existingSubscription = await this.billingRepo.findSubscription(subOrgId);
 
           await this.billingRepo.upsertSubscription(subOrgId, {
-            stripeCustomerId: existingSubscription?.stripeCustomerId ?? subEvent.customer as string | null,
+            stripeCustomerId:
+              existingSubscription?.stripeCustomerId ?? (subEvent.customer as string | null),
             stripeSubscriptionId: subEvent.id,
             plan,
             status,
@@ -413,11 +413,7 @@ export class BillingService {
     }
   }
 
-  private emitSubscriptionEvent(
-    eventType: string,
-    organizationId: string,
-    plan: string,
-  ): void {
+  private emitSubscriptionEvent(eventType: string, organizationId: string, plan: string): void {
     const event: DomainEvent = {
       eventType,
       aggregateType: "subscription",

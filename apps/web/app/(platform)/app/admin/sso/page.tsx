@@ -1,6 +1,6 @@
-import { Suspense } from "react";
 import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import { requirePlatformSession } from "../../../../../lib/auth-session";
 import { SsoConfigClient } from "./sso-config-client";

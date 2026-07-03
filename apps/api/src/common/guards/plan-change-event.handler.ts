@@ -35,13 +35,10 @@ export class PlanChangeEventHandler implements OnModuleInit, OnModuleDestroy {
 
     for (const eventType of events) {
       this.subscriptions.push(
-        this.eventBus.subscribe<{ organizationId: string; plan?: string }>(
-          eventType,
-          async () => {
-            this.logger.log(`Invalidating plan cache due to event: ${eventType}`);
-            await this.planCache.invalidateAll();
-          },
-        ),
+        this.eventBus.subscribe<{ organizationId: string; plan?: string }>(eventType, async () => {
+          this.logger.log(`Invalidating plan cache due to event: ${eventType}`);
+          await this.planCache.invalidateAll();
+        }),
       );
     }
 
