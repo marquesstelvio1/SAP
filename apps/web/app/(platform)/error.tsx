@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import { Button, Card } from "@saptm/ui";
+import { useEffect } from "react";
 
 export default function ErrorPage({
   error,
@@ -27,7 +27,12 @@ export default function ErrorPage({
         )}
         <div className="flex gap-2">
           <Button onClick={reset}>Tentar novamente</Button>
-          <Button variant="outline" onClick={() => { window.location.href = "/app"; }}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              window.location.href = "/app";
+            }}
+          >
             Ir para o painel
           </Button>
         </div>

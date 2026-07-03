@@ -1,8 +1,8 @@
 import type { TeamDetail } from "@saptm/rpc/teams";
 import { listTeamsInputSchema, listTeamsOutputSchema } from "@saptm/rpc/teams";
 import { AccessState, Button } from "@saptm/ui";
-import type { Metadata } from "next";
 import { PlusIcon } from "lucide-react";
+import type { Metadata } from "next";
 
 import { requirePlatformSession } from "../../../../../lib/auth-session";
 import { rpcGet } from "../../../../../lib/rpc-server";

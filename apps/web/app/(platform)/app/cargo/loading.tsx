@@ -5,7 +5,7 @@ export default function Loading() {
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <Skeleton className="h-16 w-full rounded-xl" />
 
-      <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
+      <section className="grid gap-4 xl:grid-layout-main">
         <Card>
           <CardHeader className="gap-4">
             <div className="flex flex-wrap gap-2">
@@ -36,7 +36,7 @@ export default function Loading() {
         </Card>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[0.85fr_1.15fr]">
+      <section className="grid gap-4 xl:grid-layout-main">
         <Card>
           <CardHeader>
             <Skeleton className="h-5 w-40" />
@@ -64,7 +64,7 @@ export default function Loading() {
           <Skeleton className="h-4 w-full max-w-xl" />
         </CardHeader>
         <CardContent>
-          <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+          <section className="grid gap-4 xl:grid-layout-main">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="grid gap-4 xl:grid-cols-2">
                 <Skeleton className="h-64 rounded-xl" />
@@ -82,7 +82,7 @@ export default function Loading() {
           <Skeleton className="h-4 w-full max-w-xl" />
         </CardHeader>
         <CardContent>
-          <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+          <section className="grid gap-4 xl:grid-layout-main">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="grid gap-4 xl:grid-cols-2">
                 <Skeleton className="h-64 rounded-xl" />

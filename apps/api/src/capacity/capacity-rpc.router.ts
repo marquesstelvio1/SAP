@@ -27,7 +27,7 @@ import {
   capacitySlotReserveOutputSchema,
 } from "@saptm/rpc";
 
-import type { AuthEnrichedContext, RpcAuthBuilder } from "../rpc/rpc-auth.middleware.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { CapacityService } from "./capacity.service.js";
 
 export type CapacityRpcContext = {
@@ -46,7 +46,7 @@ export type CreateCapacityRpcRouterInput = {
     | "registerResource"
     | "reserveSlot"
   >;
-  authMiddleware: RpcAuthBuilder;
+  authMiddleware: RpcAuthMiddleware;
 };
 
 export function createCapacityRpcRouter(deps: CreateCapacityRpcRouterInput) {

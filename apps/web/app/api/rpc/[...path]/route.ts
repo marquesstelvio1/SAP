@@ -62,7 +62,8 @@ async function proxy(request: NextRequest) {
 
   const headers: Record<string, string> = {
     "x-internal-request": "true",
-    "x-forwarded-for": request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "",
+    "x-forwarded-for":
+      request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "",
     "x-real-ip": request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-for") ?? "",
     "user-agent": request.headers.get("user-agent") ?? "",
     [CORRELATION_ID_HEADER]: correlationId,
@@ -82,11 +83,17 @@ async function proxy(request: NextRequest) {
   if (!["GET", "HEAD"].includes(request.method)) {
     const contentLength = request.headers.get("content-length");
     if (contentLength && parseInt(contentLength, 10) > MAX_RPC_BODY_SIZE) {
-      return NextResponse.json({ error: "PAYLOAD_TOO_LARGE", message: "Payload too large", correlationId }, { status: 413 });
+      return NextResponse.json(
+        { error: "PAYLOAD_TOO_LARGE", message: "Payload too large", correlationId },
+        { status: 413 },
+      );
     }
     body = await request.text();
     if (Buffer.byteLength(body, "utf-8") > MAX_RPC_BODY_SIZE) {
-      return NextResponse.json({ error: "PAYLOAD_TOO_LARGE", message: "Payload too large", correlationId }, { status: 413 });
+      return NextResponse.json(
+        { error: "PAYLOAD_TOO_LARGE", message: "Payload too large", correlationId },
+        { status: 413 },
+      );
     }
     headers["content-length"] = String(Buffer.byteLength(body, "utf-8"));
   }
@@ -102,14 +109,16 @@ async function proxy(request: NextRequest) {
       "content-type": response.headers.get("content-type") ?? "application/json",
       "x-correlation-id": correlationId,
     };
-    
-    if (response.headers.has("x-csrf-token")) responseHeaders["x-csrf-token"] = response.headers.get("x-csrf-token")!;
-    if (response.headers.has("set-cookie")) responseHeaders["set-cookie"] = response.headers.get("set-cookie")!;
-    
+
+    if (response.headers.has("x-csrf-token"))
+      responseHeaders["x-csrf-token"] = response.headers.get("x-csrf-token")!;
+    if (response.headers.has("set-cookie"))
+      responseHeaders["set-cookie"] = response.headers.get("set-cookie")!;
+
     const rateLimitRemaining = response.headers.get("x-ratelimit-remaining");
     const rateLimitReset = response.headers.get("x-ratelimit-reset");
     const retryAfter = response.headers.get("retry-after");
-  
+
     if (rateLimitRemaining !== null) responseHeaders["x-ratelimit-remaining"] = rateLimitRemaining;
     if (rateLimitReset !== null) responseHeaders["x-ratelimit-reset"] = rateLimitReset;
     if (retryAfter !== null) responseHeaders["retry-after"] = retryAfter;
@@ -117,13 +126,13 @@ async function proxy(request: NextRequest) {
     return new NextResponse(response.body, { status: response.status, headers: responseHeaders });
   } catch (error) {
     const isTimeout = error instanceof DOMException && error.name === "AbortError";
-    
+
     return NextResponse.json(
-      { 
-        error: isTimeout ? "GATEWAY_TIMEOUT" : "SERVICE_UNAVAILABLE", 
+      {
+        error: isTimeout ? "GATEWAY_TIMEOUT" : "SERVICE_UNAVAILABLE",
         message: isTimeout ? "API gateway timeout." : "Service unavailable.",
         correlationId,
-        retryAfterMs: 3000
+        retryAfterMs: 3000,
       },
       { status: isTimeout ? 504 : 503 },
     );

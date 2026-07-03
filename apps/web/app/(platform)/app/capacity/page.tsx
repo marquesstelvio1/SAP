@@ -175,7 +175,7 @@ export default async function CapacityOverviewPage() {
         />
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+      <section className="grid gap-4 xl:grid-layout-main">
         <div className="flex flex-col gap-4">
           <CapacityPreCheck
             slots={overview.upcomingSlots.map((slot) => ({

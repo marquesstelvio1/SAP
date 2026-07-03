@@ -49,8 +49,7 @@ import {
 } from "@saptm/rpc";
 
 import type { OverviewService } from "../overview/overview.service.js";
-import type { AuthEnrichedContext } from "../rpc/rpc-auth.middleware.js";
-import type { RpcAuthBuilder } from "../rpc/rpc-auth.middleware.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { CargoService } from "./cargo.service.js";
 
 export type CargoRpcContext = {
@@ -75,7 +74,7 @@ export type CreateCargoRpcRouterInput = {
     | "verifyComplianceEvidence"
   >;
   overviewService: Pick<OverviewService, "getComplianceOverview" | "getDeliveryOverview">;
-  authMiddleware: RpcAuthBuilder;
+  authMiddleware: RpcAuthMiddleware;
 };
 
 export function createCargoRpcRouter(deps: CreateCargoRpcRouterInput) {
@@ -317,20 +316,3 @@ export function createCargoRpcRouter(deps: CreateCargoRpcRouterInput) {
 }
 
 export type CargoRpcRouter = ReturnType<typeof createCargoRpcRouter>;
-
-function readRequestHeader(
-  request: IncomingMessage & RpcRequestWithAuthContext,
-  name: string,
-): string | undefined {
-  const value = request.headers[name] ?? request.headers[name.toLowerCase()];
-
-  if (Array.isArray(value)) {
-    return value.at(0);
-  }
-
-  return value;
-}
-
-function readRequestIp(request: IncomingMessage & RpcRequestWithAuthContext): string | undefined {
-  return readRequestHeader(request, "x-forwarded-for")?.split(",").at(0)?.trim();
-}

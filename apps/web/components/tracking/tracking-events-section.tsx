@@ -1,5 +1,3 @@
-import { ArrowRight } from "lucide-react";
-
 import {
   Badge,
   Card,
@@ -15,9 +13,9 @@ import {
   TableHeader,
   TableRow,
 } from "@saptm/ui";
-
-import { formatDateTime } from "../../lib/format";
+import { ArrowRight } from "lucide-react";
 import { eventTypeLabels, workflowStateLabels } from "../../app/(platform)/app/tracking/logic";
+import { formatDateTime } from "../../lib/format";
 
 export type TrackingEventsSectionProps = {
   analytics: {
@@ -57,7 +55,9 @@ export function TrackingEventsSection({ analytics }: TrackingEventsSectionProps)
                     <Badge variant={item.count > 0 ? "secondary" : "outline"}>{item.count}</Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {item.latestOccurredAt ? formatDateTime(item.latestOccurredAt) : "Sem ocorrência"}
+                    {item.latestOccurredAt
+                      ? formatDateTime(item.latestOccurredAt)
+                      : "Sem ocorrência"}
                   </TableCell>
                 </TableRow>
               ))}
@@ -87,7 +87,12 @@ export function TrackingEventsSection({ analytics }: TrackingEventsSectionProps)
           />
           <ContextRow
             label="Janela"
-            value={<span className="inline-flex items-center gap-1">{formatDateTime(analytics.window.startedAt)} <ArrowRight className="size-3" /> {formatDateTime(analytics.window.endedAt)}</span>}
+            value={
+              <span className="inline-flex items-center gap-1">
+                {formatDateTime(analytics.window.startedAt)} <ArrowRight className="size-3" />{" "}
+                {formatDateTime(analytics.window.endedAt)}
+              </span>
+            }
           />
         </CardContent>
       </Card>

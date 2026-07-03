@@ -3,7 +3,7 @@ import { AccessState, Card, CardContent, CardDescription, CardHeader, CardTitle 
 import { ArrowRight, Box, Container, DollarSign, Gauge, Route } from "lucide-react";
 import type { Metadata, Route as RouteType } from "next";
 import Link from "next/link";
-import React from "react";
+import type React from "react";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 
 export const dynamic = "force-dynamic";
@@ -55,9 +55,7 @@ export default async function ReportsPage() {
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <div>
         <h1 className="font-semibold text-3xl tracking-heading">Relatórios operacionais</h1>
-        <p className="text-muted-foreground">
-          Exportações CSV com auditoria e integrações.
-        </p>
+        <p className="text-muted-foreground">Exportações CSV com auditoria e integrações.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -74,12 +72,12 @@ export default async function ReportsPage() {
                     {domainIcons[domain]}
                     {domainLabels[domain]}
                   </CardTitle>
-                  <CardDescription>
-                    Exportar CSV até 100 registos do módulo.
-                  </CardDescription>
+                  <CardDescription>Exportar CSV até 100 registos do módulo.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <span className="inline-flex items-center gap-1 font-medium text-primary text-sm">Exportar CSV <ArrowRight className="size-3" /></span>
+                  <span className="inline-flex items-center gap-1 font-medium text-primary text-sm">
+                    Exportar CSV <ArrowRight className="size-3" />
+                  </span>
                 </CardContent>
               </Card>
             </Link>

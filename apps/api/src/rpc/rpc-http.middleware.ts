@@ -12,11 +12,15 @@ import type { RpcRequestWithAuthContext } from "./rpc-context.js";
  * The request may optionally carry auth context set by upstream NestJS middleware.
  */
 function createPlatformContext(request: IncomingMessage): PlatformRpcContext {
-  // The auth middleware (if configured) attaches authContext to the request object.
-  // We widen the type here since IncomingMessage and RpcRequestWithAuthContext
-  // have overlapping optional properties with slightly different signatures.
   return {
     request: request as IncomingMessage & RpcRequestWithAuthContext,
+    authContext: undefined,
+    organizationId: undefined,
+    actorId: undefined,
+    actorType: undefined,
+    correlationId: undefined,
+    userAgent: undefined,
+    ipAddress: undefined,
   };
 }
 

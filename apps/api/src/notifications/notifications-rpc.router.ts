@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   notificationInboxInputSchema,
@@ -10,22 +9,21 @@ import {
   notificationMarkReadOutputSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { NotificationsService } from "./notifications.service.js";
 
 export type NotificationsRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreateNotificationsRpcRouterInput = {
   notificationsService: Pick<NotificationsService, "markRead" | "readInbox">;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const notificationsRpc = os.$context<NotificationsRpcContext>();
-
 export function createNotificationsRpcRouter(deps: CreateNotificationsRpcRouterInput) {
+  const notificationsRpc = os.$context<NotificationsRpcContext>().use(deps.authMiddleware);
+
   return notificationsRpc.router({
     notifications: {
       inbox: notificationsRpc
@@ -34,19 +32,9 @@ export function createNotificationsRpcRouter(deps: CreateNotificationsRpcRouterI
         .input(notificationInboxInputSchema)
         .output(notificationInboxOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            notificationInboxMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("notification.organization_required");
-          }
-
           return deps.notificationsService.readInbox({
             ...input,
-            organizationId,
+            organizationId: context.organizationId,
           });
         }),
       markRead: notificationsRpc
@@ -55,50 +43,16 @@ export function createNotificationsRpcRouter(deps: CreateNotificationsRpcRouterI
         .input(notificationMarkReadInputSchema)
         .output(notificationMarkReadOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            notificationMarkReadMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("notification.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.notificationsService.markRead({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
     },
   });
-}
-
-function readRequestHeader(request: IncomingMessage, name: string): string | undefined {
-  const value = request.headers[name] ?? request.headers[name.toLowerCase()];
-
-  if (Array.isArray(value)) {
-    return value.at(0);
-  }
-
-  return value;
-}
-
-function readRequestIp(request: IncomingMessage): string | undefined {
-  const forwardedFor = readRequestHeader(request, "x-forwarded-for");
-
-  if (forwardedFor !== undefined) {
-    return forwardedFor.split(",").at(0)?.trim();
-  }
-
-  return request.socket?.remoteAddress;
 }

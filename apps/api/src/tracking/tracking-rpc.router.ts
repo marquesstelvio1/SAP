@@ -28,7 +28,7 @@ import {
 } from "@saptm/rpc";
 
 import type { OverviewService } from "../overview/overview.service.js";
-import type { AuthEnrichedContext, RpcAuthBuilder } from "../rpc/rpc-auth.middleware.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { TrackingService } from "./tracking.service.js";
 
 export type TrackingRpcContext = {
@@ -47,7 +47,7 @@ export type CreateTrackingRpcRouterInput = {
     | "resolveException"
   >;
   overviewService: Pick<OverviewService, "getExceptionOverview">;
-  authMiddleware: RpcAuthBuilder;
+  authMiddleware: RpcAuthMiddleware;
 };
 
 export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {

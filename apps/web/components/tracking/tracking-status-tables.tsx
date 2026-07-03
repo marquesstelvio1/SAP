@@ -1,7 +1,5 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
-
 import {
   Badge,
   Card,
@@ -18,6 +16,7 @@ import {
   TableRow,
 } from "@saptm/ui";
 import type { ColumnDef } from "@tanstack/react-table";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";

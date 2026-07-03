@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   integrationCarrierTmsMovementInputSchema,
@@ -31,13 +30,12 @@ import {
   integrationWarehouseWmsActivityOutputSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { IntegrationsService } from "./integrations.service.js";
 
 export type IntegrationsRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreateIntegrationsRpcRouterInput = {
   integrationsService: Pick<
@@ -52,12 +50,12 @@ export type CreateIntegrationsRpcRouterInput = {
     | "processWarehouseWmsActivity"
     | "recordEvent"
   >;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const integrationsRpc = os.$context<IntegrationsRpcContext>();
-
 export function createIntegrationsRpcRouter(deps: CreateIntegrationsRpcRouterInput) {
+  const integrationsRpc = os.$context<IntegrationsRpcContext>().use(deps.authMiddleware);
+
   return integrationsRpc.router({
     integrations: {
       overview: integrationsRpc
@@ -66,18 +64,8 @@ export function createIntegrationsRpcRouter(deps: CreateIntegrationsRpcRouterInp
         .input(integrationOverviewInputSchema)
         .output(integrationOverviewOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            integrationOverviewMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("integration.organization_required");
-          }
-
           return deps.integrationsService.getOverview({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
           });
         }),
@@ -87,28 +75,14 @@ export function createIntegrationsRpcRouter(deps: CreateIntegrationsRpcRouterInp
         .input(integrationServiceAccountCreateInputSchema)
         .output(integrationServiceAccountCreateOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            integrationServiceAccountCreateMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("integration.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.integrationsService.createServiceAccount({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       recordEvent: integrationsRpc
@@ -117,28 +91,14 @@ export function createIntegrationsRpcRouter(deps: CreateIntegrationsRpcRouterInp
         .input(integrationEventRecordInputSchema)
         .output(integrationEventRecordOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            integrationEventRecordMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("integration.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.integrationsService.recordEvent({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       processPortTosMovement: integrationsRpc
@@ -147,28 +107,14 @@ export function createIntegrationsRpcRouter(deps: CreateIntegrationsRpcRouterInp
         .input(integrationPortTosMovementInputSchema)
         .output(integrationPortTosMovementOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            integrationPortTosMovementMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("integration.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.integrationsService.processPortTosMovement({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       processRailTmsMovement: integrationsRpc
@@ -177,28 +123,14 @@ export function createIntegrationsRpcRouter(deps: CreateIntegrationsRpcRouterInp
         .input(integrationRailTmsMovementInputSchema)
         .output(integrationRailTmsMovementOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            integrationRailTmsMovementMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("integration.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.integrationsService.processRailTmsMovement({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       processCarrierTmsMovement: integrationsRpc
@@ -207,28 +139,14 @@ export function createIntegrationsRpcRouter(deps: CreateIntegrationsRpcRouterInp
         .input(integrationCarrierTmsMovementInputSchema)
         .output(integrationCarrierTmsMovementOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            integrationCarrierTmsMovementMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("integration.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.integrationsService.processCarrierTmsMovement({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       processTelematicsGpsPosition: integrationsRpc
@@ -237,28 +155,14 @@ export function createIntegrationsRpcRouter(deps: CreateIntegrationsRpcRouterInp
         .input(integrationTelematicsGpsPositionInputSchema)
         .output(integrationTelematicsGpsPositionOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            integrationTelematicsGpsPositionMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("integration.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.integrationsService.processTelematicsGpsPosition({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       processCustomsErpStatus: integrationsRpc
@@ -267,28 +171,14 @@ export function createIntegrationsRpcRouter(deps: CreateIntegrationsRpcRouterInp
         .input(integrationCustomsErpStatusInputSchema)
         .output(integrationCustomsErpStatusOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            integrationCustomsErpStatusMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("integration.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.integrationsService.processCustomsErpStatus({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       processWarehouseWmsActivity: integrationsRpc
@@ -297,50 +187,16 @@ export function createIntegrationsRpcRouter(deps: CreateIntegrationsRpcRouterInp
         .input(integrationWarehouseWmsActivityInputSchema)
         .output(integrationWarehouseWmsActivityOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            integrationWarehouseWmsActivityMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("integration.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.integrationsService.processWarehouseWmsActivity({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
     },
   });
-}
-
-function readRequestHeader(request: IncomingMessage, name: string): string | undefined {
-  const value = request.headers[name] ?? request.headers[name.toLowerCase()];
-
-  if (Array.isArray(value)) {
-    return value.at(0);
-  }
-
-  return value;
-}
-
-function readRequestIp(request: IncomingMessage): string | undefined {
-  const forwardedFor = readRequestHeader(request, "x-forwarded-for");
-
-  if (forwardedFor !== undefined) {
-    return forwardedFor.split(",").at(0)?.trim();
-  }
-
-  return request.socket?.remoteAddress;
 }

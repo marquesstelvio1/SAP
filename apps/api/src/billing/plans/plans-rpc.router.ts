@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   getPlanInputSchema,
@@ -10,22 +9,21 @@ import {
   listPlansOutputSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../../rpc/rpc-context.js";
-import type { RpcContextService } from "../../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../../rpc/rpc-auth.middleware.js";
 import type { PlansService } from "./plans.service.js";
 
 export type PlansRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreatePlansRpcRouterInput = {
   plansService: Pick<PlansService, "listPlans" | "getPlanBySlug">;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const plansRpc = os.$context<PlansRpcContext>();
-
 export function createPlansRpcRouter(deps: CreatePlansRpcRouterInput) {
+  const plansRpc = os.$context<PlansRpcContext>().use(deps.authMiddleware);
+
   return plansRpc.router({
     plans: {
       list: plansRpc
@@ -33,17 +31,7 @@ export function createPlansRpcRouter(deps: CreatePlansRpcRouterInput) {
         .route({ method: "GET", path: "/plans/list" })
         .input(listPlansInputSchema)
         .output(listPlansOutputSchema)
-        .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            listPlansMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("plans.organization_required");
-          }
-
+        .handler(async ({ input }) => {
           const plans = await deps.plansService.listPlans({
             includeInternal: input.includeInternal,
           });
@@ -55,17 +43,7 @@ export function createPlansRpcRouter(deps: CreatePlansRpcRouterInput) {
         .route({ method: "GET", path: "/plans/get" })
         .input(getPlanInputSchema)
         .output(getPlanOutputSchema)
-        .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            getPlanMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("plans.organization_required");
-          }
-
+        .handler(async ({ input }) => {
           const plan = await deps.plansService.getPlanBySlug(input.slug);
 
           return { plan };

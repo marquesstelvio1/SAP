@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { ShieldBan } from "lucide-react";
+import type { ReactNode } from "react";
 
 import { cn } from "../lib/utils.js";
 import { Badge } from "./badge.js";
@@ -94,10 +94,7 @@ export function AccessState({
         ) : resolvedActionHref ? (
           <div className="mt-4">
             <Button asChild variant="outline">
-              <a
-                href={resolvedActionHref}
-                aria-label={resolvedActionLabel || undefined}
-              >
+              <a href={resolvedActionHref} aria-label={resolvedActionLabel || undefined}>
                 {resolvedActionLabel}
               </a>
             </Button>

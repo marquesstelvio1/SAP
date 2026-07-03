@@ -15,7 +15,7 @@ export default function Loading() {
         </div>
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+      <div className="grid gap-6 xl:grid-layout-settings">
         <Card>
           <CardHeader>
             <Skeleton className="h-5 w-48" />

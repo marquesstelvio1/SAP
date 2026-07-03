@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   billingCreateCheckoutSessionMetadata,
@@ -21,13 +20,12 @@ import {
   usageSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { BillingService } from "./billing.service.js";
 
 export type BillingRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreateBillingRpcRouterInput = {
   billingService: Pick<
@@ -39,12 +37,12 @@ export type CreateBillingRpcRouterInput = {
     | "getUsageDetail"
     | "getInvoicesList"
   >;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const billingRpc = os.$context<BillingRpcContext>();
-
 export function createBillingRpcRouter(deps: CreateBillingRpcRouterInput) {
+  const billingRpc = os.$context<BillingRpcContext>().use(deps.authMiddleware);
+
   return billingRpc.router({
     billing: {
       overview: billingRpc
@@ -52,17 +50,7 @@ export function createBillingRpcRouter(deps: CreateBillingRpcRouterInput) {
         .route({ method: "GET", path: "/billing/overview" })
         .output(billingOverviewOutputSchema)
         .handler(async ({ context }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            billingOverviewMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("billing.organization_required");
-          }
-
-          const overview = await deps.billingService.getOverview(organizationId);
+          const overview = await deps.billingService.getOverview(context.organizationId);
 
           return {
             plan: overview.plan as "free" | "pro" | "enterprise",
@@ -130,18 +118,8 @@ export function createBillingRpcRouter(deps: CreateBillingRpcRouterInput) {
         .input(createCheckoutSessionInputSchema)
         .output(createCheckoutSessionOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            billingCreateCheckoutSessionMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("billing.organization_required");
-          }
-
           const result = await deps.billingService.createCheckoutSession(
-            organizationId,
+            context.organizationId,
             input.plan,
             input.successUrl,
             input.cancelUrl,
@@ -153,12 +131,12 @@ export function createBillingRpcRouter(deps: CreateBillingRpcRouterInput) {
             audit: {
               action: "billing.checkout_session_created",
               subjectType: "organization",
-              subjectId: organizationId,
+              subjectId: context.organizationId,
             },
             outbox: {
               eventType: "billing.checkout_session_created",
               aggregateType: "billing",
-              aggregateId: organizationId,
+              aggregateId: context.organizationId,
             },
           };
         }),
@@ -168,17 +146,7 @@ export function createBillingRpcRouter(deps: CreateBillingRpcRouterInput) {
         .input(createPortalSessionInputSchema)
         .output(createPortalSessionOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            billingCreatePortalSessionMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("billing.organization_required");
-          }
-
-          const result = await deps.billingService.createPortalSession(organizationId);
+          const result = await deps.billingService.createPortalSession(context.organizationId);
 
           return {
             url: result.url,
@@ -186,12 +154,12 @@ export function createBillingRpcRouter(deps: CreateBillingRpcRouterInput) {
             audit: {
               action: "billing.portal_session_created",
               subjectType: "organization",
-              subjectId: organizationId,
+              subjectId: context.organizationId,
             },
             outbox: {
               eventType: "billing.portal_session_created",
               aggregateType: "billing",
-              aggregateId: organizationId,
+              aggregateId: context.organizationId,
             },
           };
         }),
@@ -201,34 +169,14 @@ export function createBillingRpcRouter(deps: CreateBillingRpcRouterInput) {
           .route({ method: "GET", path: "/billing/subscription/get" })
           .output(billingSubscriptionGetOutputSchema)
           .handler(async ({ context }) => {
-            const authorizedContext = await deps.rpcContextService.authorizeRequest(
-              context.request,
-              billingSubscriptionGetMetadata,
-            );
-            const organizationId = authorizedContext.authContext?.organizationId;
-
-            if (organizationId === undefined) {
-              throw new ForbiddenException("billing.organization_required");
-            }
-
-            return deps.billingService.getSubscriptionDetail(organizationId);
+            return deps.billingService.getSubscriptionDetail(context.organizationId);
           }),
         usage: billingRpc
           .meta(billingSubscriptionUsageMetadata)
           .route({ method: "GET", path: "/billing/subscription/usage" })
           .output(usageSchema)
           .handler(async ({ context }) => {
-            const authorizedContext = await deps.rpcContextService.authorizeRequest(
-              context.request,
-              billingSubscriptionUsageMetadata,
-            );
-            const organizationId = authorizedContext.authContext?.organizationId;
-
-            if (organizationId === undefined) {
-              throw new ForbiddenException("billing.organization_required");
-            }
-
-            return deps.billingService.getUsageDetail(organizationId);
+            return deps.billingService.getUsageDetail(context.organizationId);
           }),
       },
       invoices: {
@@ -238,17 +186,11 @@ export function createBillingRpcRouter(deps: CreateBillingRpcRouterInput) {
           .input(billingInvoicesListInputSchema)
           .output(billingInvoicesListOutputSchema)
           .handler(async ({ context, input }) => {
-            const authorizedContext = await deps.rpcContextService.authorizeRequest(
-              context.request,
-              billingInvoicesListMetadata,
+            return deps.billingService.getInvoicesList(
+              context.organizationId,
+              input.limit,
+              input.offset,
             );
-            const organizationId = authorizedContext.authContext?.organizationId;
-
-            if (organizationId === undefined) {
-              throw new ForbiddenException("billing.organization_required");
-            }
-
-            return deps.billingService.getInvoicesList(organizationId, input.limit, input.offset);
           }),
       },
     },

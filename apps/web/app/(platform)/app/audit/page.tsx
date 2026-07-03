@@ -7,6 +7,8 @@ import {
 } from "@saptm/rpc/audit";
 import {
   AccessState,
+  Alert,
+  AlertDescription,
   Badge,
   Button,
   Card,
@@ -120,7 +122,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
+      <section className="grid gap-4 xl:grid-layout-main">
         <Card>
           <CardHeader className="gap-4">
             <div className="flex flex-wrap items-center gap-2">
@@ -181,12 +183,9 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
         </CardHeader>
         <CardContent>
           {parsedFilters.message === undefined ? null : (
-            <div
-              className="mb-4 rounded-lg border bg-muted/35 p-3 text-muted-foreground text-sm"
-              role="status"
-            >
-              {parsedFilters.message}
-            </div>
+            <Alert className="mb-4">
+              <AlertDescription>{parsedFilters.message}</AlertDescription>
+            </Alert>
           )}
           <form method="get">
             <fieldset className="contents">

@@ -94,7 +94,9 @@ async function main() {
   console.log("[RBAC] Bootstrap complete.");
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-}).finally(() => database.$disconnect());
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => database.$disconnect());

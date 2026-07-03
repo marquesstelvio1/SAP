@@ -58,19 +58,19 @@ async function bootstrap() {
 
   // Increase server timeout for cold starts / slow queries
   const httpServer = app.getHttpServer() as import("node:http").Server;
-  
+
   // Implement connection draining for graceful shutdown
   const activeConnections = new Set<import("node:net").Socket>();
-  
-  httpServer.on('connection', (socket) => {
+
+  httpServer.on("connection", (socket) => {
     activeConnections.add(socket);
-    socket.once('close', () => activeConnections.delete(socket));
+    socket.once("close", () => activeConnections.delete(socket));
   });
 
-  process.on('SIGTERM', () => {
-    logger.log('SIGTERM received. Starting graceful shutdown...');
+  process.on("SIGTERM", () => {
+    logger.log("SIGTERM received. Starting graceful shutdown...");
     httpServer.close(() => {
-      logger.log('HTTP server closed.');
+      logger.log("HTTP server closed.");
     });
 
     // Timeout to force close connections if they don't drain naturally

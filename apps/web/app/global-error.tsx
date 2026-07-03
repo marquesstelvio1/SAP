@@ -14,18 +14,9 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
 
   return (
     <html lang="pt">
-      <body
-        style={{
-          display: "flex",
-          height: "100vh",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          gap: "1rem",
-        }}
-      >
-        <h1 style={{ fontSize: "1.5rem", fontWeight: 600 }}>Erro inesperado</h1>
-        <p style={{ color: "#6b7280" }}>Ocorreu um erro inesperado. Tente novamente.</p>
+      <body className="flex h-screen items-center justify-center flex-col gap-4">
+        <h1 className="text-2xl font-semibold">Erro inesperado</h1>
+        <p className="text-muted-foreground">Ocorreu um erro inesperado. Tente novamente.</p>
       </body>
     </html>
   );

@@ -9,7 +9,13 @@ import type { contracts } from "@saptm/rpc/contracts";
 const INTERNAL_REQUEST_HEADER = "x-internal-request" as const;
 const ORG_HEADER = "x-saptm-org-id" as const;
 
-export type RpcStatus = "unauthorized" | "forbidden" | "not_found" | "unavailable" | "invalid" | "rate_limited";
+export type RpcStatus =
+  | "unauthorized"
+  | "forbidden"
+  | "not_found"
+  | "unavailable"
+  | "invalid"
+  | "rate_limited";
 
 export class RpcError extends Error {
   constructor(
@@ -237,7 +243,7 @@ async function parseRpcResponse<T>(response: Response, schema: Schema<T>): Promi
 // ── Typed oRPC client (contract-first) ──────────────────────────────
 
 const link = new RPCLink({
-  url: `${typeof window !== "undefined" ? window.location.origin : (getClientEnv().NEXT_PUBLIC_APP_URL || "http://localhost:3000")}/api/rpc`,
+  url: `${typeof window !== "undefined" ? window.location.origin : getClientEnv().NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/rpc`,
   headers: {},
 });
 

@@ -88,19 +88,7 @@ export {
   DialogTitle,
   DialogTrigger,
 } from "./dialog.js";
-export {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerPortal,
-  DrawerTitle,
-  DrawerTrigger,
-  drawerVariants,
-} from "./drawer.js";
+
 export {
   DropdownMenu,
   DropdownMenuCheckboxItem,

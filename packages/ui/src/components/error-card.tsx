@@ -1,7 +1,7 @@
 import { Button } from "./button.js";
 import { Card } from "./card.js";
 
-function ErrorCard({
+export function ErrorCard({
   title = "Erro inesperado",
   message,
   onRetry,

@@ -31,7 +31,7 @@ import {
   adminUserInviteOutputSchema,
 } from "@saptm/rpc";
 
-import type { AuthEnrichedContext, RpcAuthBuilder } from "../rpc/rpc-auth.middleware.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { AdminService } from "./admin.service.js";
 
 export type AdminRpcContext = {
@@ -52,7 +52,7 @@ export type CreateAdminRpcRouterInput = {
     | "updateMembershipStatus"
     | "updateRolePermissions"
   >;
-  authMiddleware: RpcAuthBuilder;
+  authMiddleware: RpcAuthMiddleware;
 };
 
 export function createAdminRpcRouter(deps: CreateAdminRpcRouterInput) {

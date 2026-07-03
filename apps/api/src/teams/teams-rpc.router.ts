@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   addTeamMemberInputSchema,
@@ -28,13 +27,12 @@ import {
   updateTeamOutputSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { TeamsService } from "./teams.service.js";
 
 export type TeamsRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreateTeamsRpcRouterInput = {
   teamsService: Pick<
@@ -48,12 +46,12 @@ export type CreateTeamsRpcRouterInput = {
     | "updateTeam"
     | "updateTeamMemberRole"
   >;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const teamsRpc = os.$context<TeamsRpcContext>();
-
 export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
+  const teamsRpc = os.$context<TeamsRpcContext>().use(deps.authMiddleware);
+
   return teamsRpc.router({
     teams: {
       create: teamsRpc
@@ -62,23 +60,12 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
         .input(createTeamInputSchema)
         .output(createTeamOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            createTeamMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("teams.organization_required");
-          }
-
           return deps.teamsService.createTeam({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
           });
         }),
       update: teamsRpc
@@ -87,23 +74,12 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
         .input(updateTeamInputSchema)
         .output(updateTeamOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            updateTeamMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("teams.organization_required");
-          }
-
           return deps.teamsService.updateTeam({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
           });
         }),
       delete: teamsRpc
@@ -112,23 +88,12 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
         .input(deleteTeamInputSchema)
         .output(deleteTeamOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            deleteTeamMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("teams.organization_required");
-          }
-
           return deps.teamsService.deleteTeam({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
           });
         }),
       list: teamsRpc
@@ -137,18 +102,8 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
         .input(listTeamsInputSchema)
         .output(listTeamsOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            listTeamsMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("teams.organization_required");
-          }
-
           return deps.teamsService.listTeams({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
             offset: input.offset,
           });
@@ -159,20 +114,9 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
         .input(getTeamInputSchema)
         .output(getTeamOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            getTeamMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("teams.organization_required");
-          }
-
           return deps.teamsService.getTeam({
             ...input,
-            organizationId,
+            organizationId: context.organizationId,
           });
         }),
       addMember: teamsRpc
@@ -181,23 +125,12 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
         .input(addTeamMemberInputSchema)
         .output(addTeamMemberOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            addTeamMemberMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("teams.organization_required");
-          }
-
           return deps.teamsService.addTeamMember({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
           });
         }),
       removeMember: teamsRpc
@@ -206,23 +139,12 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
         .input(removeTeamMemberInputSchema)
         .output(removeTeamMemberOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            removeTeamMemberMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("teams.organization_required");
-          }
-
           return deps.teamsService.removeTeamMember({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
           });
         }),
       updateMemberRole: teamsRpc
@@ -231,23 +153,12 @@ export function createTeamsRpcRouter(deps: CreateTeamsRpcRouterInput) {
         .input(updateTeamMemberRoleInputSchema)
         .output(updateTeamMemberRoleOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            updateTeamMemberRoleMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("teams.organization_required");
-          }
-
           return deps.teamsService.updateTeamMemberRole({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
           });
         }),
     },

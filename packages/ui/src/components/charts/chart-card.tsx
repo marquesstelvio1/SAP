@@ -53,7 +53,9 @@ function ChartCard({
         </div>
         {action ? <div>{action}</div> : null}
       </CardHeader>
-      <CardContent className={cn("flex flex-1 items-center justify-center", heightMap[size], contentClassName)}>
+      <CardContent
+        className={cn("flex flex-1 items-center justify-center", heightMap[size], contentClassName)}
+      >
         {loading ? (
           <div className="flex w-full flex-col gap-3">
             <Skeleton className="h-4 w-1/4" />

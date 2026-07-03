@@ -41,9 +41,7 @@ function cleanupRateMap(): void {
     }
   }
   if (localRateMap.size > RATE_LIMIT_MAX_ENTRIES) {
-    const sorted = [...localRateMap.entries()].sort(
-      (a, b) => a[1].resetAt - b[1].resetAt,
-    );
+    const sorted = [...localRateMap.entries()].sort((a, b) => a[1].resetAt - b[1].resetAt);
     const toDelete = sorted.slice(0, sorted.length - RATE_LIMIT_MAX_ENTRIES);
     for (const [ip] of toDelete) {
       localRateMap.delete(ip);
@@ -123,11 +121,7 @@ function buildCsp(nonce: string, isDev: boolean): string {
   return directives.join("; ");
 }
 
-function buildResponse(
-  request: NextRequest,
-  nonce: string,
-  isDev: boolean,
-): NextResponse {
+function buildResponse(request: NextRequest, nonce: string, isDev: boolean): NextResponse {
   const csp = buildCsp(nonce, isDev);
 
   // Forward nonce + CSP to React tree via request headers

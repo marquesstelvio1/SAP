@@ -9,22 +9,21 @@ import {
   privacyExportOutputSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { PrivacyService } from "./privacy.service.js";
 
 export type PrivacyRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreatePrivacyRpcRouterInput = {
   privacyService: Pick<PrivacyService, "exportUserData" | "scheduleAccountDeletion">;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const privacyRpc = os.$context<PrivacyRpcContext>();
-
 export function createPrivacyRpcRouter(deps: CreatePrivacyRpcRouterInput) {
+  const privacyRpc = os.$context<PrivacyRpcContext>().use(deps.authMiddleware);
+
   return privacyRpc.router({
     privacy: {
       exportData: privacyRpc
@@ -33,17 +32,7 @@ export function createPrivacyRpcRouter(deps: CreatePrivacyRpcRouterInput) {
         .input(privacyExportInputSchema)
         .output(privacyExportOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            privacyExportMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-
-          if (authContext === undefined) {
-            throw new Error("authentication_required");
-          }
-
-          return deps.privacyService.exportUserData(authContext.actorId, {
+          return deps.privacyService.exportUserData(context.actorId, {
             format: input.format,
             includeAuditLogs: input.includeAuditLogs,
             includeSessions: input.includeSessions,
@@ -55,20 +44,10 @@ export function createPrivacyRpcRouter(deps: CreatePrivacyRpcRouterInput) {
         .input(privacyDeleteInputSchema)
         .output(privacyDeleteOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            privacyDeleteMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-
-          if (authContext === undefined) {
-            throw new Error("authentication_required");
-          }
-
-          const result = await deps.privacyService.scheduleAccountDeletion(authContext.actorId, {
-            actorType: authContext.actorType,
-            actorId: authContext.actorId,
-            correlationId: authContext.correlationId,
+          const result = await deps.privacyService.scheduleAccountDeletion(context.actorId, {
+            actorType: context.actorType,
+            actorId: context.actorId,
+            correlationId: context.correlationId,
           });
 
           return {
@@ -78,15 +57,17 @@ export function createPrivacyRpcRouter(deps: CreatePrivacyRpcRouterInput) {
             audit: {
               action: "account.deletion_scheduled",
               subjectType: "user",
-              subjectId: authContext.actorId,
+              subjectId: context.actorId,
             },
             outbox: {
               eventType: "account.deletion_scheduled",
               aggregateType: "user",
-              aggregateId: authContext.actorId,
+              aggregateId: context.actorId,
             },
           };
         }),
     },
   });
 }
+
+export type PrivacyRpcRouter = ReturnType<typeof createPrivacyRpcRouter>;

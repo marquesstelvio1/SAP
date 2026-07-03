@@ -14,7 +14,10 @@ export function useRpcQuery<TData>(options: UseQueryOptions<TData, Error, TData,
   const queryOptions = options;
 
   const defaultRetry = (failureCount: number, error: Error): boolean => {
-    if (error instanceof RpcError && (error.status === "unauthorized" || error.status === "forbidden")) {
+    if (
+      error instanceof RpcError &&
+      (error.status === "unauthorized" || error.status === "forbidden")
+    ) {
       return false;
     }
     if (error instanceof RpcError && error.status === "rate_limited") {
@@ -28,7 +31,7 @@ export function useRpcQuery<TData>(options: UseQueryOptions<TData, Error, TData,
       const errorWithRetryAfter = error as unknown as RpcFailure;
       const baseDelay = errorWithRetryAfter.retryAfterMs ?? 10_000;
       const jitter = Math.random() * 1000;
-      return baseDelay * (2 ** failureCount) + jitter;
+      return baseDelay * 2 ** failureCount + jitter;
     }
     return Math.min(2000 * 2 ** failureCount, 30000);
   };

@@ -8,6 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  EmptyState,
   Field,
   FieldGroup,
   FieldLabel,
@@ -115,8 +116,8 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <div className="max-w-3xl">
           <h1 className="font-semibold text-3xl tracking-heading">Inbox operacional</h1>
           <p className="mt-2 text-muted-foreground">
-            Notificações operacionais geradas pelo sistema. Cada item é filtrável e pode
-            ser reconhecido por utilizadores autorizados.
+            Notificações operacionais geradas pelo sistema. Cada item é filtrável e pode ser
+            reconhecido por utilizadores autorizados.
           </p>
         </div>
       </section>
@@ -183,12 +184,10 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         </CardHeader>
         <CardContent>
           {inbox.notifications.length === 0 ? (
-            <div
-              className="rounded-lg border border-dashed bg-muted/20 p-6 text-muted-foreground text-sm"
-              role="status"
-            >
-              Nenhuma notificação encontrada para os filtros atuais.
-            </div>
+            <EmptyState
+              title="Sem notificações"
+              description="Nenhuma notificação encontrada para os filtros atuais."
+            />
           ) : (
             <Table aria-label="Eventos processados">
               <TableHeader>

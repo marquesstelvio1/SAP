@@ -126,9 +126,7 @@ export class CacheService {
       }
     }
     if (this.fallback.size > FALLBACK_MAX_ENTRIES) {
-      const sorted = [...this.fallback.entries()].sort(
-        (a, b) => a[1].expiresAt - b[1].expiresAt,
-      );
+      const sorted = [...this.fallback.entries()].sort((a, b) => a[1].expiresAt - b[1].expiresAt);
       const toDelete = sorted.slice(0, sorted.length - FALLBACK_MAX_ENTRIES);
       for (const [key] of toDelete) {
         this.fallback.delete(key);

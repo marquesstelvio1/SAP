@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import {
   type ResolvedUserAuthorization,
-  resolveDefaultUserAuthorization as resolveUserAuthorization,
   resolveOrganizationAuthorization as resolveOrgAuthorization,
+  resolveDefaultUserAuthorization as resolveUserAuthorization,
   verifyUserOrganizationAccess as verifyOrgAccess,
 } from "@saptm/auth/server";
 
@@ -19,10 +19,7 @@ export class UserAuthorizationService {
     return resolveOrgAuthorization(userId, organizationId);
   }
 
-  async verifyUserOrganizationAccess(
-    userId: string,
-    organizationId: string,
-  ): Promise<boolean> {
+  async verifyUserOrganizationAccess(userId: string, organizationId: string): Promise<boolean> {
     return verifyOrgAccess(userId, organizationId);
   }
 }

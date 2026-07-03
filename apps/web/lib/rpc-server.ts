@@ -20,9 +20,7 @@ const ORG_COOKIE = "saptm_active_org";
  */
 function parseCookieFromHeader(cookieString: string | null, name: string): string | undefined {
   if (!cookieString) return undefined;
-  const match = cookieString.match(
-    new RegExp(`(?:^|;\\s*)${escapeRegExp(name)}=([^;]+)`),
-  );
+  const match = cookieString.match(new RegExp(`(?:^|;\\s*)${escapeRegExp(name)}=([^;]+)`));
   return match ? decodeURIComponent(match[1] ?? "") : undefined;
 }
 

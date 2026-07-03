@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   organizationProfileMetadata,
@@ -9,22 +8,21 @@ import {
   organizationStatusUpdateOutputSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { OrganizationsService } from "./organizations.service.js";
 
 export type OrganizationsRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreateOrganizationsRpcRouterInput = {
   organizationsService: Pick<OrganizationsService, "getProfile" | "updateStatus">;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const organizationsRpc = os.$context<OrganizationsRpcContext>();
-
 export function createOrganizationsRpcRouter(deps: CreateOrganizationsRpcRouterInput) {
+  const organizationsRpc = os.$context<OrganizationsRpcContext>().use(deps.authMiddleware);
+
   return organizationsRpc.router({
     organizations: {
       profile: organizationsRpc
@@ -32,18 +30,8 @@ export function createOrganizationsRpcRouter(deps: CreateOrganizationsRpcRouterI
         .route({ method: "GET", path: "/organizations/profile" })
         .output(organizationProfileOutputSchema)
         .handler(async ({ context }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            organizationProfileMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("organizations.organization_required");
-          }
-
           return deps.organizationsService.getProfile({
-            organizationId,
+            organizationId: context.organizationId,
           });
         }),
       updateStatus: organizationsRpc
@@ -52,23 +40,12 @@ export function createOrganizationsRpcRouter(deps: CreateOrganizationsRpcRouterI
         .input(organizationStatusUpdateInputSchema)
         .output(organizationStatusUpdateOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            organizationStatusUpdateMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("organizations.organization_required");
-          }
-
           return deps.organizationsService.updateStatus({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
           });
         }),
     },

@@ -12,7 +12,7 @@ export default function Loading() {
         </div>
       </div>
 
-      <section className="grid gap-4 xl:grid-cols-[0.7fr_1.3fr]">
+      <section className="grid gap-4 xl:grid-layout-detail">
         <Card>
           <CardHeader>
             <Skeleton className="h-5 w-36" />
@@ -104,7 +104,7 @@ export default function Loading() {
         </Card>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
+      <section className="grid gap-4 xl:grid-layout-main">
         <Card>
           <CardHeader>
             <Skeleton className="h-5 w-36" />

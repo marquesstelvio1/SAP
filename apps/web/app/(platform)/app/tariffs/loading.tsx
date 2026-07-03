@@ -21,7 +21,7 @@ export default function Loading() {
         </CardContent>
       </Card>
 
-      <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+      <section className="grid gap-6 xl:grid-layout-main">
         {Array.from({ length: 2 }).map((_, i) => (
           <Card key={i}>
             <CardHeader>

@@ -1,10 +1,10 @@
 "use client";
 
 import { AccessState, Button, EmptyState } from "@saptm/ui";
+import type { Route } from "next";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Suspense } from "react";
-import type { Route } from "next";
 import { LifecycleProgressIndicator } from "../../../../components/cargo/cargo-lifecycle-group";
 import { CargoOverviewHeader } from "../../../../components/cargo/cargo-overview-header";
 import {
@@ -125,7 +125,7 @@ export function CargoOverviewClient({
 
       <LifecycleProgressIndicator cargoStatuses={overview.statusCounts} />
 
-      <section className="grid gap-4 xl:grid-cols-[0.85fr_1.15fr]">
+      <section className="grid gap-4 xl:grid-layout-main">
         <CargoStatusTable statusCounts={overview.statusCounts} />
         <CargoRecentTable
           items={overview.recentCargo}

@@ -127,7 +127,7 @@ export default async function TrackingShipmentDetailPage({
         </Button>
       </div>
 
-      <section className="grid gap-4 xl:grid-cols-[0.7fr_1.3fr]">
+      <section className="grid gap-4 xl:grid-layout-detail">
         <TrackingNextActionCard
           canManageExceptions={canManageExceptions}
           canResolveExceptions={canResolveExceptions}
@@ -293,7 +293,7 @@ export default async function TrackingShipmentDetailPage({
         </Card>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
+      <section className="grid gap-4 xl:grid-layout-main">
         <Card>
           <CardHeader>
             <CardTitle>Timeline de eventos</CardTitle>

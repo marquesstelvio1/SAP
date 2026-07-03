@@ -1,9 +1,6 @@
 import type { IncomingMessage } from "node:http";
 
-export function readRequestHeader(
-  request: IncomingMessage,
-  name: string,
-): string | undefined {
+export function readRequestHeader(request: IncomingMessage, name: string): string | undefined {
   const value = request.headers[name] ?? request.headers[name.toLowerCase()];
 
   if (Array.isArray(value)) {

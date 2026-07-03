@@ -60,4 +60,5 @@ function ThemeToggle({ className, mode = "button" }: ThemeToggleProps) {
 }
 
 ThemeToggle.displayName = "ThemeToggle";
+
 export { ThemeToggle };

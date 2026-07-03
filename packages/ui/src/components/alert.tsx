@@ -24,13 +24,7 @@ function Alert({
   variant,
   ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) {
-  return (
-    <div
-      data-slot="alert"
-      className={cn(alertVariants({ variant }), className)}
-      {...props}
-    />
-  );
+  return <div data-slot="alert" className={cn(alertVariants({ variant }), className)} {...props} />;
 }
 
 function AlertTitle({ className, ...props }: React.ComponentProps<"h5">) {
@@ -56,4 +50,5 @@ function AlertDescription({ className, ...props }: React.ComponentProps<"div">) 
 Alert.displayName = "Alert";
 AlertTitle.displayName = "AlertTitle";
 AlertDescription.displayName = "AlertDescription";
+
 export { Alert, AlertDescription, AlertTitle, alertVariants };

@@ -8,4 +8,5 @@ function ThemeProvider({ children, ...props }: React.ComponentProps<typeof NextT
 }
 
 ThemeProvider.displayName = "ThemeProvider";
+
 export { ThemeProvider };

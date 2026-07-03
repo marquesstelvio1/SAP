@@ -221,7 +221,7 @@ export function TrackingOverviewClient({
         }}
       />
 
-      <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+      <section className="grid gap-4 xl:grid-layout-main">
         <TrackingEventRecordForm
           action={recordTrackingEventAction}
           canRecordEvents={canRecordEvents}
