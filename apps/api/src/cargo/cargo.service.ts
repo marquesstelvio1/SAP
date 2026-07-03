@@ -198,7 +198,12 @@ export class CargoService {
   async getOverview(input: GetCargoOverviewInput): Promise<CargoOverviewOutput> {
     const limit = normalizeLimit(input.limit);
     const offset = input.offset ?? 0;
-    const data = await this.cargoRepo.getOverview(input.organizationId, limit, offset, input.teamId);
+    const data = await this.cargoRepo.getOverview(
+      input.organizationId,
+      limit,
+      offset,
+      input.teamId,
+    );
     const statusCounts = createCargoStatusCounts(data.statusGroups);
 
     return {

@@ -1,4 +1,4 @@
-import { adminOverviewOutputSchema } from "@saptm/rpc/admin";
+import { settingsOverviewOutputSchema } from "@saptm/rpc";
 
 import { type RpcFailure, rpcGet } from "./rpc-server";
 
@@ -20,7 +20,7 @@ export type SettingsDataResult =
   | RpcFailure;
 
 export async function getSettingsOrganizationData(): Promise<SettingsDataResult> {
-  const result = await rpcGet("/rpc/admin/overview", adminOverviewOutputSchema);
+  const result = await rpcGet("/rpc/settings/overview", settingsOverviewOutputSchema);
 
   if (result.status !== "ok") {
     return result.status === "forbidden"
@@ -34,13 +34,13 @@ export async function getSettingsOrganizationData(): Promise<SettingsDataResult>
   return {
     status: "ok",
     organization: {
-      id: result.data.organization.id,
-      name: result.data.organization.name,
-      slug: result.data.organization.slug,
-      status: result.data.organization.status as "active" | "suspended",
-      createdAt: result.data.organization.createdAt,
-      updatedAt: result.data.organization.updatedAt,
-      memberCount: result.data.totals.users,
+      id: result.data.organizationId,
+      name: result.data.name,
+      slug: result.data.slug,
+      status: result.data.status,
+      createdAt: result.data.createdAt,
+      updatedAt: result.data.updatedAt,
+      memberCount: result.data.memberCount,
     },
   };
 }

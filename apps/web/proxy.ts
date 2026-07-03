@@ -97,7 +97,7 @@ function buildCsp(
     `font-src 'self' data:`,
     `script-src 'self' ${scriptSrc}`,
     `style-src-attr 'unsafe-inline'`,
-    `style-src-elem 'self' 'unsafe-inline' 'nonce-${nonce}'`,
+    `style-src-elem 'self' 'nonce-${nonce}'`,
     `connect-src ${connectSources.join(" ")}`,
     `worker-src ${workerSrc}`,
     `frame-src 'none'`,

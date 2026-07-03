@@ -41,8 +41,8 @@ import {
   createSettingsRpcRouter,
   type SettingsRpcContext,
 } from "../settings/settings-rpc.router.js";
-import { createTariffRpcRouter, type TariffRpcContext } from "../tariff/tariff-rpc.router.js";
 import { createSsoRpcRouter, type SsoRpcContext } from "../sso/sso-rpc.router.js";
+import { createTariffRpcRouter, type TariffRpcContext } from "../tariff/tariff-rpc.router.js";
 import { createTeamsRpcRouter, type TeamsRpcContext } from "../teams/teams-rpc.router.js";
 import {
   createTrackingRpcRouter,

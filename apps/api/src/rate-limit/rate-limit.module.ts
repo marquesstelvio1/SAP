@@ -17,18 +17,18 @@ import { TenantThrottlerGuard } from "./tenant-throttler.guard.js";
           {
             name: "api",
             ttl: seconds(60),
-            limit: 200,
+            limit: 600,
             getTracker: (req) => req.ip || "anonymous",
           },
           {
             name: "org",
             ttl: seconds(60),
-            limit: 1000,
+            limit: 3000,
           },
           {
             name: "user",
             ttl: seconds(60),
-            limit: 100,
+            limit: 300,
             getTracker: (req) => {
               const authContext = getAuthContextFromRequest(req);
               if (authContext?.userId) {

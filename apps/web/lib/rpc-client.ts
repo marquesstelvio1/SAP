@@ -24,6 +24,8 @@ type Schema<T> = {
   safeParse: (data: unknown) => { success: true; data: T } | { success: false };
 };
 
+const RPC_TIMEOUT_MS = 15_000;
+
 type RpcQueryOptions = {
   searchParams?: Record<string, string | number | undefined>;
   cookie?: string;
@@ -64,17 +66,28 @@ export async function rpcGet<T>(
 
   let response: Response;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), RPC_TIMEOUT_MS);
+
   try {
     response = await fetch(url, {
       cache: "no-store",
       credentials: "include",
       headers,
+      signal: controller.signal,
     });
   } catch (error) {
     return {
       status: "unavailable",
-      message: error instanceof TypeError ? error.message : "Erro de rede ao comunicar com API.",
+      message:
+        error instanceof DOMException && error.name === "AbortError"
+          ? "API nao respondeu dentro do tempo limite."
+          : error instanceof TypeError
+            ? error.message
+            : "Erro de rede ao comunicar com API.",
     };
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   return parseRpcResponse(response, schema);
@@ -103,6 +116,9 @@ export async function rpcPost<T>(
 
   let response: Response;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), RPC_TIMEOUT_MS);
+
   try {
     response = await fetch(url, {
       method: "POST",
@@ -110,12 +126,20 @@ export async function rpcPost<T>(
       credentials: "include",
       headers,
       body: JSON.stringify({ json: input }),
+      signal: controller.signal,
     });
   } catch (error) {
     return {
       status: "unavailable",
-      message: error instanceof TypeError ? error.message : "Erro de rede ao comunicar com API.",
+      message:
+        error instanceof DOMException && error.name === "AbortError"
+          ? "API nao respondeu dentro do tempo limite."
+          : error instanceof TypeError
+            ? error.message
+            : "Erro de rede ao comunicar com API.",
     };
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   return parseRpcResponse(response, schema);

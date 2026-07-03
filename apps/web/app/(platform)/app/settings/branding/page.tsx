@@ -23,14 +23,40 @@ export default async function BrandingSettingsPage() {
     );
   }
 
-  const result = await getSettingsOrganizationData();
+  let result: Awaited<ReturnType<typeof getSettingsOrganizationData>>;
+
+  try {
+    result = await getSettingsOrganizationData();
+  } catch {
+    return (
+      <AccessState
+        badgeLabel="Marca"
+        description="API nao respondeu dentro do tempo limite."
+        role="alert"
+        title="Dados indisponiveis"
+        variant="error"
+      />
+    );
+  }
+
+  if (result.status !== "ok") {
+    return (
+      <AccessState
+        badgeLabel="Marca"
+        description={result.message}
+        role="alert"
+        title="Dados indisponiveis"
+        variant="error"
+      />
+    );
+  }
 
   return (
     <BrandingSettingsForm
       action={updateBrandingSettingsAction}
       canManageTenant={canManageTenant}
       initialState={initialBrandingSettingsFormState}
-      organizationSlug={result.status === "ok" ? result.organization.slug : ""}
+      organizationSlug={result.organization.slug}
     />
   );
 }

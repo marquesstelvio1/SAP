@@ -110,7 +110,12 @@ export class PrismaTrackingRepository implements TrackingRepository {
     });
   }
 
-  async findRecentShipments(organizationId: string, limit: number, offset: number, teamId?: string) {
+  async findRecentShipments(
+    organizationId: string,
+    limit: number,
+    offset: number,
+    teamId?: string,
+  ) {
     const where: Record<string, unknown> = { organizationId };
 
     if (teamId !== undefined) {

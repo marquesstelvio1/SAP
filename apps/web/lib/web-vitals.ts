@@ -25,6 +25,10 @@ function sendToAnalytics(metric: { name: string; value: number; rating: string }
 }
 
 export function reportWebVitals(onPerfEntry?: MetricCallback) {
+  if (typeof process === "undefined" || !process.env.NEXT_PUBLIC_ANALYTICS_ID) {
+    return;
+  }
+
   try {
     onCLS(onPerfEntry || sendToAnalytics);
     onFCP(onPerfEntry || sendToAnalytics);

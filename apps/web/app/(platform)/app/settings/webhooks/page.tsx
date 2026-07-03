@@ -30,12 +30,22 @@ export default async function WebhooksSettingsPage(props: {
 
   const result = await rpcGet("/rpc/webhooks/list", webhookEndpointSummarySchema.array(), {
     searchParams: { limit, offset },
-  });
+  }).catch(() => ({
+    status: "unavailable" as const,
+    message: "API nao respondeu dentro do tempo limite.",
+  }));
 
-  return (
-    <WebhooksSettingsContent
-      initialData={result.status === "ok" ? result.data : []}
-      canManage={canManage}
-    />
-  );
+  if (result.status !== "ok") {
+    return (
+      <AccessState
+        badgeLabel="Webhooks"
+        description={result.message}
+        role="alert"
+        title="Webhooks indisponiveis"
+        variant="error"
+      />
+    );
+  }
+
+  return <WebhooksSettingsContent initialData={result.data} canManage={canManage} />;
 }

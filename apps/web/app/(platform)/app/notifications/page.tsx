@@ -61,10 +61,24 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
     );
   }
 
-  const inboxResult = await getNotificationInbox({
-    limit,
-    ...(status === "all" ? {} : { status }),
-  });
+  let inboxResult: Awaited<ReturnType<typeof getNotificationInbox>>;
+
+  try {
+    inboxResult = await getNotificationInbox({
+      limit,
+      ...(status === "all" ? {} : { status }),
+    });
+  } catch {
+    return (
+      <AccessState
+        badgeLabel="Notificacoes"
+        description="API nao respondeu dentro do tempo limite."
+        role="alert"
+        title="Inbox indisponivel"
+        variant="error"
+      />
+    );
+  }
 
   if (inboxResult.status !== "ok") {
     return (

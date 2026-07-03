@@ -23,7 +23,11 @@ export class RpcContextService {
     metadata: RpcOperationMetadata,
   ): Promise<AuthorizedRpcContext> {
     if (request.authResolutionError !== undefined) {
-      throw new UnauthorizedException("rpc.auth_resolution_failed");
+      const causeMessage =
+        request.authResolutionError instanceof Error
+          ? `${request.authResolutionError.constructor.name}: ${request.authResolutionError.message}`
+          : String(request.authResolutionError);
+      throw new UnauthorizedException(`rpc.auth_resolution_failed (${causeMessage})`);
     }
 
     const authContext =

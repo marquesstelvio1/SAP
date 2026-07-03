@@ -43,8 +43,11 @@ export default async function AdminTeamsPage(props: {
   const [result, orgUsers] = await Promise.all([
     rpcGet("/rpc/teams/list", listTeamsOutputSchema, {
       searchParams: input,
-    }),
-    getOrgUsers(),
+    }).catch(() => ({
+      status: "unavailable" as const,
+      message: "API nao respondeu dentro do tempo limite.",
+    })),
+    getOrgUsers().catch(() => []),
   ]);
 
   if (result.status !== "ok") {
