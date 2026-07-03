@@ -15,10 +15,10 @@ function createPlatformContext(request: IncomingMessage): PlatformRpcContext {
   return {
     request: request as IncomingMessage & RpcRequestWithAuthContext,
     authContext: undefined,
-    organizationId: undefined,
-    actorId: undefined,
-    actorType: undefined,
-    correlationId: undefined,
+    organizationId: "",
+    actorId: "",
+    actorType: "platform" as const,
+    correlationId: "",
     userAgent: undefined,
     ipAddress: undefined,
   };

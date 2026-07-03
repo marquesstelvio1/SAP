@@ -3,6 +3,8 @@
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
+export const dynamic = "force-dynamic";
+
 export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
   useEffect(() => {
     try {

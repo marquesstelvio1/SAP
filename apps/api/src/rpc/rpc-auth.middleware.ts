@@ -1,47 +1,56 @@
 import type { IncomingMessage } from "node:http";
 import { ForbiddenException } from "@nestjs/common";
-import { os } from "@orpc/server";
+import type { Middleware, MiddlewareResult, ORPCErrorConstructorMap } from "@orpc/server";
+import type { AuthContext } from "@saptm/auth";
 import type { RpcOperationMetadata } from "@saptm/rpc";
 
-import type { AuthorizedRpcContext } from "./rpc-context.js";
+import type { RequestWithAuthContext } from "../auth/auth-context.js";
 import type { RpcContextService } from "./rpc-context.service.js";
 import { readRequestHeader, readRequestIp } from "./rpc-utils.js";
 
-/**
- * Extended context injected by the auth middleware.
- */
 export type AuthEnrichedContext = {
-  authContext: AuthorizedRpcContext["authContext"];
-  organizationId: string | undefined;
-  actorId: string | undefined;
-  actorType: string | undefined;
-  correlationId: string | undefined;
+  authContext: AuthContext | undefined;
+  organizationId: string;
+  actorId: string;
+  actorType: "user" | "anonymous" | "service_account" | "integration" | "platform" | "ai_agent";
+  correlationId: string;
   userAgent: string | undefined;
   ipAddress: string | undefined;
 };
 
-export function createRpcAuthMiddleware(rpcContextService: RpcContextService) {
-  const base = os.$context<{ request: IncomingMessage }>();
+export type RpcAuthMiddleware = Middleware<
+  { request: IncomingMessage },
+  AuthEnrichedContext,
+  unknown,
+  unknown,
+  ORPCErrorConstructorMap<Record<never, never>>,
+  Record<never, never>
+>;
 
-  return base.middleware(async ({ context, next, procedure }) => {
-    const metadata = (procedure as { meta?: RpcOperationMetadata }).meta;
+export function createRpcAuthMiddleware(rpcContextService: RpcContextService): RpcAuthMiddleware {
+  return async (options, _input, _output) => {
+    const { context } = options;
+    const def = (options.procedure as { "~orpc"?: unknown })["~orpc"] as
+      | { meta?: RpcOperationMetadata }
+      | undefined;
+    const metadata = def?.meta;
 
     if (metadata?.auth === "public") {
-      return next({
+      return options.next({
         context: {
           authContext: undefined,
-          organizationId: undefined,
-          actorId: undefined,
-          actorType: undefined,
-          correlationId: undefined,
+          organizationId: "",
+          actorId: "",
+          actorType: "anonymous",
+          correlationId: "",
           userAgent: readRequestHeader(context.request, "user-agent"),
           ipAddress: readRequestIp(context.request),
         },
-      });
+      }) as unknown as MiddlewareResult<AuthEnrichedContext, unknown>;
     }
 
     const authorizedContext = await rpcContextService.authorizeRequest(
-      context.request,
+      context.request as unknown as RequestWithAuthContext,
       metadata ?? {
         auth: "session",
         name: "unknown",
@@ -69,7 +78,7 @@ export function createRpcAuthMiddleware(rpcContextService: RpcContextService) {
       throw new ForbiddenException("Organization context is required for this operation.");
     }
 
-    return next({
+    return options.next({
       context: {
         authContext,
         organizationId,
@@ -79,8 +88,6 @@ export function createRpcAuthMiddleware(rpcContextService: RpcContextService) {
         userAgent: readRequestHeader(context.request, "user-agent"),
         ipAddress: readRequestIp(context.request),
       },
-    });
-  });
+    }) as unknown as MiddlewareResult<AuthEnrichedContext, unknown>;
+  };
 }
-
-export type RpcAuthMiddleware = ReturnType<typeof createRpcAuthMiddleware>;
