@@ -71,7 +71,7 @@ export function AdminInvitationLifecycleForm({
           <Badge variant={canManageInvitations ? "success" : "warning"}>
             {canManageInvitations ? "Convites" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">identity.user.invite</Badge>
+          <Badge variant="outline">Convidar utilizador</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>{title}</CardTitle>
@@ -110,13 +110,7 @@ export function AdminInvitationLifecycleForm({
               </Field>
             ) : null}
             <Field>
-              <FieldDescription>
-                {state.status === "success" && state.membershipId !== undefined
-                  ? `${state.message} Membership: ${state.membershipId} · Replay: ${
-                      state.replayed ? "sim" : "nao"
-                    }`
-                  : state.message}
-              </FieldDescription>
+              <FieldDescription>{state.message}</FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
             {state.status === "success" && state.invitationAcceptUrl !== undefined ? (

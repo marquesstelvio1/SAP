@@ -90,9 +90,11 @@ export const ModelName = {
   WebhookEndpoint: 'WebhookEndpoint',
   WebhookDelivery: 'WebhookDelivery',
   TrackingEvent: 'TrackingEvent',
+  Plan: 'Plan',
   Subscription: 'Subscription',
   Invoice: 'Invoice',
-  UsageRecord: 'UsageRecord'
+  UsageRecord: 'UsageRecord',
+  SsoConfig: 'SsoConfig'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -369,6 +371,7 @@ export const OutboxEventScalarFieldEnum = {
   eventType: 'eventType',
   aggregateType: 'aggregateType',
   aggregateId: 'aggregateId',
+  eventVersion: 'eventVersion',
   payload: 'payload',
   status: 'status',
   attempts: 'attempts',
@@ -405,6 +408,7 @@ export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[k
 export const CargoScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
+  teamId: 'teamId',
   cargoReference: 'cargoReference',
   externalReference: 'externalReference',
   cargoDescription: 'cargoDescription',
@@ -834,6 +838,7 @@ export type CargoComplianceEvidenceScalarFieldEnum = (typeof CargoComplianceEvid
 export const TrackingShipmentScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
+  teamId: 'teamId',
   referenceCode: 'referenceCode',
   externalReference: 'externalReference',
   cargoDescription: 'cargoDescription',
@@ -848,7 +853,8 @@ export const TrackingShipmentScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
-  deletedBy: 'deletedBy'
+  deletedBy: 'deletedBy',
+  cargoId: 'cargoId'
 } as const
 
 export type TrackingShipmentScalarFieldEnum = (typeof TrackingShipmentScalarFieldEnum)[keyof typeof TrackingShipmentScalarFieldEnum]
@@ -912,12 +918,35 @@ export const TrackingEventScalarFieldEnum = {
 export type TrackingEventScalarFieldEnum = (typeof TrackingEventScalarFieldEnum)[keyof typeof TrackingEventScalarFieldEnum]
 
 
+export const PlanScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  currency: 'currency',
+  interval: 'interval',
+  features: 'features',
+  limits: 'limits',
+  isPublic: 'isPublic',
+  sortOrder: 'sortOrder',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
+} as const
+
+export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof PlanScalarFieldEnum]
+
+
 export const SubscriptionScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   stripeCustomerId: 'stripeCustomerId',
   stripeSubscriptionId: 'stripeSubscriptionId',
   plan: 'plan',
+  planId: 'planId',
   status: 'status',
   currentPeriodStart: 'currentPeriodStart',
   currentPeriodEnd: 'currentPeriodEnd',
@@ -966,6 +995,26 @@ export const UsageRecordScalarFieldEnum = {
 } as const
 
 export type UsageRecordScalarFieldEnum = (typeof UsageRecordScalarFieldEnum)[keyof typeof UsageRecordScalarFieldEnum]
+
+
+export const SsoConfigScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  domain: 'domain',
+  idpMetadataUrl: 'idpMetadataUrl',
+  idpEntityId: 'idpEntityId',
+  idpSsoUrl: 'idpSsoUrl',
+  idpCertificate: 'idpCertificate',
+  jitProvisioning: 'jitProvisioning',
+  jitDefaultRoleId: 'jitDefaultRoleId',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
+} as const
+
+export type SsoConfigScalarFieldEnum = (typeof SsoConfigScalarFieldEnum)[keyof typeof SsoConfigScalarFieldEnum]
 
 
 export const SortOrder = {

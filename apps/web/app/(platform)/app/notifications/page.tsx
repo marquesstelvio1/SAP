@@ -61,10 +61,24 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
     );
   }
 
-  const inboxResult = await getNotificationInbox({
-    limit,
-    ...(status === "all" ? {} : { status }),
-  });
+  let inboxResult: Awaited<ReturnType<typeof getNotificationInbox>>;
+
+  try {
+    inboxResult = await getNotificationInbox({
+      limit,
+      ...(status === "all" ? {} : { status }),
+    });
+  } catch {
+    return (
+      <AccessState
+        badgeLabel="Notificacoes"
+        description="API nao respondeu dentro do tempo limite."
+        role="alert"
+        title="Inbox indisponivel"
+        variant="error"
+      />
+    );
+  }
 
   if (inboxResult.status !== "ok") {
     return (
@@ -90,7 +104,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
           </Badge>
         </div>
         <div className="max-w-3xl">
-          <h1 className="font-semibold text-3xl tracking-tight">Inbox operacional</h1>
+          <h1 className="font-semibold text-3xl tracking-heading">Inbox operacional</h1>
           <p className="mt-2 text-muted-foreground">
             Notificacoes operacionais geradas pelo sistema. Cada item e filtravel, auditavel e pode
             ser reconhecido por utilizadores autorizados.

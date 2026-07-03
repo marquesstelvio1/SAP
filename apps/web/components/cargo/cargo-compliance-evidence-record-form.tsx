@@ -18,6 +18,7 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CargoComplianceEvidenceRecordFormState } from "../../app/(platform)/app/cargo/form-state";
@@ -47,6 +48,7 @@ export function CargoComplianceEvidenceRecordForm({
   initialState,
   action,
 }: CargoComplianceEvidenceRecordFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_ev"));
   const isDisabled = isPending || !canRecordComplianceEvidence;
@@ -54,6 +56,12 @@ export function CargoComplianceEvidenceRecordForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("cargo_ev"));
+      capture("cargo:status_changed", {
+        cargo_id: state.cargoId,
+        to_status: "compliance_evidence_recorded",
+        evidence_id: state.evidenceId,
+        evidence_type: state.evidenceType,
+      });
     }
   }, [state.status]);
 
@@ -64,7 +72,7 @@ export function CargoComplianceEvidenceRecordForm({
           <Badge variant={canRecordComplianceEvidence ? "success" : "warning"}>
             {canRecordComplianceEvidence ? "Evidencia autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.compliance.record</Badge>
+          <Badge variant="outline">Registar conformidade</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar evidencia de compliance</CardTitle>
@@ -181,10 +189,6 @@ export function CargoComplianceEvidenceRecordForm({
                 name="sourceSystem"
               />
             </Field>
-
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
 
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (

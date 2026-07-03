@@ -134,7 +134,7 @@ export function BillingPageContent({
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="font-semibold text-lg tracking-tight">Faturação</h2>
+        <h2 className="font-semibold text-lg tracking-heading">Faturação</h2>
         <p className="text-muted-foreground text-sm">Subscrição, planos e faturas da organização</p>
       </div>
 
@@ -198,7 +198,7 @@ export function BillingPageContent({
 
       {/* Usage metering */}
       <div>
-        <h3 className="mb-3 font-semibold text-base tracking-tight">Uso</h3>
+        <h3 className="mb-3 font-semibold text-base tracking-heading">Uso</h3>
         {usage.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {usage
@@ -221,7 +221,7 @@ export function BillingPageContent({
             <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
               <CreditCardIcon className="size-6" />
             </div>
-            <p className="font-semibold text-base tracking-tight">Sem dados de uso</p>
+            <p className="font-semibold text-base tracking-heading">Sem dados de uso</p>
             <p className="max-w-sm text-muted-foreground text-sm">
               As metricas de uso aparecerão aqui quando disponiveis.
             </p>
@@ -231,7 +231,7 @@ export function BillingPageContent({
 
       {/* Recent invoices */}
       <div>
-        <h3 className="mb-3 font-semibold text-base tracking-tight">Faturas</h3>
+        <h3 className="mb-3 font-semibold text-base tracking-heading">Faturas</h3>
         {recentInvoices.length > 0 ? (
           <DataTable columns={invoiceColumns} data={recentInvoices} pageSize={5} />
         ) : (
@@ -239,7 +239,7 @@ export function BillingPageContent({
             <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
               <CreditCardIcon className="size-6" />
             </div>
-            <p className="font-semibold text-base tracking-tight">Sem faturas</p>
+            <p className="font-semibold text-base tracking-heading">Sem faturas</p>
             <p className="max-w-sm text-muted-foreground text-sm">
               As faturas aparecerão aqui apos a primeira cobranca.
             </p>

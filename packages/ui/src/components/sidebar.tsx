@@ -195,12 +195,12 @@ function Sidebar({
       <div
         data-sidebar="sidebar"
         data-mobile="true"
-        className="fixed inset-0 z-50 flex"
+        className="fixed inset-0 z-overlay flex"
         role="dialog"
         aria-modal="true"
       >
         <div
-          className="fixed inset-0 bg-black/50"
+          className="fixed inset-0 bg-background/80"
           onClick={() => setOpenMobile(false)}
           aria-hidden="true"
         />
@@ -249,7 +249,7 @@ function Sidebar({
         data-slot="sidebar-container"
         className={cn(
           sidebarVariants({ collapsible }),
-          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-normal ease-linear md:flex",
+          "fixed inset-y-0 z-sticky hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-normal ease-linear md:flex",
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
@@ -334,7 +334,7 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
       onClick={toggleSidebar}
       title="Alternar barra lateral"
       className={cn(
-        "absolute inset-y-0 right-0 z-20 hidden w-1 cursor-col-resize bg-transparent transition-colors after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:bg-sidebar-border group-data-[collapsible=icon]:flex md:flex",
+        "absolute inset-y-0 right-0 z-sticky hidden w-1 cursor-col-resize bg-transparent transition-colors after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:bg-sidebar-border group-data-[collapsible=icon]:flex md:flex",
         className,
       )}
       {...props}
@@ -418,8 +418,9 @@ function SidebarGroupLabel({ className, ...props }: React.ComponentProps<"div">)
     <div
       data-slot="sidebar-group-label"
       className={cn(
-        "flex h-8 items-center px-2 text-sidebar-foreground/50 text-xs font-medium uppercase tracking-wider",
-        density === "operational" && "h-6 text-2xs",
+        "flex h-[var(--density-operational-control-height)] items-center px-2 text-sidebar-foreground/50 text-xs font-medium uppercase tracking-uppercase",
+        density === "comfortable" && "h-[var(--density-comfortable-control-height)]",
+        density === "operational" && "text-2xs",
         className,
       )}
       {...props}
@@ -475,9 +476,21 @@ function SidebarMenuButton({
   const Comp = asChild ? Slot.Root : "button";
 
   const sizeClasses = {
-    default: cn("h-9", density === "compact" && "h-8", density === "operational" && "h-7"),
-    sm: cn("h-8", density === "compact" && "h-7", density === "operational" && "h-6"),
-    lg: cn("h-12", density === "compact" && "h-10", density === "operational" && "h-9"),
+    default: cn(
+      "h-[var(--density-compact-control-height)]",
+      density === "compact" && "h-[var(--density-operational-control-height)]",
+      density === "operational" && "h-[var(--density-operational-control-height)]",
+    ),
+    sm: cn(
+      "h-[var(--density-operational-control-height)]",
+      density === "compact" && "h-[var(--density-operational-control-height)]",
+      density === "operational" && "h-[var(--density-operational-control-height)]",
+    ),
+    lg: cn(
+      "h-[var(--density-row-height)]",
+      density === "compact" && "h-[var(--density-comfortable-control-height)]",
+      density === "operational" && "h-[var(--density-compact-control-height)]",
+    ),
   };
 
   return (
@@ -537,7 +550,10 @@ function SidebarMenuSkeleton({ className, ...props }: React.ComponentProps<"div"
   return (
     <div
       data-slot="sidebar-menu-skeleton"
-      className={cn("flex h-9 items-center gap-3 px-3", className)}
+      className={cn(
+        "flex h-[var(--density-compact-control-height)] items-center gap-3 px-3",
+        className,
+      )}
       {...props}
     >
       <div className="size-4 rounded-md bg-sidebar-accent/50 animate-pulse" />

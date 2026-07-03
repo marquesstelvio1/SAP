@@ -18,6 +18,7 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { addHours, createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -44,6 +45,7 @@ export function CargoTransportPlanForm({
   initialState,
   action,
 }: CargoTransportPlanFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_plan"));
   const defaultDepartureAt = useMemo(() => createDatetimeLocalValue(addHours(new Date(), 2)), []);
@@ -53,6 +55,13 @@ export function CargoTransportPlanForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("cargo_plan"));
+      capture("cargo:status_changed", {
+        cargo_id: state.cargoId,
+        cargo_reference: state.cargoReference,
+        to_status: "planned",
+        shipment_id: state.shipmentId,
+        shipment_reference: state.shipmentReferenceCode,
+      });
     }
   }, [state.status]);
 
@@ -63,7 +72,7 @@ export function CargoTransportPlanForm({
           <Badge variant={canPlanTransport ? "success" : "warning"}>
             {canPlanTransport ? "Tracking autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.transport.plan</Badge>
+          <Badge variant="outline">Planear transporte</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Planear transporte e criar tracking</CardTitle>
@@ -184,10 +193,6 @@ export function CargoTransportPlanForm({
                 name="sourceSystem"
               />
             </Field>
-
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
 
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (

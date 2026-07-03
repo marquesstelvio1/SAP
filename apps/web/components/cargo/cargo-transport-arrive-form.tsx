@@ -17,6 +17,7 @@ import {
   Input,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -36,6 +37,7 @@ export function CargoTransportArriveForm({
   initialState,
   action,
 }: CargoTransportArriveFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_arr"));
   const defaultArrivedAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -44,6 +46,12 @@ export function CargoTransportArriveForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("cargo_arr"));
+      capture("cargo:status_changed", {
+        cargo_id: state.cargoId,
+        cargo_reference: state.cargoReference,
+        to_status: "arrived",
+        shipment_id: state.shipmentId,
+      });
     }
   }, [state.status]);
 
@@ -54,13 +62,13 @@ export function CargoTransportArriveForm({
           <Badge variant={canArriveTransport ? "success" : "warning"}>
             {canArriveTransport ? "Chegada autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.transport.arrive</Badge>
+          <Badge variant="outline">Chegada de transporte</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Confirmar chegada operacional</CardTitle>
           <CardDescription className="leading-6">
-            Move o shipment para arrived somente quando a carga ja esta in_transport e o tracking
-            esta in_transit.
+            Confirma a chegada apenas quando a carga ja esta em transporte e o tracking esta em
+            curso.
           </CardDescription>
         </div>
       </CardHeader>
@@ -140,19 +148,11 @@ export function CargoTransportArriveForm({
               </Field>
             </div>
 
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
-
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (
                 <FieldError>{state.message}</FieldError>
               ) : (
-                <FieldDescription>
-                  {state.status === "success"
-                    ? `${state.message} Evento: ${state.eventId ?? state.shipmentId ?? "sem-ref"}`
-                    : state.message}
-                </FieldDescription>
+                <FieldDescription>{state.message}</FieldDescription>
               )}
             </Field>
           </FieldGroup>

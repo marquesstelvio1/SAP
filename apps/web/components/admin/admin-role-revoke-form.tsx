@@ -74,7 +74,7 @@ export function AdminRoleRevokeForm({
           <Badge variant={canAssignRole ? "success" : "warning"}>
             {canAssignRole ? "Revogação de roles" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">anti-lockout</Badge>
+          <Badge variant="outline">Anti-bloqueio</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Revogar role</CardTitle>
@@ -106,13 +106,7 @@ export function AdminRoleRevokeForm({
               </SelectNative>
             </Field>
             <Field>
-              <FieldDescription>
-                {state.status === "success" && state.roleKey !== undefined
-                  ? `${state.message} Role: ${state.roleKey} · Replay: ${
-                      state.replayed ? "sim" : "nao"
-                    }`
-                  : state.message}
-              </FieldDescription>
+              <FieldDescription>{state.message}</FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
           </FieldGroup>

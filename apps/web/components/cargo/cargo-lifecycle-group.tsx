@@ -87,7 +87,7 @@ export function LifecycleProgressIndicator({
     <Card>
       <CardHeader className="gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="info">Lifecycle P0</Badge>
+          <Badge variant="info">Ciclo de vida P0</Badge>
           <Badge variant="outline">Progresso operacional</Badge>
         </div>
         <div className="flex flex-col gap-1">

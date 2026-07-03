@@ -1,10 +1,11 @@
+import { createORPCClient } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
+import type { ContractRouterClient } from "@orpc/contract";
 import { getClientEnv } from "@saptm/config";
+import type { contracts } from "@saptm/rpc/contracts";
 
-/**
- * Internal request marker for server-to-server RPC calls.
- * The API's CSRF middleware skips validation when this header is present.
- * CORS does not expose this header, so browser-origin requests cannot set it.
- */
+// ── Existing RPC helpers (rpcGet, rpcPost) ──────────────────────────
+
 const INTERNAL_REQUEST_HEADER = "x-internal-request" as const;
 
 export type RpcStatus = "forbidden" | "not_found" | "unavailable" | "invalid";
@@ -23,9 +24,10 @@ type Schema<T> = {
   safeParse: (data: unknown) => { success: true; data: T } | { success: false };
 };
 
+const RPC_TIMEOUT_MS = 15_000;
+
 type RpcQueryOptions = {
   searchParams?: Record<string, string | number | undefined>;
-  /** Only needed for server-to-server calls. Browser calls send cookies automatically. */
   cookie?: string;
 };
 
@@ -34,8 +36,6 @@ function isServerSide(): boolean {
 }
 
 function rpcUrl(path: string, hasCookie: boolean): URL {
-  // Server-side (Actions or Server Components): fetch directly from API
-  // Browser: fetch through proxy (same-origin, avoids CORS/CSP/cookie issues)
   if (hasCookie || isServerSide()) {
     return new URL(path, getClientEnv().NEXT_PUBLIC_API_URL);
   }
@@ -66,17 +66,28 @@ export async function rpcGet<T>(
 
   let response: Response;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), RPC_TIMEOUT_MS);
+
   try {
     response = await fetch(url, {
       cache: "no-store",
       credentials: "include",
       headers,
+      signal: controller.signal,
     });
   } catch (error) {
     return {
       status: "unavailable",
-      message: error instanceof TypeError ? error.message : "Erro de rede ao comunicar com API.",
+      message:
+        error instanceof DOMException && error.name === "AbortError"
+          ? "API nao respondeu dentro do tempo limite."
+          : error instanceof TypeError
+            ? error.message
+            : "Erro de rede ao comunicar com API.",
     };
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   return parseRpcResponse(response, schema);
@@ -105,6 +116,9 @@ export async function rpcPost<T>(
 
   let response: Response;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), RPC_TIMEOUT_MS);
+
   try {
     response = await fetch(url, {
       method: "POST",
@@ -112,12 +126,20 @@ export async function rpcPost<T>(
       credentials: "include",
       headers,
       body: JSON.stringify({ json: input }),
+      signal: controller.signal,
     });
   } catch (error) {
     return {
       status: "unavailable",
-      message: error instanceof TypeError ? error.message : "Erro de rede ao comunicar com API.",
+      message:
+        error instanceof DOMException && error.name === "AbortError"
+          ? "API nao respondeu dentro do tempo limite."
+          : error instanceof TypeError
+            ? error.message
+            : "Erro de rede ao comunicar com API.",
     };
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   return parseRpcResponse(response, schema);
@@ -157,3 +179,12 @@ async function parseRpcResponse<T>(response: Response, schema: Schema<T>): Promi
 
   return { status: "ok", data: parsed.data };
 }
+
+// ── Typed oRPC client (contract-first) ──────────────────────────────
+
+const link = new RPCLink({
+  url: `${typeof window !== "undefined" ? window.location.origin : ""}/api/rpc`,
+  headers: {},
+});
+
+export const rpcClient: ContractRouterClient<typeof contracts> = createORPCClient(link);

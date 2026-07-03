@@ -16,7 +16,7 @@ function SkeletonCard({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div data-slot="skeleton-card" className={cn("rounded-xl border p-6", className)} {...props}>
       <Skeleton className="mb-4 h-4 w-1/3" />
-      <Skeleton className="mb-2 h-8 w-1/2" />
+      <Skeleton className="mb-2 h-[var(--density-operational-control-height)] w-1/2" />
       <Skeleton className="h-3 w-1/4" />
     </div>
   );
@@ -57,7 +57,7 @@ function SkeletonMetricTile({ className, ...props }: React.ComponentProps<"div">
       {...props}
     >
       <Skeleton className="mb-3 h-3 w-1/2" />
-      <Skeleton className="mb-2 h-8 w-2/3" />
+      <Skeleton className="mb-2 h-[var(--density-operational-control-height)] w-2/3" />
       <Skeleton className="h-3 w-1/3" />
     </div>
   );

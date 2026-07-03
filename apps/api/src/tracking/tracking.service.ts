@@ -1,8 +1,8 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import {
   type AuditSeverity,
+  CURRENT_EVENT_VERSION,
   type DatabaseActorType,
-  getPrismaClient,
   type PrismaTx,
 } from "@saptm/database";
 import type {
@@ -15,8 +15,8 @@ import type {
   TrackingOverviewOutput,
   TrackingShipmentDetailOutput,
 } from "@saptm/rpc";
-import type { UsageService } from "../billing/usage.service.js";
-import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createTrackingEventAuditAfter,
   createTrackingExceptionAuditAfter,
@@ -74,6 +74,7 @@ export type GetTrackingOverviewInput = {
   organizationId: string;
   limit?: number;
   offset?: number;
+  teamId?: string;
   generatedAt?: Date;
 };
 
@@ -160,7 +161,6 @@ export class TrackingService {
   constructor(
     @Inject(TRACKING_REPOSITORY) private readonly trackingRepo: TrackingRepository,
     private readonly eventBus: OutboxEventBusAdapter,
-    private readonly usageService: UsageService,
   ) {}
 
   async getOverview(input: GetTrackingOverviewInput): Promise<TrackingOverviewOutput> {
@@ -168,7 +168,7 @@ export class TrackingService {
     const offset = input.offset ?? 0;
     const [statusGroups, recentShipments, totalCount] = await Promise.all([
       this.trackingRepo.countShipmentsByStatus(input.organizationId),
-      this.trackingRepo.findRecentShipments(input.organizationId, limit, offset),
+      this.trackingRepo.findRecentShipments(input.organizationId, limit, offset, input.teamId),
       this.trackingRepo.countShipments(input.organizationId),
     ]);
 
@@ -494,6 +494,7 @@ export class TrackingService {
         eventType: "tracking.exception.managed",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -631,6 +632,7 @@ export class TrackingService {
         eventType: "tracking.exception.resolved",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -749,6 +751,7 @@ export class TrackingService {
         eventType: "tracking.event.recorded",
         aggregateType: "tracking.shipment",
         aggregateId: shipment.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           eventId: event.id,
           shipmentId: shipment.id,
@@ -771,8 +774,6 @@ export class TrackingService {
       } as never;
     });
 
-    await this.usageService.trackUsage(input.organizationId, "tracking_events", 1);
-
     return createRecordEventOutput({
       organizationId: input.organizationId,
       event: result as Parameters<typeof createRecordEventOutput>[0]["event"],
@@ -781,6 +782,6 @@ export class TrackingService {
   }
 
   private databaseTransaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T> {
-    return getPrismaClient().$transaction(fn) as Promise<T>;
+    return this.trackingRepo.transaction(fn);
   }
 }

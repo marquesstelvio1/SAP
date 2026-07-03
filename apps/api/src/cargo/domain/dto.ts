@@ -51,6 +51,7 @@ export type TrackingTransportMode = (typeof trackingTransportModes)[number];
 export type CargoRecord = {
   id: string;
   organizationId: string;
+  teamId: string | null;
   cargoReference: string;
   externalReference: string | null;
   cargoDescription: string;
@@ -103,26 +104,6 @@ export type CargoRecord = {
   deliveredAt: Date | null;
   updatedAt: Date;
 };
-
-export type TrackingShipmentRecord = {
-  id: string;
-  organizationId: string;
-  referenceCode: string;
-  transportMode: TrackingTransportMode;
-  status: TrackingShipmentStatus;
-  plannedDepartureAt: Date | null;
-  estimatedArrivalAt: Date | null;
-  actualArrivalAt: Date | null;
-};
-
-export type TrackingDepartureEventRecord = {
-  id: string;
-  eventType: TrackingEventType;
-  occurredAt: Date;
-  locationName: string | null;
-};
-
-export type TrackingLifecycleEventRecord = TrackingDepartureEventRecord;
 
 export type CargoComplianceEvidenceRecord = {
   id: string;
@@ -252,6 +233,7 @@ export function createCargoSummary(cargo: CargoRecord): CargoOverviewOutput["rec
   return {
     id: cargo.id,
     cargoReference: cargo.cargoReference,
+    teamId: cargo.teamId,
     externalReference: cargo.externalReference,
     cargoDescription: cargo.cargoDescription,
     cargoType: cargo.cargoType,
@@ -414,7 +396,6 @@ export function createCargoReleaseOutput(input: {
 export function createCargoTransportPlanOutput(input: {
   organizationId: string;
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
   replayed: boolean;
   businessRules?: CargoTransportPlanOutput["businessRules"];
 }): CargoTransportPlanOutput {
@@ -422,8 +403,8 @@ export function createCargoTransportPlanOutput(input: {
     throw new Error("cargo.transport_plan.idempotency_key_missing");
   }
 
-  if (input.cargo.trackingShipmentId === null || input.cargo.transportPlannedAt === null) {
-    throw new Error("cargo.transport_plan.tracking_link_missing");
+  if (input.cargo.transportPlannedAt === null) {
+    throw new Error("cargo.transport_plan.transport_planned_at_missing");
   }
 
   if (input.cargo.transportOwnerTeam === null) {
@@ -432,35 +413,24 @@ export function createCargoTransportPlanOutput(input: {
 
   const summary = createCargoSummary(input.cargo);
   const businessRules = input.businessRules ?? {
-    planningAllowed: input.cargo.trackingShipmentId !== null,
+    planningAllowed: true,
     cargoReadyForTracking: input.cargo.status === "ready_for_transport",
-    trackingLinked: input.cargo.trackingShipmentId !== null,
-    appliedRules: [
-      "tenant_scoped_cargo_tracking_linkage",
-      "idempotent_transport_planning_replay",
-      "cargo_linked_to_tracking_shipment",
-    ],
+    trackingLinked: false,
+    appliedRules: ["tenant_scoped_cargo_tracking_linkage", "idempotent_transport_planning_replay"],
   };
 
   return {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
-    shipmentId: input.shipment.id,
+    shipmentId: null,
     cargo: {
       ...summary,
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
       transportPlannedAt: input.cargo.transportPlannedAt.toISOString(),
       transportPlanningReference: input.cargo.transportPlanningReference,
       transportOwnerTeam: input.cargo.transportOwnerTeam,
     },
-    shipment: {
-      id: input.shipment.id,
-      referenceCode: input.shipment.referenceCode,
-      transportMode: input.shipment.transportMode,
-      status: "planned",
-      plannedDepartureAt: toRequiredIsoString(input.shipment.plannedDepartureAt),
-      estimatedArrivalAt: toRequiredIsoString(input.shipment.estimatedArrivalAt),
-    },
+    shipment: null,
     businessRules,
     idempotency: {
       key: input.cargo.transportPlanIdempotencyKey,
@@ -482,9 +452,6 @@ export function createCargoTransportPlanOutput(input: {
 export function createCargoTransportDepartOutput(input: {
   organizationId: string;
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
-  event: TrackingDepartureEventRecord;
-  previousShipmentStatus: TrackingShipmentStatus;
   replayed: boolean;
   businessRules?: CargoTransportDepartOutput["businessRules"];
 }): CargoTransportDepartOutput {
@@ -493,7 +460,6 @@ export function createCargoTransportDepartOutput(input: {
   }
 
   if (
-    input.cargo.trackingShipmentId === null ||
     input.cargo.departedAt === null ||
     input.cargo.departureLocationName === null ||
     input.cargo.departureOperatorName === null
@@ -512,37 +478,25 @@ export function createCargoTransportDepartOutput(input: {
       "tenant_scoped_cargo_departure",
       "idempotent_cargo_departure_replay",
       "cargo_departed_to_in_transport",
-      "tracking_shipment_moved_to_in_transit",
     ],
   };
 
   return {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
-    shipmentId: input.shipment.id,
-    eventId: input.event.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...summary,
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
       departedAt: input.cargo.departedAt.toISOString(),
       departureReference: input.cargo.departureReference,
       departureLocationName: input.cargo.departureLocationName,
       departureOperatorName: input.cargo.departureOperatorName,
       carrierReference: input.cargo.carrierReference,
     },
-    shipment: {
-      id: input.shipment.id,
-      referenceCode: input.shipment.referenceCode,
-      transportMode: input.shipment.transportMode,
-      previousStatus: input.previousShipmentStatus,
-      status: "in_transit",
-    },
-    event: {
-      id: input.event.id,
-      eventType: "departed",
-      occurredAt: input.event.occurredAt.toISOString(),
-      locationName: input.event.locationName ?? input.cargo.departureLocationName,
-    },
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.cargo.departureIdempotencyKey,
@@ -564,9 +518,6 @@ export function createCargoTransportDepartOutput(input: {
 export function createCargoTransportArriveOutput(input: {
   organizationId: string;
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
-  event: TrackingLifecycleEventRecord;
-  previousShipmentStatus: TrackingShipmentStatus;
   replayed: boolean;
   businessRules?: CargoTransportArriveOutput["businessRules"];
 }): CargoTransportArriveOutput {
@@ -575,7 +526,6 @@ export function createCargoTransportArriveOutput(input: {
   }
 
   if (
-    input.cargo.trackingShipmentId === null ||
     input.cargo.arrivedAt === null ||
     input.cargo.arrivalLocationName === null ||
     input.cargo.arrivalOperatorName === null
@@ -589,40 +539,24 @@ export function createCargoTransportArriveOutput(input: {
     cargoInTransport: input.cargo.status === "in_transport",
     trackingShipmentInTransit: true,
     arrivalAfterDeparture: true,
-    appliedRules: [
-      "tenant_scoped_cargo_arrival",
-      "idempotent_cargo_arrival_replay",
-      "tracking_shipment_moved_to_arrived",
-    ],
+    appliedRules: ["tenant_scoped_cargo_arrival", "idempotent_cargo_arrival_replay"],
   };
 
   return {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
-    shipmentId: input.shipment.id,
-    eventId: input.event.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...summary,
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
       arrivedAt: input.cargo.arrivedAt.toISOString(),
       arrivalReference: input.cargo.arrivalReference,
       arrivalLocationName: input.cargo.arrivalLocationName,
       arrivalOperatorName: input.cargo.arrivalOperatorName,
     },
-    shipment: {
-      id: input.shipment.id,
-      referenceCode: input.shipment.referenceCode,
-      transportMode: input.shipment.transportMode,
-      previousStatus: input.previousShipmentStatus,
-      status: "arrived",
-      actualArrivalAt: toRequiredIsoString(input.shipment.actualArrivalAt),
-    },
-    event: {
-      id: input.event.id,
-      eventType: "arrived",
-      occurredAt: input.event.occurredAt.toISOString(),
-      locationName: input.event.locationName ?? input.cargo.arrivalLocationName,
-    },
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.cargo.arrivalIdempotencyKey,
@@ -668,18 +602,11 @@ export function createCargoOperationalHandoffRecordOutput(input: {
   organizationId: string;
   cargo: CargoRecord;
   handoff: CargoOperationalHandoffRecord;
-  shipment: TrackingShipmentRecord;
-  event: TrackingLifecycleEventRecord;
-  previousShipmentStatus: TrackingShipmentStatus;
   replayed: boolean;
   businessRules?: CargoOperationalHandoffRecordOutput["businessRules"];
 }): CargoOperationalHandoffRecordOutput {
   if (input.handoff.recordIdempotencyKey === null) {
     throw new Error("cargo.operational_handoff.record_idempotency_key_missing");
-  }
-
-  if (input.cargo.trackingShipmentId === null || input.handoff.trackingShipmentId === null) {
-    throw new Error("cargo.operational_handoff.tracking_link_missing");
   }
 
   const businessRules = input.businessRules ?? {
@@ -696,7 +623,6 @@ export function createCargoOperationalHandoffRecordOutput(input: {
       "tenant_scoped_operational_handoff",
       "idempotent_operational_handoff_record_replay",
       "cargo_custody_transferred",
-      "tracking_location_updated_for_handoff",
     ],
   };
 
@@ -704,27 +630,16 @@ export function createCargoOperationalHandoffRecordOutput(input: {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
     handoffId: input.handoff.id,
-    shipmentId: input.shipment.id,
-    eventId: input.event.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...createCargoSummary(input.cargo),
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
       custodyOwnerName: input.cargo.custodyOwnerName,
     },
     handoff: createCargoOperationalHandoffSummary(input.handoff),
-    shipment: {
-      id: input.shipment.id,
-      referenceCode: input.shipment.referenceCode,
-      transportMode: input.shipment.transportMode,
-      previousStatus: input.previousShipmentStatus,
-      status: "in_transit",
-    },
-    event: {
-      id: input.event.id,
-      eventType: "location_updated",
-      occurredAt: input.event.occurredAt.toISOString(),
-      locationName: input.event.locationName ?? input.handoff.handoffLocationName,
-    },
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.handoff.recordIdempotencyKey,
@@ -746,9 +661,6 @@ export function createCargoOperationalHandoffRecordOutput(input: {
 export function createCargoDeliveryCompleteOutput(input: {
   organizationId: string;
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
-  event: TrackingLifecycleEventRecord;
-  previousShipmentStatus: TrackingShipmentStatus;
   replayed: boolean;
   businessRules?: CargoDeliveryCompleteOutput["businessRules"];
 }): CargoDeliveryCompleteOutput {
@@ -757,7 +669,6 @@ export function createCargoDeliveryCompleteOutput(input: {
   }
 
   if (
-    input.cargo.trackingShipmentId === null ||
     input.cargo.deliveredAt === null ||
     input.cargo.deliveryReference === null ||
     input.cargo.receivedByName === null
@@ -776,36 +687,24 @@ export function createCargoDeliveryCompleteOutput(input: {
       "tenant_scoped_cargo_delivery",
       "idempotent_cargo_delivery_replay",
       "cargo_marked_delivered",
-      "tracking_shipment_moved_to_completed",
     ],
   };
 
   return {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
-    shipmentId: input.shipment.id,
-    eventId: input.event.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...summary,
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
       deliveredAt: input.cargo.deliveredAt.toISOString(),
       deliveryReference: input.cargo.deliveryReference,
       receivedByName: input.cargo.receivedByName,
       deliveryNotes: input.cargo.deliveryNotes,
     },
-    shipment: {
-      id: input.shipment.id,
-      referenceCode: input.shipment.referenceCode,
-      transportMode: input.shipment.transportMode,
-      previousStatus: input.previousShipmentStatus,
-      status: "completed",
-    },
-    event: {
-      id: input.event.id,
-      eventType: "handover_completed",
-      occurredAt: input.event.occurredAt.toISOString(),
-      locationName: input.event.locationName ?? input.cargo.destinationName,
-    },
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.cargo.deliveryIdempotencyKey,
@@ -854,18 +753,11 @@ export function createCargoDeliveryExceptionRecordOutput(input: {
   organizationId: string;
   cargo: CargoRecord;
   exception: CargoDeliveryExceptionRecord;
-  shipment: TrackingShipmentRecord;
-  event: TrackingLifecycleEventRecord;
-  previousShipmentStatus: TrackingShipmentStatus;
   replayed: boolean;
   businessRules?: CargoDeliveryExceptionRecordOutput["businessRules"];
 }): CargoDeliveryExceptionRecordOutput {
   if (input.exception.recordIdempotencyKey === null) {
     throw new Error("cargo.delivery_exception.record_idempotency_key_missing");
-  }
-
-  if (input.cargo.trackingShipmentId === null || input.exception.trackingShipmentId === null) {
-    throw new Error("cargo.delivery_exception.tracking_link_missing");
   }
 
   const businessRules = input.businessRules ?? {
@@ -878,7 +770,6 @@ export function createCargoDeliveryExceptionRecordOutput(input: {
       "tenant_scoped_delivery_exception",
       "idempotent_delivery_exception_record_replay",
       "cargo_delivery_exception_opened",
-      "tracking_shipment_moved_to_exception",
     ],
   };
 
@@ -886,26 +777,15 @@ export function createCargoDeliveryExceptionRecordOutput(input: {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
     exceptionId: input.exception.id,
-    shipmentId: input.shipment.id,
-    eventId: input.event.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...createCargoSummary(input.cargo),
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
     },
     exception: createCargoDeliveryExceptionSummary(input.exception),
-    shipment: {
-      id: input.shipment.id,
-      referenceCode: input.shipment.referenceCode,
-      transportMode: input.shipment.transportMode,
-      previousStatus: input.previousShipmentStatus,
-      status: "exception",
-    },
-    event: {
-      id: input.event.id,
-      eventType: "exception",
-      occurredAt: input.event.occurredAt.toISOString(),
-      locationName: input.event.locationName ?? input.cargo.destinationName,
-    },
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.exception.recordIdempotencyKey,
@@ -928,18 +808,11 @@ export function createCargoDeliveryExceptionResolveOutput(input: {
   organizationId: string;
   cargo: CargoRecord;
   exception: CargoDeliveryExceptionRecord;
-  shipment: TrackingShipmentRecord;
-  event: TrackingLifecycleEventRecord;
-  previousShipmentStatus: TrackingShipmentStatus;
   replayed: boolean;
   businessRules?: CargoDeliveryExceptionResolveOutput["businessRules"];
 }): CargoDeliveryExceptionResolveOutput {
   if (input.exception.resolveIdempotencyKey === null) {
     throw new Error("cargo.delivery_exception.resolve_idempotency_key_missing");
-  }
-
-  if (input.cargo.trackingShipmentId === null || input.exception.trackingShipmentId === null) {
-    throw new Error("cargo.delivery_exception_resolution.tracking_link_missing");
   }
 
   const businessRules = input.businessRules ?? {
@@ -953,7 +826,6 @@ export function createCargoDeliveryExceptionResolveOutput(input: {
       "tenant_scoped_delivery_exception_resolution",
       "idempotent_delivery_exception_resolution_replay",
       "cargo_restored_for_delivery_completion",
-      "tracking_shipment_restored_to_arrived",
     ],
   };
 
@@ -961,26 +833,15 @@ export function createCargoDeliveryExceptionResolveOutput(input: {
     organizationId: input.organizationId,
     cargoId: input.cargo.id,
     exceptionId: input.exception.id,
-    shipmentId: input.shipment.id,
-    eventId: input.event.id,
+    shipmentId: null,
+    eventId: null,
     cargo: {
       ...createCargoSummary(input.cargo),
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
     },
     exception: createCargoDeliveryExceptionSummary(input.exception),
-    shipment: {
-      id: input.shipment.id,
-      referenceCode: input.shipment.referenceCode,
-      transportMode: input.shipment.transportMode,
-      previousStatus: input.previousShipmentStatus,
-      status: "arrived",
-    },
-    event: {
-      id: input.event.id,
-      eventType: "released",
-      occurredAt: input.event.occurredAt.toISOString(),
-      locationName: input.event.locationName ?? input.cargo.destinationName,
-    },
+    shipment: null,
+    event: null,
     businessRules,
     idempotency: {
       key: input.exception.resolveIdempotencyKey,
@@ -1057,7 +918,7 @@ export function createCargoClaimSettlementRecordOutput(input: {
     settlementId: input.settlement.id,
     cargo: {
       ...createCargoSummary(input.cargo),
-      trackingShipmentId: input.cargo.trackingShipmentId,
+      trackingShipmentId: input.cargo.trackingShipmentId ?? "",
     },
     exception: createCargoDeliveryExceptionSummary(input.exception),
     settlement: createCargoClaimSettlementSummary(input.settlement),

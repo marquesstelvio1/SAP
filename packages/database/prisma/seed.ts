@@ -1,5 +1,15 @@
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { config } from "dotenv";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+config({ path: resolve(__dirname, "../../../.env") });
+
+process.env.PRISMA_HIDE_QUERY_LOGS = "true";
+
 import type { PrismaClient } from "../generated/prisma/client.js";
-import { getPrismaClient, seedRbacBootstrap } from "../src/index.js";
+import { getPrismaClient } from "../src/index.js";
 
 const database = getPrismaClient();
 const localDemoDefaults = {
@@ -9,28 +19,10 @@ const localDemoDefaults = {
 } as const;
 
 try {
-  const organizationId = process.env.SAPTM_BOOTSTRAP_ORGANIZATION_ID;
-  const rbacResult = await seedRbacBootstrap({
-    database,
-    ...(organizationId === undefined ? {} : { organizationId }),
-  });
-  const demoResult = await seedLocalDemoData(database);
+  console.log("Iniciando o processo de seed...");
+  await seedLocalDemoData(database);
 
-  console.log(
-    [
-      "SAPTM RBAC bootstrap seed completed.",
-      `permissions=${rbacResult.permissionsSeeded}`,
-      `roleTemplates=${rbacResult.roleTemplatesAvailable}`,
-      `organizationRoles=${rbacResult.organizationRolesSeeded}`,
-      `rolePermissionLinks=${rbacResult.rolePermissionLinksSeeded}`,
-      `demoOrganization=${demoResult.organizationSlug}`,
-      `demoCargo=${demoResult.cargoRecords}`,
-      `demoTrackingShipments=${demoResult.trackingShipments}`,
-      `demoCapacitySlots=${demoResult.capacitySlots}`,
-      `demoTransportOrders=${demoResult.transportOrders}`,
-      `demoTariffQuotes=${demoResult.tariffQuotes}`,
-    ].join(" "),
-  );
+  console.log("✅ Seed concluído com sucesso.");
 } finally {
   await database.$disconnect();
 }
@@ -67,13 +59,9 @@ async function seedLocalDemoData(database: PrismaClient): Promise<DemoSeedResult
     },
   });
 
-  await seedRbacBootstrap({
-    database,
-    organizationId: organization.id,
-  });
-
   const trackingShipments = await seedTrackingDemoData(database, organization.id, now);
   const cargoRecords = await seedCargoDemoData(database, organization.id, trackingShipments, now);
+  await seedPlans(database);
   const capacitySlots = await seedCapacityDemoData(database, organization.id, cargoRecords, now);
   const transportOrders = await seedPlanningDemoData(database, organization.id, cargoRecords, now);
   const tariffQuotes = await seedTariffDemoData(database, organization.id, cargoRecords, now);
@@ -794,7 +782,7 @@ async function seedPlanningDemoData(
     planningCancelCargo,
   ] = cargoRecords;
 
-  await database.transportOrderScheduleRevision.deleteMany({
+  await database.transportOrderScheduleRevision.updateMany({
     where: {
       orderId: {
         in: [
@@ -804,8 +792,11 @@ async function seedPlanningDemoData(
         ],
       },
     },
+    data: {
+      deletedAt: new Date(),
+    },
   });
-  await database.transportOrderDispatch.deleteMany({
+  await database.transportOrderDispatch.updateMany({
     where: {
       orderId: {
         in: [
@@ -814,6 +805,9 @@ async function seedPlanningDemoData(
           "local_demo_transport_order_cancel_001",
         ],
       },
+    },
+    data: {
+      deletedAt: new Date(),
     },
   });
 
@@ -1820,6 +1814,188 @@ async function upsertCargoComplianceEvidence(
       sourceSystem: localDemoDefaults.sourceSystem,
       status: input.status,
       verifyIdempotencyKey: input.verifyIdempotencyKey,
+    },
+  });
+}
+
+async function seedPlans(database: PrismaClient): Promise<void> {
+  const freeFeatures = [
+    { key: "cargos", label: "Cargas", included: true, limit: "50" },
+    { key: "members", label: "Utilizadores", included: true, limit: "5" },
+    { key: "tracking", label: "Tracking", included: true, limit: "1000" },
+    { key: "api", label: "API", included: false },
+    { key: "reports", label: "Relatorios", included: true },
+    { key: "sso", label: "SSO", included: false },
+    { key: "audit_log", label: "Audit Log", included: false },
+    { key: "webhooks", label: "Webhooks", included: false },
+  ];
+  const proFeatures = [
+    { key: "cargos", label: "Cargas", included: true, limit: "500" },
+    { key: "members", label: "Utilizadores", included: true, limit: "25" },
+    { key: "tracking", label: "Tracking", included: true, limit: "50000" },
+    { key: "api", label: "API", included: true },
+    { key: "reports", label: "Relatorios", included: true },
+    { key: "sso", label: "SSO", included: false },
+    { key: "audit_log", label: "Audit Log", included: false },
+    { key: "webhooks", label: "Webhooks", included: false },
+  ];
+  const enterpriseFeatures = [
+    { key: "cargos", label: "Cargas", included: true, limit: "10000" },
+    { key: "members", label: "Utilizadores", included: true, limit: "999" },
+    { key: "tracking", label: "Tracking", included: true, limit: "999999" },
+    { key: "api", label: "API", included: true },
+    { key: "reports", label: "Relatorios", included: true },
+    { key: "sso", label: "SSO", included: true },
+    { key: "audit_log", label: "Audit Log", included: true },
+    { key: "webhooks", label: "Webhooks", included: true },
+  ];
+
+  await database.plan.upsert({
+    where: { slug: "free" },
+    update: {
+      name: "Free",
+      description: "Para testar a plataforma",
+      features: freeFeatures,
+      limits: {
+        maxMembers: 5,
+        maxCargos: 50,
+        maxTrackingEvents: 1000,
+        maxApiCalls: 1000,
+        maxTeams: 0,
+        hasSso: false,
+        hasApi: false,
+        hasWebhooks: false,
+        hasReports: true,
+        hasAuditLog: false,
+      },
+      isPublic: true,
+      sortOrder: 0,
+      active: true,
+    },
+    create: {
+      id: "plan_free",
+      slug: "free",
+      name: "Free",
+      description: "Para testar a plataforma",
+      price: 0,
+      currency: "eur",
+      interval: "month",
+      features: freeFeatures,
+      limits: {
+        maxMembers: 5,
+        maxCargos: 50,
+        maxTrackingEvents: 1000,
+        maxApiCalls: 1000,
+        maxTeams: 0,
+        hasSso: false,
+        hasApi: false,
+        hasWebhooks: false,
+        hasReports: true,
+        hasAuditLog: false,
+      },
+      isPublic: true,
+      sortOrder: 0,
+      active: true,
+    },
+  });
+
+  await database.plan.upsert({
+    where: { slug: "pro" },
+    update: {
+      name: "Pro",
+      description: "Para operacoes profissionais",
+      price: 9900,
+      features: proFeatures,
+      limits: {
+        maxMembers: 25,
+        maxCargos: 500,
+        maxTrackingEvents: 50000,
+        maxApiCalls: 50000,
+        maxTeams: 10,
+        hasSso: false,
+        hasApi: true,
+        hasWebhooks: false,
+        hasReports: true,
+        hasAuditLog: false,
+      },
+      isPublic: true,
+      sortOrder: 1,
+      active: true,
+    },
+    create: {
+      id: "plan_pro",
+      slug: "pro",
+      name: "Pro",
+      description: "Para operacoes profissionais",
+      price: 9900,
+      currency: "eur",
+      interval: "month",
+      features: proFeatures,
+      limits: {
+        maxMembers: 25,
+        maxCargos: 500,
+        maxTrackingEvents: 50000,
+        maxApiCalls: 50000,
+        maxTeams: 10,
+        hasSso: false,
+        hasApi: true,
+        hasWebhooks: false,
+        hasReports: true,
+        hasAuditLog: false,
+      },
+      isPublic: true,
+      sortOrder: 1,
+      active: true,
+    },
+  });
+
+  await database.plan.upsert({
+    where: { slug: "enterprise" },
+    update: {
+      name: "Enterprise",
+      description: "Para grandes operadores logisticos",
+      price: 0,
+      features: enterpriseFeatures,
+      limits: {
+        maxMembers: 999,
+        maxCargos: 10000,
+        maxTrackingEvents: 999999,
+        maxApiCalls: 999999,
+        maxTeams: 999,
+        hasSso: true,
+        hasApi: true,
+        hasWebhooks: true,
+        hasReports: true,
+        hasAuditLog: true,
+      },
+      isPublic: true,
+      sortOrder: 2,
+      active: true,
+    },
+    create: {
+      id: "plan_enterprise",
+      slug: "enterprise",
+      name: "Enterprise",
+      description: "Para grandes operadores logisticos",
+      price: 0,
+      currency: "eur",
+      interval: "month",
+      features: enterpriseFeatures,
+      limits: {
+        maxMembers: 999,
+        maxCargos: 10000,
+        maxTrackingEvents: 999999,
+        maxApiCalls: 999999,
+        maxTeams: 999,
+        hasSso: true,
+        hasApi: true,
+        hasWebhooks: true,
+        hasReports: true,
+        hasAuditLog: true,
+      },
+      isPublic: true,
+      sortOrder: 2,
+      active: true,
     },
   });
 }

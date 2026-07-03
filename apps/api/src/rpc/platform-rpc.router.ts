@@ -8,6 +8,7 @@ import {
 import { type AdminRpcContext, createAdminRpcRouter } from "../admin/admin-rpc.router.js";
 import { type AuditRpcContext, createAuditRpcRouter } from "../audit/audit-rpc.router.js";
 import { type BillingRpcContext, createBillingRpcRouter } from "../billing/billing-rpc.router.js";
+import { createPlansRpcRouter, type PlansRpcContext } from "../billing/plans/plans-rpc.router.js";
 import {
   type CapacityRpcContext,
   createCapacityRpcRouter,
@@ -40,6 +41,7 @@ import {
   createSettingsRpcRouter,
   type SettingsRpcContext,
 } from "../settings/settings-rpc.router.js";
+import { createSsoRpcRouter, type SsoRpcContext } from "../sso/sso-rpc.router.js";
 import { createTariffRpcRouter, type TariffRpcContext } from "../tariff/tariff-rpc.router.js";
 import { createTeamsRpcRouter, type TeamsRpcContext } from "../teams/teams-rpc.router.js";
 import {
@@ -60,9 +62,11 @@ export type PlatformRpcContext = AdminRpcContext &
   IntegrationsRpcContext &
   NotificationsRpcContext &
   OrganizationsRpcContext &
+  PlansRpcContext &
   PlanningRpcContext &
   ReportsRpcContext &
   SettingsRpcContext &
+  SsoRpcContext &
   TariffRpcContext &
   TeamsRpcContext &
   TrackingRpcContext &
@@ -78,9 +82,11 @@ export type CreatePlatformRpcRouterInput = Parameters<typeof createAdminRpcRoute
   Parameters<typeof createIntegrationsRpcRouter>[0] &
   Parameters<typeof createNotificationsRpcRouter>[0] &
   Parameters<typeof createOrganizationsRpcRouter>[0] &
+  Parameters<typeof createPlansRpcRouter>[0] &
   Parameters<typeof createPlanningRpcRouter>[0] &
   Parameters<typeof createReportsRpcRouter>[0] &
   Parameters<typeof createSettingsRpcRouter>[0] &
+  Parameters<typeof createSsoRpcRouter>[0] &
   Parameters<typeof createTariffRpcRouter>[0] &
   Parameters<typeof createTrackingRpcRouter>[0] &
   Parameters<typeof createTeamsRpcRouter>[0] &
@@ -100,6 +106,7 @@ export function createPlatformRpcRouter(input: CreatePlatformRpcRouterInput) {
   const adminRpcRouter = createAdminRpcRouter(input);
   const auditRpcRouter = createAuditRpcRouter(input);
   const billingRpcRouter = createBillingRpcRouter(input);
+  const plansRpcRouter = createPlansRpcRouter(input);
   const capacityRpcRouter = createCapacityRpcRouter(input);
   const cargoRpcRouter = createCargoRpcRouter(input);
   const documentsRpcRouter = createDocumentsRpcRouter(input);
@@ -111,6 +118,7 @@ export function createPlatformRpcRouter(input: CreatePlatformRpcRouterInput) {
   const settingsRpcRouter = createSettingsRpcRouter(input);
   const tariffRpcRouter = createTariffRpcRouter(input);
   const trackingRpcRouter = createTrackingRpcRouter(input);
+  const ssoRpcRouter = createSsoRpcRouter(input);
   const teamsRpcRouter = createTeamsRpcRouter(input);
   const webhooksRpcRouter = createWebhooksRpcRouter(input);
   const privacyRpcRouter = createPrivacyRpcRouter(input);
@@ -124,6 +132,7 @@ export function createPlatformRpcRouter(input: CreatePlatformRpcRouterInput) {
         .handler(() => createFoundationRpcHealthReport()),
     },
     billing: billingRpcRouter.billing,
+    plans: plansRpcRouter.plans,
     capacity: capacityRpcRouter.capacity,
     cargo: cargoRpcRouter.cargo,
     documents: documentsRpcRouter.documents,
@@ -136,6 +145,7 @@ export function createPlatformRpcRouter(input: CreatePlatformRpcRouterInput) {
     reports: reportsRpcRouter.reports,
     settings: settingsRpcRouter.settings,
     tariff: tariffRpcRouter.tariff,
+    sso: ssoRpcRouter.sso,
     teams: teamsRpcRouter.teams,
     tracking: trackingRpcRouter.tracking,
     webhooks: webhooksRpcRouter.webhooks,

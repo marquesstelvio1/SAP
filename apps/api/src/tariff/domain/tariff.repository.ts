@@ -101,6 +101,7 @@ export type TariffRateRuleCreateIncludeResult = TariffRateRuleWithRateCard;
 export type TariffQuoteUpdateIncludeResult = TariffQuoteWithCargoRateCard;
 
 export interface TariffRepository {
+  transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T>;
   // Overview (read-only, no tx)
   countRateCards(organizationId: string): Promise<number>;
   countActiveRateCards(organizationId: string): Promise<number>;

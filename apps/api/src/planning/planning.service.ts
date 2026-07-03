@@ -1,10 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
-import {
-  type DatabaseActorType,
-  getPrismaClient,
-  type PrismaTx,
-  type SaptmPrismaClient,
-} from "@saptm/database";
+import { CURRENT_EVENT_VERSION, type DatabaseActorType, type PrismaTx } from "@saptm/database";
 import type {
   PlanningOverviewOutput,
   TransportOrderCancelInput,
@@ -16,7 +11,8 @@ import type {
   TransportOrderRescheduleInput,
   TransportOrderRescheduleOutput,
 } from "@saptm/rpc";
-import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createTransportOrderCancelAuditAfter,
   createTransportOrderCancelAuditBefore,
@@ -90,8 +86,6 @@ export type DispatchTransportOrderInput = TransportOrderDispatchInput & {
 
 @Injectable()
 export class PlanningService {
-  private readonly database: SaptmPrismaClient = getPrismaClient();
-
   constructor(
     @Inject(PLANNING_REPOSITORY) private readonly planningRepo: PlanningRepository,
     private readonly eventBus: OutboxEventBusAdapter,
@@ -212,7 +206,7 @@ export class PlanningService {
       duplicateCargoOrder,
       businessRules,
     });
-    const transportOrder = await this.database.$transaction(async (transaction: PrismaTx) => {
+    const transportOrder = await this.planningRepo.transaction(async (transaction: PrismaTx) => {
       const createdOrder = await this.planningRepo.createTransportOrder(transaction, {
         organizationId: input.organizationId,
         cargoId: cargo.id,
@@ -259,6 +253,7 @@ export class PlanningService {
         eventType: "planning.transport_order.confirmed",
         aggregateType: "planning",
         aggregateId: createdOrder.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           transportOrderId: createdOrder.id,
           orderReference: createdOrder.orderReference,
@@ -339,7 +334,7 @@ export class PlanningService {
       duplicateCancellationReference,
       businessRules,
     });
-    const cancelledOrder = await this.database.$transaction(async (transaction: PrismaTx) => {
+    const cancelledOrder = await this.planningRepo.transaction(async (transaction: PrismaTx) => {
       const updateResult = await this.planningRepo.updateTransportOrderCancel(
         transaction,
         transportOrder.id,
@@ -390,6 +385,7 @@ export class PlanningService {
         eventType: "planning.transport_order.cancelled",
         aggregateType: "planning",
         aggregateId: updatedOrder.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           transportOrderId: updatedOrder.id,
           orderReference: updatedOrder.orderReference,
@@ -483,7 +479,7 @@ export class PlanningService {
       duplicateRevision,
       businessRules,
     });
-    const { scheduleRevision, updatedOrder } = await this.database.$transaction(
+    const { scheduleRevision, updatedOrder } = await this.planningRepo.transaction(
       async (transaction: PrismaTx) => {
         const updateResult = await this.planningRepo.updateTransportOrderReschedule(
           transaction,
@@ -563,6 +559,7 @@ export class PlanningService {
           eventType: "planning.transport_order.rescheduled",
           aggregateType: "planning",
           aggregateId: nextOrder.id,
+          eventVersion: CURRENT_EVENT_VERSION,
           payload: {
             transportOrderId: nextOrder.id,
             orderReference: nextOrder.orderReference,
@@ -666,7 +663,7 @@ export class PlanningService {
       duplicateOrderDispatch,
       businessRules,
     });
-    const { transportOrderDispatch, updatedOrder } = await this.database.$transaction(
+    const { transportOrderDispatch, updatedOrder } = await this.planningRepo.transaction(
       async (transaction: PrismaTx) => {
         const updateResult = await this.planningRepo.updateTransportOrderDispatch(
           transaction,
@@ -725,6 +722,7 @@ export class PlanningService {
           eventType: "planning.transport_order.dispatched",
           aggregateType: "planning",
           aggregateId: nextOrder.id,
+          eventVersion: CURRENT_EVENT_VERSION,
           payload: {
             transportOrderId: nextOrder.id,
             orderReference: nextOrder.orderReference,

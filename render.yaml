@@ -78,10 +78,9 @@ services:
           type: web
           envVarKey: BETTER_AUTH_SECRET
       - key: DATABASE_URL
-        fromService:
-          name: saptm-api
-          type: web
-          envVarKey: DATABASE_URL
+        fromDatabase:
+          name: saptm-postgres
+          property: connectionString
       - key: LOG_LEVEL
         value: info
       - key: OTEL_SERVICE_NAME

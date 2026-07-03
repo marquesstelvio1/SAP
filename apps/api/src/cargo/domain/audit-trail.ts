@@ -22,9 +22,6 @@ import type {
   CargoDeliveryExceptionWithCargo,
   CargoOperationalHandoffRecord,
   CargoRecord,
-  TrackingDepartureEventRecord,
-  TrackingLifecycleEventRecord,
-  TrackingShipmentRecord,
 } from "./dto.js";
 
 export function toIsoStringOrNull(value: Date | null | undefined): string | null {
@@ -125,7 +122,6 @@ export function createCargoTransportPlanAuditBefore(
 
 export function createCargoTransportPlanAuditAfter(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
   businessRules: CargoTransportPlanOutput["businessRules"];
   sourceSystem: string;
 }): AuditJsonValue {
@@ -137,10 +133,6 @@ export function createCargoTransportPlanAuditAfter(input: {
     transportPlannedAt: toIsoStringOrNull(input.cargo.transportPlannedAt),
     transportPlanningReference: input.cargo.transportPlanningReference,
     transportOwnerTeam: input.cargo.transportOwnerTeam,
-    shipmentReferenceCode: input.shipment.referenceCode,
-    transportMode: input.shipment.transportMode,
-    plannedDepartureAt: toIsoStringOrNull(input.shipment.plannedDepartureAt),
-    estimatedArrivalAt: toIsoStringOrNull(input.shipment.estimatedArrivalAt),
     planningAllowed: input.businessRules.planningAllowed,
     cargoReadyForTracking: input.businessRules.cargoReadyForTracking,
     trackingLinked: input.businessRules.trackingLinked,
@@ -152,7 +144,6 @@ export function createCargoTransportPlanAuditAfter(input: {
 
 export function createCargoTransportDepartAuditBefore(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
   businessRules: CargoTransportDepartOutput["businessRules"];
   complianceEvidenceCounts: CargoComplianceEvidenceStatusCounts;
 }): AuditJsonValue {
@@ -165,13 +156,11 @@ export function createCargoTransportDepartAuditBefore(input: {
     releasedAt: toIsoStringOrNull(input.cargo.releasedAt),
     transportPlannedAt: toIsoStringOrNull(input.cargo.transportPlannedAt),
     trackingShipmentId: input.cargo.trackingShipmentId,
-    shipmentStatus: input.shipment.status,
     approvedComplianceEvidence: input.complianceEvidenceCounts.approved,
     pendingComplianceEvidence: input.complianceEvidenceCounts.pendingReview,
     rejectedComplianceEvidence: input.complianceEvidenceCounts.rejected,
     departureAllowed: input.businessRules.departureAllowed,
     cargoReadyForDeparture: input.businessRules.cargoReadyForDeparture,
-    trackingShipmentPlanned: input.businessRules.trackingShipmentPlanned,
     approvedComplianceEvidencePresent: input.businessRules.approvedComplianceEvidencePresent,
     openComplianceReviewBlocked: input.businessRules.openComplianceReviewBlocked,
     appliedRules: input.businessRules.appliedRules,
@@ -180,8 +169,6 @@ export function createCargoTransportDepartAuditBefore(input: {
 
 export function createCargoTransportDepartAuditAfter(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
-  event: TrackingDepartureEventRecord;
   businessRules: CargoTransportDepartOutput["businessRules"];
   complianceEvidenceCounts: CargoComplianceEvidenceStatusCounts;
   sourceSystem: string;
@@ -191,9 +178,6 @@ export function createCargoTransportDepartAuditAfter(input: {
     cargoReference: input.cargo.cargoReference,
     cargoStatus: input.cargo.status,
     trackingShipmentId: input.cargo.trackingShipmentId,
-    shipmentStatus: input.shipment.status,
-    eventId: input.event.id,
-    eventType: input.event.eventType,
     departedAt: toIsoStringOrNull(input.cargo.departedAt),
     departureReference: input.cargo.departureReference,
     departureLocationName: input.cargo.departureLocationName,
@@ -211,7 +195,6 @@ export function createCargoTransportDepartAuditAfter(input: {
 
 export function createCargoTransportArriveAuditBefore(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
   businessRules: CargoTransportArriveOutput["businessRules"];
 }): AuditJsonValue {
   return {
@@ -219,7 +202,6 @@ export function createCargoTransportArriveAuditBefore(input: {
     cargoReference: input.cargo.cargoReference,
     cargoStatus: input.cargo.status,
     trackingShipmentId: input.cargo.trackingShipmentId,
-    shipmentStatus: input.shipment.status,
     departedAt: toIsoStringOrNull(input.cargo.departedAt),
     arrivalAllowed: input.businessRules.arrivalAllowed,
     cargoInTransport: input.businessRules.cargoInTransport,
@@ -231,8 +213,6 @@ export function createCargoTransportArriveAuditBefore(input: {
 
 export function createCargoTransportArriveAuditAfter(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
-  event: TrackingLifecycleEventRecord;
   businessRules: CargoTransportArriveOutput["businessRules"];
   sourceSystem: string;
 }): AuditJsonValue {
@@ -241,14 +221,10 @@ export function createCargoTransportArriveAuditAfter(input: {
     cargoReference: input.cargo.cargoReference,
     cargoStatus: input.cargo.status,
     trackingShipmentId: input.cargo.trackingShipmentId,
-    shipmentStatus: input.shipment.status,
-    eventId: input.event.id,
-    eventType: input.event.eventType,
     arrivedAt: toIsoStringOrNull(input.cargo.arrivedAt),
     arrivalReference: input.cargo.arrivalReference,
     arrivalLocationName: input.cargo.arrivalLocationName,
     arrivalOperatorName: input.cargo.arrivalOperatorName,
-    actualArrivalAt: toIsoStringOrNull(input.shipment.actualArrivalAt),
     arrivalAllowed: input.businessRules.arrivalAllowed,
     appliedRules: input.businessRules.appliedRules,
     idempotencyKey: input.cargo.arrivalIdempotencyKey,
@@ -258,7 +234,6 @@ export function createCargoTransportArriveAuditAfter(input: {
 
 export function createCargoOperationalHandoffRecordAuditBefore(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
   duplicateReference: CargoOperationalHandoffRecord | null;
   businessRules: CargoOperationalHandoffRecordOutput["businessRules"];
 }): AuditJsonValue {
@@ -267,14 +242,12 @@ export function createCargoOperationalHandoffRecordAuditBefore(input: {
     cargoReference: input.cargo.cargoReference,
     cargoStatus: input.cargo.status,
     trackingShipmentId: input.cargo.trackingShipmentId,
-    shipmentStatus: input.shipment.status,
     custodyOwnerName: input.cargo.custodyOwnerName,
     departedAt: toIsoStringOrNull(input.cargo.departedAt),
     arrivedAt: toIsoStringOrNull(input.cargo.arrivedAt),
     duplicateHandoffId: input.duplicateReference?.id ?? null,
     handoffAllowed: input.businessRules.handoffAllowed,
     cargoInTransport: input.businessRules.cargoInTransport,
-    trackingShipmentInTransit: input.businessRules.trackingShipmentInTransit,
     currentCustodyMatched: input.businessRules.currentCustodyMatched,
     custodyChanged: input.businessRules.custodyChanged,
     conditionAccepted: input.businessRules.conditionAccepted,
@@ -285,9 +258,7 @@ export function createCargoOperationalHandoffRecordAuditBefore(input: {
 
 export function createCargoOperationalHandoffRecordAuditAfter(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
   handoff: CargoOperationalHandoffRecord;
-  event: TrackingLifecycleEventRecord;
   businessRules: CargoOperationalHandoffRecordOutput["businessRules"];
   sourceSystem: string;
 }): AuditJsonValue {
@@ -296,7 +267,6 @@ export function createCargoOperationalHandoffRecordAuditAfter(input: {
     cargoReference: input.cargo.cargoReference,
     cargoStatus: input.cargo.status,
     trackingShipmentId: input.cargo.trackingShipmentId,
-    shipmentStatus: input.shipment.status,
     handoffId: input.handoff.id,
     handoffType: input.handoff.handoffType,
     handoffReference: input.handoff.handoffReference,
@@ -304,8 +274,6 @@ export function createCargoOperationalHandoffRecordAuditAfter(input: {
     toCustodyOwnerName: input.handoff.toCustodyOwnerName,
     custodyOwnerName: input.cargo.custodyOwnerName,
     conditionStatus: input.handoff.conditionStatus,
-    eventId: input.event.id,
-    eventType: input.event.eventType,
     handoffAt: input.handoff.handoffAt.toISOString(),
     handoffAllowed: input.businessRules.handoffAllowed,
     appliedRules: input.businessRules.appliedRules,
@@ -316,7 +284,6 @@ export function createCargoOperationalHandoffRecordAuditAfter(input: {
 
 export function createCargoDeliveryCompleteAuditBefore(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
   businessRules: CargoDeliveryCompleteOutput["businessRules"];
 }): AuditJsonValue {
   return {
@@ -324,12 +291,10 @@ export function createCargoDeliveryCompleteAuditBefore(input: {
     cargoReference: input.cargo.cargoReference,
     cargoStatus: input.cargo.status,
     trackingShipmentId: input.cargo.trackingShipmentId,
-    shipmentStatus: input.shipment.status,
     arrivedAt: toIsoStringOrNull(input.cargo.arrivedAt),
     conditionStatus: input.cargo.conditionStatus,
     deliveryAllowed: input.businessRules.deliveryAllowed,
     cargoArrivedForDelivery: input.businessRules.cargoArrivedForDelivery,
-    trackingShipmentArrived: input.businessRules.trackingShipmentArrived,
     deliveryAfterArrival: input.businessRules.deliveryAfterArrival,
     deliveryConditionAccepted: input.businessRules.deliveryConditionAccepted,
     appliedRules: input.businessRules.appliedRules,
@@ -338,8 +303,6 @@ export function createCargoDeliveryCompleteAuditBefore(input: {
 
 export function createCargoDeliveryCompleteAuditAfter(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
-  event: TrackingLifecycleEventRecord;
   businessRules: CargoDeliveryCompleteOutput["businessRules"];
   sourceSystem: string;
 }): AuditJsonValue {
@@ -348,9 +311,6 @@ export function createCargoDeliveryCompleteAuditAfter(input: {
     cargoReference: input.cargo.cargoReference,
     cargoStatus: input.cargo.status,
     trackingShipmentId: input.cargo.trackingShipmentId,
-    shipmentStatus: input.shipment.status,
-    eventId: input.event.id,
-    eventType: input.event.eventType,
     deliveredAt: toIsoStringOrNull(input.cargo.deliveredAt),
     deliveryReference: input.cargo.deliveryReference,
     receivedByName: input.cargo.receivedByName,
@@ -365,7 +325,6 @@ export function createCargoDeliveryCompleteAuditAfter(input: {
 
 export function createCargoDeliveryExceptionRecordAuditBefore(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
   openException: CargoDeliveryExceptionRecord | null;
   businessRules: CargoDeliveryExceptionRecordOutput["businessRules"];
 }): AuditJsonValue {
@@ -376,12 +335,10 @@ export function createCargoDeliveryExceptionRecordAuditBefore(input: {
     conditionStatus: input.cargo.conditionStatus,
     requiresInspection: input.cargo.requiresInspection,
     trackingShipmentId: input.cargo.trackingShipmentId,
-    shipmentStatus: input.shipment.status,
     arrivedAt: toIsoStringOrNull(input.cargo.arrivedAt),
     openExceptionId: input.openException?.id ?? null,
     exceptionAccepted: input.businessRules.exceptionAccepted,
     cargoArrivedForException: input.businessRules.cargoArrivedForException,
-    trackingShipmentArrived: input.businessRules.trackingShipmentArrived,
     openExceptionBlocked: input.businessRules.openExceptionBlocked,
     exceptionAfterArrival: input.businessRules.exceptionAfterArrival,
     appliedRules: input.businessRules.appliedRules,
@@ -390,9 +347,7 @@ export function createCargoDeliveryExceptionRecordAuditBefore(input: {
 
 export function createCargoDeliveryExceptionRecordAuditAfter(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
   exception: CargoDeliveryExceptionRecord;
-  event: TrackingLifecycleEventRecord;
   businessRules: CargoDeliveryExceptionRecordOutput["businessRules"];
   sourceSystem: string;
 }): AuditJsonValue {
@@ -402,15 +357,12 @@ export function createCargoDeliveryExceptionRecordAuditAfter(input: {
     cargoStatus: input.cargo.status,
     conditionStatus: input.cargo.conditionStatus,
     requiresInspection: input.cargo.requiresInspection,
-    shipmentStatus: input.shipment.status,
     exceptionId: input.exception.id,
     exceptionType: input.exception.exceptionType,
     deliveryConditionStatus: input.exception.deliveryConditionStatus,
     exceptionStatus: input.exception.status,
     evidenceReference: input.exception.evidenceReference,
     claimReference: input.exception.claimReference,
-    eventId: input.event.id,
-    eventType: input.event.eventType,
     occurredAt: input.exception.occurredAt.toISOString(),
     exceptionAccepted: input.businessRules.exceptionAccepted,
     appliedRules: input.businessRules.appliedRules,
@@ -421,7 +373,6 @@ export function createCargoDeliveryExceptionRecordAuditAfter(input: {
 
 export function createCargoDeliveryExceptionResolveAuditBefore(input: {
   exception: CargoDeliveryExceptionWithCargo;
-  shipment: TrackingShipmentRecord;
   businessRules: CargoDeliveryExceptionResolveOutput["businessRules"];
 }): AuditJsonValue {
   return {
@@ -430,7 +381,6 @@ export function createCargoDeliveryExceptionResolveAuditBefore(input: {
     cargoStatus: input.exception.cargo.status,
     conditionStatus: input.exception.cargo.conditionStatus,
     requiresInspection: input.exception.cargo.requiresInspection,
-    shipmentStatus: input.shipment.status,
     exceptionId: input.exception.id,
     exceptionStatus: input.exception.status,
     exceptionType: input.exception.exceptionType,
@@ -438,7 +388,6 @@ export function createCargoDeliveryExceptionResolveAuditBefore(input: {
     resolutionAllowed: input.businessRules.resolutionAllowed,
     openException: input.businessRules.openException,
     cargoHeldForInspection: input.businessRules.cargoHeldForInspection,
-    trackingShipmentException: input.businessRules.trackingShipmentException,
     resolutionAfterException: input.businessRules.resolutionAfterException,
     cargoRestoredForDelivery: input.businessRules.cargoRestoredForDelivery,
     appliedRules: input.businessRules.appliedRules,
@@ -447,9 +396,7 @@ export function createCargoDeliveryExceptionResolveAuditBefore(input: {
 
 export function createCargoDeliveryExceptionResolveAuditAfter(input: {
   cargo: CargoRecord;
-  shipment: TrackingShipmentRecord;
   exception: CargoDeliveryExceptionRecord;
-  event: TrackingLifecycleEventRecord;
   businessRules: CargoDeliveryExceptionResolveOutput["businessRules"];
   sourceSystem: string;
 }): AuditJsonValue {
@@ -459,14 +406,11 @@ export function createCargoDeliveryExceptionResolveAuditAfter(input: {
     cargoStatus: input.cargo.status,
     conditionStatus: input.cargo.conditionStatus,
     requiresInspection: input.cargo.requiresInspection,
-    shipmentStatus: input.shipment.status,
     exceptionId: input.exception.id,
     exceptionStatus: input.exception.status,
     resolutionCode: input.exception.resolutionCode,
     resolutionReference: input.exception.resolutionReference,
     resolvedAt: toIsoStringOrNull(input.exception.resolvedAt),
-    eventId: input.event.id,
-    eventType: input.event.eventType,
     resolutionAllowed: input.businessRules.resolutionAllowed,
     appliedRules: input.businessRules.appliedRules,
     idempotencyKey: input.exception.resolveIdempotencyKey,

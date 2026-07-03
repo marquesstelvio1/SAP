@@ -5,7 +5,7 @@ import { filter, Subject, type Subscription } from "rxjs";
 
 export type { DomainEvent };
 
-export type EventHandler<T extends DomainEvent = DomainEvent> = (event: T) => Promise<void>;
+export type EventHandler<T = DomainEvent> = (event: T) => Promise<void>;
 
 function createEventBusLogger() {
   return createConsoleLogger({
@@ -33,10 +33,10 @@ export class EventBusService {
     this.subject.next(event);
   }
 
-  subscribe<T extends DomainEvent>(eventType: string, handler: EventHandler<T>): Subscription {
-    return this.subject.pipe(filter((e): e is T => e.eventType === eventType)).subscribe({
+  subscribe<T>(eventType: string, handler: (event: T) => Promise<void>): Subscription {
+    return this.subject.pipe(filter((e) => e.eventType === eventType)).subscribe({
       next: (event) => {
-        handler(event).catch((error: unknown) => {
+        (handler as EventHandler)(event).catch((error: unknown) => {
           this.logger.error(`EventBus handler error for event ${eventType}.`, {
             attributes: { "event.type": eventType },
             error,

@@ -6,6 +6,10 @@ export type CargoRegisterFormState = {
   idempotencyKey?: string;
   movementBlocked?: boolean;
   inspectionRequired?: boolean;
+  /** Status da operacao de libertacao quando feita apos registo. */
+  releaseStatus?: string;
+  /** Cargo ID retornado pela libertacao (igual ao do registo). */
+  releaseCargoId?: string;
 };
 
 export const initialCargoRegisterFormState: CargoRegisterFormState = {

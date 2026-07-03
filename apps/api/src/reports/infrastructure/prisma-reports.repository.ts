@@ -19,11 +19,13 @@ export class PrismaReportsRepository implements ReportsRepository {
       select: { id: true, cargoReference: true, status: true },
     });
 
-    return rows.map((row: { id: string; cargoReference: string; status: string }) => ({
-      id: row.id,
-      reference: row.cargoReference,
-      status: row.status,
-    }));
+    return (rows as unknown as Array<{ id: string; cargoReference: string; status: string }>).map(
+      (row) => ({
+        id: row.id,
+        reference: row.cargoReference,
+        status: row.status,
+      }),
+    );
   }
 
   async findTrackingShipmentRows(organizationId: string, limit: number): Promise<ReportRowRaw[]> {
@@ -33,11 +35,13 @@ export class PrismaReportsRepository implements ReportsRepository {
       select: { id: true, referenceCode: true, status: true },
     });
 
-    return rows.map((row: { id: string; referenceCode: string; status: string }) => ({
-      id: row.id,
-      reference: row.referenceCode,
-      status: row.status,
-    }));
+    return (rows as unknown as Array<{ id: string; referenceCode: string; status: string }>).map(
+      (row) => ({
+        id: row.id,
+        reference: row.referenceCode,
+        status: row.status,
+      }),
+    );
   }
 
   async findCapacitySlotRows(organizationId: string, limit: number): Promise<ReportRowRaw[]> {
@@ -47,11 +51,13 @@ export class PrismaReportsRepository implements ReportsRepository {
       select: { id: true, slotReference: true, status: true },
     });
 
-    return rows.map((row: { id: string; slotReference: string; status: string }) => ({
-      id: row.id,
-      reference: row.slotReference,
-      status: row.status,
-    }));
+    return (rows as unknown as Array<{ id: string; slotReference: string; status: string }>).map(
+      (row) => ({
+        id: row.id,
+        reference: row.slotReference,
+        status: row.status,
+      }),
+    );
   }
 
   async findTransportOrderRows(organizationId: string, limit: number): Promise<ReportRowRaw[]> {
@@ -61,11 +67,13 @@ export class PrismaReportsRepository implements ReportsRepository {
       select: { id: true, orderReference: true, status: true },
     });
 
-    return rows.map((row: { id: string; orderReference: string; status: string }) => ({
-      id: row.id,
-      reference: row.orderReference,
-      status: row.status,
-    }));
+    return (rows as unknown as Array<{ id: string; orderReference: string; status: string }>).map(
+      (row) => ({
+        id: row.id,
+        reference: row.orderReference,
+        status: row.status,
+      }),
+    );
   }
 
   async findTariffRateCardRows(organizationId: string, limit: number): Promise<ReportRowRaw[]> {
@@ -75,11 +83,13 @@ export class PrismaReportsRepository implements ReportsRepository {
       select: { id: true, rateCardCode: true, status: true },
     });
 
-    return rows.map((row: { id: string; rateCardCode: string; status: string }) => ({
-      id: row.id,
-      reference: row.rateCardCode,
-      status: row.status,
-    }));
+    return (rows as unknown as Array<{ id: string; rateCardCode: string; status: string }>).map(
+      (row) => ({
+        id: row.id,
+        reference: row.rateCardCode,
+        status: row.status,
+      }),
+    );
   }
 
   async createAuditRecord(tx: PrismaTx, input: PrismaAuditRecordCreateInput): Promise<void> {

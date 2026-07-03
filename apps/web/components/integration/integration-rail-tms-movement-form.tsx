@@ -62,7 +62,7 @@ export function IntegrationRailTmsMovementForm({
             {canProcessRailTms ? "Movimento autorizado" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Rail TMS</Badge>
-          <Badge variant="outline">tracking.event.record</Badge>
+          <Badge variant="outline">Registo de tracking</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Processar movimento Rail TMS</CardTitle>
@@ -76,7 +76,7 @@ export function IntegrationRailTmsMovementForm({
         <CardContent>
           <FieldGroup>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="railTmsServiceAccountId">Service account</FieldLabel>
+              <FieldLabel htmlFor="railTmsServiceAccountId">Conta de integração</FieldLabel>
               <SelectNative
                 disabled={isDisabled}
                 id="railTmsServiceAccountId"
@@ -85,16 +85,14 @@ export function IntegrationRailTmsMovementForm({
               >
                 {eligibleServiceAccounts.map((serviceAccount) => (
                   <option key={serviceAccount.id} value={serviceAccount.id}>
-                    {serviceAccount.name} ({serviceAccount.id})
+                    {serviceAccount.name}
                   </option>
                 ))}
               </SelectNative>
-              <FieldDescription>
-                Requer `integration.event.ingest` e `tracking.event.record`.
-              </FieldDescription>
+              <FieldDescription>Requer recepção de eventos e registo de tracking.</FieldDescription>
             </Field>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="railTmsSourceSystem">Source system</FieldLabel>
+              <FieldLabel htmlFor="railTmsSourceSystem">Origem</FieldLabel>
               <Input
                 defaultValue="rail-tms"
                 disabled={isDisabled}
@@ -211,13 +209,7 @@ export function IntegrationRailTmsMovementForm({
               </FieldDescription>
             </Field>
             <Field>
-              <FieldDescription>
-                {state.status === "success" && state.trackingEventId !== undefined
-                  ? `${state.message} Tracking event: ${state.trackingEventId} · Integracao: ${
-                      state.integrationEventId ?? "sem-evento"
-                    } · Replay: ${state.replayed ? "sim" : "nao"}`
-                  : state.message}
-              </FieldDescription>
+              <FieldDescription>{state.message}</FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
           </FieldGroup>

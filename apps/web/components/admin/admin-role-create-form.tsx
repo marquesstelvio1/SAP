@@ -18,7 +18,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
-
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { AdminRoleCreateFormState } from "../../app/(platform)/app/admin/form-state";
 
@@ -41,8 +41,8 @@ export function AdminRoleCreateForm({
   action,
   canManageRoles,
   initialState,
-  permissions,
 }: AdminRoleCreateFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     createIdempotencyKey("admin_role_create"),
@@ -52,6 +52,10 @@ export function AdminRoleCreateForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("admin_role_create"));
+      capture("settings:role_created", {
+        role_id: state.roleId,
+        role_key: state.roleKey,
+      });
     }
   }, [state.status]);
 
@@ -60,12 +64,12 @@ export function AdminRoleCreateForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageRoles ? "success" : "warning"}>
-            {canManageRoles ? "Roles custom" : "Indisponível"}
+            {canManageRoles ? "Perfis personalizados" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Permissoes de administracao</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Criar role custom</CardTitle>
+          <CardTitle>Criar perfil personalizado</CardTitle>
           <CardDescription className="leading-6">
             Crie roles personalizadas com permissoes selecionadas.
           </CardDescription>
@@ -110,29 +114,22 @@ export function AdminRoleCreateForm({
                 disabled={isDisabled}
                 id="adminRoleCreatePermissions"
                 name="permissionKeys"
-                placeholder="cargo.read, tracking.shipment.read"
+                placeholder="Ler cargas, Ler tracking"
                 required
               />
               <FieldDescription>
-                Separe por vírgula ou linha. Catálogo disponível:{" "}
-                {permissions.map((permission) => permission.key).join(", ")}
+                Separe por vírgula ou linha. Use o catalogo de permissoes como referencia.
               </FieldDescription>
             </Field>
             <Field>
-              <FieldDescription>
-                {state.status === "success" && state.roleKey !== undefined
-                  ? `${state.message} Role: ${state.roleKey} · Replay: ${
-                      state.replayed ? "sim" : "nao"
-                    }`
-                  : state.message}
-              </FieldDescription>
+              <FieldDescription>{state.message}</FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
           </FieldGroup>
         </CardContent>
         <CardFooter>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A criar..." : "Criar role"}
+            {isPending ? "A criar..." : "Criar perfil"}
           </Button>
         </CardFooter>
       </form>

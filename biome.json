@@ -10,13 +10,15 @@
       "!**/dist",
       "!**/generated",
       "!**/coverage",
+      "!**/storybook-static",
       "!**/playwright-report",
       "!**/test-results",
       "!**/.agents",
       "!**/.docker",
       "!**/.pnpm-store",
       "!scripts",
-      "!pnpm-lock.yaml"
+      "!pnpm-lock.yaml",
+      "!C\\?Users*.json"
     ]
   },
   "formatter": {

@@ -6,11 +6,24 @@ import type { TrackingRepository } from "../domain/tracking.repository.js";
 export class PrismaTrackingRepository implements TrackingRepository {
   private readonly database: SaptmPrismaClient = getPrismaClient();
 
-  async findShipmentById(organizationId: string, id: string) {
+  async findShipmentById(
+    organizationId: string,
+    id: string,
+  ): Promise<{
+    id: string;
+    referenceCode: string;
+    status: string;
+    transportMode: string;
+  } | null> {
     return this.database.trackingShipment.findFirst({
       where: { id, organizationId },
       select: { id: true, referenceCode: true, status: true, transportMode: true },
-    });
+    }) as unknown as Promise<{
+      id: string;
+      referenceCode: string;
+      status: string;
+      transportMode: string;
+    } | null>;
   }
 
   async findShipmentWithEvents(organizationId: string, id: string, eventLimit: number) {
@@ -97,9 +110,20 @@ export class PrismaTrackingRepository implements TrackingRepository {
     });
   }
 
-  async findRecentShipments(organizationId: string, limit: number, offset: number) {
+  async findRecentShipments(
+    organizationId: string,
+    limit: number,
+    offset: number,
+    teamId?: string,
+  ) {
+    const where: Record<string, unknown> = { organizationId };
+
+    if (teamId !== undefined) {
+      where.teamId = teamId;
+    }
+
     return this.database.trackingShipment.findMany({
-      where: { organizationId },
+      where: where as never,
       orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
       skip: offset,
       take: limit,
@@ -174,7 +198,18 @@ export class PrismaTrackingRepository implements TrackingRepository {
     });
   }
 
-  async findActiveShipments(organizationId: string) {
+  async findActiveShipments(organizationId: string): Promise<
+    Array<{
+      id: string;
+      referenceCode: string;
+      cargoDescription: string;
+      transportMode: string;
+      status: string;
+      priority: number;
+      estimatedArrivalAt: Date | null;
+      updatedAt: Date;
+    }>
+  > {
     return this.database.trackingShipment.findMany({
       where: {
         organizationId,
@@ -192,7 +227,18 @@ export class PrismaTrackingRepository implements TrackingRepository {
         estimatedArrivalAt: true,
         updatedAt: true,
       },
-    });
+    }) as unknown as Promise<
+      Array<{
+        id: string;
+        referenceCode: string;
+        cargoDescription: string;
+        transportMode: string;
+        status: string;
+        priority: number;
+        estimatedArrivalAt: Date | null;
+        updatedAt: Date;
+      }>
+    >;
   }
 
   async countShipments(organizationId: string) {
@@ -250,6 +296,37 @@ export class PrismaTrackingRepository implements TrackingRepository {
     >;
   }
 
+  async createShipment(
+    tx: PrismaTx,
+    data: {
+      organizationId: string;
+      referenceCode: string;
+      externalReference: string | null;
+      cargoDescription: string;
+      originName: string;
+      destinationName: string;
+      transportMode: string;
+      status: string;
+      priority: number;
+      plannedDepartureAt: Date;
+      estimatedArrivalAt: Date;
+    },
+  ) {
+    return tx.trackingShipment.create({
+      data,
+      select: {
+        id: true,
+        organizationId: true,
+        referenceCode: true,
+        status: true,
+        transportMode: true,
+        plannedDepartureAt: true,
+        estimatedArrivalAt: true,
+        actualArrivalAt: true,
+      },
+    });
+  }
+
   async createEvent(tx: PrismaTx, data: Record<string, unknown>) {
     const event = await tx.trackingEvent.create({
       data: data as never,
@@ -283,5 +360,9 @@ export class PrismaTrackingRepository implements TrackingRepository {
       data: data as never,
       select: { id: true, referenceCode: true, status: true },
     });
+  }
+
+  async transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T> {
+    return this.database.$transaction(fn);
   }
 }

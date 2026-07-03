@@ -40,7 +40,7 @@ export async function recordTrackingEventAction(
   if (!platformSession.viewer.permissions.includes(recordTrackingPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui tracking.event.record para registar eventos.",
+      message: "A sessao nao tem autorizacao para registar eventos.",
     };
   }
 
@@ -68,7 +68,7 @@ export async function recordTrackingEventAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou o evento por sessao, organizacao ou permissao insuficiente.",
+      message: "Operacao recusada por sessao, organizacao ou autorizacao insuficiente.",
     };
   }
 
@@ -95,7 +95,7 @@ export async function recordTrackingEventAction(
     status: "success",
     message: parsedOutput.data.idempotency.replayed
       ? "Evento ja tinha sido registado; resposta idempotente reaproveitada."
-      : "Evento operacional registado com audit trail e outbox.",
+      : "Evento operacional registado com auditoria.",
     eventId: parsedOutput.data.event.id,
     idempotencyKey: parsedOutput.data.event.idempotencyKey,
   };

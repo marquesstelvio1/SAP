@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
-import type { AuditJsonValue } from "@saptm/database";
+import type { AuditJsonValue, PrismaTx } from "@saptm/database";
+import { CURRENT_EVENT_VERSION } from "@saptm/database";
 import type {
   TariffOverviewOutput,
   TariffQuoteApproveOutput,
@@ -7,7 +8,8 @@ import type {
   TariffRateCardRegisterOutput,
   TariffRateRuleAddOutput,
 } from "@saptm/rpc";
-import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createTariffQuoteApproveAuditAfter,
   createTariffQuoteApproveAuditBefore,
@@ -164,6 +166,7 @@ export class TariffService {
         eventType: "tariff.rate_card.registered",
         aggregateType: "tariff",
         aggregateId: rateCard.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: createTariffRateCardRegisterAuditAfter({
           rateCard,
           businessRules,
@@ -275,6 +278,7 @@ export class TariffService {
         eventType: "tariff.rate_rule.added",
         aggregateType: "tariff",
         aggregateId: rule.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: createTariffRateRuleAddAuditAfter({
           rule,
           businessRules,
@@ -423,6 +427,7 @@ export class TariffService {
         eventType: "tariff.quote.calculated",
         aggregateType: "tariff",
         aggregateId: quote.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: createTariffQuoteCalculateAuditAfter({
           quote,
           lineItems: calculation.lineItems,
@@ -519,6 +524,7 @@ export class TariffService {
         eventType: "tariff.quote.approved",
         aggregateType: "tariff",
         aggregateId: approvedQuote.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: createTariffQuoteApproveAuditAfter({
           quote: approvedQuote,
           businessRules,
@@ -535,9 +541,6 @@ export class TariffService {
   }
 
   private async databaseTransaction<T>(fn: (tx: never) => Promise<T>): Promise<T> {
-    const { getPrismaClient } = await import("@saptm/database");
-    const database = getPrismaClient();
-
-    return database.$transaction(fn);
+    return this.tariffRepo.transaction(fn as (tx: PrismaTx) => Promise<T>);
   }
 }

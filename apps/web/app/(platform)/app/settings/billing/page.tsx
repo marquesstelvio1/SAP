@@ -20,7 +20,21 @@ export default async function BillingSettingsPage() {
     );
   }
 
-  const result = await getBillingOverview();
+  let result: Awaited<ReturnType<typeof getBillingOverview>>;
+
+  try {
+    result = await getBillingOverview();
+  } catch {
+    return (
+      <AccessState
+        badgeLabel="Faturação"
+        description="API nao respondeu dentro do tempo limite."
+        role="alert"
+        title="Dados indisponiveis"
+        variant="error"
+      />
+    );
+  }
 
   if (result.status !== "ok") {
     return (
@@ -28,7 +42,7 @@ export default async function BillingSettingsPage() {
         badgeLabel="Faturação"
         description={result.message}
         role="alert"
-        title="Dados indisponíveis"
+        title="Dados indisponiveis"
         variant="error"
       />
     );

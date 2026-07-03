@@ -7,6 +7,8 @@ export type { AuthContext };
 export type RequestWithAuthContext = {
   authContext?: AuthContext;
   authResolutionError?: unknown;
+  url?: string;
+  method?: string;
   headers?: Record<string, string | string[] | undefined>;
   traceContext?: TraceContext;
   ip?: string;

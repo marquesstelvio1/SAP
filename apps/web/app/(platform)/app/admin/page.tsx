@@ -2,7 +2,6 @@ import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
 
-import { AdminInvitationLifecycleForm } from "../../../../components/admin/admin-invitation-lifecycle-form";
 import { AdminMembershipStatusForm } from "../../../../components/admin/admin-membership-status-form";
 import { AdminOverviewHeader } from "../../../../components/admin/admin-overview-header";
 import { AdminRoleAssignForm } from "../../../../components/admin/admin-role-assign-form";
@@ -13,21 +12,23 @@ import { AdminRoleRevokeForm } from "../../../../components/admin/admin-role-rev
 import { AdminRolesTables } from "../../../../components/admin/admin-roles-tables";
 import { AdminUserInviteForm } from "../../../../components/admin/admin-user-invite-form";
 import { AdminUsersTable } from "../../../../components/admin/admin-users-table";
+import { CapacityResourceRegisterForm } from "../../../../components/capacity/capacity-resource-register-form";
 import { getAdminOverview } from "../../../../lib/admin-overview";
 import { requirePlatformSession } from "../../../../lib/auth-session";
+import { registerCapacityResourceAction } from "../capacity/actions";
+import { initialCapacityResourceRegisterFormState } from "../capacity/form-state";
 import {
   assignAdminRoleAction,
-  cancelAdminInvitationAction,
+  cancelInvitationAction,
   createAdminRoleAction,
   deleteAdminRoleAction,
   inviteAdminUserAction,
-  resendAdminInvitationAction,
+  resendInvitationAction,
   revokeAdminRoleAction,
   updateAdminMembershipStatusAction,
   updateAdminRolePermissionsAction,
 } from "./actions";
 import {
-  initialAdminInvitationLifecycleFormState,
   initialAdminMembershipStatusFormState,
   initialAdminRoleAssignFormState,
   initialAdminRoleCreateFormState,
@@ -40,7 +41,7 @@ import { prepareAdminOptions } from "./logic";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Administração",
-  description: "Gestão de utilizadores, convites, roles e permissões da organização.",
+  description: "Gestão de utilizadores, convites, perfis e permissões da organização.",
 };
 
 const openAdminPermissions: readonly PlatformPermission[] = [
@@ -70,6 +71,7 @@ export default async function AdminIdentityPage(props: {
   const canManageMemberships =
     viewerPermissions.includes(inviteUserPermission) &&
     viewerPermissions.includes(assignRolePermission);
+  const canRegisterResource = viewerPermissions.includes("capacity.manage" as PlatformPermission);
   if (!canOpenAdmin) {
     return (
       <AccessState
@@ -81,10 +83,10 @@ export default async function AdminIdentityPage(props: {
       />
     );
   }
-  let result;
+  let result: Awaited<ReturnType<typeof getAdminOverview>>;
   try {
     result = await getAdminOverview({ offset, limit });
-  } catch (error) {
+  } catch (_error) {
     return (
       <AccessState
         badgeLabel="Administração"
@@ -112,10 +114,7 @@ export default async function AdminIdentityPage(props: {
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <AdminOverviewHeader
-        totals={overview.totals}
-        organization={overview.organization}
-      />
+      <AdminOverviewHeader totals={overview.totals} organization={overview.organization} />
       <section className="grid gap-4 xl:grid-cols-2">
         <AdminUserInviteForm
           action={inviteAdminUserAction}
@@ -165,28 +164,10 @@ export default async function AdminIdentityPage(props: {
           members={options.memberLifecycleOptions}
         />
       </section>
-      <section className="grid gap-4 xl:grid-cols-2">
-        <AdminInvitationLifecycleForm
-          action={resendAdminInvitationAction}
-          actionLabel="Reenviar convite"
-          canManageInvitations={canInviteUser}
-          description="Reenvia notificacao de convite para utilizadores pendentes."
-          initialState={initialAdminInvitationLifecycleFormState}
-          members={options.invitedMemberOptions}
-          title="Reenviar convite"
-        />
-        <AdminInvitationLifecycleForm
-          action={cancelAdminInvitationAction}
-          actionLabel="Cancelar convite"
-          canManageInvitations={canInviteUser}
-          description="Cancela convite pendente, remove roles e fecha acesso antes de ativacao."
-          initialState={initialAdminInvitationLifecycleFormState}
-          members={options.invitedMemberOptions}
-          requiresReason
-          title="Cancelar convite"
-        />
-      </section>
       <AdminUsersTable
+        canInviteUser={canInviteUser}
+        onCancelInvitation={cancelInvitationAction}
+        onResendInvitation={resendInvitationAction}
         users={overview.users}
         pagination={{
           totalCount: overview.pagination.totalCount,
@@ -197,6 +178,13 @@ export default async function AdminIdentityPage(props: {
         }}
       />
       <AdminRolesTables roles={overview.roles} permissions={overview.permissions} />
+      <section className="grid gap-4">
+        <CapacityResourceRegisterForm
+          action={registerCapacityResourceAction}
+          canManageCapacity={canRegisterResource}
+          initialState={initialCapacityResourceRegisterFormState}
+        />
+      </section>
     </div>
   );
 }

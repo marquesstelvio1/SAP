@@ -34,6 +34,7 @@ import type {
   AdminRoleRevokeFormState,
   AdminUserInviteFormState,
 } from "./form-state";
+import { initialAdminInvitationLifecycleFormState } from "./form-state";
 
 const inviteUserPermission: PlatformPermission = "identity.user.invite";
 const assignRolePermission: PlatformPermission = "identity.role.assign";
@@ -140,7 +141,7 @@ export async function assignAdminRoleAction(
 
   return {
     status: "success",
-    message: "Role atribuida com RBAC tenant-scoped, audit trail e outbox.",
+    message: "Perfil atribuído com validação operacional e auditoria.",
     membershipId: parsedOutput.data.membershipId,
     roleId: parsedOutput.data.roleId,
     roleKey: parsedOutput.data.assignedRole.key,
@@ -158,7 +159,7 @@ export async function createAdminRoleAction(
   if (!canManageRoleCatalog(platformSession.viewer.permissions)) {
     return {
       status: "error",
-      message: "A sessao precisa de tenant.manage e identity.role.assign para criar roles.",
+      message: "A sessão não tem autorização para criar perfis.",
     };
   }
 
@@ -170,7 +171,10 @@ export async function createAdminRoleAction(
 
   const result = await callAdminMutation("/rpc/admin/createRole", parsedInput.input);
 
-  return parseAdminRoleMutationResult(result, "Role custom criada com permissoes configuradas.");
+  return parseAdminRoleMutationResult(
+    result,
+    "Perfil personalizado criado com permissões configuradas.",
+  );
 }
 
 export async function updateAdminRolePermissionsAction(
@@ -182,7 +186,7 @@ export async function updateAdminRolePermissionsAction(
   if (!canManageRoleCatalog(platformSession.viewer.permissions)) {
     return {
       status: "error",
-      message: "A sessao precisa de tenant.manage e identity.role.assign para editar roles.",
+      message: "A sessão não tem autorização para editar perfis.",
     };
   }
 
@@ -194,7 +198,7 @@ export async function updateAdminRolePermissionsAction(
 
   const result = await callAdminMutation("/rpc/admin/updateRolePermissions", parsedInput.input);
 
-  return parseAdminRoleMutationResult(result, "Permissoes da role custom atualizadas.");
+  return parseAdminRoleMutationResult(result, "Permissões do perfil personalizado actualizadas.");
 }
 
 export async function deleteAdminRoleAction(
@@ -206,7 +210,7 @@ export async function deleteAdminRoleAction(
   if (!canManageRoleCatalog(platformSession.viewer.permissions)) {
     return {
       status: "error",
-      message: "A sessao precisa de tenant.manage e identity.role.assign para eliminar roles.",
+      message: "A sessão não tem autorização para eliminar perfis.",
     };
   }
 
@@ -230,7 +234,7 @@ export async function deleteAdminRoleAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC administrativo retornou resposta invalida para delete de role.",
+      message: "Não foi possível confirmar a eliminação do perfil.",
     };
   }
 
@@ -238,7 +242,7 @@ export async function deleteAdminRoleAction(
 
   return {
     status: "success",
-    message: "Role custom eliminada com audit trail e outbox.",
+    message: "Perfil personalizado eliminado com auditoria.",
     roleId: parsedOutput.data.roleId,
     roleKey: parsedOutput.data.roleKey,
     idempotencyKey: parsedOutput.data.idempotency.key,
@@ -255,7 +259,7 @@ export async function revokeAdminRoleAction(
   if (!platformSession.viewer.permissions.includes(assignRolePermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui identity.role.assign para revogar roles.",
+      message: "A sessão não tem autorização para revogar perfis.",
     };
   }
 
@@ -279,7 +283,7 @@ export async function revokeAdminRoleAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC administrativo retornou resposta invalida para revogacao de role.",
+      message: "Não foi possível confirmar a revogação do perfil.",
     };
   }
 
@@ -287,7 +291,7 @@ export async function revokeAdminRoleAction(
 
   return {
     status: "success",
-    message: "Role revogada com trilha auditavel e regras anti-lockout.",
+    message: "Perfil revogado com validações de segurança.",
     membershipId: parsedOutput.data.membershipId,
     roleId: parsedOutput.data.roleId,
     roleKey: parsedOutput.data.revokedRole.key,
@@ -305,7 +309,7 @@ export async function updateAdminMembershipStatusAction(
   if (!canManageMembershipLifecycle(platformSession.viewer.permissions)) {
     return {
       status: "error",
-      message: "A sessao precisa de identity.user.invite e identity.role.assign para lifecycle.",
+      message: "A sessão não tem autorização para actualizar membros.",
     };
   }
 
@@ -329,7 +333,7 @@ export async function updateAdminMembershipStatusAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC administrativo retornou resposta invalida para lifecycle.",
+      message: "Não foi possível confirmar a actualização do membro.",
     };
   }
 
@@ -337,7 +341,7 @@ export async function updateAdminMembershipStatusAction(
 
   return {
     status: "success",
-    message: "Membership atualizado com RBAC, audit trail e outbox.",
+    message: "Membro actualizado com auditoria.",
     membershipId: parsedOutput.data.membershipId,
     membershipStatus: parsedOutput.data.status,
     idempotencyKey: parsedOutput.data.idempotency.key,
@@ -759,4 +763,12 @@ function readOptionalFormString(formData: FormData, name: string): string | unde
   const value = readRequiredFormString(formData, name);
 
   return value.length === 0 ? undefined : value;
+}
+
+export async function resendInvitationAction(formData: FormData): Promise<void> {
+  await resendAdminInvitationAction(initialAdminInvitationLifecycleFormState, formData);
+}
+
+export async function cancelInvitationAction(formData: FormData): Promise<void> {
+  await cancelAdminInvitationAction(initialAdminInvitationLifecycleFormState, formData);
 }

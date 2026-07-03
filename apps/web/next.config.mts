@@ -26,7 +26,7 @@ const staticHeaders = [
   },
   {
     key: "Permissions-Policy",
-    value: "camera=(), geolocation=(), microphone=(), payment=(), usb=()",
+    value: "camera=(), geolocation=(), microphone=(), interest-cohort=(), payment=(), usb=()",
   },
   {
     key: "Referrer-Policy",
@@ -48,6 +48,7 @@ const staticHeaders = [
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  outputFileTracingRoot: path.join(import.meta.dirname, "../../"),
   reactStrictMode: true,
   serverExternalPackages: ["@better-auth/kysely-adapter", "better-auth", "kysely"],
   typedRoutes: true,
@@ -57,9 +58,6 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 86_400,
   },
-  // Next.js 16: Turbopack config is top-level, not experimental.turbopack.
-  // Empty object signals "use default Turbopack configuration".
-  turbopack: {},
   experimental: {
     staleTimes: {
       dynamic: 30,

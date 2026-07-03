@@ -33,9 +33,6 @@ export type {
   CargoEntity,
   CargoOperationalHandoffEntity,
   CargoOverviewData,
-  TrackingEventEntity,
-  TrackingEventPayload,
-  TrackingShipmentEntity,
 } from "./cargo.entity.js";
 // Classes & entity interfaces (unique to cargo.entity)
 export { CargoReference, GrossWeight } from "./cargo.entity.js";

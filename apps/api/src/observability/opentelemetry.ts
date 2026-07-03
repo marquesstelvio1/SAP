@@ -7,8 +7,10 @@ let sdk: NodeSDK | null = null;
 
 export function initOpenTelemetry(): void {
   const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
-  if (!endpoint) {
-    diag.info("OTEL_EXPORTER_OTLP_ENDPOINT not set, skipping OTel initialization");
+  if (!endpoint || (process.env.NODE_ENV === "production" && endpoint.includes("localhost"))) {
+    diag.info(
+      "OTEL_EXPORTER_OTLP_ENDPOINT not set or invalid for production, skipping OTel initialization",
+    );
     return;
   }
 

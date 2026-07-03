@@ -61,7 +61,7 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
           <Badge variant={canReleaseCargo ? "success" : "warning"}>
             {canReleaseCargo ? "Liberacao autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.release</Badge>
+          <Badge variant="outline">Libertar carga</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Liberar carga para transporte</CardTitle>
@@ -166,10 +166,6 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
                 name="sourceSystem"
               />
             </Field>
-
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
 
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (

@@ -40,4 +40,8 @@ export class PrismaAuditRepository implements AuditRepository {
   async createOutboxEvent(tx: PrismaTx, input: PrismaOutboxEventCreateInput): Promise<void> {
     await tx.outboxEvent.create({ data: input as never });
   }
+
+  async transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T> {
+    return this.database.$transaction(fn);
+  }
 }

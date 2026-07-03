@@ -24,7 +24,6 @@ export function CargoOverviewClient({
   offset,
   limit,
   canRegisterCargo,
-  canReleaseCargo,
   canPlanTransport,
   canDepartTransport,
   canArriveTransport,
@@ -39,7 +38,6 @@ export function CargoOverviewClient({
   offset: number;
   limit: number;
   canRegisterCargo: boolean;
-  canReleaseCargo: boolean;
   canPlanTransport: boolean;
   canDepartTransport: boolean;
   canArriveTransport: boolean;
@@ -68,11 +66,7 @@ export function CargoOverviewClient({
     return (
       <AccessState
         badgeLabel="Gestao de Cargas"
-        description={
-          cargoQuery.error instanceof Error
-            ? cargoQuery.error.message
-            : "Erro ao carregar dados de cargas."
-        }
+        description="Dados indisponiveis. Tente novamente mais tarde."
         role="alert"
         title="Gestao de cargas indisponivel"
         variant="error"
@@ -125,7 +119,6 @@ export function CargoOverviewClient({
       >
         <CargoLifecycleSections
           canRegisterCargo={canRegisterCargo}
-          canReleaseCargo={canReleaseCargo}
           canPlanTransport={canPlanTransport}
           canDepartTransport={canDepartTransport}
           canArriveTransport={canArriveTransport}

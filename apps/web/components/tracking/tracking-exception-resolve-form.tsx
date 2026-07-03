@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TrackingExceptionResolveFormState } from "../../app/(platform)/app/tracking/form-state";
@@ -74,6 +75,7 @@ export function TrackingExceptionResolveForm({
   initialState,
   action,
 }: TrackingExceptionResolveFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("trk_res"));
   const defaultOccurredAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -82,6 +84,10 @@ export function TrackingExceptionResolveForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("trk_res"));
+      capture("tracking:exception_resolved", {
+        shipment_id: shipment.id,
+        exception_id: state.eventId,
+      });
     }
   }, [state.status]);
 
@@ -307,23 +313,11 @@ export function TrackingExceptionResolveForm({
               </Field>
             </div>
 
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
-
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (
                 <FieldError>{state.message}</FieldError>
               ) : (
-                <FieldDescription>
-                  {state.status === "success"
-                    ? `${state.message} Evento: ${state.eventId ?? "sem-id"} Status: ${
-                        state.currentStatus ?? "sem-status"
-                      } Evidência: ${state.evidenceReference ?? "sem-evidencia"} Aprovação: ${
-                        state.approvalStatus ?? "sem-status"
-                      } Workflow: ${state.workflowState ?? "sem-workflow"}`
-                    : state.message}
-                </FieldDescription>
+                <FieldDescription>{state.message}</FieldDescription>
               )}
             </Field>
           </FieldGroup>

@@ -7,7 +7,6 @@ import { CapacityAdvisoryPanel } from "../../../../components/capacity/capacity-
 import { CapacityDecisionsTables } from "../../../../components/capacity/capacity-decisions-tables";
 import { CapacityOverviewHeader } from "../../../../components/capacity/capacity-overview-header";
 import { CapacityPreCheck } from "../../../../components/capacity/capacity-pre-check";
-import { CapacityResourceRegisterForm } from "../../../../components/capacity/capacity-resource-register-form";
 import { CapacityRulesCard } from "../../../../components/capacity/capacity-rules-card";
 import { CapacitySlotCancelForm } from "../../../../components/capacity/capacity-slot-cancel-form";
 import { CapacitySlotOpenForm } from "../../../../components/capacity/capacity-slot-open-form";
@@ -21,12 +20,10 @@ import {
   cancelCapacitySlotReservationAction,
   openCapacitySlotAction,
   recordCapacityAdvisoryDecisionAction,
-  registerCapacityResourceAction,
   reserveCapacitySlotAction,
 } from "./actions";
 import {
   initialCapacityAdvisoryDecisionFormState,
-  initialCapacityResourceRegisterFormState,
   initialCapacitySlotCancelFormState,
   initialCapacitySlotOpenFormState,
   initialCapacitySlotReserveFormState,
@@ -149,13 +146,7 @@ export default async function CapacityOverviewPage() {
         recentDecisions={advisoryDecisionAnalytics.recentDecisions}
       />
 
-      <section className="grid gap-4 xl:grid-cols-2">
-        <CapacityResourceRegisterForm
-          action={registerCapacityResourceAction}
-          canManageCapacity={canManageCapacity}
-          initialState={initialCapacityResourceRegisterFormState}
-        />
-
+      <section>
         <CapacitySlotOpenForm
           action={openCapacitySlotAction}
           canManageCapacity={canManageCapacity}

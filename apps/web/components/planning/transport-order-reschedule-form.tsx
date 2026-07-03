@@ -67,7 +67,7 @@ export function TransportOrderRescheduleForm({
           <Badge variant={canRescheduleTransportOrder ? "success" : "outline"}>
             {canRescheduleTransportOrder ? "Replaneamento autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">planning.order.reschedule</Badge>
+          <Badge variant="outline">Reagendar ordem</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Replanear transport order</CardTitle>
@@ -219,10 +219,6 @@ export function TransportOrderRescheduleForm({
                   name="sourceSystem"
                 />
               </Field>
-            </div>
-
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
             </div>
 
             <Field data-invalid={state.status === "error"}>

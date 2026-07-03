@@ -33,7 +33,7 @@ test("billing overview RPC authorizes request and returns subscription overview"
       },
     },
     billingService: {
-      async getOverview(organizationId) {
+      async getOverview(_organizationId) {
         return {
           plan: "pro",
           status: "active",
@@ -145,7 +145,7 @@ test("billing create checkout session RPC authorizes mutation and returns Stripe
       async getOverview() {
         throw new Error("getOverview should not be called by checkout test");
       },
-      async createCheckoutSession(organizationId, plan, successUrl, cancelUrl) {
+      async createCheckoutSession(_organizationId, _plan, _successUrl, _cancelUrl) {
         return {
           url: "https://checkout.stripe.com/cs_test_001",
         };
@@ -202,7 +202,7 @@ test("billing portal session RPC authorizes mutation and returns portal URL", as
       async createCheckoutSession() {
         throw new Error("createCheckoutSession should not be called by portal test");
       },
-      async createPortalSession(organizationId) {
+      async createPortalSession(_organizationId) {
         return {
           url: "https://stripe.com/billing/portal_001",
         };

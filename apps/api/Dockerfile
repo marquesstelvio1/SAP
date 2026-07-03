@@ -65,6 +65,7 @@ COPY --from=builder /app/packages/config/dist ./packages/config/dist
 COPY --from=builder /app/packages/config/node_modules ./packages/config/node_modules
 COPY --from=builder /app/packages/database/package.json ./packages/database/package.json
 COPY --from=builder /app/packages/database/dist ./packages/database/dist
+COPY --from=builder /app/packages/database/prisma ./packages/database/prisma
 COPY --from=builder /app/packages/database/node_modules ./packages/database/node_modules
 COPY --from=builder /app/packages/observability/package.json ./packages/observability/package.json
 COPY --from=builder /app/packages/observability/dist ./packages/observability/dist
@@ -82,4 +83,6 @@ EXPOSE 4000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD node -e "const port=process.env.API_PORT||4000; fetch('http://127.0.0.1:'+port+'/health/live').then((response)=>process.exit(response.ok?0:1)).catch(()=>process.exit(1))"
 
-CMD ["node", "dist/main.js"]
+RUN printf '#!/bin/sh\nset -e\necho "[migrate] Applying database migrations..."\ncd /app/packages/database && npx prisma migrate deploy --schema=prisma/schema.prisma\necho "[migrate] Done."\ncd /app/apps/api && node dist/main.js\n' > /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
+
+CMD ["/docker-entrypoint.sh"]

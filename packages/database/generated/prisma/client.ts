@@ -237,6 +237,11 @@ export type WebhookDelivery = Prisma.WebhookDeliveryModel
  */
 export type TrackingEvent = Prisma.TrackingEventModel
 /**
+ * Model Plan
+ * 
+ */
+export type Plan = Prisma.PlanModel
+/**
  * Model Subscription
  * 
  */
@@ -251,3 +256,8 @@ export type Invoice = Prisma.InvoiceModel
  * 
  */
 export type UsageRecord = Prisma.UsageRecordModel
+/**
+ * Model SsoConfig
+ * 
+ */
+export type SsoConfig = Prisma.SsoConfigModel

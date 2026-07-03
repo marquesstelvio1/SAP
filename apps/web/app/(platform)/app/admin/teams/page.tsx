@@ -43,8 +43,11 @@ export default async function AdminTeamsPage(props: {
   const [result, orgUsers] = await Promise.all([
     rpcGet("/rpc/teams/list", listTeamsOutputSchema, {
       searchParams: input,
-    }),
-    getOrgUsers(),
+    }).catch(() => ({
+      status: "unavailable" as const,
+      message: "API nao respondeu dentro do tempo limite.",
+    })),
+    getOrgUsers().catch(() => []),
   ]);
 
   if (result.status !== "ok") {
@@ -76,7 +79,7 @@ export default async function AdminTeamsPage(props: {
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-semibold text-2xl tracking-tight">Equipas</h1>
+          <h1 className="font-semibold text-2xl tracking-heading">Equipas</h1>
           <p className="text-muted-foreground text-sm">
             Gerir equipas, membros e permissoes dentro da organizacao.
           </p>

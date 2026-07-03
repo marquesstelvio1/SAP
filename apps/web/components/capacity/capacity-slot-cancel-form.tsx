@@ -18,6 +18,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -37,6 +38,7 @@ export function CapacitySlotCancelForm({
   initialState,
   action,
 }: CapacitySlotCancelFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     createIdempotencyKey("capacity_cancel"),
@@ -47,6 +49,12 @@ export function CapacitySlotCancelForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("capacity_cancel"));
+      capture("capacity:slot_cancelled", {
+        slot_id: state.slotId,
+        cargo_id: state.cargoId,
+        reservation_id: state.reservationId,
+        cancellation_reference: state.cancellationReference,
+      });
     }
   }, [state.status]);
 
@@ -57,7 +65,7 @@ export function CapacitySlotCancelForm({
           <Badge variant={canCancelCapacity ? "success" : "warning"}>
             {canCancelCapacity ? "Cancelamento autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">capacity.slot.cancel</Badge>
+          <Badge variant="outline">Cancelar slot</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Cancelar reserva de capacidade</CardTitle>
@@ -134,10 +142,6 @@ export function CapacitySlotCancelForm({
               />
             </Field>
 
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
-
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (
                 <FieldError>{state.message}</FieldError>
@@ -153,7 +157,7 @@ export function CapacitySlotCancelForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canCancelCapacity ? "Não apaga histórico; apenas cancela." : "Requer cancel."}
+            {canCancelCapacity ? "Não apaga histórico; apenas cancela." : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A cancelar..." : "Cancelar reserva"}

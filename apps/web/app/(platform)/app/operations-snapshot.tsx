@@ -89,11 +89,7 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
             <Badge variant="outline">Tracking</Badge>
           </div>
           <CardTitle>Resumo operacional indisponível</CardTitle>
-          <CardDescription>
-            {overviewQuery.error instanceof Error
-              ? overviewQuery.error.message
-              : "Erro ao carregar dados de tracking."}
-          </CardDescription>
+          <CardDescription>Dados indisponiveis. Tente novamente mais tarde.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-3">
           <StatusTile

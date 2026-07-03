@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TrackingEventRecordFormState } from "../../app/(platform)/app/tracking/form-state";
@@ -59,6 +60,7 @@ export function TrackingEventRecordForm({
   initialState,
   action,
 }: TrackingEventRecordFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("trk_evt"));
   const defaultOccurredAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -68,6 +70,9 @@ export function TrackingEventRecordForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("trk_evt"));
+      capture("tracking:event_received", {
+        event_id: state.eventId,
+      });
     }
   }, [state.status]);
 
@@ -78,7 +83,7 @@ export function TrackingEventRecordForm({
           <Badge variant={canRecordEvents ? "success" : "warning"}>
             {canRecordEvents ? "Evento autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">tracking.event.record</Badge>
+          <Badge variant="outline">Registo de tracking</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar evento operacional</CardTitle>
@@ -189,19 +194,11 @@ export function TrackingEventRecordForm({
               </FieldDescription>
             </Field>
 
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
-
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (
                 <FieldError>{state.message}</FieldError>
               ) : (
-                <FieldDescription>
-                  {state.status === "success"
-                    ? `${state.message} Evento: ${state.eventId ?? "sem-id"}`
-                    : state.message}
-                </FieldDescription>
+                <FieldDescription>{state.message}</FieldDescription>
               )}
             </Field>
           </FieldGroup>

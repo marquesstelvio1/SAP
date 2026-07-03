@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -38,6 +39,7 @@ export function CargoDeliveryExceptionResolveForm({
   initialState,
   action,
 }: CargoDeliveryExceptionResolveFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_der"));
   const defaultResolvedAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -46,6 +48,12 @@ export function CargoDeliveryExceptionResolveForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("cargo_der"));
+      capture("cargo:status_changed", {
+        cargo_id: state.cargoId,
+        to_status: "exception_resolved",
+        exception_id: state.exceptionId,
+        shipment_id: state.shipmentId,
+      });
     }
   }, [state.status]);
 
@@ -56,7 +64,7 @@ export function CargoDeliveryExceptionResolveForm({
           <Badge variant={canResolveDeliveryException ? "success" : "warning"}>
             {canResolveDeliveryException ? "Resolucao autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.delivery.exception.resolve</Badge>
+          <Badge variant="outline">Resolver exceção</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Resolver excecao de entrega</CardTitle>
@@ -160,19 +168,11 @@ export function CargoDeliveryExceptionResolveForm({
               />
             </Field>
 
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
-
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (
                 <FieldError>{state.message}</FieldError>
               ) : (
-                <FieldDescription>
-                  {state.status === "success"
-                    ? `${state.message} Evento: ${state.eventId ?? state.exceptionId ?? "sem-ref"}`
-                    : state.message}
-                </FieldDescription>
+                <FieldDescription>{state.message}</FieldDescription>
               )}
             </Field>
           </FieldGroup>

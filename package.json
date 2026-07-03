@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@10.12.1",
   "engines": {
-    "node": ">=22.0.0",
+    "node": ">=22.0.0 <26.0.0",
     "pnpm": ">=10.0.0"
   },
   "scripts": {
@@ -53,7 +53,11 @@
     "test:coverage": "turbo run test:coverage --filter @saptm/api",
     "test:e2e": "node scripts/run-e2e.mjs",
     "test:load": "bash tests/load/run-load-tests.sh",
+    "storybook": "pnpm --filter @saptm/ui storybook",
+    "build:storybook": "pnpm --filter @saptm/ui build:storybook",
     "changeset": "changeset",
+    "ci:gate": "node scripts/ci-gate.mjs --full",
+    "ci:gate:precommit": "node scripts/ci-gate.mjs",
     "db:generate": "pnpm --filter @saptm/database db:generate",
     "db:validate": "pnpm --filter @saptm/database db:validate",
     "db:migrate:dev": "pnpm --filter @saptm/database db:migrate:dev",
@@ -62,7 +66,7 @@
     "db:migrate:rollback": "pnpm --filter @saptm/database db:migrate:rollback",
     "db:seed": "pnpm --filter @saptm/database db:seed",
     "auth:seed-local-admin": "pnpm --filter @saptm/auth seed:local-admin",
-    "worker:outbox": "pnpm --filter @saptm/database worker:outbox",
+    "worker:outbox": "pnpm --filter @saptm/api worker:outbox",
     "db:studio": "pnpm --filter @saptm/database db:studio",
     "db:backup": "node scripts/db-backup.mjs",
     "db:restore": "node scripts/db-restore.mjs",
@@ -70,13 +74,13 @@
     "infra:stack": "docker compose up -d --build",
     "infra:down": "docker compose down",
     "infra:logs": "docker compose logs -f",
+    "postinstall": "node -e \"try{require('child_process').execSync('git config core.hooksPath .githooks',{stdio:'pipe'})}catch(e){}\"",
     "docker:api:build": "docker build -f apps/api/Dockerfile -t saptm-api .",
     "docker:web:build": "docker build -f apps/web/Dockerfile -t saptm-web ."
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@changesets/cli": "catalog:",
-
     "@playwright/test": "catalog:",
     "@axe-core/playwright": "catalog:",
     "tsup": "catalog:",
@@ -84,6 +88,7 @@
     "@next/bundle-analyzer": "catalog:",
     "turbo": "catalog:",
     "knip": "catalog:",
+    "prisma": "catalog:",
     "typescript": "catalog:"
   },
   "onlyBuiltDependencies": [

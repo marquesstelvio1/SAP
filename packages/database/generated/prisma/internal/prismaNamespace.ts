@@ -423,9 +423,11 @@ export const ModelName = {
   WebhookEndpoint: 'WebhookEndpoint',
   WebhookDelivery: 'WebhookDelivery',
   TrackingEvent: 'TrackingEvent',
+  Plan: 'Plan',
   Subscription: 'Subscription',
   Invoice: 'Invoice',
-  UsageRecord: 'UsageRecord'
+  UsageRecord: 'UsageRecord',
+  SsoConfig: 'SsoConfig'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -441,7 +443,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "twoFactor" | "session" | "account" | "verification" | "loginAttempt" | "organization" | "team" | "teamMember" | "membership" | "role" | "permission" | "rolePermission" | "membershipRole" | "auditRecord" | "serviceAccount" | "apiKey" | "integrationEvent" | "outboxEvent" | "notification" | "cargo" | "cargoDeliveryException" | "cargoClaimSettlement" | "capacityResource" | "capacitySlot" | "capacitySlotReservation" | "capacityAdvisoryDecision" | "transportOrder" | "transportOrderDispatch" | "transportOrderScheduleRevision" | "tariffRateCard" | "tariffRateRule" | "tariffQuote" | "cargoOperationalHandoff" | "cargoComplianceEvidence" | "trackingShipment" | "webhookEndpoint" | "webhookDelivery" | "trackingEvent" | "subscription" | "invoice" | "usageRecord"
+    modelProps: "user" | "twoFactor" | "session" | "account" | "verification" | "loginAttempt" | "organization" | "team" | "teamMember" | "membership" | "role" | "permission" | "rolePermission" | "membershipRole" | "auditRecord" | "serviceAccount" | "apiKey" | "integrationEvent" | "outboxEvent" | "notification" | "cargo" | "cargoDeliveryException" | "cargoClaimSettlement" | "capacityResource" | "capacitySlot" | "capacitySlotReservation" | "capacityAdvisoryDecision" | "transportOrder" | "transportOrderDispatch" | "transportOrderScheduleRevision" | "tariffRateCard" | "tariffRateRule" | "tariffQuote" | "cargoOperationalHandoff" | "cargoComplianceEvidence" | "trackingShipment" | "webhookEndpoint" | "webhookDelivery" | "trackingEvent" | "plan" | "subscription" | "invoice" | "usageRecord" | "ssoConfig"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3331,6 +3333,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Plan: {
+      payload: Prisma.$PlanPayload<ExtArgs>
+      fields: Prisma.PlanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        findFirst: {
+          args: Prisma.PlanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        findMany: {
+          args: Prisma.PlanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>[]
+        }
+        create: {
+          args: Prisma.PlanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        createMany: {
+          args: Prisma.PlanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>[]
+        }
+        delete: {
+          args: Prisma.PlanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        update: {
+          args: Prisma.PlanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        aggregate: {
+          args: Prisma.PlanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlan>
+        }
+        groupBy: {
+          args: Prisma.PlanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanCountAggregateOutputType> | number
+        }
+      }
+    }
     Subscription: {
       payload: Prisma.$SubscriptionPayload<ExtArgs>
       fields: Prisma.SubscriptionFieldRefs
@@ -3550,6 +3626,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UsageRecordCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UsageRecordCountAggregateOutputType> | number
+        }
+      }
+    }
+    SsoConfig: {
+      payload: Prisma.$SsoConfigPayload<ExtArgs>
+      fields: Prisma.SsoConfigFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SsoConfigFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SsoConfigFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        findFirst: {
+          args: Prisma.SsoConfigFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SsoConfigFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        findMany: {
+          args: Prisma.SsoConfigFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>[]
+        }
+        create: {
+          args: Prisma.SsoConfigCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        createMany: {
+          args: Prisma.SsoConfigCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SsoConfigCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>[]
+        }
+        delete: {
+          args: Prisma.SsoConfigDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        update: {
+          args: Prisma.SsoConfigUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        deleteMany: {
+          args: Prisma.SsoConfigDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SsoConfigUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SsoConfigUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>[]
+        }
+        upsert: {
+          args: Prisma.SsoConfigUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SsoConfigPayload>
+        }
+        aggregate: {
+          args: Prisma.SsoConfigAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSsoConfig>
+        }
+        groupBy: {
+          args: Prisma.SsoConfigGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SsoConfigGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SsoConfigCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SsoConfigCountAggregateOutputType> | number
         }
       }
     }
@@ -3850,6 +4000,7 @@ export const OutboxEventScalarFieldEnum = {
   eventType: 'eventType',
   aggregateType: 'aggregateType',
   aggregateId: 'aggregateId',
+  eventVersion: 'eventVersion',
   payload: 'payload',
   status: 'status',
   attempts: 'attempts',
@@ -3886,6 +4037,7 @@ export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[k
 export const CargoScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
+  teamId: 'teamId',
   cargoReference: 'cargoReference',
   externalReference: 'externalReference',
   cargoDescription: 'cargoDescription',
@@ -4315,6 +4467,7 @@ export type CargoComplianceEvidenceScalarFieldEnum = (typeof CargoComplianceEvid
 export const TrackingShipmentScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
+  teamId: 'teamId',
   referenceCode: 'referenceCode',
   externalReference: 'externalReference',
   cargoDescription: 'cargoDescription',
@@ -4329,7 +4482,8 @@ export const TrackingShipmentScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
-  deletedBy: 'deletedBy'
+  deletedBy: 'deletedBy',
+  cargoId: 'cargoId'
 } as const
 
 export type TrackingShipmentScalarFieldEnum = (typeof TrackingShipmentScalarFieldEnum)[keyof typeof TrackingShipmentScalarFieldEnum]
@@ -4393,12 +4547,35 @@ export const TrackingEventScalarFieldEnum = {
 export type TrackingEventScalarFieldEnum = (typeof TrackingEventScalarFieldEnum)[keyof typeof TrackingEventScalarFieldEnum]
 
 
+export const PlanScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  currency: 'currency',
+  interval: 'interval',
+  features: 'features',
+  limits: 'limits',
+  isPublic: 'isPublic',
+  sortOrder: 'sortOrder',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
+} as const
+
+export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof PlanScalarFieldEnum]
+
+
 export const SubscriptionScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   stripeCustomerId: 'stripeCustomerId',
   stripeSubscriptionId: 'stripeSubscriptionId',
   plan: 'plan',
+  planId: 'planId',
   status: 'status',
   currentPeriodStart: 'currentPeriodStart',
   currentPeriodEnd: 'currentPeriodEnd',
@@ -4447,6 +4624,26 @@ export const UsageRecordScalarFieldEnum = {
 } as const
 
 export type UsageRecordScalarFieldEnum = (typeof UsageRecordScalarFieldEnum)[keyof typeof UsageRecordScalarFieldEnum]
+
+
+export const SsoConfigScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  domain: 'domain',
+  idpMetadataUrl: 'idpMetadataUrl',
+  idpEntityId: 'idpEntityId',
+  idpSsoUrl: 'idpSsoUrl',
+  idpCertificate: 'idpCertificate',
+  jitProvisioning: 'jitProvisioning',
+  jitDefaultRoleId: 'jitDefaultRoleId',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy'
+} as const
+
+export type SsoConfigScalarFieldEnum = (typeof SsoConfigScalarFieldEnum)[keyof typeof SsoConfigScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -4609,20 +4806,6 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
- * Reference to a field of type 'OutboxEventStatus'
- */
-export type EnumOutboxEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutboxEventStatus'>
-    
-
-
-/**
- * Reference to a field of type 'OutboxEventStatus[]'
- */
-export type ListEnumOutboxEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutboxEventStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -4633,6 +4816,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OutboxEventStatus'
+ */
+export type EnumOutboxEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutboxEventStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'OutboxEventStatus[]'
+ */
+export type ListEnumOutboxEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutboxEventStatus[]'>
     
 
 
@@ -5204,9 +5401,11 @@ export type GlobalOmitConfig = {
   webhookEndpoint?: Prisma.WebhookEndpointOmit
   webhookDelivery?: Prisma.WebhookDeliveryOmit
   trackingEvent?: Prisma.TrackingEventOmit
+  plan?: Prisma.PlanOmit
   subscription?: Prisma.SubscriptionOmit
   invoice?: Prisma.InvoiceOmit
   usageRecord?: Prisma.UsageRecordOmit
+  ssoConfig?: Prisma.SsoConfigOmit
 }
 
 /* Types for Logging */

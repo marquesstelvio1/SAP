@@ -12,10 +12,6 @@ import {
   CargoReference,
   type CargoStatus,
   type GrossWeight,
-  type TrackingDepartureEventRecord,
-  type TrackingEventType,
-  type TrackingLifecycleEventRecord,
-  type TrackingShipmentRecord,
 } from "../domain/index.js";
 
 @Injectable()
@@ -26,6 +22,7 @@ export class PrismaCargoRepository implements CargoRepository {
     return {
       id: raw.id as string,
       organizationId: raw.organizationId as string,
+      teamId: (raw.teamId as string) ?? null,
       cargoReference: raw.cargoReference as string,
       externalReference: (raw.externalReference as string) ?? null,
       cargoDescription: raw.cargoDescription as string,
@@ -77,28 +74,6 @@ export class PrismaCargoRepository implements CargoRepository {
       arrivedAt: (raw.arrivedAt as Date) ?? null,
       deliveredAt: (raw.deliveredAt as Date) ?? null,
       updatedAt: raw.updatedAt as Date,
-    };
-  }
-
-  private mapTrackingShipment(raw: Record<string, unknown>): TrackingShipmentRecord {
-    return {
-      id: raw.id as string,
-      organizationId: raw.organizationId as string,
-      referenceCode: raw.referenceCode as string,
-      transportMode: raw.transportMode as TrackingShipmentRecord["transportMode"],
-      status: raw.status as TrackingShipmentRecord["status"],
-      plannedDepartureAt: (raw.plannedDepartureAt as Date) ?? null,
-      estimatedArrivalAt: (raw.estimatedArrivalAt as Date) ?? null,
-      actualArrivalAt: (raw.actualArrivalAt as Date) ?? null,
-    };
-  }
-
-  private mapTrackingEvent(raw: Record<string, unknown>): TrackingLifecycleEventRecord {
-    return {
-      id: raw.id as string,
-      eventType: raw.eventType as TrackingLifecycleEventRecord["eventType"],
-      occurredAt: raw.occurredAt as Date,
-      locationName: (raw.locationName as string) ?? null,
     };
   }
 
@@ -173,54 +148,7 @@ export class PrismaCargoRepository implements CargoRepository {
     return this.database.cargo.findFirst({
       where: { organizationId, cargoReference },
       select: { id: true },
-    });
-  }
-
-  async findTrackingShipmentByReferenceCode(
-    organizationId: string,
-    referenceCode: string,
-  ): Promise<{ id: string } | null> {
-    return this.database.trackingShipment.findFirst({
-      where: { organizationId, referenceCode },
-      select: { id: true },
-    });
-  }
-
-  async findTrackingShipmentById(
-    organizationId: string,
-    id: string | null,
-  ): Promise<TrackingShipmentRecord | null> {
-    if (id === null) {
-      return null;
-    }
-
-    const raw = await this.database.trackingShipment.findFirst({
-      where: { id, organizationId },
-    });
-    return raw ? this.mapTrackingShipment(raw as unknown as Record<string, unknown>) : null;
-  }
-
-  async findTrackingDepartureEventByIdempotencyKey(
-    organizationId: string,
-    key: string,
-  ): Promise<TrackingDepartureEventRecord | null> {
-    const raw = await this.database.trackingEvent.findFirst({
-      where: { organizationId, idempotencyKey: key, eventType: "departed" },
-      select: { id: true, eventType: true, occurredAt: true, locationName: true },
-    });
-    return raw ? this.mapTrackingEvent(raw as unknown as Record<string, unknown>) : null;
-  }
-
-  async findTrackingLifecycleEventByIdempotencyKey(
-    organizationId: string,
-    key: string,
-    eventType: TrackingEventType,
-  ): Promise<TrackingLifecycleEventRecord | null> {
-    const raw = await this.database.trackingEvent.findFirst({
-      where: { organizationId, idempotencyKey: key, eventType },
-      select: { id: true, eventType: true, occurredAt: true, locationName: true },
-    });
-    return raw ? this.mapTrackingEvent(raw as unknown as Record<string, unknown>) : null;
+    }) as unknown as Promise<{ id: string } | null>;
   }
 
   async getComplianceEvidenceStatusCounts(
@@ -232,7 +160,7 @@ export class PrismaCargoRepository implements CargoRepository {
       where: { organizationId, cargoId },
       _count: { _all: true },
     });
-    return groups.map((g: { status: string; _count: { _all: number } }) => ({
+    return (groups as Array<{ status: string; _count: { _all: number } }>).map((g) => ({
       status: g.status,
       count: g._count._all,
     }));
@@ -288,14 +216,18 @@ export class PrismaCargoRepository implements CargoRepository {
       ]);
 
     return {
-      statusGroups: statusGroups.map((g: { status: string; _count: { _all: number } }) => ({
-        status: g.status,
-        count: g._count._all,
-      })),
-      typeGroups: typeGroups.map((g: { evidenceType: string; _count: { _all: number } }) => ({
-        evidenceType: g.evidenceType,
-        count: g._count._all,
-      })),
+      statusGroups: (statusGroups as Array<{ status: string; _count: { _all: number } }>).map(
+        (g) => ({
+          status: g.status,
+          count: g._count._all,
+        }),
+      ),
+      typeGroups: (typeGroups as Array<{ evidenceType: string; _count: { _all: number } }>).map(
+        (g) => ({
+          evidenceType: g.evidenceType,
+          count: g._count._all,
+        }),
+      ),
       expiringCount,
       expiredCount,
       totalCount,
@@ -366,7 +298,7 @@ export class PrismaCargoRepository implements CargoRepository {
       where: { organizationId },
       _count: { _all: true },
     });
-    return groups.map((g: { status: string; _count: { _all: number } }) => ({
+    return (groups as Array<{ status: string; _count: { _all: number } }>).map((g) => ({
       status: g.status,
       count: g._count._all,
     }));
@@ -446,29 +378,102 @@ export class PrismaCargoRepository implements CargoRepository {
     return raw as unknown as CargoComplianceEvidenceRecord | null;
   }
 
+  async findComplianceEvidenceMany(
+    orgId: string,
+    filters: {
+      cargoId: string | undefined;
+      evidenceType: string | undefined;
+      status: string | undefined;
+      limit: number;
+      offset: number;
+    },
+  ): Promise<CargoComplianceEvidenceRecord[]> {
+    const where: Record<string, unknown> = { organizationId: orgId };
+
+    if (filters.cargoId !== undefined) {
+      where.cargoId = filters.cargoId;
+    }
+
+    if (filters.evidenceType !== undefined) {
+      where.evidenceType = filters.evidenceType;
+    }
+
+    if (filters.status !== undefined) {
+      where.status = filters.status;
+    }
+
+    const raw = await this.database.cargoComplianceEvidence.findMany({
+      where: where as never,
+      orderBy: { recordedAt: "desc" },
+      take: filters.limit,
+      skip: filters.offset,
+    });
+
+    return raw as unknown as CargoComplianceEvidenceRecord[];
+  }
+
+  async countComplianceEvidence(
+    orgId: string,
+    filters: {
+      cargoId: string | undefined;
+      evidenceType: string | undefined;
+      status: string | undefined;
+    },
+  ): Promise<number> {
+    const where: Record<string, unknown> = { organizationId: orgId };
+
+    if (filters.cargoId !== undefined) {
+      where.cargoId = filters.cargoId;
+    }
+
+    if (filters.evidenceType !== undefined) {
+      where.evidenceType = filters.evidenceType;
+    }
+
+    if (filters.status !== undefined) {
+      where.status = filters.status;
+    }
+
+    const count = await this.database.cargoComplianceEvidence.count({
+      where: where as never,
+    });
+
+    return count;
+  }
+
   async getOverview(
     organizationId: string,
     limit: number,
     offset: number,
+    teamId?: string,
   ): Promise<CargoOverviewRawData> {
+    const where: Record<string, unknown> = { organizationId };
+
+    if (teamId !== undefined) {
+      where.teamId = teamId;
+    }
+
+    const hazardousWhere: Record<string, unknown> = { ...where, hazardous: true };
+    const inspectionWhere: Record<string, unknown> = { ...where, requiresInspection: true };
+
     const [statusGroups, hazardousCount, inspectionRequiredCount, totalCount, recentCargo] =
       await Promise.all([
         this.database.cargo.groupBy({
           by: ["status"],
-          where: { organizationId },
+          where: where as never,
           _count: { _all: true },
         }),
         this.database.cargo.count({
-          where: { organizationId, hazardous: true },
+          where: hazardousWhere as never,
         }),
         this.database.cargo.count({
-          where: { organizationId, requiresInspection: true },
+          where: inspectionWhere as never,
         }),
         this.database.cargo.count({
-          where: { organizationId },
+          where: where as never,
         }),
         this.database.cargo.findMany({
-          where: { organizationId },
+          where: where as never,
           orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
           skip: offset,
           take: limit,
@@ -476,10 +481,12 @@ export class PrismaCargoRepository implements CargoRepository {
       ]);
 
     return {
-      statusGroups: statusGroups.map((g: { status: string; _count: { _all: number } }) => ({
-        status: g.status as CargoStatus,
-        _count: { _all: g._count._all },
-      })),
+      statusGroups: (statusGroups as Array<{ status: string; _count: { _all: number } }>).map(
+        (g) => ({
+          status: g.status as CargoStatus,
+          _count: { _all: g._count._all },
+        }),
+      ),
       hazardousCount,
       inspectionRequiredCount,
       totalCount,
@@ -493,6 +500,7 @@ export class PrismaCargoRepository implements CargoRepository {
     tx: PrismaTx,
     data: {
       organizationId: string;
+      teamId?: string;
       cargoReference: string;
       cargoDescription: string;
       cargoType: string;
@@ -526,38 +534,6 @@ export class PrismaCargoRepository implements CargoRepository {
   async updateCargo(tx: PrismaTx, id: string, data: Record<string, unknown>): Promise<CargoRecord> {
     const raw = await tx.cargo.update({ where: { id }, data: data as never });
     return this.mapCargo(raw as unknown as Record<string, unknown>);
-  }
-
-  async createTrackingShipment(
-    tx: PrismaTx,
-    data: {
-      organizationId: string;
-      referenceCode: string;
-      externalReference: string | null;
-      cargoDescription: string;
-      originName: string;
-      destinationName: string;
-      transportMode: string;
-      status: string;
-      priority: number;
-      plannedDepartureAt: Date;
-      estimatedArrivalAt: Date;
-    },
-  ): Promise<TrackingShipmentRecord> {
-    const raw = await tx.trackingShipment.create({ data: data as never });
-    return this.mapTrackingShipment(raw as unknown as Record<string, unknown>);
-  }
-
-  async createTrackingEvent(tx: PrismaTx, data: Record<string, unknown>): Promise<void> {
-    await tx.trackingEvent.create({ data: data as never });
-  }
-
-  async updateTrackingShipment(
-    tx: PrismaTx,
-    id: string,
-    data: Record<string, unknown>,
-  ): Promise<void> {
-    await tx.trackingShipment.update({ where: { id }, data: data as never });
   }
 
   async createDeliveryException(
@@ -620,6 +596,7 @@ export class PrismaCargoRepository implements CargoRepository {
     return {
       id: raw.id as string,
       organizationId: raw.organizationId as string,
+      teamId: (raw.teamId as string) ?? null,
       cargoReference,
       externalReference: (raw.externalReference as string) ?? null,
       cargoDescription: raw.cargoDescription as string,
@@ -702,6 +679,7 @@ export class PrismaCargoRepository implements CargoRepository {
       create: {
         id: entity.id,
         organizationId: entity.organizationId,
+        teamId: entity.teamId,
         cargoReference: entity.cargoReference.value,
         externalReference: entity.externalReference,
         cargoDescription: entity.cargoDescription,
@@ -754,6 +732,7 @@ export class PrismaCargoRepository implements CargoRepository {
         deliveredAt: entity.deliveredAt,
       },
       update: {
+        teamId: entity.teamId,
         cargoReference: entity.cargoReference.value,
         externalReference: entity.externalReference,
         cargoDescription: entity.cargoDescription,

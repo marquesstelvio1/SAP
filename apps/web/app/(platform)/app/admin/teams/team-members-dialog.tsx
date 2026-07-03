@@ -112,7 +112,7 @@ export function TeamMembersDialog({
                         e.target.form?.requestSubmit();
                       }}
                       disabled={rolePending}
-                      className="h-8 w-28 text-xs"
+                      className="w-28 text-xs"
                     >
                       {teamRoles.map((role) => (
                         <option key={role} value={role}>
@@ -157,14 +157,14 @@ export function TeamMembersDialog({
             <Label htmlFor={`${addId}-user`}>Adicionar membro</Label>
             <div className="flex gap-2">
               <input type="hidden" name="teamId" value={team.id} />
-              <SelectNative id={`${addId}-user`} name="userId" required className="h-9">
+              <SelectNative id={`${addId}-user`} name="userId" required>
                 {availableUsers.map((user) => (
                   <option key={user.id} value={user.id}>
                     {user.name} ({user.email})
                   </option>
                 ))}
               </SelectNative>
-              <SelectNative name="role" defaultValue="member" className="h-9 w-28">
+              <SelectNative name="role" defaultValue="member" className="w-28">
                 {teamRoles.map((role) => (
                   <option key={role} value={role}>
                     {role === "admin" ? "Admin" : role === "member" ? "Membro" : "Visualizador"}

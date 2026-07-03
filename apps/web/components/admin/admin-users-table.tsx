@@ -1,5 +1,6 @@
 import {
   Badge,
+  Button,
   Card,
   CardContent,
   CardDescription,
@@ -23,11 +24,11 @@ import {
 import type { Route } from "next";
 import Link from "next/link";
 import { formatDateTime } from "@/lib/format";
+import { createIdempotencyKey } from "@/lib/idempotency";
 import {
   membershipStatusLabels,
   resolveMembershipStatusVariant,
 } from "../../app/(platform)/app/admin/logic";
-
 export type PaginationState = {
   totalCount: number;
   limit: number;
@@ -50,6 +51,9 @@ export type AdminUsersTableProps = {
     };
   }>;
   pagination: PaginationState;
+  canInviteUser?: boolean;
+  onResendInvitation?: (formData: FormData) => Promise<void>;
+  onCancelInvitation?: (formData: FormData) => Promise<void>;
 };
 
 function buildPageNumbers(totalPages: number, currentPage: number): (number | "...")[] {
@@ -65,7 +69,13 @@ function buildPageNumbers(totalPages: number, currentPage: number): (number | ".
   return range;
 }
 
-export function AdminUsersTable({ users, pagination }: AdminUsersTableProps) {
+export function AdminUsersTable({
+  canInviteUser,
+  onCancelInvitation,
+  onResendInvitation,
+  users,
+  pagination,
+}: AdminUsersTableProps) {
   const buildPageUrl = (pageOffset: number): Route =>
     `?offset=${pageOffset}&limit=${pagination.limit}` as Route;
 
@@ -86,6 +96,7 @@ export function AdminUsersTable({ users, pagination }: AdminUsersTableProps) {
               <TableHead>Email</TableHead>
               <TableHead>Funções</TableHead>
               <TableHead>Criado em</TableHead>
+              <TableHead className="w-40">Acções</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -120,7 +131,7 @@ export function AdminUsersTable({ users, pagination }: AdminUsersTableProps) {
                 <TableCell>
                   <div className="flex flex-wrap gap-1">
                     {user.membership.roles.length === 0 ? (
-                      <Badge variant="warning">Sem role</Badge>
+                      <Badge variant="warning">Sem perfil</Badge>
                     ) : (
                       user.membership.roles.map((role) => (
                         <Badge key={role.id} variant="outline">
@@ -131,6 +142,41 @@ export function AdminUsersTable({ users, pagination }: AdminUsersTableProps) {
                   </div>
                 </TableCell>
                 <TableCell>{formatDateTime(user.createdAt)}</TableCell>
+                <TableCell>
+                  {canInviteUser && user.membership.status === "invited" ? (
+                    <div className="flex gap-1">
+                      <form action={onResendInvitation}>
+                        <input name="membershipId" type="hidden" value={user.membership.id} />
+                        <input
+                          name="idempotencyKey"
+                          type="hidden"
+                          value={createIdempotencyKey(`admin_resend_${user.membership.id}`)}
+                        />
+                        <Button size="sm" type="submit" variant="outline">
+                          Reenviar
+                        </Button>
+                      </form>
+                      <form action={onCancelInvitation}>
+                        <input name="membershipId" type="hidden" value={user.membership.id} />
+                        <input
+                          name="idempotencyKey"
+                          type="hidden"
+                          value={createIdempotencyKey(`admin_cancel_${user.membership.id}`)}
+                        />
+                        <input
+                          name="reason"
+                          type="hidden"
+                          value="Cancelamento administrativo de convite pendente."
+                        />
+                        <Button size="sm" type="submit" variant="outline">
+                          Cancelar
+                        </Button>
+                      </form>
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground text-sm">&mdash;</span>
+                  )}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

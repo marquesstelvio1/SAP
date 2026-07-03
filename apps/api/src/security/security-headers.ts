@@ -10,7 +10,10 @@ export const apiSecurityHeaders = [
   ["Cross-Origin-Opener-Policy", "same-origin"],
   ["Cross-Origin-Embedder-Policy", "require-corp"],
   ["Cross-Origin-Resource-Policy", "same-origin"],
-  ["Permissions-Policy", "camera=(), geolocation=(), microphone=(), payment=(), usb=()"],
+  [
+    "Permissions-Policy",
+    "camera=(), geolocation=(), microphone=(), interest-cohort=(), payment=(), usb=()",
+  ],
   ["Referrer-Policy", "strict-origin-when-cross-origin"],
   ["Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload"],
   ["X-Content-Type-Options", "nosniff"],

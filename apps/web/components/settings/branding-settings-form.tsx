@@ -47,13 +47,13 @@ export function BrandingSettingsForm({
     <div className="flex flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline">Branding</Badge>
+          <Badge variant="outline">Marca</Badge>
           <Badge variant={canManageTenant ? "success" : "warning"}>
             {canManageTenant ? "Gerir organizacao" : "Indisponível"}
           </Badge>
         </div>
         <div className="max-w-3xl">
-          <h1 className="font-semibold text-3xl tracking-tight">Branding</h1>
+          <h1 className="font-semibold text-3xl tracking-heading">Marca</h1>
           <p className="mt-2 text-muted-foreground">
             Personalize o aspeto visual da organização: logotipo, cor primária e favicon.
           </p>
@@ -180,7 +180,7 @@ export function BrandingSettingsForm({
                   ST
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-semibold text-sm tracking-tight">SAPTM</span>
+                  <span className="font-semibold text-sm tracking-heading">SAPTM</span>
                   <span className="text-muted-foreground text-xs">{organizationSlug}</span>
                 </div>
               </div>
@@ -189,7 +189,7 @@ export function BrandingSettingsForm({
                   className="inline-flex h-6 items-center rounded-md px-2 text-xs font-medium text-white"
                   style={{ backgroundColor: primaryColor }}
                 >
-                  Branding preview
+                  Pré-visualização marca
                 </span>
                 <span className="rounded-md border px-2 py-0.5 text-xs text-muted-foreground">
                   secondary

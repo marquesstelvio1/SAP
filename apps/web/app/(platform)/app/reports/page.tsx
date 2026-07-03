@@ -33,7 +33,7 @@ export default async function ReportsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="font-semibold text-2xl tracking-tight">Relatórios operacionais</h1>
+          <h1 className="font-semibold text-2xl tracking-heading">Relatórios operacionais</h1>
           <p className="mt-1 text-muted-foreground text-sm">Exportações CSV com auditoria.</p>
         </div>
         <EmptyState
@@ -47,7 +47,7 @@ export default async function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-semibold text-2xl tracking-tight">Relatórios operacionais</h1>
+        <h1 className="font-semibold text-2xl tracking-heading">Relatórios operacionais</h1>
         <p className="mt-1 text-muted-foreground text-sm">
           Exportações CSV com auditoria e integrações.
         </p>

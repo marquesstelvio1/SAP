@@ -7,10 +7,6 @@ import type {
   CargoOperationalHandoffRecord,
   CargoOverviewRawData,
   CargoRecord,
-  TrackingDepartureEventRecord,
-  TrackingEventType,
-  TrackingLifecycleEventRecord,
-  TrackingShipmentRecord,
 } from "./dto.js";
 
 export const CARGO_REPOSITORY = Symbol("CargoRepository");
@@ -40,23 +36,6 @@ export interface CargoRepository {
     organizationId: string,
     cargoReference: string,
   ): Promise<{ id: string } | null>;
-  findTrackingShipmentByReferenceCode(
-    organizationId: string,
-    referenceCode: string,
-  ): Promise<{ id: string } | null>;
-  findTrackingShipmentById(
-    organizationId: string,
-    id: string | null,
-  ): Promise<TrackingShipmentRecord | null>;
-  findTrackingDepartureEventByIdempotencyKey(
-    organizationId: string,
-    key: string,
-  ): Promise<TrackingDepartureEventRecord | null>;
-  findTrackingLifecycleEventByIdempotencyKey(
-    organizationId: string,
-    key: string,
-    eventType: TrackingEventType,
-  ): Promise<TrackingLifecycleEventRecord | null>;
   getComplianceEvidenceStatusCounts(
     organizationId: string,
     cargoId: string,
@@ -125,13 +104,37 @@ export interface CargoRepository {
     orgId: string,
     key: string,
   ): Promise<CargoComplianceEvidenceRecord | null>;
-  getOverview(organizationId: string, limit: number, offset: number): Promise<CargoOverviewRawData>;
+  findComplianceEvidenceMany(
+    orgId: string,
+    filters: {
+      cargoId: string | undefined;
+      evidenceType: string | undefined;
+      status: string | undefined;
+      limit: number;
+      offset: number;
+    },
+  ): Promise<CargoComplianceEvidenceRecord[]>;
+  countComplianceEvidence(
+    orgId: string,
+    filters: {
+      cargoId: string | undefined;
+      evidenceType: string | undefined;
+      status: string | undefined;
+    },
+  ): Promise<number>;
+  getOverview(
+    organizationId: string,
+    limit: number,
+    offset: number,
+    teamId?: string,
+  ): Promise<CargoOverviewRawData>;
 
   // Transactional write operations - receive a transaction client
   createCargo(
     tx: PrismaTx,
     data: {
       organizationId: string;
+      teamId?: string;
       cargoReference: string;
       cargoDescription: string;
       cargoType: string;
@@ -160,27 +163,6 @@ export interface CargoRepository {
   ): Promise<CargoRecord>;
 
   updateCargo(tx: PrismaTx, id: string, data: Record<string, unknown>): Promise<CargoRecord>;
-
-  createTrackingShipment(
-    tx: PrismaTx,
-    data: {
-      organizationId: string;
-      referenceCode: string;
-      externalReference: string | null;
-      cargoDescription: string;
-      originName: string;
-      destinationName: string;
-      transportMode: string;
-      status: string;
-      priority: number;
-      plannedDepartureAt: Date;
-      estimatedArrivalAt: Date;
-    },
-  ): Promise<TrackingShipmentRecord>;
-
-  createTrackingEvent(tx: PrismaTx, data: Record<string, unknown>): Promise<void>;
-
-  updateTrackingShipment(tx: PrismaTx, id: string, data: Record<string, unknown>): Promise<void>;
 
   createDeliveryException(
     tx: PrismaTx,

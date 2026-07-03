@@ -4,14 +4,21 @@ import { os } from "@orpc/server";
 import {
   billingCreateCheckoutSessionMetadata,
   billingCreatePortalSessionMetadata,
+  billingInvoicesListInputSchema,
+  billingInvoicesListMetadata,
+  billingInvoicesListOutputSchema,
   billingOverviewMetadata,
   billingOverviewOutputSchema,
   billingPlansMetadata,
   billingPlansOutputSchema,
+  billingSubscriptionGetMetadata,
+  billingSubscriptionGetOutputSchema,
+  billingSubscriptionUsageMetadata,
   createCheckoutSessionInputSchema,
   createCheckoutSessionOutputSchema,
   createPortalSessionInputSchema,
   createPortalSessionOutputSchema,
+  usageSchema,
 } from "@saptm/rpc";
 
 import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
@@ -25,7 +32,12 @@ export type BillingRpcContext = {
 export type CreateBillingRpcRouterInput = {
   billingService: Pick<
     BillingService,
-    "getOverview" | "createCheckoutSession" | "createPortalSession"
+    | "getOverview"
+    | "createCheckoutSession"
+    | "createPortalSession"
+    | "getSubscriptionDetail"
+    | "getUsageDetail"
+    | "getInvoicesList"
   >;
   rpcContextService: Pick<RpcContextService, "authorizeRequest">;
 };
@@ -183,6 +195,62 @@ export function createBillingRpcRouter(deps: CreateBillingRpcRouterInput) {
             },
           };
         }),
+      subscription: {
+        get: billingRpc
+          .meta(billingSubscriptionGetMetadata)
+          .route({ method: "GET", path: "/billing/subscription/get" })
+          .output(billingSubscriptionGetOutputSchema)
+          .handler(async ({ context }) => {
+            const authorizedContext = await deps.rpcContextService.authorizeRequest(
+              context.request,
+              billingSubscriptionGetMetadata,
+            );
+            const organizationId = authorizedContext.authContext?.organizationId;
+
+            if (organizationId === undefined) {
+              throw new ForbiddenException("billing.organization_required");
+            }
+
+            return deps.billingService.getSubscriptionDetail(organizationId);
+          }),
+        usage: billingRpc
+          .meta(billingSubscriptionUsageMetadata)
+          .route({ method: "GET", path: "/billing/subscription/usage" })
+          .output(usageSchema)
+          .handler(async ({ context }) => {
+            const authorizedContext = await deps.rpcContextService.authorizeRequest(
+              context.request,
+              billingSubscriptionUsageMetadata,
+            );
+            const organizationId = authorizedContext.authContext?.organizationId;
+
+            if (organizationId === undefined) {
+              throw new ForbiddenException("billing.organization_required");
+            }
+
+            return deps.billingService.getUsageDetail(organizationId);
+          }),
+      },
+      invoices: {
+        list: billingRpc
+          .meta(billingInvoicesListMetadata)
+          .route({ method: "GET", path: "/billing/invoices/list" })
+          .input(billingInvoicesListInputSchema)
+          .output(billingInvoicesListOutputSchema)
+          .handler(async ({ context, input }) => {
+            const authorizedContext = await deps.rpcContextService.authorizeRequest(
+              context.request,
+              billingInvoicesListMetadata,
+            );
+            const organizationId = authorizedContext.authContext?.organizationId;
+
+            if (organizationId === undefined) {
+              throw new ForbiddenException("billing.organization_required");
+            }
+
+            return deps.billingService.getInvoicesList(organizationId, input.limit, input.offset);
+          }),
+      },
     },
   });
 }

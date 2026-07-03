@@ -2,7 +2,8 @@ import type { RawBodyRequest } from "@nestjs/common";
 import { Controller, Headers, HttpCode, HttpStatus, Post, Req } from "@nestjs/common";
 import type { Request } from "express";
 
-import type { BillingService } from "./billing.service.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { BillingService } from "./billing.service.js";
 
 @Controller("billing")
 export class BillingWebhookController {

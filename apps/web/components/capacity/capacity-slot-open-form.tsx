@@ -55,7 +55,7 @@ export function CapacitySlotOpenForm({
           <Badge variant={canManageCapacity ? "success" : "warning"}>
             {canManageCapacity ? "Slot autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">capacity.slot.open</Badge>
+          <Badge variant="outline">Abrir slot</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Abrir slot de capacidade</CardTitle>
@@ -140,10 +140,6 @@ export function CapacitySlotOpenForm({
               />
             </Field>
 
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
-
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (
                 <FieldError>{state.message}</FieldError>
@@ -159,7 +155,7 @@ export function CapacitySlotOpenForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canManageCapacity ? "Impede janela inválida e limite excessivo." : "Requer manage."}
+            {canManageCapacity ? "Impede janela inválida e limite excessivo." : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A abrir..." : "Abrir slot"}

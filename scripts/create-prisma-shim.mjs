@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const prismaClientDir = resolve(process.cwd(), "node_modules/@prisma/client/.prisma/client");
-const relativeTarget = "../../../../generated/prisma/client";
+const relativeTarget = "../../../../../generated/prisma/client";
 
 mkdirSync(prismaClientDir, { recursive: true });
 

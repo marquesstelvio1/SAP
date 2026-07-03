@@ -1,10 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
-import {
-  type DatabaseActorType,
-  getPrismaClient,
-  type PrismaTx,
-  type SaptmPrismaClient,
-} from "@saptm/database";
+import { CURRENT_EVENT_VERSION, type DatabaseActorType, type PrismaTx } from "@saptm/database";
 import type {
   CargoClaimSettlementRecordInput,
   CargoClaimSettlementRecordOutput,
@@ -32,30 +27,17 @@ import type {
   CargoTransportPlanInput,
   CargoTransportPlanOutput,
 } from "@saptm/rpc";
-import type { UsageService } from "../billing/usage.service.js";
-import type { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
+import { OutboxEventBusAdapter } from "../event-bus/outbox-event-bus.adapter.js";
 import {
   createCargoClaimSettlementRecordAuditAfter,
   createCargoClaimSettlementRecordAuditBefore,
   createCargoComplianceEvidenceRecordAuditAfter,
   createCargoComplianceEvidenceVerifyAuditAfter,
   createCargoComplianceEvidenceVerifyAuditBefore,
-  createCargoDeliveryCompleteAuditAfter,
-  createCargoDeliveryCompleteAuditBefore,
-  createCargoDeliveryExceptionRecordAuditAfter,
-  createCargoDeliveryExceptionRecordAuditBefore,
-  createCargoDeliveryExceptionResolveAuditAfter,
-  createCargoDeliveryExceptionResolveAuditBefore,
-  createCargoOperationalHandoffRecordAuditAfter,
-  createCargoOperationalHandoffRecordAuditBefore,
   createCargoRegistrationAuditAfter,
   createCargoReleaseAuditAfter,
   createCargoReleaseAuditBefore,
-  createCargoTransportArriveAuditAfter,
-  createCargoTransportArriveAuditBefore,
-  createCargoTransportDepartAuditAfter,
-  createCargoTransportDepartAuditBefore,
-  createCargoTransportPlanAuditAfter,
   createCargoTransportPlanAuditBefore,
 } from "./domain/audit-trail.js";
 import {
@@ -65,13 +47,7 @@ import {
   resolveCargoClaimSettlementRecordBusinessRules,
   resolveCargoComplianceEvidenceRecordBusinessRules,
   resolveCargoComplianceEvidenceVerifyBusinessRules,
-  resolveCargoDeliveryCompleteBusinessRules,
-  resolveCargoDeliveryExceptionRecordBusinessRules,
-  resolveCargoDeliveryExceptionResolveBusinessRules,
-  resolveCargoOperationalHandoffBusinessRules,
   resolveCargoReleaseBusinessRules,
-  resolveCargoTransportArriveBusinessRules,
-  resolveCargoTransportDepartBusinessRules,
   resolveCargoTransportPlanBusinessRules,
 } from "./domain/business-rules.js";
 import { CARGO_REPOSITORY, type CargoRepository } from "./domain/cargo.repository.js";
@@ -100,6 +76,7 @@ export type GetCargoOverviewInput = {
   organizationId: string;
   limit?: number;
   offset?: number;
+  teamId?: string;
   generatedAt?: Date;
 };
 
@@ -213,18 +190,20 @@ export type VerifyCargoComplianceEvidenceInput = CargoComplianceEvidenceVerifyIn
 
 @Injectable()
 export class CargoService {
-  private readonly database: SaptmPrismaClient = getPrismaClient();
-
   constructor(
     @Inject(CARGO_REPOSITORY) private readonly cargoRepo: CargoRepository,
     private readonly eventBus: OutboxEventBusAdapter,
-    private readonly usageService: UsageService,
   ) {}
 
   async getOverview(input: GetCargoOverviewInput): Promise<CargoOverviewOutput> {
     const limit = normalizeLimit(input.limit);
     const offset = input.offset ?? 0;
-    const data = await this.cargoRepo.getOverview(input.organizationId, limit, offset);
+    const data = await this.cargoRepo.getOverview(
+      input.organizationId,
+      limit,
+      offset,
+      input.teamId,
+    );
     const statusCounts = createCargoStatusCounts(data.statusGroups);
 
     return {
@@ -276,9 +255,10 @@ export class CargoService {
     const expectedReadyAt =
       input.expectedReadyAt === undefined ? null : new Date(input.expectedReadyAt);
 
-    const cargo = await this.database.$transaction(async (tx: PrismaTx) => {
+    const cargo = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const createdCargo = await this.cargoRepo.createCargo(tx, {
         organizationId: input.organizationId,
+        ...(input.teamId === undefined ? {} : { teamId: input.teamId }),
         cargoReference,
         cargoDescription: input.cargoDescription.trim(),
         cargoType: input.cargoType,
@@ -336,6 +316,7 @@ export class CargoService {
         eventType: "cargo.registered",
         aggregateType: "cargo",
         aggregateId: createdCargo.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: createdCargo.id,
           cargoReference: createdCargo.cargoReference,
@@ -354,8 +335,6 @@ export class CargoService {
 
       return createdCargo;
     });
-
-    await this.usageService.trackUsage(input.organizationId, "cargo_shipments", 1);
 
     return createCargoRegisterOutput({
       organizationId: input.organizationId,
@@ -401,7 +380,7 @@ export class CargoService {
 
     const releasedAt = input.releasedAt === undefined ? new Date() : new Date(input.releasedAt);
     const previousAuditState = createCargoReleaseAuditBefore(existingCargo, businessRules);
-    const cargo = await this.database.$transaction(async (tx: PrismaTx) => {
+    const cargo = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const releasedCargo = await this.cargoRepo.updateCargo(tx, existingCargo.id, {
         status: "ready_for_transport",
         customsStatus: input.customsStatus,
@@ -444,6 +423,7 @@ export class CargoService {
         eventType: "cargo.released",
         aggregateType: "cargo",
         aggregateId: releasedCargo.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: releasedCargo.id,
           cargoReference: releasedCargo.cargoReference,
@@ -481,19 +461,9 @@ export class CargoService {
         throw new BadRequestException("cargo.transport_plan_idempotency_conflict");
       }
 
-      const replayedShipment = await this.cargoRepo.findTrackingShipmentById(
-        input.organizationId,
-        replayedCargo.trackingShipmentId,
-      );
-
-      if (replayedShipment === null) {
-        throw new BadRequestException("cargo.transport_plan_tracking_link_missing");
-      }
-
       return createCargoTransportPlanOutput({
         organizationId: input.organizationId,
         cargo: replayedCargo,
-        shipment: replayedShipment,
         replayed: true,
       });
     }
@@ -508,62 +478,16 @@ export class CargoService {
       throw new BadRequestException("cargo.transport_already_planned");
     }
 
-    const referenceCode = normalizeCargoReference(input.referenceCode ?? cargo.cargoReference);
-    const existingShipment = await this.cargoRepo.findTrackingShipmentByReferenceCode(
-      input.organizationId,
-      referenceCode,
-    );
-
-    if (existingShipment !== null) {
-      throw new BadRequestException("cargo.transport_reference_conflict");
-    }
-
     const businessRules = resolveCargoTransportPlanBusinessRules(cargo, input);
 
     if (!businessRules.planningAllowed) {
       throw new BadRequestException("cargo.transport_plan_blocked");
     }
 
-    const plannedDepartureAt = new Date(input.plannedDepartureAt);
-    const estimatedArrivalAt = new Date(input.estimatedArrivalAt);
     const transportPlannedAt = new Date();
     const previousAuditState = createCargoTransportPlanAuditBefore(cargo, businessRules);
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
-      const shipment = await this.cargoRepo.createTrackingShipment(tx, {
-        organizationId: input.organizationId,
-        referenceCode,
-        externalReference: input.planningReference ?? cargo.externalReference,
-        cargoDescription: cargo.cargoDescription,
-        originName: cargo.originName,
-        destinationName: cargo.destinationName,
-        transportMode: input.transportMode,
-        status: "planned",
-        priority: cargo.priority,
-        plannedDepartureAt,
-        estimatedArrivalAt,
-      });
-
-      await this.cargoRepo.createTrackingEvent(tx, {
-        organizationId: input.organizationId,
-        shipmentId: shipment.id,
-        eventType: "created",
-        occurredAt: transportPlannedAt,
-        locationName: input.firstCheckpointName ?? cargo.originName,
-        notes: `Transport plan created from cargo ${cargo.cargoReference}.`,
-        payload: {
-          cargoId: cargo.id,
-          cargoReference: cargo.cargoReference,
-          planningReference: input.planningReference ?? null,
-          operationsOwnerTeam: input.operationsOwnerTeam,
-          appliedRules: businessRules.appliedRules,
-        },
-        sourceSystem: input.sourceSystem,
-        correlationId: input.correlationId,
-        idempotencyKey: `${input.idempotencyKey}:tracking-created`,
-      });
-
-      const plannedCargo = await this.cargoRepo.updateCargo(tx, cargo.id, {
-        trackingShipmentId: shipment.id,
+    const plannedCargo = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
+      const updatedCargo = await this.cargoRepo.updateCargo(tx, cargo.id, {
         transportPlanIdempotencyKey: input.idempotencyKey,
         transportOwnerTeam: input.operationsOwnerTeam.trim(),
         transportPlannedAt,
@@ -572,12 +496,21 @@ export class CargoService {
           : { transportPlanningReference: input.planningReference.trim() }),
       });
 
-      const auditAfter = createCargoTransportPlanAuditAfter({
-        cargo: plannedCargo,
-        shipment,
-        businessRules,
+      const auditAfter = {
+        cargoId: updatedCargo.id,
+        cargoReference: updatedCargo.cargoReference,
+        status: updatedCargo.status,
+        trackingShipmentId: updatedCargo.trackingShipmentId,
+        transportPlannedAt: updatedCargo.transportPlannedAt?.toISOString() ?? null,
+        transportPlanningReference: updatedCargo.transportPlanningReference,
+        transportOwnerTeam: updatedCargo.transportOwnerTeam,
+        planningAllowed: businessRules.planningAllowed,
+        cargoReadyForTracking: businessRules.cargoReadyForTracking,
+        trackingLinked: businessRules.trackingLinked,
+        appliedRules: businessRules.appliedRules,
+        idempotencyKey: updatedCargo.transportPlanIdempotencyKey,
         sourceSystem: input.sourceSystem,
-      });
+      };
 
       await tx.auditRecord.create({
         data: {
@@ -586,7 +519,7 @@ export class CargoService {
           actorId: input.actorId,
           action: "cargo.transport_planned",
           subjectType: "cargo",
-          subjectId: plannedCargo.id,
+          subjectId: updatedCargo.id,
           severity: cargo.hazardous || input.transportMode === "multimodal" ? "high" : "medium",
           before: previousAuditState,
           after: auditAfter,
@@ -600,17 +533,16 @@ export class CargoService {
         organizationId: input.organizationId,
         eventType: "cargo.transport_planned",
         aggregateType: "cargo",
-        aggregateId: plannedCargo.id,
+        aggregateId: updatedCargo.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
-          cargoId: plannedCargo.id,
-          cargoReference: plannedCargo.cargoReference,
-          shipmentId: shipment.id,
-          shipmentReferenceCode: shipment.referenceCode,
-          transportMode: shipment.transportMode,
-          plannedDepartureAt: shipment.plannedDepartureAt?.toISOString() ?? null,
-          estimatedArrivalAt: shipment.estimatedArrivalAt?.toISOString() ?? null,
-          operationsOwnerTeam: plannedCargo.transportOwnerTeam,
-          planningReference: plannedCargo.transportPlanningReference,
+          cargoId: updatedCargo.id,
+          cargoReference: updatedCargo.cargoReference,
+          transportMode: input.transportMode,
+          plannedDepartureAt: input.plannedDepartureAt,
+          estimatedArrivalAt: input.estimatedArrivalAt,
+          operationsOwnerTeam: input.operationsOwnerTeam.trim(),
+          planningReference: input.planningReference?.trim() ?? null,
           appliedRules: businessRules.appliedRules,
           idempotencyKey: input.idempotencyKey,
           correlationId: input.correlationId,
@@ -618,13 +550,12 @@ export class CargoService {
         },
       });
 
-      return { cargo: plannedCargo, shipment };
+      return updatedCargo;
     });
 
     return createCargoTransportPlanOutput({
       organizationId: input.organizationId,
-      cargo: result.cargo,
-      shipment: result.shipment,
+      cargo: plannedCargo,
       replayed: false,
       businessRules,
     });
@@ -641,27 +572,9 @@ export class CargoService {
         throw new BadRequestException("cargo.transport_departure_idempotency_conflict");
       }
 
-      const [shipment, event] = await Promise.all([
-        this.cargoRepo.findTrackingShipmentById(
-          input.organizationId,
-          replayedCargo.trackingShipmentId,
-        ),
-        this.cargoRepo.findTrackingDepartureEventByIdempotencyKey(
-          input.organizationId,
-          input.idempotencyKey,
-        ),
-      ]);
-
-      if (shipment === null || event === null) {
-        throw new BadRequestException("cargo.transport_departure_replay_incomplete");
-      }
-
       return createCargoTransportDepartOutput({
         organizationId: input.organizationId,
         cargo: replayedCargo,
-        shipment,
-        event,
-        previousShipmentStatus: shipment.status,
         replayed: true,
       });
     }
@@ -676,14 +589,14 @@ export class CargoService {
       throw new BadRequestException("cargo.transport_already_departed");
     }
 
-    const [shipment, complianceCounts] = await Promise.all([
-      this.cargoRepo.findTrackingShipmentById(input.organizationId, cargo.trackingShipmentId),
-      this.cargoRepo.getComplianceEvidenceStatusCounts(input.organizationId, cargo.id),
-    ]);
-
-    if (shipment === null) {
+    if (cargo.trackingShipmentId === null) {
       throw new BadRequestException("cargo.transport_departure_tracking_link_missing");
     }
+
+    const complianceCounts = await this.cargoRepo.getComplianceEvidenceStatusCounts(
+      input.organizationId,
+      cargo.id,
+    );
 
     const complianceEvidenceCounts = {
       approved: complianceCounts.find((c) => c.status === "approved")?.count ?? 0,
@@ -691,45 +604,82 @@ export class CargoService {
       rejected: complianceCounts.find((c) => c.status === "rejected")?.count ?? 0,
     };
 
-    const businessRules = resolveCargoTransportDepartBusinessRules(
-      cargo,
-      shipment,
-      complianceEvidenceCounts,
-      input,
-    );
+    const cargoReadyForDeparture =
+      cargo.status === "ready_for_transport" &&
+      cargo.releaseIdempotencyKey !== null &&
+      cargo.releasedAt !== null &&
+      cargo.transportPlanIdempotencyKey !== null &&
+      cargo.trackingShipmentId !== null &&
+      cargo.requiresInspection === false &&
+      (cargo.customsStatus === "cleared" || cargo.customsStatus === "not_required");
+    const approvedComplianceEvidencePresent = complianceEvidenceCounts.approved > 0;
+    const openComplianceReviewBlocked =
+      complianceEvidenceCounts.pendingReview > 0 || complianceEvidenceCounts.rejected > 0;
 
-    if (!businessRules.departureAllowed) {
+    const departedAt = new Date(input.departedAt);
+    const departureAfterRelease = cargo.releasedAt === null || departedAt >= cargo.releasedAt;
+    const departureAfterPlanning =
+      cargo.transportPlannedAt === null || departedAt >= cargo.transportPlannedAt;
+    const departureAllowed =
+      cargoReadyForDeparture &&
+      approvedComplianceEvidencePresent &&
+      !openComplianceReviewBlocked &&
+      departureAfterRelease &&
+      departureAfterPlanning;
+    const appliedDepartRules = [
+      "tenant_scoped_cargo_departure",
+      "idempotent_cargo_departure",
+      "departure_requires_ready_cargo",
+      "departure_requires_tracking_plan",
+      "departure_requires_approved_compliance_evidence",
+      "departure_blocks_pending_or_rejected_compliance_evidence",
+      "departure_creates_audit_and_outbox",
+    ];
+
+    if (!cargoReadyForDeparture) {
+      appliedDepartRules.push("departure_blocked_until_cargo_ready_for_transport");
+    }
+
+    if (!approvedComplianceEvidencePresent) {
+      appliedDepartRules.push("departure_blocked_without_approved_compliance_evidence");
+    }
+
+    if (openComplianceReviewBlocked) {
+      appliedDepartRules.push("departure_blocked_by_open_compliance_review");
+    }
+
+    if (!departureAfterRelease) {
+      appliedDepartRules.push("departure_cannot_precede_cargo_release");
+    }
+
+    if (!departureAfterPlanning) {
+      appliedDepartRules.push("departure_cannot_precede_transport_planning");
+    }
+
+    if (!departureAllowed) {
       throw new BadRequestException("cargo.transport_departure_blocked");
     }
 
-    const departedAt = new Date(input.departedAt);
-    const previousAuditState = createCargoTransportDepartAuditBefore({
-      cargo,
-      shipment,
-      businessRules,
-      complianceEvidenceCounts,
-    });
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
-      await this.cargoRepo.createTrackingEvent(tx, {
-        organizationId: input.organizationId,
-        shipmentId: shipment.id,
-        eventType: "departed",
-        occurredAt: departedAt,
-        locationName: input.departureLocationName.trim(),
-        notes: `Cargo ${cargo.cargoReference} departed from ${input.departureLocationName.trim()}.`,
-        sourceSystem: input.sourceSystem,
-        correlationId: input.correlationId,
-        idempotencyKey: input.idempotencyKey,
-        payload: {
-          cargoId: cargo.id,
-          cargoReference: cargo.cargoReference,
-          departureReference: input.departureReference?.trim() ?? null,
-          carrierReference: input.carrierReference?.trim() ?? null,
-          operatorName: input.operatorName.trim(),
-          approvedComplianceEvidence: complianceEvidenceCounts.approved,
-        },
-      });
+    const previousAuditState = {
+      cargoId: cargo.id,
+      cargoReference: cargo.cargoReference,
+      cargoStatus: cargo.status,
+      customsStatus: cargo.customsStatus,
+      requiresInspection: cargo.requiresInspection,
+      releasedAt: cargo.releasedAt?.toISOString() ?? null,
+      transportPlannedAt: cargo.transportPlannedAt?.toISOString() ?? null,
+      trackingShipmentId: cargo.trackingShipmentId,
+      approvedComplianceEvidence: complianceEvidenceCounts.approved,
+      pendingComplianceEvidence: complianceEvidenceCounts.pendingReview,
+      rejectedComplianceEvidence: complianceEvidenceCounts.rejected,
+      departureAllowed,
+      cargoReadyForDeparture,
+      approvedComplianceEvidencePresent,
+      openComplianceReviewBlocked,
+      appliedRules: appliedDepartRules,
+    };
 
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const departedCargo = await this.cargoRepo.updateCargo(tx, cargo.id, {
         status: "in_transport",
         departureIdempotencyKey: input.idempotencyKey,
@@ -744,36 +694,24 @@ export class CargoService {
           : { carrierReference: input.carrierReference.trim() }),
       });
 
-      await this.cargoRepo.updateTrackingShipment(tx, shipment.id, {
-        status: "in_transit",
-      });
-
-      const departedShipment = await this.cargoRepo.findTrackingShipmentById(
-        input.organizationId,
-        shipment.id,
-      );
-
-      if (departedShipment === null) {
-        throw new BadRequestException("cargo.transport_departure_tracking_update_failed");
-      }
-
-      const event = await this.cargoRepo.findTrackingDepartureEventByIdempotencyKey(
-        input.organizationId,
-        input.idempotencyKey,
-      );
-
-      if (event === null) {
-        throw new BadRequestException("cargo.transport_departure_event_not_found");
-      }
-
-      const auditAfter = createCargoTransportDepartAuditAfter({
-        cargo: departedCargo,
-        shipment: departedShipment,
-        event,
-        businessRules,
-        complianceEvidenceCounts,
+      const auditAfter = {
+        cargoId: departedCargo.id,
+        cargoReference: departedCargo.cargoReference,
+        cargoStatus: departedCargo.status,
+        trackingShipmentId: departedCargo.trackingShipmentId,
+        departedAt: departedCargo.departedAt?.toISOString() ?? null,
+        departureReference: departedCargo.departureReference,
+        departureLocationName: departedCargo.departureLocationName,
+        departureOperatorName: departedCargo.departureOperatorName,
+        carrierReference: departedCargo.carrierReference,
+        approvedComplianceEvidence: complianceEvidenceCounts.approved,
+        pendingComplianceEvidence: complianceEvidenceCounts.pendingReview,
+        rejectedComplianceEvidence: complianceEvidenceCounts.rejected,
+        departureAllowed,
+        appliedRules: appliedDepartRules,
+        idempotencyKey: departedCargo.departureIdempotencyKey,
         sourceSystem: input.sourceSystem,
-      });
+      };
 
       await tx.auditRecord.create({
         data: {
@@ -783,7 +721,7 @@ export class CargoService {
           action: "cargo.transport_departed",
           subjectType: "cargo",
           subjectId: cargo.id,
-          severity: cargo.hazardous || shipment.transportMode === "multimodal" ? "high" : "medium",
+          severity: cargo.hazardous ? "high" : "medium",
           before: previousAuditState,
           after: auditAfter,
           correlationId: input.correlationId,
@@ -797,35 +735,35 @@ export class CargoService {
         eventType: "cargo.transport_departed",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
-          shipmentId: shipment.id,
-          shipmentReferenceCode: shipment.referenceCode,
-          eventId: event.id,
           departedAt: departedAt.toISOString(),
           departureLocationName: departedCargo.departureLocationName,
           operatorName: departedCargo.departureOperatorName,
-          previousShipmentStatus: shipment.status,
-          currentShipmentStatus: departedShipment.status,
-          appliedRules: businessRules.appliedRules,
+          appliedRules: appliedDepartRules,
           idempotencyKey: input.idempotencyKey,
           correlationId: input.correlationId,
           sourceSystem: input.sourceSystem,
         },
       });
 
-      return { cargo: departedCargo, shipment: departedShipment, event };
+      return departedCargo;
     });
 
     return createCargoTransportDepartOutput({
       organizationId: input.organizationId,
-      cargo: result.cargo,
-      shipment: result.shipment,
-      event: result.event,
-      previousShipmentStatus: shipment.status,
+      cargo: result,
       replayed: false,
-      businessRules,
+      businessRules: {
+        departureAllowed,
+        cargoReadyForDeparture,
+        trackingShipmentPlanned: true,
+        approvedComplianceEvidencePresent,
+        openComplianceReviewBlocked,
+        appliedRules: appliedDepartRules,
+      },
     });
   }
 
@@ -840,28 +778,9 @@ export class CargoService {
         throw new BadRequestException("cargo.transport_arrival_idempotency_conflict");
       }
 
-      const [shipment, event] = await Promise.all([
-        this.cargoRepo.findTrackingShipmentById(
-          input.organizationId,
-          replayedCargo.trackingShipmentId,
-        ),
-        this.cargoRepo.findTrackingLifecycleEventByIdempotencyKey(
-          input.organizationId,
-          input.idempotencyKey,
-          "arrived",
-        ),
-      ]);
-
-      if (shipment === null || event === null) {
-        throw new BadRequestException("cargo.transport_arrival_replay_incomplete");
-      }
-
       return createCargoTransportArriveOutput({
         organizationId: input.organizationId,
         cargo: replayedCargo,
-        shipment,
-        event,
-        previousShipmentStatus: shipment.status,
         replayed: true,
       });
     }
@@ -876,48 +795,51 @@ export class CargoService {
       throw new BadRequestException("cargo.transport_already_arrived");
     }
 
-    const shipment = await this.cargoRepo.findTrackingShipmentById(
-      input.organizationId,
-      cargo.trackingShipmentId,
-    );
-
-    if (shipment === null) {
+    if (cargo.trackingShipmentId === null) {
       throw new BadRequestException("cargo.transport_arrival_tracking_link_missing");
     }
 
-    const businessRules = resolveCargoTransportArriveBusinessRules(cargo, shipment, input);
+    const cargoInTransport =
+      cargo.status === "in_transport" &&
+      cargo.departureIdempotencyKey !== null &&
+      cargo.departedAt !== null &&
+      cargo.trackingShipmentId !== null;
+    const arrivedAt = new Date(input.arrivedAt);
+    const arrivalAfterDeparture = cargo.departedAt === null || arrivedAt >= cargo.departedAt;
+    const arrivalAllowed = cargoInTransport && arrivalAfterDeparture;
+    const appliedArriveRules = [
+      "tenant_scoped_cargo_arrival",
+      "idempotent_cargo_arrival",
+      "arrival_requires_departed_cargo",
+      "arrival_cannot_precede_departure",
+      "arrival_creates_audit_and_outbox",
+    ];
 
-    if (!businessRules.arrivalAllowed) {
+    if (!cargoInTransport) {
+      appliedArriveRules.push("arrival_blocked_until_cargo_in_transport");
+    }
+
+    if (!arrivalAfterDeparture) {
+      appliedArriveRules.push("arrival_cannot_precede_departure_timestamp");
+    }
+
+    if (!arrivalAllowed) {
       throw new BadRequestException("cargo.transport_arrival_blocked");
     }
 
-    const arrivedAt = new Date(input.arrivedAt);
-    const previousAuditState = createCargoTransportArriveAuditBefore({
-      cargo,
-      shipment,
-      businessRules,
-    });
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
-      await this.cargoRepo.createTrackingEvent(tx, {
-        organizationId: input.organizationId,
-        shipmentId: shipment.id,
-        eventType: "arrived",
-        occurredAt: arrivedAt,
-        locationName: input.arrivalLocationName.trim(),
-        notes: `Cargo ${cargo.cargoReference} arrived at ${input.arrivalLocationName.trim()}.`,
-        sourceSystem: input.sourceSystem,
-        correlationId: input.correlationId,
-        idempotencyKey: input.idempotencyKey,
-        payload: {
-          cargoId: cargo.id,
-          cargoReference: cargo.cargoReference,
-          arrivalReference: input.arrivalReference?.trim() ?? null,
-          operatorName: input.operatorName.trim(),
-          destinationName: cargo.destinationName,
-          departedAt: cargo.departedAt?.toISOString() ?? null,
-        },
-      });
+    const previousAuditState = {
+      cargoId: cargo.id,
+      cargoReference: cargo.cargoReference,
+      cargoStatus: cargo.status,
+      trackingShipmentId: cargo.trackingShipmentId,
+      departedAt: cargo.departedAt?.toISOString() ?? null,
+      arrivalAllowed,
+      cargoInTransport,
+      arrivalAfterDeparture,
+      appliedRules: appliedArriveRules,
+    };
 
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const arrivedCargo = await this.cargoRepo.updateCargo(tx, cargo.id, {
         arrivalIdempotencyKey: input.idempotencyKey,
         arrivalLocationName: input.arrivalLocationName.trim(),
@@ -928,37 +850,20 @@ export class CargoService {
           : { arrivalReference: input.arrivalReference.trim() }),
       });
 
-      await this.cargoRepo.updateTrackingShipment(tx, shipment.id, {
-        status: "arrived",
-        actualArrivalAt: arrivedAt,
-      });
-
-      const arrivedShipment = await this.cargoRepo.findTrackingShipmentById(
-        input.organizationId,
-        shipment.id,
-      );
-
-      if (arrivedShipment === null) {
-        throw new BadRequestException("cargo.transport_arrival_tracking_update_failed");
-      }
-
-      const event = await this.cargoRepo.findTrackingLifecycleEventByIdempotencyKey(
-        input.organizationId,
-        input.idempotencyKey,
-        "arrived",
-      );
-
-      if (event === null) {
-        throw new BadRequestException("cargo.transport_arrival_event_not_found");
-      }
-
-      const auditAfter = createCargoTransportArriveAuditAfter({
-        cargo: arrivedCargo,
-        shipment: arrivedShipment,
-        event,
-        businessRules,
+      const auditAfter = {
+        cargoId: arrivedCargo.id,
+        cargoReference: arrivedCargo.cargoReference,
+        cargoStatus: arrivedCargo.status,
+        trackingShipmentId: arrivedCargo.trackingShipmentId,
+        arrivedAt: arrivedCargo.arrivedAt?.toISOString() ?? null,
+        arrivalReference: arrivedCargo.arrivalReference,
+        arrivalLocationName: arrivedCargo.arrivalLocationName,
+        arrivalOperatorName: arrivedCargo.arrivalOperatorName,
+        arrivalAllowed,
+        appliedRules: appliedArriveRules,
+        idempotencyKey: arrivedCargo.arrivalIdempotencyKey,
         sourceSystem: input.sourceSystem,
-      });
+      };
 
       await tx.auditRecord.create({
         data: {
@@ -968,7 +873,7 @@ export class CargoService {
           action: "cargo.transport_arrived",
           subjectType: "cargo",
           subjectId: cargo.id,
-          severity: cargo.hazardous || shipment.transportMode === "multimodal" ? "high" : "medium",
+          severity: cargo.hazardous ? "high" : "medium",
           before: previousAuditState,
           after: auditAfter,
           correlationId: input.correlationId,
@@ -982,35 +887,34 @@ export class CargoService {
         eventType: "cargo.transport_arrived",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
-          shipmentId: shipment.id,
-          shipmentReferenceCode: shipment.referenceCode,
-          eventId: event.id,
           arrivedAt: arrivedAt.toISOString(),
           arrivalLocationName: arrivedCargo.arrivalLocationName,
           operatorName: arrivedCargo.arrivalOperatorName,
-          previousShipmentStatus: shipment.status,
-          currentShipmentStatus: arrivedShipment.status,
-          appliedRules: businessRules.appliedRules,
+          appliedRules: appliedArriveRules,
           idempotencyKey: input.idempotencyKey,
           correlationId: input.correlationId,
           sourceSystem: input.sourceSystem,
         },
       });
 
-      return { cargo: arrivedCargo, shipment: arrivedShipment, event };
+      return arrivedCargo;
     });
 
     return createCargoTransportArriveOutput({
       organizationId: input.organizationId,
-      cargo: result.cargo,
-      shipment: result.shipment,
-      event: result.event,
-      previousShipmentStatus: shipment.status,
+      cargo: result,
       replayed: false,
-      businessRules,
+      businessRules: {
+        arrivalAllowed,
+        cargoInTransport,
+        trackingShipmentInTransit: true,
+        arrivalAfterDeparture,
+        appliedRules: appliedArriveRules,
+      },
     });
   }
 
@@ -1027,20 +931,9 @@ export class CargoService {
         throw new BadRequestException("cargo.handoff_record_idempotency_conflict");
       }
 
-      const [cargo, shipment, event] = await Promise.all([
-        this.cargoRepo.findById(input.organizationId, replayedHandoff.cargoId),
-        this.cargoRepo.findTrackingShipmentById(
-          input.organizationId,
-          replayedHandoff.trackingShipmentId,
-        ),
-        this.cargoRepo.findTrackingLifecycleEventByIdempotencyKey(
-          input.organizationId,
-          input.idempotencyKey,
-          "location_updated",
-        ),
-      ]);
+      const cargo = await this.cargoRepo.findById(input.organizationId, replayedHandoff.cargoId);
 
-      if (cargo === null || shipment === null || event === null) {
+      if (cargo === null) {
         throw new BadRequestException("cargo.handoff_record_replay_incomplete");
       }
 
@@ -1048,9 +941,6 @@ export class CargoService {
         organizationId: input.organizationId,
         cargo,
         handoff: replayedHandoff,
-        shipment,
-        event,
-        previousShipmentStatus: shipment.status,
         replayed: true,
       });
     }
@@ -1061,41 +951,110 @@ export class CargoService {
       throw new NotFoundException("cargo.not_found");
     }
 
-    const [shipment, duplicateReference] = await Promise.all([
-      this.cargoRepo.findTrackingShipmentById(input.organizationId, cargo.trackingShipmentId),
-      this.cargoRepo.findOperationalHandoffByRecordIdempotencyKey(
-        input.organizationId,
-        input.handoffReference.trim(),
-      ),
-    ]);
-
-    if (shipment === null) {
+    if (cargo.trackingShipmentId === null) {
       throw new BadRequestException("cargo.handoff_tracking_link_missing");
     }
 
-    const businessRules = resolveCargoOperationalHandoffBusinessRules(
-      cargo,
-      shipment,
-      duplicateReference,
-      input,
+    const duplicateReference = await this.cargoRepo.findOperationalHandoffByRecordIdempotencyKey(
+      input.organizationId,
+      input.handoffReference.trim(),
     );
 
-    if (!businessRules.handoffAllowed) {
+    const handoffAt = new Date(input.handoffAt);
+    const currentCustodyOwner = input.fromCustodyOwnerName.trim().toLocaleLowerCase();
+    const fromCustodyOwner = input.fromCustodyOwnerName.trim().toLocaleLowerCase();
+    const toCustodyOwner = input.toCustodyOwnerName.trim().toLocaleLowerCase();
+    const cargoInTransport =
+      cargo.status === "in_transport" &&
+      cargo.departureIdempotencyKey !== null &&
+      cargo.departedAt !== null &&
+      cargo.arrivalIdempotencyKey === null &&
+      cargo.arrivedAt === null &&
+      cargo.deliveredAt === null &&
+      cargo.trackingShipmentId !== null;
+    const handoffAfterDeparture = cargo.departedAt === null || handoffAt >= cargo.departedAt;
+    const handoffBeforeArrival = cargo.arrivedAt === null || handoffAt <= cargo.arrivedAt;
+    const currentCustodyMatched = currentCustodyOwner === fromCustodyOwner;
+    const custodyChanged = fromCustodyOwner !== toCustodyOwner;
+    const conditionAccepted = input.conditionStatus === "sound";
+    const duplicateReferenceBlocked = duplicateReference !== null;
+    const handoffAllowed =
+      cargoInTransport &&
+      handoffAfterDeparture &&
+      handoffBeforeArrival &&
+      currentCustodyMatched &&
+      custodyChanged &&
+      conditionAccepted &&
+      !duplicateReferenceBlocked;
+    const appliedHandoffRules = [
+      "tenant_scoped_operational_handoff",
+      "idempotent_operational_handoff_record",
+      "handoff_requires_in_transit_cargo",
+      "handoff_cannot_precede_departure",
+      "handoff_cannot_follow_arrival",
+      "handoff_requires_current_custody_match",
+      "handoff_requires_custody_change",
+      "handoff_requires_sound_condition",
+      "handoff_blocks_duplicate_reference",
+      "handoff_creates_audit_and_outbox",
+    ];
+
+    if (!cargoInTransport) {
+      appliedHandoffRules.push("handoff_blocked_until_cargo_in_transport");
+    }
+
+    if (!handoffAfterDeparture) {
+      appliedHandoffRules.push("handoff_cannot_precede_departure_timestamp");
+    }
+
+    if (!handoffBeforeArrival) {
+      appliedHandoffRules.push("handoff_cannot_follow_arrival_timestamp");
+    }
+
+    if (!currentCustodyMatched) {
+      appliedHandoffRules.push("handoff_blocked_when_from_custody_mismatches_current_owner");
+    }
+
+    if (!custodyChanged) {
+      appliedHandoffRules.push("handoff_blocked_without_custody_change");
+    }
+
+    if (!conditionAccepted) {
+      appliedHandoffRules.push("handoff_blocked_until_exception_workflow");
+    }
+
+    if (duplicateReferenceBlocked) {
+      appliedHandoffRules.push("handoff_blocked_by_duplicate_reference");
+    }
+
+    if (!handoffAllowed) {
       throw new BadRequestException("cargo.handoff_record_blocked");
     }
 
-    const handoffAt = new Date(input.handoffAt);
-    const previousAuditState = createCargoOperationalHandoffRecordAuditBefore({
-      cargo,
-      shipment,
-      duplicateReference,
-      businessRules,
-    });
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
+    const previousAuditState = {
+      cargoId: cargo.id,
+      cargoReference: cargo.cargoReference,
+      cargoStatus: cargo.status,
+      trackingShipmentId: cargo.trackingShipmentId,
+      custodyOwnerName: cargo.custodyOwnerName,
+      departedAt: cargo.departedAt?.toISOString() ?? null,
+      arrivedAt: cargo.arrivedAt?.toISOString() ?? null,
+      duplicateHandoffId:
+        duplicateReference === null ? null : (duplicateReference as { id: string }).id,
+      handoffAllowed,
+      cargoInTransport,
+      currentCustodyMatched,
+      custodyChanged,
+      conditionAccepted,
+      duplicateReferenceBlocked,
+      appliedRules: appliedHandoffRules,
+    };
+
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const handoff = await this.cargoRepo.createOperationalHandoff(tx, {
         organizationId: input.organizationId,
         cargoId: cargo.id,
-        trackingShipmentId: shipment.id,
+        trackingShipmentId: cargo.trackingShipmentId,
         handoffType: input.handoffType,
         fromCustodyOwnerName: input.fromCustodyOwnerName.trim(),
         toCustodyOwnerName: input.toCustodyOwnerName.trim(),
@@ -1110,54 +1069,29 @@ export class CargoService {
         ...(input.handoffNotes === undefined ? {} : { handoffNotes: input.handoffNotes.trim() }),
       });
 
-      await this.cargoRepo.createTrackingEvent(tx, {
-        organizationId: input.organizationId,
-        shipmentId: shipment.id,
-        eventType: "location_updated",
-        occurredAt: handoffAt,
-        locationName: input.handoffLocationName.trim(),
-        notes: `Cargo ${cargo.cargoReference} operational handoff ${input.handoffType} recorded.`,
-        sourceSystem: input.sourceSystem,
-        correlationId: input.correlationId,
-        idempotencyKey: input.idempotencyKey,
-        payload: {
-          cargoId: cargo.id,
-          cargoReference: cargo.cargoReference,
-          handoffId: handoff.id,
-          handoffType: handoff.handoffType,
-          handoffReference: handoff.handoffReference,
-          fromCustodyOwnerName: handoff.fromCustodyOwnerName,
-          toCustodyOwnerName: handoff.toCustodyOwnerName,
-          operatorName: handoff.operatorName,
-          conditionStatus: handoff.conditionStatus,
-          sealReference: handoff.sealReference,
-          appliedRules: businessRules.appliedRules,
-        },
-      });
-
       const handedOffCargo = await this.cargoRepo.updateCargo(tx, cargo.id, {
         custodyOwnerName: input.toCustodyOwnerName.trim(),
         conditionStatus: input.conditionStatus,
       });
 
-      const event = await this.cargoRepo.findTrackingLifecycleEventByIdempotencyKey(
-        input.organizationId,
-        input.idempotencyKey,
-        "location_updated",
-      );
-
-      if (event === null) {
-        throw new BadRequestException("cargo.handoff_record_event_not_found");
-      }
-
-      const auditAfter = createCargoOperationalHandoffRecordAuditAfter({
-        cargo: handedOffCargo,
-        shipment,
-        handoff,
-        event,
-        businessRules,
+      const auditAfter = {
+        cargoId: handedOffCargo.id,
+        cargoReference: handedOffCargo.cargoReference,
+        cargoStatus: handedOffCargo.status,
+        trackingShipmentId: handedOffCargo.trackingShipmentId,
+        handoffId: handoff.id,
+        handoffType: handoff.handoffType,
+        handoffReference: handoff.handoffReference,
+        fromCustodyOwnerName: handoff.fromCustodyOwnerName,
+        toCustodyOwnerName: handoff.toCustodyOwnerName,
+        custodyOwnerName: handedOffCargo.custodyOwnerName,
+        conditionStatus: handoff.conditionStatus,
+        handoffAt: handoff.handoffAt.toISOString(),
+        handoffAllowed,
+        appliedRules: appliedHandoffRules,
+        idempotencyKey: handoff.recordIdempotencyKey,
         sourceSystem: input.sourceSystem,
-      });
+      };
 
       await tx.auditRecord.create({
         data: {
@@ -1167,7 +1101,7 @@ export class CargoService {
           action: "cargo.operational_handoff.recorded",
           subjectType: "cargo_operational_handoff",
           subjectId: handoff.id,
-          severity: shipment.transportMode === "multimodal" ? "high" : "medium",
+          severity: "medium",
           before: previousAuditState,
           after: auditAfter,
           correlationId: input.correlationId,
@@ -1181,38 +1115,45 @@ export class CargoService {
         eventType: "cargo.operational_handoff.recorded",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
-          shipmentId: shipment.id,
-          shipmentReferenceCode: shipment.referenceCode,
-          eventId: event.id,
           handoffId: handoff.id,
           handoffType: handoff.handoffType,
           handoffReference: handoff.handoffReference,
           fromCustodyOwnerName: handoff.fromCustodyOwnerName,
           toCustodyOwnerName: handoff.toCustodyOwnerName,
-          previousShipmentStatus: shipment.status,
-          currentShipmentStatus: shipment.status,
-          appliedRules: businessRules.appliedRules,
+          operatorName: handoff.operatorName,
+          conditionStatus: handoff.conditionStatus,
+          sealReference: handoff.sealReference,
+          appliedRules: appliedHandoffRules,
           idempotencyKey: input.idempotencyKey,
           correlationId: input.correlationId,
           sourceSystem: input.sourceSystem,
         },
       });
 
-      return { cargo: handedOffCargo, handoff, event };
+      return { cargo: handedOffCargo, handoff };
     });
 
     return createCargoOperationalHandoffRecordOutput({
       organizationId: input.organizationId,
       cargo: result.cargo,
       handoff: result.handoff,
-      shipment,
-      event: result.event,
-      previousShipmentStatus: shipment.status,
       replayed: false,
-      businessRules,
+      businessRules: {
+        handoffAllowed,
+        cargoInTransport,
+        trackingShipmentInTransit: true,
+        handoffAfterDeparture,
+        handoffBeforeArrival,
+        currentCustodyMatched,
+        custodyChanged,
+        conditionAccepted,
+        duplicateReferenceBlocked,
+        appliedRules: appliedHandoffRules,
+      },
     });
   }
 
@@ -1227,28 +1168,9 @@ export class CargoService {
         throw new BadRequestException("cargo.delivery_idempotency_conflict");
       }
 
-      const [shipment, event] = await Promise.all([
-        this.cargoRepo.findTrackingShipmentById(
-          input.organizationId,
-          replayedCargo.trackingShipmentId,
-        ),
-        this.cargoRepo.findTrackingLifecycleEventByIdempotencyKey(
-          input.organizationId,
-          input.idempotencyKey,
-          "handover_completed",
-        ),
-      ]);
-
-      if (shipment === null || event === null) {
-        throw new BadRequestException("cargo.delivery_replay_incomplete");
-      }
-
       return createCargoDeliveryCompleteOutput({
         organizationId: input.organizationId,
         cargo: replayedCargo,
-        shipment,
-        event,
-        previousShipmentStatus: shipment.status,
         replayed: true,
       });
     }
@@ -1263,50 +1185,60 @@ export class CargoService {
       throw new BadRequestException("cargo.delivery_already_completed");
     }
 
-    const shipment = await this.cargoRepo.findTrackingShipmentById(
-      input.organizationId,
-      cargo.trackingShipmentId,
-    );
-
-    if (shipment === null) {
+    if (cargo.trackingShipmentId === null) {
       throw new BadRequestException("cargo.delivery_tracking_link_missing");
     }
 
-    const businessRules = resolveCargoDeliveryCompleteBusinessRules(cargo, shipment, input);
+    const cargoArrivedForDelivery =
+      cargo.status === "in_transport" &&
+      cargo.arrivalIdempotencyKey !== null &&
+      cargo.arrivedAt !== null &&
+      cargo.trackingShipmentId !== null;
+    const deliveredAt = new Date(input.deliveredAt);
+    const deliveryAfterArrival = cargo.arrivedAt === null || deliveredAt >= cargo.arrivedAt;
+    const deliveryConditionAccepted = input.deliveryConditionStatus === "sound";
+    const deliveryAllowed =
+      cargoArrivedForDelivery && deliveryAfterArrival && deliveryConditionAccepted;
+    const appliedDeliveryRules = [
+      "tenant_scoped_cargo_delivery",
+      "idempotent_cargo_delivery",
+      "delivery_requires_arrived_cargo",
+      "delivery_cannot_precede_arrival",
+      "delivery_requires_sound_condition",
+      "delivery_creates_audit_and_outbox",
+    ];
 
-    if (!businessRules.deliveryAllowed) {
+    if (!cargoArrivedForDelivery) {
+      appliedDeliveryRules.push("delivery_blocked_until_cargo_arrived");
+    }
+
+    if (!deliveryAfterArrival) {
+      appliedDeliveryRules.push("delivery_cannot_precede_arrival_timestamp");
+    }
+
+    if (!deliveryConditionAccepted) {
+      appliedDeliveryRules.push("delivery_blocked_until_exception_or_inspection_resolution");
+    }
+
+    if (!deliveryAllowed) {
       throw new BadRequestException("cargo.delivery_blocked");
     }
 
-    const deliveredAt = new Date(input.deliveredAt);
-    const deliveryLocationName = cargo.arrivalLocationName ?? cargo.destinationName;
-    const previousAuditState = createCargoDeliveryCompleteAuditBefore({
-      cargo,
-      shipment,
-      businessRules,
-    });
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
-      await this.cargoRepo.createTrackingEvent(tx, {
-        organizationId: input.organizationId,
-        shipmentId: shipment.id,
-        eventType: "handover_completed",
-        occurredAt: deliveredAt,
-        locationName: deliveryLocationName,
-        notes: `Cargo ${cargo.cargoReference} delivered to ${input.receivedByName.trim()}.`,
-        sourceSystem: input.sourceSystem,
-        correlationId: input.correlationId,
-        idempotencyKey: input.idempotencyKey,
-        payload: {
-          cargoId: cargo.id,
-          cargoReference: cargo.cargoReference,
-          deliveryReference: input.deliveryReference.trim(),
-          receivedByName: input.receivedByName.trim(),
-          deliveryConditionStatus: input.deliveryConditionStatus,
-          deliveryNotes: input.deliveryNotes?.trim() ?? null,
-          arrivedAt: cargo.arrivedAt?.toISOString() ?? null,
-        },
-      });
+    const previousAuditState = {
+      cargoId: cargo.id,
+      cargoReference: cargo.cargoReference,
+      cargoStatus: cargo.status,
+      trackingShipmentId: cargo.trackingShipmentId,
+      arrivedAt: cargo.arrivedAt?.toISOString() ?? null,
+      conditionStatus: cargo.conditionStatus,
+      deliveryAllowed,
+      cargoArrivedForDelivery,
+      deliveryAfterArrival,
+      deliveryConditionAccepted,
+      appliedRules: appliedDeliveryRules,
+    };
 
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const deliveredCargo = await this.cargoRepo.updateCargo(tx, cargo.id, {
         status: "delivered",
         conditionStatus: input.deliveryConditionStatus,
@@ -1317,36 +1249,21 @@ export class CargoService {
         deliveredAt,
       });
 
-      await this.cargoRepo.updateTrackingShipment(tx, shipment.id, {
-        status: "completed",
-      });
-
-      const completedShipment = await this.cargoRepo.findTrackingShipmentById(
-        input.organizationId,
-        shipment.id,
-      );
-
-      if (completedShipment === null) {
-        throw new BadRequestException("cargo.delivery_tracking_update_failed");
-      }
-
-      const event = await this.cargoRepo.findTrackingLifecycleEventByIdempotencyKey(
-        input.organizationId,
-        input.idempotencyKey,
-        "handover_completed",
-      );
-
-      if (event === null) {
-        throw new BadRequestException("cargo.delivery_event_not_found");
-      }
-
-      const auditAfter = createCargoDeliveryCompleteAuditAfter({
-        cargo: deliveredCargo,
-        shipment: completedShipment,
-        event,
-        businessRules,
+      const auditAfter = {
+        cargoId: deliveredCargo.id,
+        cargoReference: deliveredCargo.cargoReference,
+        cargoStatus: deliveredCargo.status,
+        trackingShipmentId: deliveredCargo.trackingShipmentId,
+        deliveredAt: deliveredCargo.deliveredAt?.toISOString() ?? null,
+        deliveryReference: deliveredCargo.deliveryReference,
+        receivedByName: deliveredCargo.receivedByName,
+        deliveryNotes: deliveredCargo.deliveryNotes,
+        conditionStatus: deliveredCargo.conditionStatus,
+        deliveryAllowed,
+        appliedRules: appliedDeliveryRules,
+        idempotencyKey: deliveredCargo.deliveryIdempotencyKey,
         sourceSystem: input.sourceSystem,
-      });
+      };
 
       await tx.auditRecord.create({
         data: {
@@ -1371,35 +1288,35 @@ export class CargoService {
         eventType: "cargo.delivery_completed",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
-          shipmentId: shipment.id,
-          shipmentReferenceCode: shipment.referenceCode,
-          eventId: event.id,
           deliveredAt: deliveredAt.toISOString(),
           deliveryReference: deliveredCargo.deliveryReference,
           receivedByName: deliveredCargo.receivedByName,
-          previousShipmentStatus: shipment.status,
-          currentShipmentStatus: completedShipment.status,
-          appliedRules: businessRules.appliedRules,
+          appliedRules: appliedDeliveryRules,
           idempotencyKey: input.idempotencyKey,
           correlationId: input.correlationId,
           sourceSystem: input.sourceSystem,
         },
       });
 
-      return { cargo: deliveredCargo, shipment: completedShipment, event };
+      return deliveredCargo;
     });
 
     return createCargoDeliveryCompleteOutput({
       organizationId: input.organizationId,
-      cargo: result.cargo,
-      shipment: result.shipment,
-      event: result.event,
-      previousShipmentStatus: shipment.status,
+      cargo: result,
       replayed: false,
-      businessRules,
+      businessRules: {
+        deliveryAllowed,
+        cargoArrivedForDelivery,
+        trackingShipmentArrived: true,
+        deliveryAfterArrival,
+        deliveryConditionAccepted,
+        appliedRules: appliedDeliveryRules,
+      },
     });
   }
 
@@ -1416,20 +1333,9 @@ export class CargoService {
         throw new BadRequestException("cargo.delivery_exception_record_idempotency_conflict");
       }
 
-      const [cargo, shipment, event] = await Promise.all([
-        this.cargoRepo.findById(input.organizationId, replayedException.cargoId),
-        this.cargoRepo.findTrackingShipmentById(
-          input.organizationId,
-          replayedException.trackingShipmentId,
-        ),
-        this.cargoRepo.findTrackingLifecycleEventByIdempotencyKey(
-          input.organizationId,
-          input.idempotencyKey,
-          "exception",
-        ),
-      ]);
+      const cargo = await this.cargoRepo.findById(input.organizationId, replayedException.cargoId);
 
-      if (cargo === null || shipment === null || event === null) {
+      if (cargo === null) {
         throw new BadRequestException("cargo.delivery_exception_record_replay_incomplete");
       }
 
@@ -1437,9 +1343,6 @@ export class CargoService {
         organizationId: input.organizationId,
         cargo,
         exception: replayedException,
-        shipment,
-        event,
-        previousShipmentStatus: shipment.status,
         replayed: true,
       });
     }
@@ -1450,39 +1353,59 @@ export class CargoService {
       throw new NotFoundException("cargo.not_found");
     }
 
-    const [shipment, openException] = await Promise.all([
-      this.cargoRepo.findTrackingShipmentById(input.organizationId, cargo.trackingShipmentId),
-      this.cargoRepo.findOpenDeliveryExceptionForCargo(input.organizationId, cargo.id),
-    ]);
-
-    if (shipment === null) {
+    if (cargo.trackingShipmentId === null) {
       throw new BadRequestException("cargo.delivery_exception_tracking_link_missing");
     }
 
-    const businessRules = resolveCargoDeliveryExceptionRecordBusinessRules(
-      cargo,
-      shipment,
-      openException,
-      input,
-    );
+    const cargoArrivedForException =
+      cargo.status === "in_transport" &&
+      cargo.arrivalIdempotencyKey !== null &&
+      cargo.arrivedAt !== null &&
+      cargo.deliveryIdempotencyKey === null &&
+      cargo.deliveredAt === null &&
+      cargo.trackingShipmentId !== null;
+    const occurredAt = new Date(input.occurredAt);
+    const exceptionAfterArrival = cargo.arrivedAt === null || occurredAt >= cargo.arrivedAt;
+    const exceptionAccepted = cargoArrivedForException && exceptionAfterArrival;
+    const appliedExceptionRules = [
+      "tenant_scoped_delivery_exception",
+      "idempotent_delivery_exception_record",
+      "delivery_exception_requires_arrived_cargo",
+      "delivery_exception_cannot_precede_arrival",
+      "delivery_exception_creates_audit_and_outbox",
+    ];
 
-    if (!businessRules.exceptionAccepted) {
+    if (!cargoArrivedForException) {
+      appliedExceptionRules.push("delivery_exception_blocked_until_cargo_arrived");
+    }
+
+    if (!exceptionAfterArrival) {
+      appliedExceptionRules.push("delivery_exception_cannot_precede_arrival_timestamp");
+    }
+
+    if (!exceptionAccepted) {
       throw new BadRequestException("cargo.delivery_exception_record_blocked");
     }
 
-    const occurredAt = new Date(input.occurredAt);
-    const eventLocationName = cargo.arrivalLocationName ?? cargo.destinationName;
-    const previousAuditState = createCargoDeliveryExceptionRecordAuditBefore({
-      cargo,
-      shipment,
-      openException,
-      businessRules,
-    });
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
+    const previousAuditState = {
+      cargoId: cargo.id,
+      cargoReference: cargo.cargoReference,
+      cargoStatus: cargo.status,
+      conditionStatus: cargo.conditionStatus,
+      requiresInspection: cargo.requiresInspection,
+      trackingShipmentId: cargo.trackingShipmentId,
+      arrivedAt: cargo.arrivedAt?.toISOString() ?? null,
+      exceptionAccepted,
+      cargoArrivedForException,
+      exceptionAfterArrival,
+      appliedRules: appliedExceptionRules,
+    };
+
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const exception = await this.cargoRepo.createDeliveryException(tx, {
         organizationId: input.organizationId,
         cargoId: cargo.id,
-        trackingShipmentId: shipment.id,
+        trackingShipmentId: cargo.trackingShipmentId,
         exceptionType: input.exceptionType,
         deliveryConditionStatus: input.deliveryConditionStatus,
         reportedByName: input.reportedByName.trim(),
@@ -1496,66 +1419,30 @@ export class CargoService {
           : { claimReference: input.claimReference.trim() }),
       });
 
-      await this.cargoRepo.createTrackingEvent(tx, {
-        organizationId: input.organizationId,
-        shipmentId: shipment.id,
-        eventType: "exception",
-        occurredAt,
-        locationName: eventLocationName,
-        notes: `Cargo ${cargo.cargoReference} delivery exception recorded: ${input.exceptionType}.`,
-        sourceSystem: input.sourceSystem,
-        correlationId: input.correlationId,
-        idempotencyKey: input.idempotencyKey,
-        payload: {
-          cargoId: cargo.id,
-          cargoReference: cargo.cargoReference,
-          exceptionId: exception.id,
-          exceptionType: exception.exceptionType,
-          deliveryConditionStatus: exception.deliveryConditionStatus,
-          evidenceReference: exception.evidenceReference,
-          claimReference: exception.claimReference,
-          reportedByName: exception.reportedByName,
-          appliedRules: businessRules.appliedRules,
-        },
-      });
-
       const heldCargo = await this.cargoRepo.updateCargo(tx, cargo.id, {
         status: "held",
         conditionStatus: input.deliveryConditionStatus,
         requiresInspection: true,
       });
 
-      await this.cargoRepo.updateTrackingShipment(tx, shipment.id, {
-        status: "exception",
-      });
-
-      const exceptionShipment = await this.cargoRepo.findTrackingShipmentById(
-        input.organizationId,
-        shipment.id,
-      );
-
-      if (exceptionShipment === null) {
-        throw new BadRequestException("cargo.delivery_exception_tracking_update_failed");
-      }
-
-      const event = await this.cargoRepo.findTrackingLifecycleEventByIdempotencyKey(
-        input.organizationId,
-        input.idempotencyKey,
-        "exception",
-      );
-
-      if (event === null) {
-        throw new BadRequestException("cargo.delivery_exception_event_not_found");
-      }
-
-      const auditAfter = createCargoDeliveryExceptionRecordAuditAfter({
-        cargo: heldCargo,
-        shipment: exceptionShipment,
-        exception,
-        event,
-        businessRules,
+      const auditAfter = {
+        cargoId: heldCargo.id,
+        cargoReference: heldCargo.cargoReference,
+        cargoStatus: heldCargo.status,
+        conditionStatus: heldCargo.conditionStatus,
+        requiresInspection: heldCargo.requiresInspection,
+        exceptionId: exception.id,
+        exceptionType: exception.exceptionType,
+        deliveryConditionStatus: exception.deliveryConditionStatus,
+        exceptionStatus: exception.status,
+        evidenceReference: exception.evidenceReference,
+        claimReference: exception.claimReference,
+        occurredAt: exception.occurredAt.toISOString(),
+        exceptionAccepted,
+        appliedRules: appliedExceptionRules,
+        idempotencyKey: exception.recordIdempotencyKey,
         sourceSystem: input.sourceSystem,
-      });
+      };
 
       await tx.auditRecord.create({
         data: {
@@ -1579,36 +1466,39 @@ export class CargoService {
         eventType: "cargo.delivery_exception.recorded",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
           exceptionId: exception.id,
-          shipmentId: shipment.id,
-          shipmentReferenceCode: shipment.referenceCode,
-          eventId: event.id,
           exceptionType: exception.exceptionType,
           deliveryConditionStatus: exception.deliveryConditionStatus,
-          previousShipmentStatus: shipment.status,
-          currentShipmentStatus: exceptionShipment.status,
-          appliedRules: businessRules.appliedRules,
+          evidenceReference: exception.evidenceReference,
+          claimReference: exception.claimReference,
+          reportedByName: exception.reportedByName,
+          appliedRules: appliedExceptionRules,
           idempotencyKey: input.idempotencyKey,
           correlationId: input.correlationId,
           sourceSystem: input.sourceSystem,
         },
       });
 
-      return { cargo: heldCargo, exception, shipment: exceptionShipment, event };
+      return { cargo: heldCargo, exception };
     });
 
     return createCargoDeliveryExceptionRecordOutput({
       organizationId: input.organizationId,
       cargo: result.cargo,
       exception: result.exception,
-      shipment: result.shipment,
-      event: result.event,
-      previousShipmentStatus: shipment.status,
       replayed: false,
-      businessRules,
+      businessRules: {
+        exceptionAccepted,
+        cargoArrivedForException,
+        trackingShipmentArrived: true,
+        openExceptionBlocked: true,
+        exceptionAfterArrival,
+        appliedRules: appliedExceptionRules,
+      },
     });
   }
 
@@ -1625,20 +1515,9 @@ export class CargoService {
         throw new BadRequestException("cargo.delivery_exception_resolve_idempotency_conflict");
       }
 
-      const [cargo, shipment, event] = await Promise.all([
-        this.cargoRepo.findById(input.organizationId, replayedException.cargoId),
-        this.cargoRepo.findTrackingShipmentById(
-          input.organizationId,
-          replayedException.trackingShipmentId,
-        ),
-        this.cargoRepo.findTrackingLifecycleEventByIdempotencyKey(
-          input.organizationId,
-          input.idempotencyKey,
-          "released",
-        ),
-      ]);
+      const cargo = await this.cargoRepo.findById(input.organizationId, replayedException.cargoId);
 
-      if (cargo === null || shipment === null || event === null) {
+      if (cargo === null) {
         throw new BadRequestException("cargo.delivery_exception_resolve_replay_incomplete");
       }
 
@@ -1646,9 +1525,6 @@ export class CargoService {
         organizationId: input.organizationId,
         cargo,
         exception: replayedException,
-        shipment,
-        event,
-        previousShipmentStatus: shipment.status,
         replayed: true,
       });
     }
@@ -1666,34 +1542,73 @@ export class CargoService {
       throw new BadRequestException("cargo.delivery_exception_already_resolved");
     }
 
-    const shipment = await this.cargoRepo.findTrackingShipmentById(
-      input.organizationId,
-      exception.trackingShipmentId,
-    );
-
-    if (shipment === null) {
+    if (exception.trackingShipmentId === null) {
       throw new BadRequestException("cargo.delivery_exception_tracking_link_missing");
     }
 
-    const businessRules = resolveCargoDeliveryExceptionResolveBusinessRules(
-      exception,
-      shipment,
-      input,
-    );
+    const openException = exception.status === "open";
+    const cargoHeldForInspection =
+      exception.cargo.status === "held" &&
+      exception.cargo.requiresInspection &&
+      exception.cargo.deliveredAt === null;
+    const resolvedAt = new Date(input.resolvedAt);
+    const resolutionAfterException = resolvedAt >= exception.occurredAt;
+    const cargoRestoredForDelivery = input.finalConditionStatus === "sound";
+    const resolutionAllowed =
+      openException &&
+      cargoHeldForInspection &&
+      resolutionAfterException &&
+      cargoRestoredForDelivery;
+    const appliedResolveRules = [
+      "tenant_scoped_delivery_exception_resolution",
+      "idempotent_delivery_exception_resolution",
+      "delivery_exception_resolution_requires_open_exception",
+      "delivery_exception_resolution_requires_held_cargo",
+      "delivery_exception_resolution_cannot_precede_exception",
+      "delivery_exception_resolution_restores_sound_condition",
+      "delivery_exception_resolution_reopens_delivery_completion",
+      "delivery_exception_resolution_creates_audit_and_outbox",
+    ];
 
-    if (!businessRules.resolutionAllowed) {
+    if (!openException) {
+      appliedResolveRules.push("delivery_exception_resolution_blocked_when_not_open");
+    }
+
+    if (!cargoHeldForInspection) {
+      appliedResolveRules.push("delivery_exception_resolution_blocked_when_cargo_not_held");
+    }
+
+    if (!resolutionAfterException) {
+      appliedResolveRules.push("delivery_exception_resolution_cannot_precede_exception_timestamp");
+    }
+
+    if (!cargoRestoredForDelivery) {
+      appliedResolveRules.push("delivery_exception_resolution_requires_sound_final_condition");
+    }
+
+    if (!resolutionAllowed) {
       throw new BadRequestException("cargo.delivery_exception_resolve_blocked");
     }
 
-    const resolvedAt = new Date(input.resolvedAt);
-    const eventLocationName =
-      exception.cargo.arrivalLocationName ?? exception.cargo.destinationName;
-    const previousAuditState = createCargoDeliveryExceptionResolveAuditBefore({
-      exception,
-      shipment,
-      businessRules,
-    });
-    const result = await this.database.$transaction(async (tx: PrismaTx) => {
+    const previousAuditState = {
+      cargoId: exception.cargo.id,
+      cargoReference: exception.cargo.cargoReference,
+      cargoStatus: exception.cargo.status,
+      conditionStatus: exception.cargo.conditionStatus,
+      requiresInspection: exception.cargo.requiresInspection,
+      exceptionId: exception.id,
+      exceptionStatus: exception.status,
+      exceptionType: exception.exceptionType,
+      occurredAt: exception.occurredAt.toISOString(),
+      resolutionAllowed,
+      openException,
+      cargoHeldForInspection,
+      resolutionAfterException,
+      cargoRestoredForDelivery,
+      appliedRules: appliedResolveRules,
+    };
+
+    const result = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       await this.cargoRepo.updateDeliveryException(tx, exception.id, {
         status: "resolved",
         resolverName: input.resolverName.trim(),
@@ -1704,46 +1619,11 @@ export class CargoService {
         resolveIdempotencyKey: input.idempotencyKey,
       });
 
-      await this.cargoRepo.createTrackingEvent(tx, {
-        organizationId: input.organizationId,
-        shipmentId: shipment.id,
-        eventType: "released",
-        occurredAt: resolvedAt,
-        locationName: eventLocationName,
-        notes: `Cargo ${exception.cargo.cargoReference} delivery exception resolved.`,
-        sourceSystem: input.sourceSystem,
-        correlationId: input.correlationId,
-        idempotencyKey: input.idempotencyKey,
-        payload: {
-          cargoId: exception.cargo.id,
-          cargoReference: exception.cargo.cargoReference,
-          exceptionId: exception.id,
-          resolutionCode: input.resolutionCode,
-          resolutionReference: input.resolutionReference.trim(),
-          finalConditionStatus: input.finalConditionStatus,
-          resolverName: input.resolverName.trim(),
-          appliedRules: businessRules.appliedRules,
-        },
-      });
-
       const restoredCargo = await this.cargoRepo.updateCargo(tx, exception.cargo.id, {
         status: "in_transport",
         conditionStatus: input.finalConditionStatus,
         requiresInspection: false,
       });
-
-      await this.cargoRepo.updateTrackingShipment(tx, shipment.id, {
-        status: "arrived",
-      });
-
-      const restoredShipment = await this.cargoRepo.findTrackingShipmentById(
-        input.organizationId,
-        shipment.id,
-      );
-
-      if (restoredShipment === null) {
-        throw new BadRequestException("cargo.delivery_exception_resolve_tracking_update_failed");
-      }
 
       const resolvedException = await this.cargoRepo.findDeliveryExceptionById(
         input.organizationId,
@@ -1754,24 +1634,22 @@ export class CargoService {
         throw new BadRequestException("cargo.delivery_exception_resolve_not_found");
       }
 
-      const event = await this.cargoRepo.findTrackingLifecycleEventByIdempotencyKey(
-        input.organizationId,
-        input.idempotencyKey,
-        "released",
-      );
-
-      if (event === null) {
-        throw new BadRequestException("cargo.delivery_exception_resolve_event_not_found");
-      }
-
-      const auditAfter = createCargoDeliveryExceptionResolveAuditAfter({
-        cargo: restoredCargo,
-        shipment: restoredShipment,
-        exception: resolvedException,
-        event,
-        businessRules,
+      const auditAfter = {
+        cargoId: restoredCargo.id,
+        cargoReference: restoredCargo.cargoReference,
+        cargoStatus: restoredCargo.status,
+        conditionStatus: restoredCargo.conditionStatus,
+        requiresInspection: restoredCargo.requiresInspection,
+        exceptionId: resolvedException.id,
+        exceptionStatus: resolvedException.status,
+        resolutionCode: resolvedException.resolutionCode,
+        resolutionReference: resolvedException.resolutionReference,
+        resolvedAt: resolvedException.resolvedAt?.toISOString() ?? null,
+        resolutionAllowed,
+        appliedRules: appliedResolveRules,
+        idempotencyKey: resolvedException.resolveIdempotencyKey,
         sourceSystem: input.sourceSystem,
-      });
+      };
 
       await tx.auditRecord.create({
         data: {
@@ -1795,18 +1673,16 @@ export class CargoService {
         eventType: "cargo.delivery_exception.resolved",
         aggregateType: "cargo",
         aggregateId: exception.cargo.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: exception.cargo.id,
           cargoReference: exception.cargo.cargoReference,
           exceptionId: exception.id,
-          shipmentId: shipment.id,
-          shipmentReferenceCode: shipment.referenceCode,
-          eventId: event.id,
           resolutionCode: input.resolutionCode,
           resolutionReference: resolvedException.resolutionReference,
-          previousShipmentStatus: shipment.status,
-          currentShipmentStatus: restoredShipment.status,
-          appliedRules: businessRules.appliedRules,
+          finalConditionStatus: input.finalConditionStatus,
+          resolverName: input.resolverName.trim(),
+          appliedRules: appliedResolveRules,
           idempotencyKey: input.idempotencyKey,
           correlationId: input.correlationId,
           sourceSystem: input.sourceSystem,
@@ -1816,8 +1692,6 @@ export class CargoService {
       return {
         cargo: restoredCargo,
         exception: resolvedException,
-        shipment: restoredShipment,
-        event,
       };
     });
 
@@ -1825,11 +1699,16 @@ export class CargoService {
       organizationId: input.organizationId,
       cargo: result.cargo,
       exception: result.exception,
-      shipment: result.shipment,
-      event: result.event,
-      previousShipmentStatus: shipment.status,
       replayed: false,
-      businessRules,
+      businessRules: {
+        resolutionAllowed,
+        openException,
+        cargoHeldForInspection,
+        trackingShipmentException: true,
+        resolutionAfterException,
+        cargoRestoredForDelivery,
+        appliedRules: appliedResolveRules,
+      },
     });
   }
 
@@ -1899,7 +1778,7 @@ export class CargoService {
       duplicateReference: duplicateSettlementByRef,
       businessRules,
     });
-    const settlement = await this.database.$transaction(async (tx: PrismaTx) => {
+    const settlement = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const recordedSettlement = await this.cargoRepo.createClaimSettlement(tx, {
         organizationId: input.organizationId,
         cargoId: exception.cargoId,
@@ -1947,6 +1826,7 @@ export class CargoService {
         eventType: "cargo.claim_settlement.recorded",
         aggregateType: "cargo",
         aggregateId: exception.cargoId,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: exception.cargoId,
           cargoReference: exception.cargo.cargoReference,
@@ -2024,7 +1904,7 @@ export class CargoService {
 
     const issuedAt = input.issuedAt === undefined ? null : new Date(input.issuedAt);
     const expiresAt = input.expiresAt === undefined ? null : new Date(input.expiresAt);
-    const evidence = await this.database.$transaction(async (tx: PrismaTx) => {
+    const evidence = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       const createdEvidence = await this.cargoRepo.createComplianceEvidence(tx, {
         organizationId: input.organizationId,
         cargoId: input.cargoId,
@@ -2071,6 +1951,7 @@ export class CargoService {
         eventType: "cargo.compliance_evidence.recorded",
         aggregateType: "cargo",
         aggregateId: cargo.id,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: cargo.id,
           cargoReference: cargo.cargoReference,
@@ -2148,7 +2029,7 @@ export class CargoService {
 
     const reviewedAt = input.reviewedAt === undefined ? new Date() : new Date(input.reviewedAt);
     const previousAuditState = createCargoComplianceEvidenceVerifyAuditBefore(evidenceWithCargo);
-    const verifiedEvidence = await this.database.$transaction(async (tx: PrismaTx) => {
+    const verifiedEvidence = await this.cargoRepo.transaction(async (tx: PrismaTx) => {
       await this.cargoRepo.updateComplianceEvidence(tx, evidence.id, {
         status: input.status,
         reviewerName: input.reviewerName.trim(),
@@ -2198,6 +2079,7 @@ export class CargoService {
         eventType: "cargo.compliance_evidence.verified",
         aggregateType: "cargo",
         aggregateId: evidence.cargoId,
+        eventVersion: CURRENT_EVENT_VERSION,
         payload: {
           cargoId: evidence.cargoId,
           evidenceId: updatedEvidence.id,

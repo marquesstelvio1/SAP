@@ -105,6 +105,7 @@ export interface TrackingRepository {
     organizationId: string,
     limit: number,
     offset: number,
+    teamId?: string,
   ): Promise<
     Array<{
       id: string;
@@ -194,6 +195,32 @@ export interface TrackingRepository {
   >;
 
   // Write operations
+  createShipment(
+    tx: PrismaTx,
+    data: {
+      organizationId: string;
+      referenceCode: string;
+      externalReference: string | null;
+      cargoDescription: string;
+      originName: string;
+      destinationName: string;
+      transportMode: string;
+      status: string;
+      priority: number;
+      plannedDepartureAt: Date;
+      estimatedArrivalAt: Date;
+    },
+  ): Promise<{
+    id: string;
+    organizationId: string;
+    referenceCode: string;
+    status: string;
+    transportMode: string;
+    plannedDepartureAt: Date;
+    estimatedArrivalAt: Date;
+    actualArrivalAt: Date | null;
+  }>;
+
   createEvent(
     tx: PrismaTx,
     data: Record<string, unknown>,
@@ -223,4 +250,7 @@ export interface TrackingRepository {
     referenceCode: string;
     status: string;
   }>;
+
+  // Transaction support
+  transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T>;
 }

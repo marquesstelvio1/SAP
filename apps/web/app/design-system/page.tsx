@@ -153,7 +153,7 @@ export default function DesignSystemPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-10">
-      <h1 className="mb-2 text-4xl font-bold tracking-tight">Design System</h1>
+      <h1 className="mb-2 text-4xl font-bold tracking-heading">Design System</h1>
       <p className="mb-8 text-muted-foreground">
         Componentes visuais do SAPTM para referencia e regression testing.
       </p>
@@ -544,7 +544,7 @@ export default function DesignSystemPage() {
               <span className="font-semibold text-sm">SAPTM</span>
             </div>
             <nav className="flex flex-col gap-2 px-4 py-5">
-              <span className="px-2 pb-0.5 pt-1.5 font-medium text-[0.68rem] text-sidebar-foreground/55 uppercase tracking-widest">
+              <span className="px-2 pb-0.5 pt-1.5 font-medium text-2xs text-sidebar-foreground/55 uppercase tracking-widest">
                 Navegacao
               </span>
               <div className="flex flex-col gap-1">

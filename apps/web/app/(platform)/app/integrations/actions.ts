@@ -106,7 +106,7 @@ export async function recordIntegrationEventAction(
   if (!platformSession.viewer.permissions.includes(ingestEventPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui integration.event.ingest para registar eventos externos.",
+      message: "A sessão não tem autorização para registar eventos externos.",
     };
   }
 
@@ -130,7 +130,7 @@ export async function recordIntegrationEventAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de integracoes retornou resposta invalida para evento externo.",
+      message: "Não foi possível confirmar o registo do evento externo.",
     };
   }
 
@@ -138,7 +138,7 @@ export async function recordIntegrationEventAction(
 
   return {
     status: "success",
-    message: "Evento externo registado com idempotencia tenant-scoped, audit trail e outbox.",
+    message: "Evento externo registado com auditoria.",
     eventId: parsedOutput.data.event.id,
     idempotencyKey: parsedOutput.data.idempotency.key,
     replayed: parsedOutput.data.idempotency.replayed,
@@ -157,8 +157,7 @@ export async function processPortTosMovementAction(
   ) {
     return {
       status: "error",
-      message:
-        "A sessao precisa de integration.event.ingest e tracking.event.record para processar Port TOS.",
+      message: "A sessão não tem autorização para processar movimentos Port TOS.",
     };
   }
 
@@ -185,7 +184,7 @@ export async function processPortTosMovementAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de integracoes retornou resposta invalida para Port TOS.",
+      message: "Não foi possível confirmar o processamento Port TOS.",
     };
   }
 
@@ -194,7 +193,7 @@ export async function processPortTosMovementAction(
 
   return {
     status: "success",
-    message: "Movimento Port TOS processado em tracking com idempotencia, audit trail e outbox.",
+    message: "Movimento Port TOS processado com auditoria.",
     integrationEventId: parsedOutput.data.integrationEvent.id,
     trackingEventId: parsedOutput.data.trackingEvent.id,
     idempotencyKey: parsedOutput.data.idempotency.key,
@@ -214,8 +213,7 @@ export async function processRailTmsMovementAction(
   ) {
     return {
       status: "error",
-      message:
-        "A sessao precisa de integration.event.ingest e tracking.event.record para processar Rail TMS.",
+      message: "A sessão não tem autorização para processar movimentos Rail TMS.",
     };
   }
 
@@ -242,7 +240,7 @@ export async function processRailTmsMovementAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de integracoes retornou resposta invalida para Rail TMS.",
+      message: "Não foi possível confirmar o processamento Rail TMS.",
     };
   }
 
@@ -251,7 +249,7 @@ export async function processRailTmsMovementAction(
 
   return {
     status: "success",
-    message: "Movimento Rail TMS processado em tracking com idempotencia, audit trail e outbox.",
+    message: "Movimento Rail TMS processado com auditoria.",
     integrationEventId: parsedOutput.data.integrationEvent.id,
     trackingEventId: parsedOutput.data.trackingEvent.id,
     idempotencyKey: parsedOutput.data.idempotency.key,
@@ -271,8 +269,7 @@ export async function processCarrierTmsMovementAction(
   ) {
     return {
       status: "error",
-      message:
-        "A sessao precisa de integration.event.ingest e tracking.event.record para processar Carrier TMS.",
+      message: "A sessão não tem autorização para processar movimentos Carrier TMS.",
     };
   }
 
@@ -299,7 +296,7 @@ export async function processCarrierTmsMovementAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de integracoes retornou resposta invalida para Carrier TMS.",
+      message: "Não foi possível confirmar o processamento Carrier TMS.",
     };
   }
 
@@ -308,7 +305,7 @@ export async function processCarrierTmsMovementAction(
 
   return {
     status: "success",
-    message: "Movimento Carrier TMS processado em tracking com idempotencia, audit trail e outbox.",
+    message: "Movimento Carrier TMS processado com auditoria.",
     integrationEventId: parsedOutput.data.integrationEvent.id,
     trackingEventId: parsedOutput.data.trackingEvent.id,
     idempotencyKey: parsedOutput.data.idempotency.key,
@@ -328,8 +325,7 @@ export async function processTelematicsGpsPositionAction(
   ) {
     return {
       status: "error",
-      message:
-        "A sessao precisa de integration.event.ingest e tracking.event.record para processar Telematics/GPS.",
+      message: "A sessão não tem autorização para processar posições Telematics/GPS.",
     };
   }
 
@@ -356,7 +352,7 @@ export async function processTelematicsGpsPositionAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de integracoes retornou resposta invalida para Telematics/GPS.",
+      message: "Não foi possível confirmar o processamento Telematics/GPS.",
     };
   }
 
@@ -365,8 +361,7 @@ export async function processTelematicsGpsPositionAction(
 
   return {
     status: "success",
-    message:
-      "Posicao Telematics/GPS processada em tracking com idempotencia, audit trail e outbox.",
+    message: "Posição Telematics/GPS processada com auditoria.",
     integrationEventId: parsedOutput.data.integrationEvent.id,
     trackingEventId: parsedOutput.data.trackingEvent.id,
     idempotencyKey: parsedOutput.data.idempotency.key,
@@ -386,8 +381,7 @@ export async function processCustomsErpStatusAction(
   ) {
     return {
       status: "error",
-      message:
-        "A sessao precisa de integration.event.ingest e tracking.event.record para processar Customs/ERP.",
+      message: "A sessão não tem autorização para processar estados Customs/ERP.",
     };
   }
 
@@ -414,7 +408,7 @@ export async function processCustomsErpStatusAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de integracoes retornou resposta invalida para Customs/ERP.",
+      message: "Não foi possível confirmar o processamento Customs/ERP.",
     };
   }
 
@@ -423,7 +417,7 @@ export async function processCustomsErpStatusAction(
 
   return {
     status: "success",
-    message: "Status Customs/ERP processado em tracking com idempotencia, audit trail e outbox.",
+    message: "Estado Customs/ERP processado com auditoria.",
     integrationEventId: parsedOutput.data.integrationEvent.id,
     trackingEventId: parsedOutput.data.trackingEvent.id,
     idempotencyKey: parsedOutput.data.idempotency.key,
@@ -443,8 +437,7 @@ export async function processWarehouseWmsActivityAction(
   ) {
     return {
       status: "error",
-      message:
-        "A sessao precisa de integration.event.ingest e tracking.event.record para processar Warehouse/WMS.",
+      message: "A sessão não tem autorização para processar actividade Warehouse/WMS.",
     };
   }
 
@@ -471,7 +464,7 @@ export async function processWarehouseWmsActivityAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de integracoes retornou resposta invalida para Warehouse/WMS.",
+      message: "Não foi possível confirmar o processamento Warehouse/WMS.",
     };
   }
 
@@ -480,8 +473,7 @@ export async function processWarehouseWmsActivityAction(
 
   return {
     status: "success",
-    message:
-      "Atividade Warehouse/WMS processada em tracking com idempotencia, audit trail e outbox.",
+    message: "Actividade Warehouse/WMS processada com auditoria.",
     integrationEventId: parsedOutput.data.integrationEvent.id,
     trackingEventId: parsedOutput.data.trackingEvent.id,
     idempotencyKey: parsedOutput.data.idempotency.key,
@@ -521,7 +513,7 @@ async function callIntegrationMutation(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a operacao por sessao, organizacao ou permissao insuficiente.",
+      message: "Operação recusada por sessão, organização ou autorização insuficiente.",
     };
   }
 

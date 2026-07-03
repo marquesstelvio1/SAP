@@ -235,6 +235,7 @@ export type OrganizationWhereInput = {
   invoices?: Prisma.InvoiceListRelationFilter
   usageRecords?: Prisma.UsageRecordListRelationFilter
   webhookEndpoints?: Prisma.WebhookEndpointListRelationFilter
+  ssoConfigs?: Prisma.SsoConfigListRelationFilter
 }
 
 export type OrganizationOrderByWithRelationInput = {
@@ -275,6 +276,7 @@ export type OrganizationOrderByWithRelationInput = {
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
   usageRecords?: Prisma.UsageRecordOrderByRelationAggregateInput
   webhookEndpoints?: Prisma.WebhookEndpointOrderByRelationAggregateInput
+  ssoConfigs?: Prisma.SsoConfigOrderByRelationAggregateInput
 }
 
 export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -318,6 +320,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   invoices?: Prisma.InvoiceListRelationFilter
   usageRecords?: Prisma.UsageRecordListRelationFilter
   webhookEndpoints?: Prisma.WebhookEndpointListRelationFilter
+  ssoConfigs?: Prisma.SsoConfigListRelationFilter
 }, "id" | "slug">
 
 export type OrganizationOrderByWithAggregationInput = {
@@ -386,6 +389,7 @@ export type OrganizationCreateInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateInput = {
@@ -426,6 +430,7 @@ export type OrganizationUncheckedCreateInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUpdateInput = {
@@ -466,6 +471,7 @@ export type OrganizationUpdateInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateInput = {
@@ -506,6 +512,7 @@ export type OrganizationUncheckedUpdateInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateManyInput = {
@@ -1000,6 +1007,20 @@ export type OrganizationUpdateOneRequiredWithoutUsageRecordsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutUsageRecordsInput, Prisma.OrganizationUpdateWithoutUsageRecordsInput>, Prisma.OrganizationUncheckedUpdateWithoutUsageRecordsInput>
 }
 
+export type OrganizationCreateNestedOneWithoutSsoConfigsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutSsoConfigsInput, Prisma.OrganizationUncheckedCreateWithoutSsoConfigsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutSsoConfigsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutSsoConfigsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutSsoConfigsInput, Prisma.OrganizationUncheckedCreateWithoutSsoConfigsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutSsoConfigsInput
+  upsert?: Prisma.OrganizationUpsertWithoutSsoConfigsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutSsoConfigsInput, Prisma.OrganizationUpdateWithoutSsoConfigsInput>, Prisma.OrganizationUncheckedUpdateWithoutSsoConfigsInput>
+}
+
 export type OrganizationCreateWithoutTeamsInput = {
   id?: string
   name: string
@@ -1037,6 +1058,7 @@ export type OrganizationCreateWithoutTeamsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutTeamsInput = {
@@ -1076,6 +1098,7 @@ export type OrganizationUncheckedCreateWithoutTeamsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutTeamsInput = {
@@ -1131,6 +1154,7 @@ export type OrganizationUpdateWithoutTeamsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutTeamsInput = {
@@ -1170,6 +1194,7 @@ export type OrganizationUncheckedUpdateWithoutTeamsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutMembershipsInput = {
@@ -1209,6 +1234,7 @@ export type OrganizationCreateWithoutMembershipsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutMembershipsInput = {
@@ -1248,6 +1274,7 @@ export type OrganizationUncheckedCreateWithoutMembershipsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutMembershipsInput = {
@@ -1303,6 +1330,7 @@ export type OrganizationUpdateWithoutMembershipsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
@@ -1342,6 +1370,7 @@ export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutRolesInput = {
@@ -1381,6 +1410,7 @@ export type OrganizationCreateWithoutRolesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutRolesInput = {
@@ -1420,6 +1450,7 @@ export type OrganizationUncheckedCreateWithoutRolesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutRolesInput = {
@@ -1475,6 +1506,7 @@ export type OrganizationUpdateWithoutRolesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutRolesInput = {
@@ -1514,6 +1546,7 @@ export type OrganizationUncheckedUpdateWithoutRolesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutAuditRecordsInput = {
@@ -1553,6 +1586,7 @@ export type OrganizationCreateWithoutAuditRecordsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutAuditRecordsInput = {
@@ -1592,6 +1626,7 @@ export type OrganizationUncheckedCreateWithoutAuditRecordsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutAuditRecordsInput = {
@@ -1647,6 +1682,7 @@ export type OrganizationUpdateWithoutAuditRecordsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutAuditRecordsInput = {
@@ -1686,6 +1722,7 @@ export type OrganizationUncheckedUpdateWithoutAuditRecordsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutServiceAccountsInput = {
@@ -1725,6 +1762,7 @@ export type OrganizationCreateWithoutServiceAccountsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutServiceAccountsInput = {
@@ -1764,6 +1802,7 @@ export type OrganizationUncheckedCreateWithoutServiceAccountsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutServiceAccountsInput = {
@@ -1819,6 +1858,7 @@ export type OrganizationUpdateWithoutServiceAccountsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutServiceAccountsInput = {
@@ -1858,6 +1898,7 @@ export type OrganizationUncheckedUpdateWithoutServiceAccountsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutIntegrationEventsInput = {
@@ -1897,6 +1938,7 @@ export type OrganizationCreateWithoutIntegrationEventsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutIntegrationEventsInput = {
@@ -1936,6 +1978,7 @@ export type OrganizationUncheckedCreateWithoutIntegrationEventsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutIntegrationEventsInput = {
@@ -1991,6 +2034,7 @@ export type OrganizationUpdateWithoutIntegrationEventsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutIntegrationEventsInput = {
@@ -2030,6 +2074,7 @@ export type OrganizationUncheckedUpdateWithoutIntegrationEventsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutOutboxEventsInput = {
@@ -2069,6 +2114,7 @@ export type OrganizationCreateWithoutOutboxEventsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutOutboxEventsInput = {
@@ -2108,6 +2154,7 @@ export type OrganizationUncheckedCreateWithoutOutboxEventsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutOutboxEventsInput = {
@@ -2163,6 +2210,7 @@ export type OrganizationUpdateWithoutOutboxEventsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutOutboxEventsInput = {
@@ -2202,6 +2250,7 @@ export type OrganizationUncheckedUpdateWithoutOutboxEventsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutNotificationsInput = {
@@ -2241,6 +2290,7 @@ export type OrganizationCreateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutNotificationsInput = {
@@ -2280,6 +2330,7 @@ export type OrganizationUncheckedCreateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutNotificationsInput = {
@@ -2335,6 +2386,7 @@ export type OrganizationUpdateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutNotificationsInput = {
@@ -2374,6 +2426,7 @@ export type OrganizationUncheckedUpdateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutCargoRecordsInput = {
@@ -2413,6 +2466,7 @@ export type OrganizationCreateWithoutCargoRecordsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutCargoRecordsInput = {
@@ -2452,6 +2506,7 @@ export type OrganizationUncheckedCreateWithoutCargoRecordsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutCargoRecordsInput = {
@@ -2507,6 +2562,7 @@ export type OrganizationUpdateWithoutCargoRecordsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCargoRecordsInput = {
@@ -2546,6 +2602,7 @@ export type OrganizationUncheckedUpdateWithoutCargoRecordsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutCargoDeliveryExceptionsInput = {
@@ -2585,6 +2642,7 @@ export type OrganizationCreateWithoutCargoDeliveryExceptionsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutCargoDeliveryExceptionsInput = {
@@ -2624,6 +2682,7 @@ export type OrganizationUncheckedCreateWithoutCargoDeliveryExceptionsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutCargoDeliveryExceptionsInput = {
@@ -2679,6 +2738,7 @@ export type OrganizationUpdateWithoutCargoDeliveryExceptionsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCargoDeliveryExceptionsInput = {
@@ -2718,6 +2778,7 @@ export type OrganizationUncheckedUpdateWithoutCargoDeliveryExceptionsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutCargoClaimSettlementsInput = {
@@ -2757,6 +2818,7 @@ export type OrganizationCreateWithoutCargoClaimSettlementsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutCargoClaimSettlementsInput = {
@@ -2796,6 +2858,7 @@ export type OrganizationUncheckedCreateWithoutCargoClaimSettlementsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutCargoClaimSettlementsInput = {
@@ -2851,6 +2914,7 @@ export type OrganizationUpdateWithoutCargoClaimSettlementsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCargoClaimSettlementsInput = {
@@ -2890,6 +2954,7 @@ export type OrganizationUncheckedUpdateWithoutCargoClaimSettlementsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutCapacityResourcesInput = {
@@ -2929,6 +2994,7 @@ export type OrganizationCreateWithoutCapacityResourcesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutCapacityResourcesInput = {
@@ -2968,6 +3034,7 @@ export type OrganizationUncheckedCreateWithoutCapacityResourcesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutCapacityResourcesInput = {
@@ -3023,6 +3090,7 @@ export type OrganizationUpdateWithoutCapacityResourcesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCapacityResourcesInput = {
@@ -3062,6 +3130,7 @@ export type OrganizationUncheckedUpdateWithoutCapacityResourcesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutCapacitySlotsInput = {
@@ -3101,6 +3170,7 @@ export type OrganizationCreateWithoutCapacitySlotsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutCapacitySlotsInput = {
@@ -3140,6 +3210,7 @@ export type OrganizationUncheckedCreateWithoutCapacitySlotsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutCapacitySlotsInput = {
@@ -3195,6 +3266,7 @@ export type OrganizationUpdateWithoutCapacitySlotsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCapacitySlotsInput = {
@@ -3234,6 +3306,7 @@ export type OrganizationUncheckedUpdateWithoutCapacitySlotsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutCapacityReservationsInput = {
@@ -3273,6 +3346,7 @@ export type OrganizationCreateWithoutCapacityReservationsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutCapacityReservationsInput = {
@@ -3312,6 +3386,7 @@ export type OrganizationUncheckedCreateWithoutCapacityReservationsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutCapacityReservationsInput = {
@@ -3367,6 +3442,7 @@ export type OrganizationUpdateWithoutCapacityReservationsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCapacityReservationsInput = {
@@ -3406,6 +3482,7 @@ export type OrganizationUncheckedUpdateWithoutCapacityReservationsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutCapacityAdvisoryDecisionsInput = {
@@ -3445,6 +3522,7 @@ export type OrganizationCreateWithoutCapacityAdvisoryDecisionsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutCapacityAdvisoryDecisionsInput = {
@@ -3484,6 +3562,7 @@ export type OrganizationUncheckedCreateWithoutCapacityAdvisoryDecisionsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutCapacityAdvisoryDecisionsInput = {
@@ -3539,6 +3618,7 @@ export type OrganizationUpdateWithoutCapacityAdvisoryDecisionsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCapacityAdvisoryDecisionsInput = {
@@ -3578,6 +3658,7 @@ export type OrganizationUncheckedUpdateWithoutCapacityAdvisoryDecisionsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutTransportOrdersInput = {
@@ -3617,6 +3698,7 @@ export type OrganizationCreateWithoutTransportOrdersInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutTransportOrdersInput = {
@@ -3656,6 +3738,7 @@ export type OrganizationUncheckedCreateWithoutTransportOrdersInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutTransportOrdersInput = {
@@ -3711,6 +3794,7 @@ export type OrganizationUpdateWithoutTransportOrdersInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutTransportOrdersInput = {
@@ -3750,6 +3834,7 @@ export type OrganizationUncheckedUpdateWithoutTransportOrdersInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutTransportOrderDispatchesInput = {
@@ -3789,6 +3874,7 @@ export type OrganizationCreateWithoutTransportOrderDispatchesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutTransportOrderDispatchesInput = {
@@ -3828,6 +3914,7 @@ export type OrganizationUncheckedCreateWithoutTransportOrderDispatchesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutTransportOrderDispatchesInput = {
@@ -3883,6 +3970,7 @@ export type OrganizationUpdateWithoutTransportOrderDispatchesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutTransportOrderDispatchesInput = {
@@ -3922,6 +4010,7 @@ export type OrganizationUncheckedUpdateWithoutTransportOrderDispatchesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutTransportOrderScheduleRevisionsInput = {
@@ -3961,6 +4050,7 @@ export type OrganizationCreateWithoutTransportOrderScheduleRevisionsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutTransportOrderScheduleRevisionsInput = {
@@ -4000,6 +4090,7 @@ export type OrganizationUncheckedCreateWithoutTransportOrderScheduleRevisionsInp
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutTransportOrderScheduleRevisionsInput = {
@@ -4055,6 +4146,7 @@ export type OrganizationUpdateWithoutTransportOrderScheduleRevisionsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutTransportOrderScheduleRevisionsInput = {
@@ -4094,6 +4186,7 @@ export type OrganizationUncheckedUpdateWithoutTransportOrderScheduleRevisionsInp
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutTariffRateCardsInput = {
@@ -4133,6 +4226,7 @@ export type OrganizationCreateWithoutTariffRateCardsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutTariffRateCardsInput = {
@@ -4172,6 +4266,7 @@ export type OrganizationUncheckedCreateWithoutTariffRateCardsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutTariffRateCardsInput = {
@@ -4227,6 +4322,7 @@ export type OrganizationUpdateWithoutTariffRateCardsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutTariffRateCardsInput = {
@@ -4266,6 +4362,7 @@ export type OrganizationUncheckedUpdateWithoutTariffRateCardsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutTariffRateRulesInput = {
@@ -4305,6 +4402,7 @@ export type OrganizationCreateWithoutTariffRateRulesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutTariffRateRulesInput = {
@@ -4344,6 +4442,7 @@ export type OrganizationUncheckedCreateWithoutTariffRateRulesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutTariffRateRulesInput = {
@@ -4399,6 +4498,7 @@ export type OrganizationUpdateWithoutTariffRateRulesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutTariffRateRulesInput = {
@@ -4438,6 +4538,7 @@ export type OrganizationUncheckedUpdateWithoutTariffRateRulesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutTariffQuotesInput = {
@@ -4477,6 +4578,7 @@ export type OrganizationCreateWithoutTariffQuotesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutTariffQuotesInput = {
@@ -4516,6 +4618,7 @@ export type OrganizationUncheckedCreateWithoutTariffQuotesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutTariffQuotesInput = {
@@ -4571,6 +4674,7 @@ export type OrganizationUpdateWithoutTariffQuotesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutTariffQuotesInput = {
@@ -4610,6 +4714,7 @@ export type OrganizationUncheckedUpdateWithoutTariffQuotesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutCargoOperationalHandoffsInput = {
@@ -4649,6 +4754,7 @@ export type OrganizationCreateWithoutCargoOperationalHandoffsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutCargoOperationalHandoffsInput = {
@@ -4688,6 +4794,7 @@ export type OrganizationUncheckedCreateWithoutCargoOperationalHandoffsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutCargoOperationalHandoffsInput = {
@@ -4743,6 +4850,7 @@ export type OrganizationUpdateWithoutCargoOperationalHandoffsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCargoOperationalHandoffsInput = {
@@ -4782,6 +4890,7 @@ export type OrganizationUncheckedUpdateWithoutCargoOperationalHandoffsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutCargoComplianceEvidencesInput = {
@@ -4821,6 +4930,7 @@ export type OrganizationCreateWithoutCargoComplianceEvidencesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutCargoComplianceEvidencesInput = {
@@ -4860,6 +4970,7 @@ export type OrganizationUncheckedCreateWithoutCargoComplianceEvidencesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutCargoComplianceEvidencesInput = {
@@ -4915,6 +5026,7 @@ export type OrganizationUpdateWithoutCargoComplianceEvidencesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCargoComplianceEvidencesInput = {
@@ -4954,6 +5066,7 @@ export type OrganizationUncheckedUpdateWithoutCargoComplianceEvidencesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutTrackingShipmentsInput = {
@@ -4993,6 +5106,7 @@ export type OrganizationCreateWithoutTrackingShipmentsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutTrackingShipmentsInput = {
@@ -5032,6 +5146,7 @@ export type OrganizationUncheckedCreateWithoutTrackingShipmentsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutTrackingShipmentsInput = {
@@ -5087,6 +5202,7 @@ export type OrganizationUpdateWithoutTrackingShipmentsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutTrackingShipmentsInput = {
@@ -5126,6 +5242,7 @@ export type OrganizationUncheckedUpdateWithoutTrackingShipmentsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutWebhookEndpointsInput = {
@@ -5165,6 +5282,7 @@ export type OrganizationCreateWithoutWebhookEndpointsInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutWebhookEndpointsInput = {
@@ -5204,6 +5322,7 @@ export type OrganizationUncheckedCreateWithoutWebhookEndpointsInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutWebhookEndpointsInput = {
@@ -5259,6 +5378,7 @@ export type OrganizationUpdateWithoutWebhookEndpointsInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutWebhookEndpointsInput = {
@@ -5298,6 +5418,7 @@ export type OrganizationUncheckedUpdateWithoutWebhookEndpointsInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutTrackingEventsInput = {
@@ -5337,6 +5458,7 @@ export type OrganizationCreateWithoutTrackingEventsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutTrackingEventsInput = {
@@ -5376,6 +5498,7 @@ export type OrganizationUncheckedCreateWithoutTrackingEventsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutTrackingEventsInput = {
@@ -5431,6 +5554,7 @@ export type OrganizationUpdateWithoutTrackingEventsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutTrackingEventsInput = {
@@ -5470,6 +5594,7 @@ export type OrganizationUncheckedUpdateWithoutTrackingEventsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutSubscriptionInput = {
@@ -5509,6 +5634,7 @@ export type OrganizationCreateWithoutSubscriptionInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutSubscriptionInput = {
@@ -5548,6 +5674,7 @@ export type OrganizationUncheckedCreateWithoutSubscriptionInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutSubscriptionInput = {
@@ -5603,6 +5730,7 @@ export type OrganizationUpdateWithoutSubscriptionInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutSubscriptionInput = {
@@ -5642,6 +5770,7 @@ export type OrganizationUncheckedUpdateWithoutSubscriptionInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutInvoicesInput = {
@@ -5681,6 +5810,7 @@ export type OrganizationCreateWithoutInvoicesInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutInvoicesInput = {
@@ -5720,6 +5850,7 @@ export type OrganizationUncheckedCreateWithoutInvoicesInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutInvoicesInput = {
@@ -5775,6 +5906,7 @@ export type OrganizationUpdateWithoutInvoicesInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutInvoicesInput = {
@@ -5814,6 +5946,7 @@ export type OrganizationUncheckedUpdateWithoutInvoicesInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutUsageRecordsInput = {
@@ -5853,6 +5986,7 @@ export type OrganizationCreateWithoutUsageRecordsInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutUsageRecordsInput = {
@@ -5892,6 +6026,7 @@ export type OrganizationUncheckedCreateWithoutUsageRecordsInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutUsageRecordsInput = {
@@ -5947,6 +6082,7 @@ export type OrganizationUpdateWithoutUsageRecordsInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutUsageRecordsInput = {
@@ -5986,6 +6122,183 @@ export type OrganizationUncheckedUpdateWithoutUsageRecordsInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
+  ssoConfigs?: Prisma.SsoConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutSsoConfigsInput = {
+  id?: string
+  name: string
+  slug: string
+  status?: $Enums.OrganizationStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
+  memberships?: Prisma.MembershipCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutOrganizationInput
+  outboxEvents?: Prisma.OutboxEventCreateNestedManyWithoutOrganizationInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutOrganizationInput
+  serviceAccounts?: Prisma.ServiceAccountCreateNestedManyWithoutOrganizationInput
+  integrationEvents?: Prisma.IntegrationEventCreateNestedManyWithoutOrganizationInput
+  cargoRecords?: Prisma.CargoCreateNestedManyWithoutOrganizationInput
+  cargoOperationalHandoffs?: Prisma.CargoOperationalHandoffCreateNestedManyWithoutOrganizationInput
+  cargoClaimSettlements?: Prisma.CargoClaimSettlementCreateNestedManyWithoutOrganizationInput
+  cargoComplianceEvidences?: Prisma.CargoComplianceEvidenceCreateNestedManyWithoutOrganizationInput
+  cargoDeliveryExceptions?: Prisma.CargoDeliveryExceptionCreateNestedManyWithoutOrganizationInput
+  capacityResources?: Prisma.CapacityResourceCreateNestedManyWithoutOrganizationInput
+  capacitySlots?: Prisma.CapacitySlotCreateNestedManyWithoutOrganizationInput
+  capacityReservations?: Prisma.CapacitySlotReservationCreateNestedManyWithoutOrganizationInput
+  capacityAdvisoryDecisions?: Prisma.CapacityAdvisoryDecisionCreateNestedManyWithoutOrganizationInput
+  transportOrders?: Prisma.TransportOrderCreateNestedManyWithoutOrganizationInput
+  transportOrderScheduleRevisions?: Prisma.TransportOrderScheduleRevisionCreateNestedManyWithoutOrganizationInput
+  transportOrderDispatches?: Prisma.TransportOrderDispatchCreateNestedManyWithoutOrganizationInput
+  tariffRateCards?: Prisma.TariffRateCardCreateNestedManyWithoutOrganizationInput
+  tariffRateRules?: Prisma.TariffRateRuleCreateNestedManyWithoutOrganizationInput
+  tariffQuotes?: Prisma.TariffQuoteCreateNestedManyWithoutOrganizationInput
+  trackingShipments?: Prisma.TrackingShipmentCreateNestedManyWithoutOrganizationInput
+  trackingEvents?: Prisma.TrackingEventCreateNestedManyWithoutOrganizationInput
+  teams?: Prisma.TeamCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutSsoConfigsInput = {
+  id?: string
+  name: string
+  slug: string
+  status?: $Enums.OrganizationStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  outboxEvents?: Prisma.OutboxEventUncheckedCreateNestedManyWithoutOrganizationInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  serviceAccounts?: Prisma.ServiceAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  integrationEvents?: Prisma.IntegrationEventUncheckedCreateNestedManyWithoutOrganizationInput
+  cargoRecords?: Prisma.CargoUncheckedCreateNestedManyWithoutOrganizationInput
+  cargoOperationalHandoffs?: Prisma.CargoOperationalHandoffUncheckedCreateNestedManyWithoutOrganizationInput
+  cargoClaimSettlements?: Prisma.CargoClaimSettlementUncheckedCreateNestedManyWithoutOrganizationInput
+  cargoComplianceEvidences?: Prisma.CargoComplianceEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  cargoDeliveryExceptions?: Prisma.CargoDeliveryExceptionUncheckedCreateNestedManyWithoutOrganizationInput
+  capacityResources?: Prisma.CapacityResourceUncheckedCreateNestedManyWithoutOrganizationInput
+  capacitySlots?: Prisma.CapacitySlotUncheckedCreateNestedManyWithoutOrganizationInput
+  capacityReservations?: Prisma.CapacitySlotReservationUncheckedCreateNestedManyWithoutOrganizationInput
+  capacityAdvisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedCreateNestedManyWithoutOrganizationInput
+  transportOrders?: Prisma.TransportOrderUncheckedCreateNestedManyWithoutOrganizationInput
+  transportOrderScheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedCreateNestedManyWithoutOrganizationInput
+  transportOrderDispatches?: Prisma.TransportOrderDispatchUncheckedCreateNestedManyWithoutOrganizationInput
+  tariffRateCards?: Prisma.TariffRateCardUncheckedCreateNestedManyWithoutOrganizationInput
+  tariffRateRules?: Prisma.TariffRateRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  tariffQuotes?: Prisma.TariffQuoteUncheckedCreateNestedManyWithoutOrganizationInput
+  trackingShipments?: Prisma.TrackingShipmentUncheckedCreateNestedManyWithoutOrganizationInput
+  trackingEvents?: Prisma.TrackingEventUncheckedCreateNestedManyWithoutOrganizationInput
+  teams?: Prisma.TeamUncheckedCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutSsoConfigsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutSsoConfigsInput, Prisma.OrganizationUncheckedCreateWithoutSsoConfigsInput>
+}
+
+export type OrganizationUpsertWithoutSsoConfigsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutSsoConfigsInput, Prisma.OrganizationUncheckedUpdateWithoutSsoConfigsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutSsoConfigsInput, Prisma.OrganizationUncheckedCreateWithoutSsoConfigsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutSsoConfigsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutSsoConfigsInput, Prisma.OrganizationUncheckedUpdateWithoutSsoConfigsInput>
+}
+
+export type OrganizationUpdateWithoutSsoConfigsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  memberships?: Prisma.MembershipUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  auditRecords?: Prisma.AuditRecordUpdateManyWithoutOrganizationNestedInput
+  outboxEvents?: Prisma.OutboxEventUpdateManyWithoutOrganizationNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutOrganizationNestedInput
+  serviceAccounts?: Prisma.ServiceAccountUpdateManyWithoutOrganizationNestedInput
+  integrationEvents?: Prisma.IntegrationEventUpdateManyWithoutOrganizationNestedInput
+  cargoRecords?: Prisma.CargoUpdateManyWithoutOrganizationNestedInput
+  cargoOperationalHandoffs?: Prisma.CargoOperationalHandoffUpdateManyWithoutOrganizationNestedInput
+  cargoClaimSettlements?: Prisma.CargoClaimSettlementUpdateManyWithoutOrganizationNestedInput
+  cargoComplianceEvidences?: Prisma.CargoComplianceEvidenceUpdateManyWithoutOrganizationNestedInput
+  cargoDeliveryExceptions?: Prisma.CargoDeliveryExceptionUpdateManyWithoutOrganizationNestedInput
+  capacityResources?: Prisma.CapacityResourceUpdateManyWithoutOrganizationNestedInput
+  capacitySlots?: Prisma.CapacitySlotUpdateManyWithoutOrganizationNestedInput
+  capacityReservations?: Prisma.CapacitySlotReservationUpdateManyWithoutOrganizationNestedInput
+  capacityAdvisoryDecisions?: Prisma.CapacityAdvisoryDecisionUpdateManyWithoutOrganizationNestedInput
+  transportOrders?: Prisma.TransportOrderUpdateManyWithoutOrganizationNestedInput
+  transportOrderScheduleRevisions?: Prisma.TransportOrderScheduleRevisionUpdateManyWithoutOrganizationNestedInput
+  transportOrderDispatches?: Prisma.TransportOrderDispatchUpdateManyWithoutOrganizationNestedInput
+  tariffRateCards?: Prisma.TariffRateCardUpdateManyWithoutOrganizationNestedInput
+  tariffRateRules?: Prisma.TariffRateRuleUpdateManyWithoutOrganizationNestedInput
+  tariffQuotes?: Prisma.TariffQuoteUpdateManyWithoutOrganizationNestedInput
+  trackingShipments?: Prisma.TrackingShipmentUpdateManyWithoutOrganizationNestedInput
+  trackingEvents?: Prisma.TrackingEventUpdateManyWithoutOrganizationNestedInput
+  teams?: Prisma.TeamUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutSsoConfigsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  outboxEvents?: Prisma.OutboxEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  serviceAccounts?: Prisma.ServiceAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  integrationEvents?: Prisma.IntegrationEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  cargoRecords?: Prisma.CargoUncheckedUpdateManyWithoutOrganizationNestedInput
+  cargoOperationalHandoffs?: Prisma.CargoOperationalHandoffUncheckedUpdateManyWithoutOrganizationNestedInput
+  cargoClaimSettlements?: Prisma.CargoClaimSettlementUncheckedUpdateManyWithoutOrganizationNestedInput
+  cargoComplianceEvidences?: Prisma.CargoComplianceEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  cargoDeliveryExceptions?: Prisma.CargoDeliveryExceptionUncheckedUpdateManyWithoutOrganizationNestedInput
+  capacityResources?: Prisma.CapacityResourceUncheckedUpdateManyWithoutOrganizationNestedInput
+  capacitySlots?: Prisma.CapacitySlotUncheckedUpdateManyWithoutOrganizationNestedInput
+  capacityReservations?: Prisma.CapacitySlotReservationUncheckedUpdateManyWithoutOrganizationNestedInput
+  capacityAdvisoryDecisions?: Prisma.CapacityAdvisoryDecisionUncheckedUpdateManyWithoutOrganizationNestedInput
+  transportOrders?: Prisma.TransportOrderUncheckedUpdateManyWithoutOrganizationNestedInput
+  transportOrderScheduleRevisions?: Prisma.TransportOrderScheduleRevisionUncheckedUpdateManyWithoutOrganizationNestedInput
+  transportOrderDispatches?: Prisma.TransportOrderDispatchUncheckedUpdateManyWithoutOrganizationNestedInput
+  tariffRateCards?: Prisma.TariffRateCardUncheckedUpdateManyWithoutOrganizationNestedInput
+  tariffRateRules?: Prisma.TariffRateRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  tariffQuotes?: Prisma.TariffQuoteUncheckedUpdateManyWithoutOrganizationNestedInput
+  trackingShipments?: Prisma.TrackingShipmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  trackingEvents?: Prisma.TrackingEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  teams?: Prisma.TeamUncheckedUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 
@@ -6022,6 +6335,7 @@ export type OrganizationCountOutputType = {
   invoices: number
   usageRecords: number
   webhookEndpoints: number
+  ssoConfigs: number
 }
 
 export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6053,6 +6367,7 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   invoices?: boolean | OrganizationCountOutputTypeCountInvoicesArgs
   usageRecords?: boolean | OrganizationCountOutputTypeCountUsageRecordsArgs
   webhookEndpoints?: boolean | OrganizationCountOutputTypeCountWebhookEndpointsArgs
+  ssoConfigs?: boolean | OrganizationCountOutputTypeCountSsoConfigsArgs
 }
 
 /**
@@ -6261,6 +6576,13 @@ export type OrganizationCountOutputTypeCountWebhookEndpointsArgs<ExtArgs extends
   where?: Prisma.WebhookEndpointWhereInput
 }
 
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountSsoConfigsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SsoConfigWhereInput
+}
+
 
 export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -6300,6 +6622,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   invoices?: boolean | Prisma.Organization$invoicesArgs<ExtArgs>
   usageRecords?: boolean | Prisma.Organization$usageRecordsArgs<ExtArgs>
   webhookEndpoints?: boolean | Prisma.Organization$webhookEndpointsArgs<ExtArgs>
+  ssoConfigs?: boolean | Prisma.Organization$ssoConfigsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
 
@@ -6367,6 +6690,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   invoices?: boolean | Prisma.Organization$invoicesArgs<ExtArgs>
   usageRecords?: boolean | Prisma.Organization$usageRecordsArgs<ExtArgs>
   webhookEndpoints?: boolean | Prisma.Organization$webhookEndpointsArgs<ExtArgs>
+  ssoConfigs?: boolean | Prisma.Organization$ssoConfigsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -6404,6 +6728,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
     usageRecords: Prisma.$UsageRecordPayload<ExtArgs>[]
     webhookEndpoints: Prisma.$WebhookEndpointPayload<ExtArgs>[]
+    ssoConfigs: Prisma.$SsoConfigPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -6837,6 +7162,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   invoices<T extends Prisma.Organization$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   usageRecords<T extends Prisma.Organization$usageRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$usageRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UsageRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   webhookEndpoints<T extends Prisma.Organization$webhookEndpointsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$webhookEndpointsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ssoConfigs<T extends Prisma.Organization$ssoConfigsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$ssoConfigsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SsoConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7955,6 +8281,30 @@ export type Organization$webhookEndpointsArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.WebhookEndpointScalarFieldEnum | Prisma.WebhookEndpointScalarFieldEnum[]
+}
+
+/**
+ * Organization.ssoConfigs
+ */
+export type Organization$ssoConfigsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SsoConfig
+   */
+  select?: Prisma.SsoConfigSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SsoConfig
+   */
+  omit?: Prisma.SsoConfigOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SsoConfigInclude<ExtArgs> | null
+  where?: Prisma.SsoConfigWhereInput
+  orderBy?: Prisma.SsoConfigOrderByWithRelationInput | Prisma.SsoConfigOrderByWithRelationInput[]
+  cursor?: Prisma.SsoConfigWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SsoConfigScalarFieldEnum | Prisma.SsoConfigScalarFieldEnum[]
 }
 
 /**

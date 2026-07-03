@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -38,6 +39,7 @@ export function CargoOperationalHandoffRecordForm({
   initialState,
   action,
 }: CargoOperationalHandoffRecordFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_handoff"));
   const defaultHandoffAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -46,6 +48,13 @@ export function CargoOperationalHandoffRecordForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("cargo_handoff"));
+      capture("cargo:status_changed", {
+        cargo_id: state.cargoId,
+        cargo_reference: state.cargoReference,
+        to_status: "handoff_recorded",
+        handoff_id: state.handoffId,
+        shipment_id: state.shipmentId,
+      });
     }
   }, [state.status]);
 
@@ -56,7 +65,7 @@ export function CargoOperationalHandoffRecordForm({
           <Badge variant={canRecordOperationalHandoff ? "success" : "warning"}>
             {canRecordOperationalHandoff ? "Transferencia autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.handoff.record</Badge>
+          <Badge variant="outline">Registar transferência</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar handoff porto/ferrovia</CardTitle>
@@ -210,10 +219,6 @@ export function CargoOperationalHandoffRecordForm({
                 Condicao P7 aceita apenas sound; excecoes usam fluxo proprio.
               </FieldDescription>
             </Field>
-
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
 
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (

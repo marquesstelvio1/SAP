@@ -16,7 +16,7 @@ function DashboardHeader({ title, description, actions, className }: DashboardHe
       className={cn("flex flex-wrap items-start justify-between gap-4", className)}
     >
       <div className="flex min-w-0 flex-col gap-1">
-        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+        <h1 className="text-2xl font-bold tracking-heading">{title}</h1>
         {description ? (
           <p className="max-w-2xl text-muted-foreground text-sm">{description}</p>
         ) : null}

@@ -18,7 +18,7 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
-
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
 import type { CapacityResourceRegisterFormState } from "../../app/(platform)/app/capacity/form-state";
@@ -46,6 +46,7 @@ export function CapacityResourceRegisterForm({
   initialState,
   action,
 }: CapacityResourceRegisterFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     createIdempotencyKey("capacity_resource"),
@@ -55,6 +56,10 @@ export function CapacityResourceRegisterForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("capacity_resource"));
+      capture("capacity:resource_created", {
+        resource_id: state.resourceId,
+        resource_code: state.resourceCode,
+      });
     }
   }, [state.status]);
 
@@ -65,7 +70,7 @@ export function CapacityResourceRegisterForm({
           <Badge variant={canManageCapacity ? "success" : "warning"}>
             {canManageCapacity ? "Recurso autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">capacity.manage</Badge>
+          <Badge variant="outline">Gerir capacidade</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar recurso operacional</CardTitle>
@@ -148,10 +153,6 @@ export function CapacityResourceRegisterForm({
               />
             </Field>
 
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
-
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (
                 <FieldError>{state.message}</FieldError>
@@ -167,7 +168,7 @@ export function CapacityResourceRegisterForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canManageCapacity ? "Registo cria auditoria." : "Requer gestao de capacidade."}
+            {canManageCapacity ? "Registo cria auditoria." : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A registar..." : "Registar recurso"}

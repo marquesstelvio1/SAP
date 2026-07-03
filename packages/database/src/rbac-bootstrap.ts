@@ -1,14 +1,9 @@
-import type { PrismaClient } from "../generated/prisma/client";
-
 export const rbacBootstrapPermissions = [
   {
     key: "tenant.manage",
     description: "Manage tenant settings and administrative organization controls.",
   },
-  {
-    key: "identity.user.invite",
-    description: "Invite users into an organization.",
-  },
+  { key: "identity.user.invite", description: "Invite users into an organization." },
   {
     key: "identity.role.assign",
     description: "Assign roles and permission-bearing access to organization members.",
@@ -21,10 +16,7 @@ export const rbacBootstrapPermissions = [
     key: "integration.event.ingest",
     description: "Register idempotent external integration events for tenant operations.",
   },
-  {
-    key: "audit.read",
-    description: "Read audit records and security-relevant activity trails.",
-  },
+  { key: "audit.read", description: "Read audit records and security-relevant activity trails." },
   {
     key: "report.export",
     description: "Export reports subject to authorization, retention, and audit policy.",
@@ -434,112 +426,3 @@ export type RbacBootstrapRoleTemplate = {
   description: string;
   permissions: readonly RbacBootstrapPermissionKey[];
 };
-
-export type RbacBootstrapClient = Pick<PrismaClient, "permission" | "role" | "rolePermission">;
-
-export type SeedRbacBootstrapInput = {
-  database: RbacBootstrapClient;
-  organizationId?: string;
-};
-
-export type SeedRbacBootstrapResult = {
-  permissionsSeeded: number;
-  roleTemplatesAvailable: number;
-  organizationRolesSeeded: number;
-  rolePermissionLinksSeeded: number;
-};
-
-export async function seedRbacBootstrap(
-  input: SeedRbacBootstrapInput,
-): Promise<SeedRbacBootstrapResult> {
-  for (const permission of rbacBootstrapPermissions) {
-    await input.database.permission.upsert({
-      where: {
-        key: permission.key,
-      },
-      update: {
-        description: permission.description,
-      },
-      create: {
-        key: permission.key,
-        description: permission.description,
-      },
-    });
-  }
-
-  if (input.organizationId === undefined) {
-    return {
-      permissionsSeeded: rbacBootstrapPermissions.length,
-      roleTemplatesAvailable: rbacBootstrapRoleTemplates.length,
-      organizationRolesSeeded: 0,
-      rolePermissionLinksSeeded: 0,
-    };
-  }
-
-  const permissionRecords = await input.database.permission.findMany({
-    where: {
-      key: {
-        in: rbacBootstrapPermissions.map((permission) => permission.key),
-      },
-    },
-    select: {
-      id: true,
-      key: true,
-    },
-  });
-  const permissionIdByKey = new Map(
-    permissionRecords.map((permission) => [permission.key, permission.id]),
-  );
-  let rolePermissionLinksSeeded = 0;
-
-  for (const template of rbacBootstrapRoleTemplates) {
-    const role = await input.database.role.upsert({
-      where: {
-        organizationId_key: {
-          organizationId: input.organizationId,
-          key: template.key,
-        },
-      },
-      update: {
-        name: template.name,
-        description: template.description,
-      },
-      create: {
-        organizationId: input.organizationId,
-        key: template.key,
-        name: template.name,
-        description: template.description,
-      },
-    });
-
-    for (const permissionKey of template.permissions) {
-      const permissionId = permissionIdByKey.get(permissionKey);
-
-      if (permissionId === undefined) {
-        throw new Error(`rbac.seed.permission_missing:${permissionKey}`);
-      }
-
-      await input.database.rolePermission.upsert({
-        where: {
-          roleId_permissionId: {
-            roleId: role.id,
-            permissionId,
-          },
-        },
-        update: {},
-        create: {
-          roleId: role.id,
-          permissionId,
-        },
-      });
-      rolePermissionLinksSeeded += 1;
-    }
-  }
-
-  return {
-    permissionsSeeded: rbacBootstrapPermissions.length,
-    roleTemplatesAvailable: rbacBootstrapRoleTemplates.length,
-    organizationRolesSeeded: rbacBootstrapRoleTemplates.length,
-    rolePermissionLinksSeeded,
-  };
-}

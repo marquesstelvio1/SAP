@@ -36,24 +36,24 @@ export function IntegrationOverviewHeader({
       <Card>
         <CardHeader className="gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="success">Gateway de Integração P13</Badge>
-            <Badge variant="outline">Service Accounts</Badge>
-            <Badge variant="outline">{securityModel.secretStorage}</Badge>
+            <Badge variant="success">Gateway de integração</Badge>
+            <Badge variant="outline">Contas de integração</Badge>
+            <Badge variant="outline">Segredos protegidos</Badge>
           </div>
           <div className="flex flex-col gap-2">
             <CardTitle as="h1" className="text-3xl">
               Gateway de Integração
             </CardTitle>
             <CardDescription className="max-w-3xl text-base leading-7">
-              Service accounts e integrações EDI, ERP, TOS para operações ferroviárias, portuárias e
+              Contas técnicas e integrações EDI, ERP, TOS para operações ferroviárias, portuárias e
               logísticas.
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-5">
-          <MetricTile label="Service accounts" value={totals.serviceAccounts.toString()} />
-          <MetricTile label="Ativas" value={totals.activeServiceAccounts.toString()} />
-          <MetricTile label="API keys" value={totals.activeApiKeys.toString()} />
+          <MetricTile label="Contas" value={totals.serviceAccounts.toString()} />
+          <MetricTile label="Activas" value={totals.activeServiceAccounts.toString()} />
+          <MetricTile label="Chaves" value={totals.activeApiKeys.toString()} />
           <MetricTile label="Eventos" value={totals.integrationEvents.toString()} />
           <MetricTile label="Processados" value={totals.processedEvents.toString()} />
         </CardContent>
@@ -61,15 +61,15 @@ export function IntegrationOverviewHeader({
 
       <Card>
         <CardHeader>
-          <CardTitle>Modelo de segurança</CardTitle>
+          <CardTitle>Controlo operacional</CardTitle>
           <CardDescription>
-            Controles obrigatórios antes de qualquer adapter externo.
+            Validações obrigatórias antes de qualquer integração externa.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           <ContextRow label="Autorização" value={securityModel.authorizationModel} />
           <ContextRow label="Idempotência" value={securityModel.idempotencyModel} />
-          <ContextRow label="Secrets" value={securityModel.secretStorage} />
+          <ContextRow label="Segredos" value={securityModel.secretStorage} />
           <ContextRow label="Gerado" value={formatDateTime(generatedAt)} />
         </CardContent>
       </Card>

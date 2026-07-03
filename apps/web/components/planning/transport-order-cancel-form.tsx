@@ -56,7 +56,7 @@ export function TransportOrderCancelForm({
           <Badge variant={canCancelTransportOrder ? "warning" : "outline"}>
             {canCancelTransportOrder ? "Cancelamento autorizado" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">planning.order.cancel</Badge>
+          <Badge variant="outline">Cancelar ordem</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Cancelar transport order</CardTitle>
@@ -132,10 +132,6 @@ export function TransportOrderCancelForm({
               />
             </Field>
 
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
-
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (
                 <FieldError>{state.message}</FieldError>
@@ -153,7 +149,7 @@ export function TransportOrderCancelForm({
           <span className="text-muted-foreground text-xs">
             {canCancelTransportOrder
               ? "Cancelamento gravado com registo de auditoria."
-              : "Requer cancelamento de transporte."}
+              : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit" variant="outline">
             {isPending ? "A cancelar..." : "Cancelar transport order"}

@@ -29,6 +29,11 @@
       "import": "./dist/capacity.js",
       "default": "./dist/capacity.js"
     },
+    "./contracts": {
+      "types": "./dist/contracts.d.ts",
+      "import": "./dist/contracts.js",
+      "default": "./dist/contracts.js"
+    },
     "./cargo": {
       "types": "./dist/cargo.d.ts",
       "import": "./dist/cargo.js",
@@ -93,6 +98,8 @@
     "test:coverage": "c8 node --test tests/*.test.mjs"
   },
   "dependencies": {
+    "@orpc/client": "catalog:",
+    "@orpc/contract": "catalog:",
     "@orpc/server": "catalog:",
     "@saptm/auth": "workspace:*",
     "@saptm/observability": "workspace:*",

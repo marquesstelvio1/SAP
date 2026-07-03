@@ -91,7 +91,7 @@ export class PrismaAdminRepository implements AdminRepository {
   }
 
   async countPermissions(): Promise<number> {
-    return this.database.permission.count();
+    return this.database.permission.count() as unknown as number;
   }
 
   async findMemberships(
@@ -442,5 +442,9 @@ export class PrismaAdminRepository implements AdminRepository {
 
   async createOutboxEvent(tx: PrismaTx, input: PrismaOutboxEventCreateInput): Promise<void> {
     await tx.outboxEvent.create({ data: input as never });
+  }
+
+  async transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T> {
+    return this.database.$transaction(fn);
   }
 }

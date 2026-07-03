@@ -3,7 +3,8 @@
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@saptm/ui";
 import type { Route } from "next";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 
 type SlotInfo = {
   id: string;
@@ -48,6 +49,7 @@ export function CapacityPreCheck({
   selectedSlotId: externalSelectedSlotId,
   cargoEligibility,
 }: CapacityPreCheckProps) {
+  const capture = useCaptureEvent();
   const [internalSelectedSlotId, setInternalSelectedSlotId] = useState<string | null>(null);
   const selectedSlotId = externalSelectedSlotId ?? internalSelectedSlotId;
   const onSelectSlot = externalOnSelectSlot ?? setInternalSelectedSlotId;
@@ -58,13 +60,26 @@ export function CapacityPreCheck({
     );
   }, [slots]);
 
+  // Fire advisory checked event once on mount with slots data
+  useEffect(() => {
+    if (slots.length > 0) {
+      capture("capacity:advisory_checked", {
+        slots_available: slots.filter((s) => s.status === "open").length,
+        slots_total: slots.length,
+        has_overbooking_risk: hasOverbookingRisk,
+        cargo_id: cargoEligibility?.cargoId,
+        cargo_eligible: cargoEligibility?.eligible,
+      });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <Card>
       <CardHeader className="gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="info">Pre-check P1</Badge>
+          <Badge variant="info">Pré-verificação P1</Badge>
           <Badge variant="outline">Verificacao ante reserva</Badge>
-          {hasOverbookingRisk ? <Badge variant="warning">Risco de overbooking</Badge> : null}
+          {hasOverbookingRisk ? <Badge variant="warning">Risco de sobre-reserva</Badge> : null}
         </div>
         <div className="flex flex-col gap-1">
           <CardTitle className="text-lg">Verificacao de disponibilidade</CardTitle>

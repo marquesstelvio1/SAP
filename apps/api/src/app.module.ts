@@ -13,6 +13,7 @@ import { HealthModule } from "./health/health.module.js";
 import { IntegrationsModule } from "./integrations/integrations.module.js";
 import { NotificationsModule } from "./notifications/notifications.module.js";
 import { ObservabilityModule } from "./observability/observability.module.js";
+import { OpenapiModule } from "./openapi/openapi.module.js";
 import { OrganizationsModule } from "./organizations/organizations.module.js";
 import { OverviewModule } from "./overview/overview.module.js";
 import { PlanningModule } from "./planning/planning.module.js";
@@ -22,6 +23,7 @@ import { ReportsModule } from "./reports/reports.module.js";
 import { RpcModule } from "./rpc/rpc.module.js";
 import { SecurityModule } from "./security/security.module.js";
 import { SettingsModule } from "./settings/settings.module.js";
+import { SsoModule } from "./sso/sso.module.js";
 import { TariffModule } from "./tariff/tariff.module.js";
 import { TeamsModule } from "./teams/teams.module.js";
 import { TrackingModule } from "./tracking/tracking.module.js";
@@ -45,11 +47,13 @@ import { WebhooksModule } from "./webhooks/webhooks.module.js";
     CapacityModule,
     PlanningModule,
     NotificationsModule,
+    OpenapiModule,
     OrganizationsModule,
     PrivacyModule,
     ReportsModule,
     SecurityModule,
     SettingsModule,
+    SsoModule,
     TariffModule,
     TeamsModule,
     WebhooksModule,

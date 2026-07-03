@@ -39,6 +39,7 @@ pnpm infra:stack            # docker compose up -d --build (full stack)
 pnpm db:generate            # prisma generate
 pnpm db:migrate:dev         # prisma migrate dev
 pnpm db:seed                # prisma seed
+pnpm db:seed:users          # seed 4 users (admin, gestora, operador, integradora)
 pnpm auth:seed-local-admin  # seed admin user
 pnpm worker:outbox          # start outbox worker
 ```
@@ -100,7 +101,7 @@ All API communication goes through `@saptm/rpc` — no direct HTTP endpoints.
 ## Security
 
 - CSRF: double-submit cookie (csrf-csrf). Excluded paths: `/health`, `/api/auth`, `/billing/webhook`
-- CSP: nonce-based via `apps/web/src/proxy.ts` (Next.js 16 proxy convention); nonce is consumed in the root layout and passed to `ThemeProvider` and inline scripts/styles
+- CSP: nonce-based via `apps/web/proxy.ts` (Next.js 16 proxy convention); nonce is consumed in the root layout and passed to `ThemeProvider` and inline scripts/styles
 - CORS: restricted to trusted origins (configured via env)
 - Rate limiting: `@nestjs/throttler` with Redis storage — 3 tiers (api 200/min, org 1000/min, user 100/min)
 - OAuth tokens: encrypted via `encryptOAuthTokens: true` in Better Auth config
@@ -185,3 +186,115 @@ Departamentos: `product`, `ux-research`, `visual-design`, `learning-design`, `fr
 Cada departamento carrega conhecimento profundo do skill correspondente em `~/.agents/skills/enterprise-*/SKILL.md`.
 
 **Design QA** é um quality gate read-only (`edit: deny`) — auditoria final obrigatória antes de entregar.
+
+## Sprint Execution Status
+
+### Sprint 1 — Design System + Loading Boundaries ✅ Concluído
+
+**Task 1 — Design token consumption** ✅
+- `input.tsx`: `file:h-7` → `file:h-[var(--density-compact-control-height)]`
+- `skeleton.tsx`: `h-8` → `h-[var(--density-operational-control-height)]`
+- `navigation-menu.tsx`: `h-9` → `h-[var(--density-compact-control-height)]`
+- `sidebar.tsx`: todas hardcoded heights → density tokens
+- `toggle.tsx`: `h-9/h-8/h-10` → density tokens
+- `loading.tsx` (platform): `z-50` → `z-sticky`
+
+**Task 2 — loading.tsx em 11 domain routes** ✅ Já existente
+
+**Task 3 — error.tsx em 11 domain routes** ✅ Já existente
+
+### Sprint 2 — Frontend Architecture + Shared Components ✅ Concluído
+
+**Task 1 — Extract inline components from page files** ✅
+- `cargo/page.tsx`: 859→77 linhas (delegado para `CargoOverviewClient`)
+- `tracking/page.tsx`: 596→41 linhas (delegado para `TrackingOverviewClient`)
+- Componentes extraídos: `cargo-overview-header`, `cargo-lifecycle-sections`, `cargo-status-tables`, `cargo-register-form`, `cargo-release-form`, `cargo-transport-plan-form`, `cargo-transport-depart-form`, `cargo-transport-arrive-form`, `cargo-delivery-complete-form`, `cargo-delivery-exception-record-form`, `cargo-delivery-exception-resolve-form`, `cargo-operational-handoff-record-form`, `cargo-claim-settlement-record-form`, `cargo-compliance-evidence-record-form`, `cargo-compliance-evidence-verify-form`, `cargo-lifecycle-group`, `tracking-analytics-section`, `tracking-events-section`, `tracking-event-record-form`, `tracking-exception-manage-form`, `tracking-exception-resolve-form`, `tracking-next-action-card`, `tracking-overview-header`, `tracking-status-tables`
+
+**Task 2 — Install missing shadcn components** ✅ Já existente
+- `Checkbox` usado em `SignInForm`
+- Zero nativos `<input type="checkbox">` em app code
+- Zero CSS `group-hover` tooltips
+- Zero nativos `<select>` em app code
+
+### Sprint 3 — Backend Architecture ✅ Concluído
+
+**Task 1 — Implement repository pattern (cargo module)** ✅
+- `cargo.repository.ts` — Interface com `CargoRepository` + `CARGO_REPOSITORY` symbol
+- `prisma-cargo.repository.ts` — `PrismaCargoRepository` implementa a interface
+- `cargo.entity.ts` — Aggregate root com domínio rico
+- `cargo.service.ts` — Usa `@Inject(CARGO_REPOSITORY) cargoRepo: CargoRepository` (sem `prisma.cargo`)
+- **Validação:** `grep -r "prisma.cargo" apps/api/src/cargo/` → 0 resultados
+
+**Task 2 — Implement EventBus abstraction** ✅
+- `packages/database/src/domain-events.ts` — `DomainEvent`, `EventBus` interfaces
+- `packages/database/src/outbox-event-bus.ts` — `OutboxEventBus` implementação
+- `apps/api/src/event-bus/` — `EventBusModule`, `EventBusService`, `OutboxEventBusAdapter`
+- Todos os services usam `eventBus.publish()` em vez de `prisma.outboxEvent.create()`
+- **Validação:** `grep -r "prisma.outboxEvent" apps/api/src/` → 0 resultados
+
+**Task 3 — Organizations module** ✅ Já existente
+
+### Sprint 4 — API Versioning + Pagination ✅ Concluído
+
+**Task 1 — Add API versioning** ✅
+- `rpc-http.middleware.ts`: suporta `["/v1/rpc", "/rpc"]` prefixes
+- `metadata.ts`: campo `version` já definido e validado
+- `docs/adr/0007-api-versioning-strategy.md`: ADR criado
+
+**Task 2 — Add pagination to data tables** ✅
+- `DataTable` component: suporta `manualPagination`, `pageIndex`, `pageCount`, `onPageChange`
+- `DataTablePagination` component: navegação de páginas built-in
+- `teams-table.tsx`: usa `manualPagination` com server-side
+- Todas as RPC list contracts: têm schema `pagination: z.object({offset, limit})`
+
+### Sprint 5 — Form Validation + Testing Infrastructure ✅ Concluído
+
+**Task 1 — Write unit tests for business rules** ✅
+- `cargo-service-business-rules.test.mjs`
+- `capacity-service-business-rules.test.mjs`
+- `tracking-service-business-rules.test.mjs`
+- `evidence-services-business-rules.test.mjs`
+- Mais 20+ testes RPC e integração em `apps/api/tests/` e `packages/rpc/tests/`
+
+**Task 2 — Add client-side Zod validation** ✅
+- `sign-in-form.tsx`: usa `useForm` + `zodResolver` de `@saptm/form`
+- `Field`, `FieldError`, `FieldLabel` já existem em `@saptm/ui`
+
+### Sprint 6 — DevOps + Accessibility ✅ Concluído
+
+**Task 1 — Rewrite PowerShell scripts to Node.js** ✅
+- Zero `.ps1` files — todos os scripts são `.mjs` cross-platform
+- CI workflows usam `shell: bash` com `actions/setup-node@v4`
+
+**Task 2 — Implement skip-to-content + keyboard navigation** ✅
+- Skip link em `layout.tsx`: `href="#main-content"`
+- `id="main-content"` presente em todas as pages principais
+- `aria-live="assertive"` regions em tracking pages
+- `aria-label`, focus-visible, focus-trap verificados nos componentes de diálogo
+
+## Phase 1 — Production Hardening (execution-plan.md) ✅ Concluído
+
+| # | Task | Status |
+|---|---|---|
+| 1.1 | Database backup/restore scripts | ✅ Scripts + cron workflow CI |
+| 1.2 | Coverage tooling (c8) + 80% gate | ✅ `.c8rc.json` com threshold 80% |
+| 1.3 | Core Web Vitals monitoring | ✅ `web-vitals-reporter.tsx` com CLS/LCP/INP |
+| 1.4 | react-hook-form + zod resolver | ✅ `@saptm/form` com `useForm` + `zodResolver` |
+| 1.5 | npm audit / Snyk to CI | ✅ `pnpm audit --audit-level high` no CI |
+| 1.6 | Frontend DOM interaction tests | ✅ 5 E2E specs, 63 test cases (Playwright) |
+| 1.7 | Expand component tests to 20/50 | ✅ 26 component test files |
+| 1.8 | Migrate rate limiting to Redis | ✅ `RedisThrottlerStorage` + `TenantThrottlerGuard` |
+| 1.9 | Enforce 2FA for admin roles | ✅ `two-factor.guard.ts`
+
+## Phase 2 — Quality & Scale (execution-plan.md) ✅ Concluído
+
+| # | Task | Status |
+|---|---|---|
+| 2.1 | k6 load testing (auth, cargo, tracking) | ✅ `tests/load/` com 3 cenários k6 |
+| 2.2 | Bundle analysis + size budgets | ✅ `@next/bundle-analyzer` via `ANALYZE=true` |
+| 2.3 | i18n framework (next-intl) | ✅ `createNextIntlPlugin` + `i18n/request.ts` |
+| 2.4 | OpenAPI spec generation from oRPC | ✅ `@orpc/openapi` + Swagger UI `/api/docs` |
+| 2.5 | SLIs/SLOs for 3 critical paths | ✅ `docs/observability/slos.md` (5 SLIs) |
+| 2.6 | Storybook with component library | ✅ 18 stories (8 novas + 10 existentes) |
+| 2.7 | aXe accessibility scanning to CI | ✅ `@axe-core/playwright` em E2E tests |
+| 2.8 | Analytics event taxonomy (PostHog) | ✅ `docs/product/analytics-events.md` (38 eventos)

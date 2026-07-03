@@ -62,7 +62,7 @@ export function IntegrationWarehouseWmsActivityForm({
             {canProcessWarehouseWms ? "Atividade autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Warehouse/WMS</Badge>
-          <Badge variant="outline">tracking.event.record</Badge>
+          <Badge variant="outline">Registo de tracking</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Processar atividade Warehouse/WMS</CardTitle>
@@ -76,7 +76,7 @@ export function IntegrationWarehouseWmsActivityForm({
         <CardContent>
           <FieldGroup>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="warehouseWmsServiceAccountId">Service account</FieldLabel>
+              <FieldLabel htmlFor="warehouseWmsServiceAccountId">Conta de integração</FieldLabel>
               <SelectNative
                 disabled={isDisabled}
                 id="warehouseWmsServiceAccountId"
@@ -85,16 +85,14 @@ export function IntegrationWarehouseWmsActivityForm({
               >
                 {eligibleServiceAccounts.map((serviceAccount) => (
                   <option key={serviceAccount.id} value={serviceAccount.id}>
-                    {serviceAccount.name} ({serviceAccount.id})
+                    {serviceAccount.name}
                   </option>
                 ))}
               </SelectNative>
-              <FieldDescription>
-                Requer `integration.event.ingest` e `tracking.event.record`.
-              </FieldDescription>
+              <FieldDescription>Requer recepção de eventos e registo de tracking.</FieldDescription>
             </Field>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="warehouseWmsSourceSystem">Source system</FieldLabel>
+              <FieldLabel htmlFor="warehouseWmsSourceSystem">Origem</FieldLabel>
               <Input
                 defaultValue="warehouse-wms"
                 disabled={isDisabled}
@@ -251,13 +249,7 @@ export function IntegrationWarehouseWmsActivityForm({
               </FieldDescription>
             </Field>
             <Field>
-              <FieldDescription>
-                {state.status === "success" && state.trackingEventId !== undefined
-                  ? `${state.message} Tracking event: ${state.trackingEventId} / Integracao: ${
-                      state.integrationEventId ?? "sem-evento"
-                    } / Replay: ${state.replayed ? "sim" : "nao"}`
-                  : state.message}
-              </FieldDescription>
+              <FieldDescription>{state.message}</FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
           </FieldGroup>

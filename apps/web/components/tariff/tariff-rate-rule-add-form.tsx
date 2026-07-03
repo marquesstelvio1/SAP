@@ -18,7 +18,7 @@ import {
   SelectNative,
 } from "@saptm/ui";
 import { useActionState, useEffect, useState } from "react";
-
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createIdempotencyKey } from "@/lib/idempotency";
 import type { TariffRateRuleAddFormState } from "../../app/(platform)/app/tariffs/form-state";
 
@@ -36,6 +36,7 @@ export function TariffRateRuleAddForm({
   initialState,
   action,
 }: TariffRateRuleAddFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("tariff_rule"));
   const isDisabled = isPending || !canManageTariffs;
@@ -43,6 +44,11 @@ export function TariffRateRuleAddForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("tariff_rule"));
+      capture("tariff:rate_rule_added", {
+        rate_card_id: state.rateCardId,
+        rule_id: state.ruleId,
+        rule_code: state.ruleCode,
+      });
     }
   }, [state.status]);
 
@@ -51,9 +57,9 @@ export function TariffRateRuleAddForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canManageTariffs ? "success" : "warning"}>
-            {canManageTariffs ? "Regra controlada" : "Sem permissão"}
+            {canManageTariffs ? "Regra controlada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">tariff.manage</Badge>
+          <Badge variant="outline">Gerir tarifas</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Adicionar regra tarifária</CardTitle>
@@ -222,9 +228,6 @@ export function TariffRateRuleAddForm({
                 name="sourceSystem"
               />
             </Field>
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
-            </div>
             <Field data-invalid={state.status === "error"}>
               {state.status === "error" ? (
                 <FieldError>{state.message}</FieldError>
@@ -240,7 +243,7 @@ export function TariffRateRuleAddForm({
         </CardContent>
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
-            {canManageTariffs ? "Bloqueia base tarifaria invalida." : "Requer gestao tarifaria."}
+            {canManageTariffs ? "Bloqueia base tarifária inválida." : "Indisponível"}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A adicionar..." : "Adicionar regra"}

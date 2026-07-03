@@ -97,7 +97,7 @@ export class PrismaWebhooksRepository implements WebhooksRepository {
         url: true,
         secret: true,
       },
-    });
+    }) as unknown as Promise<ActiveEndpointRecord[]>;
   }
 
   async createWebhookDelivery(data: CreateWebhookDeliveryInput): Promise<void> {

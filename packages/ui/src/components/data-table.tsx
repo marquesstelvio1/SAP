@@ -133,6 +133,13 @@ function DataTable<TData>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
+                    aria-sort={
+                      header.column.getIsSorted() === "asc"
+                        ? "ascending"
+                        : header.column.getIsSorted() === "desc"
+                          ? "descending"
+                          : undefined
+                    }
                     className={cn(
                       header.column.getCanSort() &&
                         "cursor-pointer select-none outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",

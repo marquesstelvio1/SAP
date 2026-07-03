@@ -53,16 +53,16 @@ export function IntegrationEventRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canIngestEvents ? "success" : "warning"}>
-            {canIngestEvents ? "Ingestao autorizada" : "Indisponível"}
+            {canIngestEvents ? "Ingestão autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">integration.event.ingest</Badge>
-          <Badge variant="outline">idempotente</Badge>
+          <Badge variant="outline">Recepção externa</Badge>
+          <Badge variant="outline">Auditoria activa</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar evento externo</CardTitle>
           <CardDescription className="leading-6">
-            Simula a entrada local de eventos EDI/TOS/ERP antes de adapters reais. A chave
-            idempotente e `organizationId + sourceSystem + externalId`.
+            Simula a entrada local de eventos EDI/TOS/ERP antes das integrações externas. A
+            referência única combina organização, origem e identificador externo.
           </CardDescription>
         </div>
       </CardHeader>
@@ -70,7 +70,7 @@ export function IntegrationEventRecordForm({
         <CardContent>
           <FieldGroup>
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="integrationServiceAccountId">Service account</FieldLabel>
+              <FieldLabel htmlFor="integrationServiceAccountId">Conta de integração</FieldLabel>
               <SelectNative
                 disabled={isDisabled}
                 id="integrationServiceAccountId"
@@ -79,12 +79,12 @@ export function IntegrationEventRecordForm({
               >
                 {activeServiceAccounts.map((serviceAccount) => (
                   <option key={serviceAccount.id} value={serviceAccount.id}>
-                    {serviceAccount.name} ({serviceAccount.id})
+                    {serviceAccount.name}
                   </option>
                 ))}
               </SelectNative>
               <FieldDescription>
-                O emissor precisa estar ativo e conter `integration.event.ingest`.
+                O emissor precisa estar activo e autorizado para recepção de eventos.
               </FieldDescription>
             </Field>
             <Field data-disabled={isDisabled}>
@@ -131,13 +131,7 @@ export function IntegrationEventRecordForm({
               </FieldDescription>
             </Field>
             <Field>
-              <FieldDescription>
-                {state.status === "success" && state.eventId !== undefined
-                  ? `${state.message} Evento: ${state.eventId} · Idempotencia: ${
-                      state.idempotencyKey ?? "sem-chave"
-                    } · Replay: ${state.replayed ? "sim" : "nao"}`
-                  : state.message}
-              </FieldDescription>
+              <FieldDescription>{state.message}</FieldDescription>
               {state.status === "error" ? <FieldError>{state.message}</FieldError> : null}
             </Field>
           </FieldGroup>

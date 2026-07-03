@@ -23,7 +23,7 @@ export async function getAdminOverview(options?: {
     return result.status === "forbidden"
       ? {
           status: "forbidden",
-          message: "Sessao sem permissao administrativa para ler identidade e RBAC.",
+          message: "Sessao sem autorizacao administrativa para consultar identidade e acessos.",
         }
       : result;
   }

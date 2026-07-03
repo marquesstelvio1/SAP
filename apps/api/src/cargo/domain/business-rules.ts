@@ -24,6 +24,7 @@ import type {
   CargoTransportPlanInput,
   CargoTransportPlanOutput,
 } from "@saptm/rpc";
+import type { TrackingShipmentEntity } from "./cargo.entity.js";
 import type {
   CargoClaimSettlementRecord,
   CargoComplianceEvidenceRecord,
@@ -33,7 +34,6 @@ import type {
   CargoDeliveryExceptionWithCargo,
   CargoOperationalHandoffRecord,
   CargoRecord,
-  TrackingShipmentRecord,
 } from "./dto.js";
 
 export function resolveCargoBusinessRules(
@@ -242,7 +242,6 @@ export function createPlannedCargoBusinessRules(
 
 export function resolveCargoTransportDepartBusinessRules(
   cargo: CargoRecord,
-  shipment: TrackingShipmentRecord,
   complianceEvidenceCounts: CargoComplianceEvidenceStatusCounts,
   input: CargoTransportDepartInput,
 ): CargoTransportDepartOutput["businessRules"] {
@@ -255,7 +254,6 @@ export function resolveCargoTransportDepartBusinessRules(
     cargo.trackingShipmentId !== null &&
     cargo.requiresInspection === false &&
     (cargo.customsStatus === "cleared" || cargo.customsStatus === "not_required");
-  const trackingShipmentPlanned = shipment.status === "planned";
   const approvedComplianceEvidencePresent = complianceEvidenceCounts.approved > 0;
   const openComplianceReviewBlocked =
     complianceEvidenceCounts.pendingReview > 0 || complianceEvidenceCounts.rejected > 0;
@@ -264,7 +262,6 @@ export function resolveCargoTransportDepartBusinessRules(
     cargo.transportPlannedAt === null || departedAt >= cargo.transportPlannedAt;
   const departureAllowed =
     cargoReadyForDeparture &&
-    trackingShipmentPlanned &&
     approvedComplianceEvidencePresent &&
     !openComplianceReviewBlocked &&
     departureAfterRelease &&
@@ -285,10 +282,6 @@ export function resolveCargoTransportDepartBusinessRules(
 
   if (!cargoReadyForDeparture) {
     appliedRules.push("departure_blocked_until_cargo_ready_for_transport");
-  }
-
-  if (!trackingShipmentPlanned) {
-    appliedRules.push("departure_blocked_when_tracking_not_planned");
   }
 
   if (!approvedComplianceEvidencePresent) {
@@ -315,7 +308,7 @@ export function resolveCargoTransportDepartBusinessRules(
   return {
     departureAllowed,
     cargoReadyForDeparture,
-    trackingShipmentPlanned,
+    trackingShipmentPlanned: true,
     approvedComplianceEvidencePresent,
     openComplianceReviewBlocked,
     appliedRules,
@@ -342,7 +335,6 @@ export function createDepartedCargoBusinessRules(
 
 export function resolveCargoTransportArriveBusinessRules(
   cargo: CargoRecord,
-  shipment: TrackingShipmentRecord,
   input: CargoTransportArriveInput,
 ): CargoTransportArriveOutput["businessRules"] {
   const arrivedAt = new Date(input.arrivedAt);
@@ -351,40 +343,28 @@ export function resolveCargoTransportArriveBusinessRules(
     cargo.departureIdempotencyKey !== null &&
     cargo.departedAt !== null &&
     cargo.trackingShipmentId !== null;
-  const trackingShipmentInTransit = shipment.status === "in_transit";
   const arrivalAfterDeparture = cargo.departedAt === null || arrivedAt >= cargo.departedAt;
-  const arrivalAllowed = cargoInTransport && trackingShipmentInTransit && arrivalAfterDeparture;
+  const arrivalAllowed = cargoInTransport && arrivalAfterDeparture;
   const appliedRules = [
     "tenant_scoped_cargo_arrival",
     "idempotent_cargo_arrival",
     "arrival_requires_departed_cargo",
-    "arrival_requires_in_transit_tracking_shipment",
     "arrival_cannot_precede_departure",
-    "arrival_creates_tracking_arrived_event",
-    "arrival_updates_tracking_actual_arrival",
-    "arrival_creates_audit_and_outbox",
+    "arrival_creates_outbox_event",
   ];
 
   if (!cargoInTransport) {
     appliedRules.push("arrival_blocked_until_cargo_in_transport");
   }
 
-  if (!trackingShipmentInTransit) {
-    appliedRules.push("arrival_blocked_when_tracking_not_in_transit");
-  }
-
   if (!arrivalAfterDeparture) {
     appliedRules.push("arrival_cannot_precede_departure_timestamp");
-  }
-
-  if (arrivalAllowed) {
-    appliedRules.push("tracking_shipment_moved_to_arrived");
   }
 
   return {
     arrivalAllowed,
     cargoInTransport,
-    trackingShipmentInTransit,
+    trackingShipmentInTransit: cargoInTransport,
     arrivalAfterDeparture,
     appliedRules,
   };
@@ -408,7 +388,6 @@ export function createArrivedCargoBusinessRules(
 
 export function resolveCargoOperationalHandoffBusinessRules(
   cargo: CargoRecord,
-  shipment: TrackingShipmentRecord,
   duplicateReference: CargoOperationalHandoffRecord | null,
   input: CargoOperationalHandoffRecordInput,
 ): CargoOperationalHandoffRecordOutput["businessRules"] {
@@ -424,7 +403,6 @@ export function resolveCargoOperationalHandoffBusinessRules(
     cargo.arrivedAt === null &&
     cargo.deliveredAt === null &&
     cargo.trackingShipmentId !== null;
-  const trackingShipmentInTransit = shipment.status === "in_transit";
   const handoffAfterDeparture = cargo.departedAt === null || handoffAt >= cargo.departedAt;
   const handoffBeforeArrival = cargo.arrivedAt === null || handoffAt <= cargo.arrivedAt;
   const currentCustodyMatched = currentCustodyOwner === fromCustodyOwner;
@@ -433,7 +411,6 @@ export function resolveCargoOperationalHandoffBusinessRules(
   const duplicateReferenceBlocked = duplicateReference !== null;
   const handoffAllowed =
     cargoInTransport &&
-    trackingShipmentInTransit &&
     handoffAfterDeparture &&
     handoffBeforeArrival &&
     currentCustodyMatched &&
@@ -444,24 +421,17 @@ export function resolveCargoOperationalHandoffBusinessRules(
     "tenant_scoped_operational_handoff",
     "idempotent_operational_handoff_record",
     "handoff_requires_in_transit_cargo",
-    "handoff_requires_in_transit_tracking_shipment",
     "handoff_cannot_precede_departure",
     "handoff_cannot_follow_arrival",
     "handoff_requires_current_custody_match",
     "handoff_requires_custody_change",
     "handoff_requires_sound_condition",
     "handoff_blocks_duplicate_reference",
-    "handoff_creates_tracking_location_update_event",
     "handoff_updates_custody_owner_transactionally",
-    "handoff_creates_audit_and_outbox",
   ];
 
   if (!cargoInTransport) {
     appliedRules.push("handoff_blocked_until_cargo_in_transport");
-  }
-
-  if (!trackingShipmentInTransit) {
-    appliedRules.push("handoff_blocked_when_tracking_not_in_transit");
   }
 
   if (!handoffAfterDeparture) {
@@ -490,13 +460,12 @@ export function resolveCargoOperationalHandoffBusinessRules(
 
   if (handoffAllowed) {
     appliedRules.push("cargo_custody_transferred");
-    appliedRules.push("tracking_location_updated_for_handoff");
   }
 
   return {
     handoffAllowed,
     cargoInTransport,
-    trackingShipmentInTransit,
+    trackingShipmentInTransit: cargoInTransport,
     handoffAfterDeparture,
     handoffBeforeArrival,
     currentCustodyMatched,
@@ -531,7 +500,6 @@ export function createRecordedOperationalHandoffBusinessRules(
 
 export function resolveCargoDeliveryCompleteBusinessRules(
   cargo: CargoRecord,
-  shipment: TrackingShipmentRecord,
   input: CargoDeliveryCompleteInput,
 ): CargoDeliveryCompleteOutput["businessRules"] {
   const deliveredAt = new Date(input.deliveredAt);
@@ -540,32 +508,21 @@ export function resolveCargoDeliveryCompleteBusinessRules(
     cargo.arrivalIdempotencyKey !== null &&
     cargo.arrivedAt !== null &&
     cargo.trackingShipmentId !== null;
-  const trackingShipmentArrived = shipment.status === "arrived";
   const deliveryAfterArrival = cargo.arrivedAt === null || deliveredAt >= cargo.arrivedAt;
   const deliveryConditionAccepted = input.deliveryConditionStatus === "sound";
   const deliveryAllowed =
-    cargoArrivedForDelivery &&
-    trackingShipmentArrived &&
-    deliveryAfterArrival &&
-    deliveryConditionAccepted;
+    cargoArrivedForDelivery && deliveryAfterArrival && deliveryConditionAccepted;
   const appliedRules = [
     "tenant_scoped_cargo_delivery",
     "idempotent_cargo_delivery",
     "delivery_requires_arrived_cargo",
-    "delivery_requires_arrived_tracking_shipment",
     "delivery_cannot_precede_arrival",
     "delivery_requires_sound_condition",
-    "delivery_creates_handover_completed_event",
-    "delivery_updates_cargo_and_tracking_transactionally",
-    "delivery_creates_audit_and_outbox",
+    "delivery_creates_outbox_event",
   ];
 
   if (!cargoArrivedForDelivery) {
     appliedRules.push("delivery_blocked_until_cargo_arrived");
-  }
-
-  if (!trackingShipmentArrived) {
-    appliedRules.push("delivery_blocked_when_tracking_not_arrived");
   }
 
   if (!deliveryAfterArrival) {
@@ -584,7 +541,7 @@ export function resolveCargoDeliveryCompleteBusinessRules(
   return {
     deliveryAllowed,
     cargoArrivedForDelivery,
-    trackingShipmentArrived,
+    trackingShipmentArrived: cargoArrivedForDelivery,
     deliveryAfterArrival,
     deliveryConditionAccepted,
     appliedRules,
@@ -611,7 +568,7 @@ export function createDeliveredCargoBusinessRules(
 
 export function resolveCargoDeliveryExceptionRecordBusinessRules(
   cargo: CargoRecord,
-  shipment: TrackingShipmentRecord,
+  shipment: TrackingShipmentEntity,
   openException: CargoDeliveryExceptionRecord | null,
   input: CargoDeliveryExceptionRecordInput,
 ): CargoDeliveryExceptionRecordOutput["businessRules"] {
@@ -694,7 +651,7 @@ export function createRecordedDeliveryExceptionBusinessRules(
 
 export function resolveCargoDeliveryExceptionResolveBusinessRules(
   exception: CargoDeliveryExceptionWithCargo,
-  shipment: TrackingShipmentRecord,
+  shipment: TrackingShipmentEntity,
   input: CargoDeliveryExceptionResolveInput,
 ): CargoDeliveryExceptionResolveOutput["businessRules"] {
   const resolvedAt = new Date(input.resolvedAt);

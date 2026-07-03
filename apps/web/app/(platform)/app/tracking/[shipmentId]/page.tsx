@@ -270,12 +270,12 @@ export default async function TrackingShipmentDetailPage({
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="outline">Exceções</Badge>
               <Badge variant={canManageExceptions ? "warning" : "outline"}>
-                {canManageExceptions ? "Pode gerir" : "Somente leitura"}
+                {canManageExceptions ? "Gestão disponível" : "Consulta operacional"}
               </Badge>
               <Badge variant={canResolveExceptions && isResolutionAllowed ? "success" : "outline"}>
                 {canResolveExceptions && isResolutionAllowed
-                  ? "Pode resolver"
-                  : "Resolucao bloqueada"}
+                  ? "Resolução disponível"
+                  : "Resolução bloqueada"}
               </Badge>
             </div>
             <CardTitle>Resolucao de excecoes</CardTitle>

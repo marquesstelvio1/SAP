@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@saptm/ui";
 import { useActionState, useEffect, useMemo, useState } from "react";
+import { useCaptureEvent } from "@/hooks/use-capture-event";
 import { createDatetimeLocalValue } from "@/lib/format";
 import { createIdempotencyKey } from "@/lib/idempotency";
 
@@ -38,6 +39,7 @@ export function CargoDeliveryExceptionRecordForm({
   initialState,
   action,
 }: CargoDeliveryExceptionRecordFormProps) {
+  const capture = useCaptureEvent();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [idempotencyKey, setIdempotencyKey] = useState(() => createIdempotencyKey("cargo_dex"));
   const defaultOccurredAt = useMemo(() => createDatetimeLocalValue(new Date()), []);
@@ -46,6 +48,12 @@ export function CargoDeliveryExceptionRecordForm({
   useEffect(() => {
     if (state.status === "success") {
       setIdempotencyKey(createIdempotencyKey("cargo_dex"));
+      capture("cargo:status_changed", {
+        cargo_id: state.cargoId,
+        to_status: "exception",
+        exception_id: state.exceptionId,
+        shipment_id: state.shipmentId,
+      });
     }
   }, [state.status]);
 
@@ -56,7 +64,7 @@ export function CargoDeliveryExceptionRecordForm({
           <Badge variant={canRecordDeliveryException ? "success" : "warning"}>
             {canRecordDeliveryException ? "Excecao autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">cargo.delivery.exception.record</Badge>
+          <Badge variant="outline">Registar exceção</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Registar excecao de entrega</CardTitle>
@@ -180,10 +188,6 @@ export function CargoDeliveryExceptionRecordForm({
                   name="sourceSystem"
                 />
               </Field>
-            </div>
-
-            <div className="rounded-lg border bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
-              Idempotency key: <span className="font-mono text-foreground">{idempotencyKey}</span>
             </div>
 
             <Field data-invalid={state.status === "error"}>

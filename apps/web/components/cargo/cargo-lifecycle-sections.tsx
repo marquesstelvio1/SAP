@@ -17,7 +17,6 @@ import {
   recordCargoDeliveryExceptionAction,
   recordCargoOperationalHandoffAction,
   registerCargoAction,
-  releaseCargoAction,
   resolveCargoDeliveryExceptionAction,
   verifyCargoComplianceEvidenceAction,
 } from "../../app/(platform)/app/cargo/actions";
@@ -30,7 +29,6 @@ import {
   initialCargoDeliveryExceptionResolveFormState,
   initialCargoOperationalHandoffRecordFormState,
   initialCargoRegisterFormState,
-  initialCargoReleaseFormState,
   initialCargoTransportArriveFormState,
   initialCargoTransportDepartFormState,
   initialCargoTransportPlanFormState,
@@ -44,14 +42,12 @@ import { CargoDeliveryExceptionResolveForm } from "./cargo-delivery-exception-re
 import { CargoLifecycleGroup } from "./cargo-lifecycle-group";
 import { CargoOperationalHandoffRecordForm } from "./cargo-operational-handoff-record-form";
 import { CargoRegisterForm } from "./cargo-register-form";
-import { CargoReleaseForm } from "./cargo-release-form";
 import { CargoTransportArriveForm } from "./cargo-transport-arrive-form";
 import { CargoTransportDepartForm } from "./cargo-transport-depart-form";
 import { CargoTransportPlanForm } from "./cargo-transport-plan-form";
 
 export type CargoLifecycleSectionsProps = {
   canRegisterCargo: boolean;
-  canReleaseCargo: boolean;
   canPlanTransport: boolean;
   canDepartTransport: boolean;
   canArriveTransport: boolean;
@@ -92,41 +88,13 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
               <CardDescription>Regras de negocio aplicadas no registo da carga.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm">
-              <ContextRow label="Identidade" value="cargoReference unico por tenant" />
-              <ContextRow label="Idempotencia" value="chave obrigatoria" />
-              <ContextRow label="Perigosidade" value="UN number + hazard class" />
-              <ContextRow label="Aduana" value="retencao exige referencia aduaneira" />
-              <ContextRow label="Danos" value="carga danificada exige inspecao" />
-              <ContextRow label="Transporte" value="bloqueado ate liberacao" />
-            </CardContent>
-          </Card>
-        </section>
-
-        <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]" id="cargo-release">
-          <CargoReleaseForm
-            action={releaseCargoAction}
-            canReleaseCargo={props.canReleaseCargo}
-            initialState={initialCargoReleaseFormState}
-          />
-
-          <Card>
-            <CardHeader>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant={props.canReleaseCargo ? "success" : "warning"}>
-                  {props.canReleaseCargo ? "Liberacao autorizada" : "Liberacao indisponivel"}
-                </Badge>
-              </div>
-              <CardTitle>Liberacao de carga</CardTitle>
-              <CardDescription>
-                Carga liberada fica pronta para transporte apos validacao das regras de negocio.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-3 text-sm">
-              <ContextRow label="Estado" value="registered/held sao liberaveis" />
-              <ContextRow label="Aduana" value="pending/held exigem cleared" />
-              <ContextRow label="Inspecao" value="danos/bloqueios exigem passed" />
-              <ContextRow label="Perigosa" value="UN number + hazard class obrigatorios" />
-              <ContextRow label="Idempotencia" value="chave obrigatoria" />
+              <ContextRow label="Identidade" value="Referencia unica por organizacao" />
+              <ContextRow label="Idempotencia" value="Chave obrigatoria" />
+              <ContextRow label="Perigosidade" value="Numero UN + classe de perigo" />
+              <ContextRow label="Aduana" value="Retencao exige referencia aduaneira" />
+              <ContextRow label="Danos" value="Carga danificada exige inspecao" />
+              <ContextRow label="Transporte" value="Bloqueado ate libertacao" />
+              <ContextRow label="Libertacao" value="Disponivel no formulario de registo" />
             </CardContent>
           </Card>
         </section>
@@ -171,11 +139,11 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
               <CardDescription>Cria o registo de tracking para a carga planeada.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm">
-              <ContextRow label="Prontidao" value="carga em ready_for_transport" />
-              <ContextRow label="Release" value="carga liberada" />
-              <ContextRow label="Bloqueios" value="sem inspecao aberta e sem retencao aduaneira" />
-              <ContextRow label="Tracking" value="um registo por carga" />
-              <ContextRow label="Evento inicial" value="tracking.created" />
+              <ContextRow label="Prontidao" value="Carga pronta para transporte" />
+              <ContextRow label="Libertacao" value="Carga libertada" />
+              <ContextRow label="Bloqueios" value="Sem inspecao aberta e sem retencao aduaneira" />
+              <ContextRow label="Tracking" value="Um registo por carga" />
+              <ContextRow label="Evento inicial" value="Criado" />
             </CardContent>
           </Card>
         </section>
@@ -200,11 +168,11 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm">
-              <ContextRow label="Cargo" value="status ready_for_transport" />
-              <ContextRow label="Tracking" value="registo em planned" />
-              <ContextRow label="Compliance" value=">= 1 evidencia aprovada" />
-              <ContextRow label="Bloqueios" value="sem revisao pendente ou rejeitada" />
-              <ContextRow label="Evento" value="tracking.departed + in_transit" />
+              <ContextRow label="Cargo" value="Pronto para transporte" />
+              <ContextRow label="Tracking" value="Registo planeado" />
+              <ContextRow label="Compliance" value="Pelo menos 1 evidencia aprovada" />
+              <ContextRow label="Bloqueios" value="Sem revisao pendente ou rejeitada" />
+              <ContextRow label="Evento" value="Partida + em transito" />
             </CardContent>
           </Card>
         </section>
@@ -232,12 +200,12 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3 text-sm md:grid-cols-2">
-              <ContextRow label="Cargo" value="status in_transport" />
-              <ContextRow label="Tracking" value="registo in_transit" />
-              <ContextRow label="Custodia" value="origem deve bater com custodia atual" />
-              <ContextRow label="Transferencia" value="destino deve ser diferente de origem" />
-              <ContextRow label="Condicao" value="sound; excecoes tem fluxo proprio" />
-              <ContextRow label="Evento" value="tracking.location_updated" />
+              <ContextRow label="Cargo" value="Em transporte" />
+              <ContextRow label="Tracking" value="Registo em transito" />
+              <ContextRow label="Custodia" value="Origem deve corresponder a custodia atual" />
+              <ContextRow label="Transferencia" value="Destino deve ser diferente de origem" />
+              <ContextRow label="Condicao" value="Integra; excecoes tem fluxo proprio" />
+              <ContextRow label="Evento" value="Localizacao atualizada" />
             </CardContent>
           </Card>
         </section>
@@ -281,11 +249,11 @@ export function CargoLifecycleSections(props: CargoLifecycleSectionsProps) {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3 text-sm md:grid-cols-2">
-              <ContextRow label="Chegada" value="cargo in_transport + tracking in_transit" />
-              <ContextRow label="Timestamp" value="chegada >= partida" />
-              <ContextRow label="Entrega" value="cargo arrived + tracking arrived" />
-              <ContextRow label="Condicao" value="sound; danos exigem excecao antes do fecho" />
-              <ContextRow label="Eventos" value="tracking.arrived + handover_completed" />
+              <ContextRow label="Chegada" value="Carga em transporte + tracking em transito" />
+              <ContextRow label="Timestamp" value="Chegada posterior a partida" />
+              <ContextRow label="Entrega" value="Carga chegada + tracking chegada" />
+              <ContextRow label="Condicao" value="Integra; danos exigem excecao antes do fecho" />
+              <ContextRow label="Eventos" value="Chegada + transferencia concluida" />
             </CardContent>
           </Card>
         </section>

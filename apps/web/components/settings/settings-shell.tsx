@@ -15,13 +15,13 @@ type SettingsSection = {
 
 const settingsSections: readonly SettingsSection[] = [
   {
-    label: "General",
+    label: "Geral",
     href: "/app/settings/general",
     description: "Nome, slug e estado da organização",
     status: "active",
   },
   {
-    label: "Branding",
+    label: "Marca",
     href: "/app/settings/branding",
     description: "Logotipo, cores e favicon",
     status: "active",
@@ -35,7 +35,7 @@ const settingsSections: readonly SettingsSection[] = [
   {
     label: "Funções",
     href: "/app/admin",
-    description: "Gerir roles e permissões",
+    description: "Gerir perfis e permissões",
     status: "active",
   },
   {
@@ -51,7 +51,7 @@ const settingsSections: readonly SettingsSection[] = [
     status: "active",
   },
   {
-    label: "Webhooks",
+    label: "Notificações",
     href: "/app/settings/webhooks",
     description: "Notificações HTTP para eventos da organização",
     status: "active",
@@ -71,7 +71,7 @@ export function SettingsShell({ children, organizationName }: SettingsShellProps
       <aside className="hidden w-64 shrink-0 self-stretch border-r overflow-y-auto md:block">
         <div className="flex flex-col gap-1 p-4">
           <div className="mb-3 flex flex-col gap-0.5 px-3">
-            <span className="font-semibold text-sm tracking-tight">Configurações</span>
+            <span className="font-semibold text-sm tracking-heading">Configurações</span>
             <span className="truncate text-muted-foreground text-xs">{organizationName}</span>
           </div>
           <Separator className="mb-3" />

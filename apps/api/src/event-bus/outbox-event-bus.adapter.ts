@@ -1,13 +1,15 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import type { DomainEvent, EventBus, PrismaTx, SaptmPrismaClient } from "@saptm/database";
 import { getPrismaClient } from "@saptm/database";
-import type { EventBusService } from "./event-bus.service.js";
+import { EventBusService } from "./event-bus.service.js";
 
 @Injectable()
 export class OutboxEventBusAdapter implements EventBus {
   private readonly database: SaptmPrismaClient = getPrismaClient();
 
-  constructor(private readonly eventBus: EventBusService) {}
+  constructor(
+    @Inject(forwardRef(() => EventBusService)) private readonly eventBus: EventBusService,
+  ) {}
 
   async publish(tx: PrismaTx, event: DomainEvent): Promise<void> {
     await tx.outboxEvent.create({
@@ -16,6 +18,7 @@ export class OutboxEventBusAdapter implements EventBus {
         eventType: event.eventType,
         aggregateType: event.aggregateType,
         aggregateId: event.aggregateId,
+        eventVersion: event.eventVersion,
         payload: event.payload as never,
       },
     });
@@ -30,6 +33,7 @@ export class OutboxEventBusAdapter implements EventBus {
         eventType: event.eventType,
         aggregateType: event.aggregateType,
         aggregateId: event.aggregateId,
+        eventVersion: event.eventVersion,
         payload: event.payload as never,
       },
     });

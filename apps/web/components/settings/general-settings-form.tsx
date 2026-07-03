@@ -65,7 +65,7 @@ export function GeneralSettingsForm({
           </Badge>
         </div>
         <div className="max-w-3xl">
-          <h1 className="font-semibold text-3xl tracking-tight">Configurações gerais</h1>
+          <h1 className="font-semibold text-3xl tracking-heading">Configurações gerais</h1>
           <p className="mt-2 text-muted-foreground">
             Gerir nome, slug e estado da organização. As alterações são auditáveis e propagadas para
             todos os módulos.
