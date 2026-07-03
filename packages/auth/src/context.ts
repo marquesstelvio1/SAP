@@ -2,7 +2,14 @@ import type { ActorType as TelemetryActorType, TraceContext } from "@saptm/obser
 
 import type { PlatformPermission } from "./permissions.js";
 
-export const authActorTypes = ["user", "service_account", "platform"] as const;
+export const authActorTypes = [
+  "anonymous",
+  "user",
+  "service_account",
+  "integration",
+  "platform",
+  "ai_agent",
+] as const;
 
 export type AuthActorType = (typeof authActorTypes)[number];
 

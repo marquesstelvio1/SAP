@@ -9,24 +9,32 @@ export const dynamic = "force-dynamic";
 type SignInPageProps = {
   searchParams: Promise<{
     next?: string | string[];
+    reason?: string;
   }>;
 };
 
 export default async function SignInPage({ searchParams }: SignInPageProps) {
-  const platformSession = await getCurrentPlatformSession();
-
-  if (platformSession !== undefined) {
-    redirect("/app" as Route);
-  }
-
   const params = await searchParams;
+  const reason = readSafeStringParam(params.reason);
   const nextPath = readSafeNextPath(params.next);
+
+  // If the user was redirected here due to session expiry (reason=session_expired),
+  // skip the automatic redirect even if the server-side session check still returns
+  // a cached session (Better Auth cookie cache). The client detected that the API
+  // rejected the session, so force re-authentication.
+  if (reason !== "session_expired") {
+    const platformSession = await getCurrentPlatformSession();
+
+    if (platformSession !== undefined) {
+      redirect("/app" as Route);
+    }
+  }
 
   return (
     <main className="min-h-screen bg-sidebar text-sidebar-foreground" id="main-content">
-      <div className="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
+      <div className="grid min-h-screen lg:grid-layout-auth">
         <section className="relative hidden overflow-hidden border-sidebar-border border-r p-10 lg:flex lg:flex-col lg:justify-between">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,var(--sidebar-accent)/0.26,transparent_32%),radial-gradient(circle_at_80%_10%,var(--sidebar-primary)/0.18,transparent_28%)]" />
+          <div className="absolute inset-0 bg-auth-gradient-light dark:bg-auth-gradient-dark" />
           <div className="relative flex items-center gap-3">
             <div className="flex size-11 items-center justify-center rounded-xl bg-sidebar-primary font-semibold text-sidebar-primary-foreground">
               ST
@@ -67,6 +75,11 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
       </div>
     </main>
   );
+}
+
+function readSafeStringParam(value: string | string[] | undefined): string | undefined {
+  const str = Array.isArray(value) ? value[0] : value;
+  return str ?? undefined;
 }
 
 function readSafeNextPath(value: string | string[] | undefined): string {

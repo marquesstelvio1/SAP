@@ -64,14 +64,14 @@ export function CargoClaimSettlementRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordClaimSettlement ? "success" : "warning"}>
-            {canRecordClaimSettlement ? "Liquidacao autorizada" : "Indisponível"}
+            {canRecordClaimSettlement ? "Liquidação autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Liquidar reclamação</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Liquidar claim contabilistica</CardTitle>
+          <CardTitle>Liquidar claim contabilística</CardTitle>
           <CardDescription className="leading-6">
-            Regista settlement financeiro apenas para excecao resolvida com claim aceite, referencia
+            Regista settlement financeiro apenas para exceção resolvida com claim aceite, referencia
             consistente e registo de auditoria.
           </CardDescription>
         </div>
@@ -88,7 +88,7 @@ export function CargoClaimSettlementRecordForm({
                   disabled={isDisabled}
                   id="claimSettlementExceptionId"
                   name="exceptionId"
-                  placeholder="ID da excecao resolvida"
+                  placeholder="ID da exceção resolvida"
                   required
                 />
                 <FieldDescription>
@@ -118,7 +118,7 @@ export function CargoClaimSettlementRecordForm({
                   placeholder="CLM-2026-0001"
                   required
                 />
-                <FieldDescription>Deve coincidir com a claim da excecao.</FieldDescription>
+                <FieldDescription>Deve coincidir com a claim da exceção.</FieldDescription>
               </Field>
               <Field data-disabled={!canRecordClaimSettlement}>
                 <FieldLabel htmlFor="settlementReference">Settlement reference</FieldLabel>
@@ -206,7 +206,7 @@ export function CargoClaimSettlementRecordForm({
                 disabled={isDisabled}
                 id="settlementSummary"
                 name="settlementSummary"
-                placeholder="Descreva criterio, aprovacao, valor e impacto contabilistico"
+                placeholder="Descreva criterio, aprovação, valor e impacto contabilistico"
                 required
               />
             </Field>
@@ -239,8 +239,8 @@ export function CargoClaimSettlementRecordForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canRecordClaimSettlement
-              ? "Nao altera tracking; apenas contabiliza claim com auditoria."
-              : "Requer liquidacao de claims."}
+              ? "Não altera tracking; apenas contabiliza claim com auditoria."
+              : "Requer liquidação de claims."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A liquidar..." : "Liquidar claim"}

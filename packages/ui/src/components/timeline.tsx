@@ -56,14 +56,14 @@ function TimelineItem({
   return (
     <li
       data-slot="timeline-item"
-      className={cn("relative flex gap-4 pb-8 last:pb-0", className)}
+      className={cn("relative flex gap-4 pb-6 last:pb-0", className)}
       {...props}
     >
       <div className="flex flex-col items-center">
         <span
           data-slot="timeline-dot"
           className={cn(
-            "flex size-7 shrink-0 items-center justify-center rounded-full border-2",
+            "flex size-6 shrink-0 items-center justify-center rounded-full border-2",
             styles.dot,
           )}
         >

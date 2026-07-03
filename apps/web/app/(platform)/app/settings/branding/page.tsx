@@ -1,4 +1,5 @@
 import { AccessState } from "@saptm/ui";
+import type { Metadata } from "next";
 import { BrandingSettingsForm } from "../../../../../components/settings/branding-settings-form";
 import { requirePlatformSession } from "../../../../../lib/auth-session";
 import { getSettingsOrganizationData } from "../../../../../lib/settings-data";
@@ -6,6 +7,11 @@ import { updateBrandingSettingsAction } from "./actions";
 import { initialBrandingSettingsFormState } from "./form-state";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Marca",
+  description: "Personalização da identidade visual da organização.",
+};
 
 export default async function BrandingSettingsPage() {
   const platformSession = await requirePlatformSession("/app/settings/branding");
@@ -31,7 +37,7 @@ export default async function BrandingSettingsPage() {
     return (
       <AccessState
         badgeLabel="Marca"
-        description="API nao respondeu dentro do tempo limite."
+        description="API não respondeu dentro do tempo limite."
         role="alert"
         title="Dados indisponiveis"
         variant="error"

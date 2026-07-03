@@ -6,9 +6,9 @@ export type CargoRegisterFormState = {
   idempotencyKey?: string;
   movementBlocked?: boolean;
   inspectionRequired?: boolean;
-  /** Status da operacao de libertacao quando feita apos registo. */
+  /** Status da operação de libertação quando feita apos registo. */
   releaseStatus?: string;
-  /** Cargo ID retornado pela libertacao (igual ao do registo). */
+  /** Cargo ID retornado pela libertação (igual ao do registo). */
   releaseCargoId?: string;
 };
 
@@ -113,7 +113,7 @@ export type CargoDeliveryExceptionRecordFormState = {
 
 export const initialCargoDeliveryExceptionRecordFormState: CargoDeliveryExceptionRecordFormState = {
   status: "idle",
-  message: "Registe uma excecao de entrega quando a condicao final nao e sound.",
+  message: "Registe uma exceção de entrega quando a condicao final não e sound.",
 };
 
 export type CargoDeliveryExceptionResolveFormState = {
@@ -130,7 +130,7 @@ export type CargoDeliveryExceptionResolveFormState = {
 export const initialCargoDeliveryExceptionResolveFormState: CargoDeliveryExceptionResolveFormState =
   {
     status: "idle",
-    message: "Resolva a excecao para restaurar a carga e permitir a entrega final.",
+    message: "Resolva a exceção para restaurar a carga e permitir a entrega final.",
   };
 
 export type CargoOperationalHandoffRecordFormState = {
@@ -149,7 +149,7 @@ export type CargoOperationalHandoffRecordFormState = {
 export const initialCargoOperationalHandoffRecordFormState: CargoOperationalHandoffRecordFormState =
   {
     status: "idle",
-    message: "Registe a transferencia operacional de custodia porto/ferrovia/terminal P7.",
+    message: "Registe a transferência operacional de custodia porto/ferrovia/terminal P7.",
   };
 
 export type CargoClaimSettlementRecordFormState = {
@@ -166,7 +166,7 @@ export type CargoClaimSettlementRecordFormState = {
 
 export const initialCargoClaimSettlementRecordFormState: CargoClaimSettlementRecordFormState = {
   status: "idle",
-  message: "Registe a liquidacao contabilistica de uma claim aceite e resolvida P8.",
+  message: "Registe a liquidação contabilística de uma claim aceite e resolvida P8.",
 };
 
 export type CargoComplianceEvidenceRecordFormState = {
@@ -183,7 +183,7 @@ export type CargoComplianceEvidenceRecordFormState = {
 export const initialCargoComplianceEvidenceRecordFormState: CargoComplianceEvidenceRecordFormState =
   {
     status: "idle",
-    message: "Registe evidencia documental antes da verificacao.",
+    message: "Registe evidencia documental antes da verificação.",
   };
 
 export type CargoComplianceEvidenceVerifyFormState = {
@@ -200,5 +200,5 @@ export type CargoComplianceEvidenceVerifyFormState = {
 export const initialCargoComplianceEvidenceVerifyFormState: CargoComplianceEvidenceVerifyFormState =
   {
     status: "idle",
-    message: "Revise evidencia pendente para aprovar ou rejeitar com trilha auditavel.",
+    message: "Revise evidencia pendente para aprovar ou rejeitar com trilha auditável.",
   };

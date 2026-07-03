@@ -61,7 +61,7 @@ export function TwoFactorVerificationForm({ nextPath }: { nextPath: string }) {
           <Badge variant="outline">Autenticação de dois fatores</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle className="text-2xl">Verificacao MFA</CardTitle>
+          <CardTitle className="text-2xl">Verificação MFA</CardTitle>
           <CardDescription>
             Confirme o segundo fator para concluir o acesso a plataforma.
           </CardDescription>

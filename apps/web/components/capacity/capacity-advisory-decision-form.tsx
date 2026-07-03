@@ -160,7 +160,7 @@ export function CapacityAdvisoryDecisionForm({
                   disabled={isDisabled}
                   id="advisorySlotId"
                   name="slotId"
-                  placeholder="Obrigatorio se nao houver reserva"
+                  placeholder="Obrigatorio se não houver reserva"
                 />
               </Field>
               <Field data-disabled={!canDecideCapacityAdvisory}>
@@ -233,7 +233,7 @@ export function CapacityAdvisoryDecisionForm({
               ) : (
                 <FieldDescription>
                   {state.status === "success"
-                    ? `${state.message} Decisao: ${state.decisionId}`
+                    ? `${state.message} Decisão: ${state.decisionId}`
                     : state.message}
                 </FieldDescription>
               )}

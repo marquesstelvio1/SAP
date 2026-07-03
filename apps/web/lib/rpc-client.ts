@@ -7,12 +7,29 @@ import type { contracts } from "@saptm/rpc/contracts";
 // ── Existing RPC helpers (rpcGet, rpcPost) ──────────────────────────
 
 const INTERNAL_REQUEST_HEADER = "x-internal-request" as const;
+const ORG_HEADER = "x-saptm-org-id" as const;
 
-export type RpcStatus = "forbidden" | "not_found" | "unavailable" | "invalid";
+export type RpcStatus =
+  | "unauthorized"
+  | "forbidden"
+  | "not_found"
+  | "unavailable"
+  | "invalid"
+  | "rate_limited";
+
+export class RpcError extends Error {
+  constructor(
+    public status: RpcStatus,
+    message: string,
+  ) {
+    super(message);
+    this.name = "RpcError";
+  }
+}
 
 export type RpcSuccess<T> = { status: "ok"; data: T };
 
-export type RpcFailure = { status: RpcStatus; message: string };
+export type RpcFailure = { status: RpcStatus; message: string; retryAfterMs?: number };
 
 export type RpcResult<T> = RpcSuccess<T> | RpcFailure;
 
@@ -24,11 +41,12 @@ type Schema<T> = {
   safeParse: (data: unknown) => { success: true; data: T } | { success: false };
 };
 
-const RPC_TIMEOUT_MS = 15_000;
+const RPC_TIMEOUT_MS = 30_000;
 
 type RpcQueryOptions = {
   searchParams?: Record<string, string | number | undefined>;
   cookie?: string;
+  orgId?: string;
 };
 
 function isServerSide(): boolean {
@@ -62,6 +80,10 @@ export async function rpcGet<T>(
 
   if (options.cookie) {
     headers.cookie = options.cookie;
+  }
+
+  if (options.orgId) {
+    headers[ORG_HEADER] = options.orgId;
   }
 
   let response: Response;
@@ -114,6 +136,10 @@ export async function rpcPost<T>(
     headers.cookie = options.cookie;
   }
 
+  if (options.orgId) {
+    headers[ORG_HEADER] = options.orgId;
+  }
+
   let response: Response;
 
   const controller = new AbortController();
@@ -146,7 +172,14 @@ export async function rpcPost<T>(
 }
 
 async function parseRpcResponse<T>(response: Response, schema: Schema<T>): Promise<RpcResult<T>> {
-  if (response.status === 401 || response.status === 403) {
+  if (response.status === 401) {
+    return {
+      status: "unauthorized",
+      message: "Sessao expirada ou invalida. Faca login novamente.",
+    };
+  }
+
+  if (response.status === 403) {
     return {
       status: "forbidden",
       message: "Sessao sem permissao para esta operacao.",
@@ -160,14 +193,41 @@ async function parseRpcResponse<T>(response: Response, schema: Schema<T>): Promi
     };
   }
 
+  if (response.status === 429) {
+    const retryAfter = response.headers.get("Retry-After");
+    const retryAfterMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : undefined;
+    return {
+      status: "rate_limited",
+      message: "Muitas requisicoes. Tente novamente mais tarde.",
+      ...(retryAfterMs !== undefined ? { retryAfterMs } : {}),
+    } as RpcResult<T>;
+  }
+
   if (!response.ok) {
+    let errorText: string;
+    try {
+      const errorBody = await response.text();
+      errorText = errorBody || `API retornou HTTP ${response.status}.`;
+    } catch {
+      errorText = `API retornou HTTP ${response.status}.`;
+    }
     return {
       status: "unavailable",
-      message: `API indisponivel: HTTP ${response.status}.`,
+      message: errorText,
     };
   }
 
-  const envelope = (await response.json()) as RpcJsonEnvelope;
+  let responseBody: unknown;
+  try {
+    responseBody = await response.json();
+  } catch {
+    return {
+      status: "unavailable",
+      message: "API retornou resposta invalida (nao JSON).",
+    };
+  }
+
+  const envelope = responseBody as RpcJsonEnvelope;
   const parsed = schema.safeParse(envelope.json);
 
   if (!parsed.success) {
@@ -183,7 +243,7 @@ async function parseRpcResponse<T>(response: Response, schema: Schema<T>): Promi
 // ── Typed oRPC client (contract-first) ──────────────────────────────
 
 const link = new RPCLink({
-  url: `${typeof window !== "undefined" ? window.location.origin : ""}/api/rpc`,
+  url: `${typeof window !== "undefined" ? window.location.origin : getClientEnv().NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/rpc`,
   headers: {},
 });
 

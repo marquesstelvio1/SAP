@@ -42,4 +42,7 @@ function RadioGroupItem({
   );
 }
 
+RadioGroup.displayName = "RadioGroup";
+RadioGroupItem.displayName = "RadioGroupItem";
+
 export { RadioGroup, RadioGroupItem };

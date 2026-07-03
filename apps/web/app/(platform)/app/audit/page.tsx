@@ -2,12 +2,13 @@ import type { PlatformPermission } from "@saptm/auth";
 import {
   type AuditSearchInput,
   auditActorTypes,
-  type auditRecordSummarySchema,
   auditSearchInputSchema,
   auditSeverities,
 } from "@saptm/rpc/audit";
 import {
   AccessState,
+  Alert,
+  AlertDescription,
   Badge,
   Button,
   Card,
@@ -20,23 +21,21 @@ import {
   FieldGroup,
   FieldLabel,
   Input,
-  JsonBlock,
   MetricTile,
   SelectNative,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
 } from "@saptm/ui";
-import type { Route } from "next";
+import type { Metadata, Route } from "next";
 import Link from "next/link";
-import type { z } from "zod";
-
+import { redirect } from "next/navigation";
 import { formatDateTime } from "@/lib/format";
+import { AuditRecordsTable } from "../../../../components/audit/audit-records-table";
 import { searchAuditRecords } from "../../../../lib/audit-records";
 import { requirePlatformSession } from "../../../../lib/auth-session";
+
+export const metadata: Metadata = {
+  title: "Auditoria",
+  description: "Registo de eventos auditados, pesquisa e exportação de logs operacionais.",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -102,6 +101,10 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
     );
   }
 
+  if (auditResult.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (auditResult.status !== "ok") {
     return (
       <AccessState
@@ -119,7 +122,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
+      <section className="grid gap-4 xl:grid-layout-main">
         <Card>
           <CardHeader className="gap-4">
             <div className="flex flex-wrap items-center gap-2">
@@ -180,12 +183,9 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
         </CardHeader>
         <CardContent>
           {parsedFilters.message === undefined ? null : (
-            <div
-              className="mb-4 rounded-lg border bg-muted/35 p-3 text-muted-foreground text-sm"
-              role="status"
-            >
-              {parsedFilters.message}
-            </div>
+            <Alert className="mb-4">
+              <AlertDescription>{parsedFilters.message}</AlertDescription>
+            </Alert>
           )}
           <form method="get">
             <fieldset className="contents">
@@ -322,80 +322,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table aria-label="Registos auditados">
-            <TableHeader>
-              <TableRow>
-                <TableHead>Quando</TableHead>
-                <TableHead>Severidade</TableHead>
-                <TableHead>Ação</TableHead>
-                <TableHead>Sujeito</TableHead>
-                <TableHead>Ator</TableHead>
-                <TableHead>Detalhe</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {search.records.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} role="status">
-                    Nenhum registo encontrado para os filtros.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                search.records.map((record: z.infer<typeof auditRecordSummarySchema>) => (
-                  <TableRow key={record.id}>
-                    <TableCell>{formatDateTime(record.createdAt)}</TableCell>
-                    <TableCell>
-                      <Badge variant={resolveSeverityVariant(record.severity)}>
-                        {severityLabels[record.severity]}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <span className="font-medium">{record.action}</span>
-                        {/* correlationId removido da UI operacional */}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <span>{record.subjectType}</span>
-                        <span className="text-muted-foreground text-xs">
-                          {record.subjectId ?? "sem subjectId"}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <span>{actorTypeLabels[record.actorType]}</span>
-                        <span className="text-muted-foreground text-xs">
-                          {record.actorId ?? "sem actorId"}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <details className="max-w-xl">
-                        <summary
-                          className="cursor-pointer rounded-sm font-medium text-sm outline-none transition-colors hover:text-foreground/80 focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                          aria-label={`Detalhe do registo ${record.action}`}
-                        >
-                          Ver detalhe
-                        </summary>
-                        <div className="mt-3 flex flex-col gap-3 rounded-lg border bg-muted/35 p-3">
-                          <ContextRow label="Motivo" value={record.reason ?? "Sem motivo"} />
-                          <ContextRow label="IP" value={record.ipAddress ?? "Não registado"} />
-                          <ContextRow
-                            label="Navegador"
-                            value={record.userAgent ?? "Não registado"}
-                          />
-                          <JsonBlock label="Antes" value={record.before} />
-                          <JsonBlock label="Depois" value={record.after} />
-                        </div>
-                      </details>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+          <AuditRecordsTable records={search.records} />
         </CardContent>
       </Card>
     </div>
@@ -428,7 +355,7 @@ function parseAuditSearchParams(rawSearchParams: Record<string, string | string[
 
   return {
     input: auditSearchInputSchema.parse(undefined),
-    message: `Filtros invalidos ignorados: ${parsed.error.issues
+    message: `Filtros inválidos ignorados: ${parsed.error.issues
       .map((issue) => issue.message)
       .join(" ")}`,
   };
@@ -498,22 +425,4 @@ function toDatetimeLocalValue(value: string | undefined): string {
   const timezoneOffsetMs = date.getTimezoneOffset() * 60_000;
 
   return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
-}
-
-function resolveSeverityVariant(
-  severity: keyof typeof severityLabels,
-): "outline" | "success" | "warning" | "destructive" {
-  if (severity === "critical") {
-    return "destructive";
-  }
-
-  if (severity === "high") {
-    return "warning";
-  }
-
-  if (severity === "low") {
-    return "success";
-  }
-
-  return "outline";
 }

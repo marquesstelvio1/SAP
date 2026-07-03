@@ -31,6 +31,8 @@ export interface TrackingRepository {
     plannedDepartureAt: Date | null;
     estimatedArrivalAt: Date | null;
     actualArrivalAt: Date | null;
+    teamId: string | null;
+    team: { id: string; name: string } | null;
     createdAt: Date;
     updatedAt: Date;
     _count: { events: number };
@@ -117,6 +119,8 @@ export interface TrackingRepository {
       transportMode: string;
       status: string;
       priority: number;
+      teamId: string | null;
+      team: { id: string; name: string } | null;
       estimatedArrivalAt: Date | null;
       updatedAt: Date;
       createdAt: Date;

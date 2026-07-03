@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM node:22-alpine AS base
+FROM node:24-alpine AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -44,7 +44,7 @@ RUN prisma_package="$(find /app/node_modules/.pnpm -path '*/node_modules/@prisma
   cp -R /tmp/prisma-client/. "$prisma_client/"
 RUN pnpm --filter @saptm/api... build
 
-FROM node:22-alpine AS runner
+FROM node:24-alpine AS runner
 
 ENV NODE_ENV="production"
 ENV API_PORT="4000"
@@ -81,8 +81,24 @@ WORKDIR /app/apps/api
 
 EXPOSE 4000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD node -e "const port=process.env.API_PORT||4000; fetch('http://127.0.0.1:'+port+'/health/live').then((response)=>process.exit(response.ok?0:1)).catch(()=>process.exit(1))"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 CMD node -e "const port=process.env.API_PORT||4000; fetch('http://127.0.0.1:'+port+'/health/startup').then((response)=>process.exit(response.ok?0:1)).catch(()=>process.exit(1))"
 
-RUN printf '#!/bin/sh\nset -e\necho "[migrate] Applying database migrations..."\ncd /app/packages/database && npx prisma migrate deploy --schema=prisma/schema.prisma\necho "[migrate] Done."\ncd /app/apps/api && node dist/main.js\n' > /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
+RUN printf '#!/bin/sh\n\
+set -e\n\
+echo "[migrate] Applying database migrations..."\n\
+cd /app/packages/database && npx prisma migrate deploy --schema=prisma/schema.prisma\n\
+\n\
+echo "[seed] Running RBAC bootstrap..."\n\
+cd /app/packages/database && node dist/prisma/seed-rbac.js\n\
+echo "[seed] Done."\n\
+\n\
+if [ "${RUN_DB_SEED}" = "true" ]; then\n\
+  echo "[seed] Running database seed..."\n\
+  npx tsx prisma/seed-users.ts 2>/dev/null || echo "[seed] WARNING: users seed skipped (not critical)"\n\
+  echo "[seed] Done."\n\
+fi\n\
+\n\
+echo "[start] Starting API server..."\n\
+cd /app/apps/api && exec node dist/main.js\n' > /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
 
 CMD ["/docker-entrypoint.sh"]

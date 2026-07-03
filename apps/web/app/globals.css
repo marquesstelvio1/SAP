@@ -37,7 +37,45 @@
   --z-toast: 600;
   --z-command: 700;
 
+  --layout-header-height: 4rem;
+  --layout-content-min-height: 25rem;
+
+  --auth-gradient-light:
+    radial-gradient(circle at 15% 20%, oklch(0.91 0.035 215 / 0.26), transparent 32%),
+    radial-gradient(circle at 80% 10%, oklch(0.68 0.13 210 / 0.18), transparent 28%);
+  --auth-gradient-dark:
+    radial-gradient(circle at 15% 20%, oklch(0.28 0.055 215 / 0.35), transparent 32%),
+    radial-gradient(circle at 80% 10%, oklch(0.72 0.13 215 / 0.2), transparent 28%);
+
   --density-comfortable-control-height: 2.75rem;
   --density-compact-control-height: 2.25rem;
   --density-operational-control-height: 2rem;
+}
+
+@utility grid-layout-main {
+  grid-template-columns: 1.2fr 0.8fr;
+}
+
+@utility grid-layout-split {
+  grid-template-columns: 1fr 1fr;
+}
+
+@utility grid-layout-detail {
+  grid-template-columns: 0.7fr 1.3fr;
+}
+
+@utility grid-layout-auth {
+  grid-template-columns: 0.95fr 1.05fr;
+}
+
+@utility grid-layout-settings {
+  grid-template-columns: 1.5fr 1fr;
+}
+
+@utility auth-gradient-light {
+  background-image: var(--auth-gradient-light);
+}
+
+@utility auth-gradient-dark {
+  background-image: var(--auth-gradient-dark);
 }

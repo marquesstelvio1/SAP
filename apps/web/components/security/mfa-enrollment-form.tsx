@@ -67,7 +67,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
     if (response.error !== null) {
       setFeedback({
         status: "error",
-        message: response.error.message ?? "Nao foi possível iniciar MFA.",
+        message: response.error.message ?? "Não foi possível iniciar MFA.",
       });
       return;
     }
@@ -129,7 +129,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
     if (response.error !== null) {
       setFeedback({
         status: "error",
-        message: response.error.message ?? "Nao foi possível desativar MFA.",
+        message: response.error.message ?? "Não foi possível desativar MFA.",
       });
       return;
     }
@@ -154,7 +154,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
           <Badge variant="outline">Autenticação de dois fatores</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Politica MFA</CardTitle>
+          <CardTitle>Política MFA</CardTitle>
           <CardDescription>
             Enrollment TOTP real para {email}, com segredo persistido no schema oficial e códigos de
             backup criptografados.
@@ -216,7 +216,7 @@ export function MfaEnrollmentForm({ email, initialEnabled }: MfaEnrollmentFormPr
                 <FieldLabel htmlFor="totpUri">URI TOTP</FieldLabel>
                 <Textarea id="totpUri" readOnly rows={4} value={setup.totpURI} />
                 <FieldDescription>
-                  Cole este URI num autenticador compatível se o app nao conseguir ler QR code.
+                  Cole este URI num autenticador compatível se o app não conseguir ler QR code.
                 </FieldDescription>
               </Field>
               <Field>

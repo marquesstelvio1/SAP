@@ -124,7 +124,30 @@ export function createPrismaClient() {
   const env = getRuntimeEnv();
   const connectionString = env.DATABASE_URL ?? "";
 
-  const adapter = new PrismaPg({ connectionString });
+  const poolConfig: {
+    connectionString: string;
+    max?: number;
+    idleTimeoutMillis?: number;
+    connectionTimeoutMillis?: number;
+  } = {
+    connectionString,
+    connectionTimeoutMillis: 30_000,
+  };
+
+  const poolMax = env.DATABASE_POOL_MAX !== undefined ? Number(env.DATABASE_POOL_MAX) : undefined;
+  if (poolMax !== undefined && !Number.isNaN(poolMax)) {
+    poolConfig.max = poolMax;
+  }
+
+  const idleTimeout =
+    env.DATABASE_POOL_IDLE_TIMEOUT !== undefined
+      ? Number(env.DATABASE_POOL_IDLE_TIMEOUT)
+      : undefined;
+  if (idleTimeout !== undefined && !Number.isNaN(idleTimeout)) {
+    poolConfig.idleTimeoutMillis = idleTimeout;
+  }
+
+  const adapter = new PrismaPg(poolConfig);
 
   const baseClient = new PrismaClient({
     adapter,

@@ -273,7 +273,7 @@ export default function DesignSystemPage() {
             <FieldLabel>Input com erro</FieldLabel>
             <FieldContent>
               <Input aria-invalid="true" defaultValue="valor invalido" />
-              <FieldError>Este campo e obrigatorio.</FieldError>
+              <FieldError>Este campo e obrigatório.</FieldError>
             </FieldContent>
           </Field>
           <Field>
@@ -453,7 +453,7 @@ export default function DesignSystemPage() {
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
-                <AlertDialogDescription>Esta acao nao pode ser desfeita.</AlertDialogDescription>
+                <AlertDialogDescription>Esta acao não pode ser desfeita.</AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
@@ -497,14 +497,14 @@ export default function DesignSystemPage() {
         <SectionGrid>
           <Button
             variant="outline"
-            onClick={() => toast.success("Operacao concluida com sucesso!")}
+            onClick={() => toast.success("Operação concluida com sucesso!")}
           >
             Toast Success
           </Button>
           <Button variant="outline" onClick={() => toast.error("Erro ao processar requisicao.")}>
             Toast Error
           </Button>
-          <Button variant="outline" onClick={() => toast.info("Informacao disponivel.")}>
+          <Button variant="outline" onClick={() => toast.info("Informacao disponível.")}>
             Toast Info
           </Button>
           <Button
@@ -695,7 +695,7 @@ export default function DesignSystemPage() {
       <Card className="p-6">
         <ErrorCard
           title="Erro de conexao"
-          message="Nao foi possivel conectar ao servidor. Verifique sua conexao."
+          message="Não foi possivel conectar ao servidor. Verifique sua conexao."
           onRetry={() => {}}
         />
       </Card>
@@ -779,7 +779,7 @@ export default function DesignSystemPage() {
           <ContextRow label="Cliente" value="Transportes ABC, Lda" />
           <ContextRow label="Referencia" value="CARGO-2024-001" />
           <ContextRow label="Origem" value="Porto de Luanda" />
-          <ContextRow label="Destino" value="Terminal Ferroviario" description="Eixo central" />
+          <ContextRow label="Destino" value="Terminal Ferroviário" description="Eixo central" />
           <ContextRow label="Prioridade" value="Alta" muted={false} />
         </div>
       </Card>
@@ -789,11 +789,11 @@ export default function DesignSystemPage() {
       <Card className="p-6">
         <div className="flex flex-col gap-4">
           <AccessState granted label="Registo autorizado" />
-          <AccessState granted={false} label="Registo indisponivel" />
+          <AccessState granted={false} label="Registo indisponível" />
           <AccessState
             variant="blocked"
             title="Acesso Bloqueado"
-            description="Nao tem permissao para aceder a esta pagina."
+            description="Não tem permissão para aceder a esta pagina."
             status="403"
           />
           <AccessState
@@ -805,7 +805,7 @@ export default function DesignSystemPage() {
           <AccessState
             variant="empty"
             title="Sem Dados"
-            description="Nao existem registos para mostrar."
+            description="Não existem registos para mostrar."
           />
         </div>
       </Card>
@@ -817,7 +817,7 @@ export default function DesignSystemPage() {
           <Alert>
             <InfoIcon className="size-4" />
             <AlertTitle>Info</AlertTitle>
-            <AlertDescription>Operacao concluida com sucesso.</AlertDescription>
+            <AlertDescription>Operação concluida com sucesso.</AlertDescription>
           </Alert>
           <Alert className="border-destructive/50 text-destructive">
             <AlertTriangleIcon className="size-4" />

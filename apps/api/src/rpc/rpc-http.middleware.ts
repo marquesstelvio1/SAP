@@ -7,6 +7,23 @@ import { PlatformRpcProvider } from "./platform-rpc.provider.js";
 import type { PlatformRpcContext } from "./platform-rpc.router.js";
 import type { RpcRequestWithAuthContext } from "./rpc-context.js";
 
+/**
+ * Creates a platform RPC context from a raw Node.js IncomingMessage.
+ * The request may optionally carry auth context set by upstream NestJS middleware.
+ */
+function createPlatformContext(request: IncomingMessage): PlatformRpcContext {
+  return {
+    request: request as IncomingMessage & RpcRequestWithAuthContext,
+    authContext: undefined,
+    organizationId: "",
+    actorId: "",
+    actorType: "platform" as const,
+    correlationId: "",
+    userAgent: undefined,
+    ipAddress: undefined,
+  };
+}
+
 function castNestHttpExceptionToOrpcError(error: HttpException): ORPCError<RpcErrorCode, unknown> {
   const httpStatus = error.getStatus();
   const code = mapHttpStatusToRpcErrorCode(httpStatus);
@@ -54,9 +71,7 @@ export class RpcHttpMiddleware implements NestMiddleware {
       for (const prefix of prefixes) {
         const result = await this.handler.handle(request, response, {
           prefix,
-          context: {
-            request: request as IncomingMessage & RpcRequestWithAuthContext,
-          },
+          context: createPlatformContext(request),
         });
 
         if (result.matched) {
@@ -66,6 +81,10 @@ export class RpcHttpMiddleware implements NestMiddleware {
 
       next();
     } catch (error) {
+      // If oRPC already sent an error response, do not try to send another
+      if (response.headersSent) {
+        return;
+      }
       next(error);
     }
   }

@@ -12,7 +12,7 @@ export type AdminUserInviteFormState = {
 
 export const initialAdminUserInviteFormState: AdminUserInviteFormState = {
   status: "idle",
-  message: "Convide utilizadores para a organizacao com permissoes definidas.",
+  message: "Convide utilizadores para a organização com permissões definidas.",
 };
 
 export type AdminRoleAssignFormState = {
@@ -27,7 +27,7 @@ export type AdminRoleAssignFormState = {
 
 export const initialAdminRoleAssignFormState: AdminRoleAssignFormState = {
   status: "idle",
-  message: "Atribua permissoes a membros da organizacao.",
+  message: "Atribua permissões a membros da organização.",
 };
 
 export type AdminRoleCreateFormState = {
@@ -41,7 +41,7 @@ export type AdminRoleCreateFormState = {
 
 export const initialAdminRoleCreateFormState: AdminRoleCreateFormState = {
   status: "idle",
-  message: "Crie roles personalizadas com permissoes selecionadas.",
+  message: "Crie roles personalizadas com permissões selecionadas.",
 };
 
 export type AdminRolePermissionsFormState = {
@@ -55,7 +55,7 @@ export type AdminRolePermissionsFormState = {
 
 export const initialAdminRolePermissionsFormState: AdminRolePermissionsFormState = {
   status: "idle",
-  message: "Atualize permissoes de roles personalizadas.",
+  message: "Atualize permissões de roles personalizadas.",
 };
 
 export type AdminRoleDeleteFormState = {
@@ -84,7 +84,7 @@ export type AdminRoleRevokeFormState = {
 
 export const initialAdminRoleRevokeFormState: AdminRoleRevokeFormState = {
   status: "idle",
-  message: "Revogue uma role atribuida a um membro da organizacao.",
+  message: "Revogue uma role atribuida a um membro da organização.",
 };
 
 export type AdminMembershipStatusFormState = {
@@ -98,7 +98,7 @@ export type AdminMembershipStatusFormState = {
 
 export const initialAdminMembershipStatusFormState: AdminMembershipStatusFormState = {
   status: "idle",
-  message: "Ative, suspenda ou remova membros da organizacao.",
+  message: "Ative, suspenda ou remova membros da organização.",
 };
 
 export type AdminInvitationLifecycleFormState = {

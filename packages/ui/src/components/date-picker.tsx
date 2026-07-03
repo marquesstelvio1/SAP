@@ -52,4 +52,6 @@ function DatePicker({
   );
 }
 
+DatePicker.displayName = "DatePicker";
+
 export { DatePicker, type DatePickerProps };

@@ -196,6 +196,10 @@ export class TrackingService {
       statusCounts: createStatusCounts(typedStatusGroups),
       recentShipments: recentShipments.map((shipment) => {
         const lastEvent = shipment.events.at(0);
+        const shipmentTeam =
+          "team" in shipment
+            ? (shipment as { team: { id: string; name: string } | null }).team
+            : null;
 
         return {
           id: shipment.id,
@@ -207,6 +211,8 @@ export class TrackingService {
           transportMode: shipment.transportMode as TrackingTransportMode,
           status: shipment.status as TrackingShipmentStatus,
           priority: shipment.priority,
+          teamId: shipment.teamId ?? null,
+          team: shipmentTeam !== null ? { id: shipmentTeam.id, name: shipmentTeam.name } : null,
           estimatedArrivalAt: toIsoStringOrNull(shipment.estimatedArrivalAt),
           lastEventAt: toIsoStringOrNull(lastEvent?.occurredAt),
           lastEventType: (lastEvent?.eventType as TrackingEventType | undefined) ?? null,
@@ -343,6 +349,8 @@ export class TrackingService {
     }
 
     const lastEvent = shipment.events.at(0);
+    const shipmentTeam =
+      "team" in shipment ? (shipment as { team: { id: string; name: string } | null }).team : null;
 
     return {
       generatedAt: (input.generatedAt ?? new Date()).toISOString(),
@@ -357,6 +365,8 @@ export class TrackingService {
         transportMode: shipment.transportMode as TrackingTransportMode,
         status: shipment.status as TrackingShipmentStatus,
         priority: shipment.priority,
+        teamId: shipment.teamId ?? null,
+        team: shipmentTeam !== null ? { id: shipmentTeam.id, name: shipmentTeam.name } : null,
         plannedDepartureAt: toIsoStringOrNull(shipment.plannedDepartureAt),
         estimatedArrivalAt: toIsoStringOrNull(shipment.estimatedArrivalAt),
         actualArrivalAt: toIsoStringOrNull(shipment.actualArrivalAt),

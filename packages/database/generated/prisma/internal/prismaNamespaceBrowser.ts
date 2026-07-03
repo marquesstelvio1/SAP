@@ -891,6 +891,7 @@ export const WebhookDeliveryScalarFieldEnum = {
   nextRetryAt: 'nextRetryAt',
   deliveredAt: 'deliveredAt',
   createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
   deletedBy: 'deletedBy'
 } as const
@@ -973,6 +974,7 @@ export const InvoiceScalarFieldEnum = {
   paidAt: 'paidAt',
   downloadUrl: 'downloadUrl',
   createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
   deletedBy: 'deletedBy'
 } as const

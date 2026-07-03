@@ -141,7 +141,7 @@ export function CargoDeliveryCompleteForm({
                   <option value="requires_inspection">Requer inspecao</option>
                 </SelectNative>
                 <FieldDescription>
-                  Condicao diferente de sound exige fluxo de excecao antes de concluir.
+                  Condicao diferente de sound exige fluxo de exceção antes de concluir.
                 </FieldDescription>
               </Field>
               <Field data-disabled={!canCompleteDelivery}>
@@ -161,7 +161,7 @@ export function CargoDeliveryCompleteForm({
                 disabled={isDisabled}
                 id="deliveryNotes"
                 name="deliveryNotes"
-                placeholder="Obrigatorio quando a condicao final nao esta sound"
+                placeholder="Obrigatorio quando a condicao final não esta sound"
               />
             </Field>
 
@@ -178,7 +178,7 @@ export function CargoDeliveryCompleteForm({
           <span className="text-muted-foreground text-xs">
             {canCompleteDelivery
               ? "Atualiza carga, tracking e registo de auditoria."
-              : "Requer conclusao de entrega."}
+              : "Requer conclusão de entrega."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A concluir..." : "Concluir entrega"}

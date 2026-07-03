@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AccessState,
   Badge,
   Button,
   Card,
@@ -9,55 +10,24 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  MetricTile,
 } from "@saptm/ui";
 import type { Route } from "next";
 import Link from "next/link";
 
+import { formatDateTime } from "@/lib/format";
 import { useTrackingOverview } from "../../../hooks/use-tracking-overview";
-
-type BadgeVariant = "info" | "success" | "warning" | "destructive" | "outline" | "secondary";
-
-function StatusTile({
-  label,
-  value,
-  badge,
-  variant,
-}: {
-  label: string;
-  value: string;
-  badge: string;
-  variant: BadgeVariant;
-}) {
-  return (
-    <Card className="p-4 shadow-none">
-      <span className="text-muted-foreground text-xs uppercase tracking-uppercase">{label}</span>
-      <div className="mt-3 flex min-w-0 items-center justify-between gap-3">
-        <span className="truncate font-semibold">{value}</span>
-        <Badge variant={variant}>{badge}</Badge>
-      </div>
-    </Card>
-  );
-}
+import { RpcError } from "../../../lib/rpc-client";
 
 export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boolean }) {
   if (!canReadTracking) {
     return (
-      <Card id="operations">
-        <CardHeader>
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="warning">Indisponível</Badge>
-            <Badge variant="outline">Tracking</Badge>
-          </div>
-          <CardTitle>Resumo operacional indisponível</CardTitle>
-          <CardDescription>
-            O utilizador autenticado não tem acesso ao módulo de tracking. Contacte o gestor de
-            operações para solicitação de acesso.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="text-muted-foreground text-sm">
-          Os dados operacionais só são apresentados a utilizadores autorizados.
-        </CardContent>
-      </Card>
+      <AccessState
+        badgeLabel="Tracking"
+        description="O utilizador autenticado não tem acesso ao módulo de tracking. Contacte o gestor de operações para solicitação de acesso."
+        title="Resumo operacional indisponível"
+        variant="blocked"
+      />
     );
   }
 
@@ -73,35 +43,56 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
           <CardTitle>Resumo operacional</CardTitle>
           <CardDescription>A carregar dados de tracking...</CardDescription>
         </CardHeader>
-        <CardContent className="text-muted-foreground text-sm">
-          Aguarde enquanto os dados operacionais são carregados.
+        <CardContent className="grid gap-3 md:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="flex animate-pulse flex-col gap-2">
+              <div className="h-3 w-16 rounded bg-muted" />
+              <div className="h-6 w-24 rounded bg-muted" />
+            </div>
+          ))}
         </CardContent>
       </Card>
     );
   }
 
   if (overviewQuery.isError) {
+    const error = overviewQuery.error;
+
+    if (error instanceof RpcError && error.status === "unauthorized") {
+      return (
+        <AccessState
+          badgeLabel="Sessão expirada"
+          description="A sua sessão expirou ou é inválida. Re-autentique para continuar."
+          role="alert"
+          title="Sessão expirada"
+          variant="error"
+        >
+          <Button asChild size="sm" variant="outline">
+            <Link href={"/sign-in?reason=session_expired" as Route}>Re-autenticar</Link>
+          </Button>
+        </AccessState>
+      );
+    }
+
+    if (error instanceof RpcError && error.status === "forbidden") {
+      return (
+        <AccessState
+          badgeLabel="Tracking"
+          description="Sessão sem permissão para ler tracking operacional."
+          title="Resumo operacional bloqueado"
+          variant="blocked"
+        />
+      );
+    }
+
     return (
-      <Card id="operations">
-        <CardHeader>
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="warning">Erro</Badge>
-            <Badge variant="outline">Tracking</Badge>
-          </div>
-          <CardTitle>Resumo operacional indisponível</CardTitle>
-          <CardDescription>Dados indisponiveis. Tente novamente mais tarde.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-3 md:grid-cols-3">
-          <StatusTile
-            label="Leitura"
-            value="Não autorizada"
-            badge="Indisponível"
-            variant="warning"
-          />
-          <StatusTile label="API" value="Erro" badge="Verificar" variant="warning" />
-          <StatusTile label="Fallback" value="Sem dados falsos" badge="Seguro" variant="info" />
-        </CardContent>
-      </Card>
+      <AccessState
+        badgeLabel="Tracking"
+        description="Não foi possível carregar os dados operacionais. Tente novamente."
+        role="alert"
+        title="Resumo operacional indisponível"
+        variant="error"
+      />
     );
   }
 
@@ -115,43 +106,43 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
     <Card id="operations">
       <CardHeader>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="success">Dados reais</Badge>
           <Badge variant="outline">Tracking</Badge>
         </div>
         <CardTitle>Resumo operacional</CardTitle>
         <CardDescription>
-          Dados de tracking operacional actualizados em tempo real. Servem como entrada para
-          decisões de gestão de cargas e exceções.
+          Cargas em curso, atrasos e exceções reportadas em tempo real.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-3 md:grid-cols-4">
-        <StatusTile
+        <MetricTile
+          badge="Total"
           label="Cargas"
           value={overview.totals.shipments.toString()}
-          badge="Total"
-          variant="info"
+          variant="default"
         />
-        <StatusTile
+        <MetricTile
+          badge="Operação"
           label="Ativas"
           value={overview.totals.activeShipments.toString()}
-          badge="Operacao"
           variant="success"
         />
-        <StatusTile
+        <MetricTile
+          badge="SLA"
           label="Atrasos"
           value={overview.totals.delayedShipments.toString()}
-          badge="SLA"
           variant={overview.totals.delayedShipments > 0 ? "warning" : "success"}
         />
-        <StatusTile
+        <MetricTile
+          badge="Risco"
           label="Exceções"
           value={overview.totals.exceptionShipments.toString()}
-          badge="Risco"
           variant={overview.totals.exceptionShipments > 0 ? "destructive" : "success"}
         />
       </CardContent>
       <CardFooter className="flex flex-wrap items-center justify-between gap-3 text-sm">
-        <span className="text-muted-foreground">Actualizado em {overview.generatedAt}</span>
+        <span className="text-muted-foreground">
+          Actualizado em {formatDateTime(overview.generatedAt)}
+        </span>
         <Button asChild size="sm" variant="outline">
           <Link href={"/app/tracking" as Route}>Ver movimentos</Link>
         </Button>

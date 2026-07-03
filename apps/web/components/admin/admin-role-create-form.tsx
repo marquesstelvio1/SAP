@@ -66,12 +66,12 @@ export function AdminRoleCreateForm({
           <Badge variant={canManageRoles ? "success" : "warning"}>
             {canManageRoles ? "Perfis personalizados" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">Permissoes de administracao</Badge>
+          <Badge variant="outline">Permissões de administracao</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Criar perfil personalizado</CardTitle>
           <CardDescription className="leading-6">
-            Crie roles personalizadas com permissoes selecionadas.
+            Crie roles personalizadas com permissões selecionadas.
           </CardDescription>
         </div>
       </CardHeader>
@@ -118,7 +118,7 @@ export function AdminRoleCreateForm({
                 required
               />
               <FieldDescription>
-                Separe por vírgula ou linha. Use o catalogo de permissoes como referencia.
+                Separe por vírgula ou linha. Use o catalogo de permissões como referencia.
               </FieldDescription>
             </Field>
             <Field>

@@ -92,6 +92,10 @@ export class PrismaReportsRepository implements ReportsRepository {
     );
   }
 
+  async transaction<T>(fn: (tx: PrismaTx) => Promise<T>): Promise<T> {
+    return this.database.$transaction(fn);
+  }
+
   async createAuditRecord(tx: PrismaTx, input: PrismaAuditRecordCreateInput): Promise<void> {
     await tx.auditRecord.create({ data: input as never });
   }

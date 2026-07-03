@@ -136,6 +136,8 @@ export const billingUsageOutputSchema = z.object({
       current: z.number().int().nonnegative(),
       limit: z.number().int().nonnegative(),
       remaining: z.number().int().nonnegative(),
+      displayLabel: z.string(),
+      unit: z.string().optional(),
     }),
   ),
 });
@@ -198,7 +200,10 @@ export const billingPlansMetadata = createRpcOperationMetadata({
   name: "billing.plans",
   kind: "query",
   auth: "session",
-  permissions: ["tenant.manage"],
+  // SECURITY: Plan listing is a catalog that any authenticated user should
+  // be able to view. Do NOT require tenant.manage here — users must see
+  // available plans before they can upgrade their subscription.
+  permissions: [],
   permissionMode: "all",
   organizationRequired: false,
   audit: "standard",

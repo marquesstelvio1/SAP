@@ -10,6 +10,8 @@ import {
   Separator,
 } from "@saptm/ui";
 
+import { formatDateTime } from "../../lib/format";
+
 export type TrackingOverviewHeaderProps = {
   totals: {
     shipments: number;
@@ -45,7 +47,7 @@ export function TrackingOverviewHeader({ totals, generatedAt }: TrackingOverview
               Tracking
             </CardTitle>
             <CardDescription className="max-w-3xl leading-6">
-              Acompanhamento de movimentos ferroviarios, portuarios e logisticos em tempo real.
+              Acompanhamento de movimentos ferroviários, portuários e logísticos em tempo real.
             </CardDescription>
           </div>
         </CardHeader>
@@ -70,7 +72,7 @@ export function TrackingOverviewHeader({ totals, generatedAt }: TrackingOverview
       <Card>
         <CardHeader>
           <CardTitle>Estado operacional</CardTitle>
-          <CardDescription>Metricas consolidadas do tracking actual.</CardDescription>
+          <CardDescription>Métricas consolidadas do tracking actual.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-1">
           <ContextRow
@@ -92,7 +94,7 @@ export function TrackingOverviewHeader({ totals, generatedAt }: TrackingOverview
             value={`${totals.activeShipments}/${totals.shipments}`}
           />
           <Separator />
-          <ContextRow label="Actualizado em" value={generatedAt} muted={false} />
+          <ContextRow label="Actualizado em" value={formatDateTime(generatedAt)} muted={false} />
         </CardContent>
       </Card>
     </section>

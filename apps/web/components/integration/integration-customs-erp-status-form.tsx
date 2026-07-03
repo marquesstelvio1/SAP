@@ -67,7 +67,7 @@ export function IntegrationCustomsErpStatusForm({
         <div className="flex flex-col gap-2">
           <CardTitle>Processar status Customs/ERP</CardTitle>
           <CardDescription className="leading-6">
-            Converte estados aduaneiros e ERP em eventos de tracking. A operacao valida service
+            Converte estados aduaneiros e ERP em eventos de tracking. A operação válida service
             estado Customs/ERP com registo de evento.
           </CardDescription>
         </div>
@@ -227,7 +227,7 @@ export function IntegrationCustomsErpStatusForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma conta de servico com permissoes de tracking."
+              ? "Crie uma conta de servico com permissões de tracking."
               : "Adapter aduaneiro local sem chamada externa."}
           </span>
         </CardFooter>

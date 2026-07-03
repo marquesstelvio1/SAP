@@ -25,4 +25,6 @@ function Switch({ className, ...props }: React.ComponentProps<typeof SwitchPrimi
   );
 }
 
+Switch.displayName = "Switch";
+
 export { Switch };

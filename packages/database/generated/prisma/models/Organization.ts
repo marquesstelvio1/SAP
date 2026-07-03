@@ -675,10 +675,12 @@ export type OrganizationCreateNestedOneWithoutIntegrationEventsInput = {
   connect?: Prisma.OrganizationWhereUniqueInput
 }
 
-export type OrganizationUpdateOneRequiredWithoutIntegrationEventsNestedInput = {
+export type OrganizationUpdateOneWithoutIntegrationEventsNestedInput = {
   create?: Prisma.XOR<Prisma.OrganizationCreateWithoutIntegrationEventsInput, Prisma.OrganizationUncheckedCreateWithoutIntegrationEventsInput>
   connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutIntegrationEventsInput
   upsert?: Prisma.OrganizationUpsertWithoutIntegrationEventsInput
+  disconnect?: Prisma.OrganizationWhereInput | boolean
+  delete?: Prisma.OrganizationWhereInput | boolean
   connect?: Prisma.OrganizationWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutIntegrationEventsInput, Prisma.OrganizationUpdateWithoutIntegrationEventsInput>, Prisma.OrganizationUncheckedUpdateWithoutIntegrationEventsInput>
 }
@@ -705,10 +707,12 @@ export type OrganizationCreateNestedOneWithoutNotificationsInput = {
   connect?: Prisma.OrganizationWhereUniqueInput
 }
 
-export type OrganizationUpdateOneRequiredWithoutNotificationsNestedInput = {
+export type OrganizationUpdateOneWithoutNotificationsNestedInput = {
   create?: Prisma.XOR<Prisma.OrganizationCreateWithoutNotificationsInput, Prisma.OrganizationUncheckedCreateWithoutNotificationsInput>
   connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutNotificationsInput
   upsert?: Prisma.OrganizationUpsertWithoutNotificationsInput
+  disconnect?: Prisma.OrganizationWhereInput | boolean
+  delete?: Prisma.OrganizationWhereInput | boolean
   connect?: Prisma.OrganizationWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutNotificationsInput, Prisma.OrganizationUpdateWithoutNotificationsInput>, Prisma.OrganizationUncheckedUpdateWithoutNotificationsInput>
 }

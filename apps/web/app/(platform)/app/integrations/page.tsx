@@ -1,6 +1,7 @@
 import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { IntegrationCarrierTmsMovementForm } from "../../../../components/integration/integration-carrier-tms-movement-form";
 import { IntegrationCustomsErpStatusForm } from "../../../../components/integration/integration-customs-erp-status-form";
 import { IntegrationEventRecordForm } from "../../../../components/integration/integration-event-record-form";
@@ -37,9 +38,9 @@ import {
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Integracoes",
+  title: "Integrações",
   description:
-    "Service accounts e integracoes EDI, ERP, TOS para operacoes ferroviarias, portuarias e logisticas.",
+    "Service accounts e integrações EDI, ERP, TOS para operações ferroviárias, portuárias e logísticas.",
 };
 
 const openIntegrationPermissions: readonly PlatformPermission[] = [
@@ -75,10 +76,10 @@ export default async function IntegrationsPage() {
   if (!canOpenIntegrations) {
     return (
       <AccessState
-        badgeLabel="Integracoes"
-        description="O utilizador autenticado nao tem acesso ao modulo de integracoes."
+        badgeLabel="Integrações"
+        description="O utilizador autenticado não tem acesso ao modulo de integrações."
         role="alert"
-        title="Integracoes bloqueadas"
+        title="Integrações bloqueadas"
         variant="blocked"
       />
     );
@@ -99,13 +100,17 @@ export default async function IntegrationsPage() {
     );
   }
 
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (result.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Integracoes"
+        badgeLabel="Integrações"
         description={result.message}
         role="alert"
-        title="Integracoes indisponiveis"
+        title="Integrações indisponiveis"
         variant="error"
       />
     );
@@ -127,7 +132,7 @@ export default async function IntegrationsPage() {
         generatedAt={overview.generatedAt}
       />
 
-      <section className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-7">
+      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <IntegrationServiceAccountCreateForm
           action={createIntegrationServiceAccountAction}
           canManageApiKeys={canManageApiKeys}

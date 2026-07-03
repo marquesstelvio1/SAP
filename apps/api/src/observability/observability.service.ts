@@ -34,9 +34,9 @@ export type HttpTelemetryInput = {
 
 export type AuthorizationTelemetryInput = {
   request: RequestWithObservability;
-  authContext: AuthContext;
+  authContext?: AuthContext;
   decision: AuthorizationDecision;
-  requirement: AuthorizationRequirement;
+  requirement?: AuthorizationRequirement;
 };
 
 export type RpcAuthorizationTelemetryInput = AuthorizationTelemetryInput & {
@@ -174,18 +174,25 @@ export class ObservabilityService {
   }
 
   recordAuthorizationDecision(input: AuthorizationTelemetryInput): void {
+    const authCtx = input.authContext;
     const traceContext =
       input.request.traceContext ??
       createTraceContext({
-        correlationId: input.authContext.correlationId,
-        requestId: input.authContext.requestId ?? input.authContext.correlationId,
         operationName: "authorization.evaluate",
         sourceSystem: "apps/api",
-        actorId: input.authContext.actorId,
-        actorType: authActorTypeToTelemetryActorType(input.authContext.actorType),
-        ...(input.authContext.organizationId === undefined
-          ? {}
-          : { tenantId: input.authContext.organizationId }),
+        ...(authCtx?.correlationId !== undefined
+          ? {
+              correlationId: authCtx.correlationId,
+              requestId: authCtx.requestId ?? authCtx.correlationId,
+            }
+          : {}),
+        ...(authCtx !== undefined
+          ? {
+              actorId: authCtx.actorId,
+              actorType: authActorTypeToTelemetryActorType(authCtx.actorType),
+              ...(authCtx.organizationId === undefined ? {} : { tenantId: authCtx.organizationId }),
+            }
+          : {}),
       });
     const method = input.request.method ?? "UNKNOWN";
     const route = getRoutePath(input.request);
@@ -202,9 +209,9 @@ export class ObservabilityService {
         "authorization.allowed": input.decision.allowed,
         "authorization.failed_attributes": [...input.decision.failedAttributes],
         "authorization.missing_permissions": [...input.decision.missingPermissions],
-        "authorization.required_permissions": [...(input.requirement.permissions ?? [])],
-        "authorization.permission_mode": input.requirement.permissionMode ?? "all",
-        "auth.actor_type": input.authContext.actorType,
+        "authorization.required_permissions": [...(input.requirement?.permissions ?? [])],
+        "authorization.permission_mode": input.requirement?.permissionMode ?? "all",
+        "auth.actor_type": input.authContext?.actorType ?? "anonymous",
       },
     });
     const logger = input.request.logger ?? this.createRequestLogger(traceContext, input.request);
@@ -217,8 +224,8 @@ export class ObservabilityService {
       value: 1,
       attributes: {
         "authorization.allowed": input.decision.allowed,
-        "authorization.permission_mode": input.requirement.permissionMode ?? "all",
-        "auth.actor_type": input.authContext.actorType,
+        "authorization.permission_mode": input.requirement?.permissionMode ?? "all",
+        "auth.actor_type": input.authContext?.actorType ?? "anonymous",
         "audit.resource_type": audit.resourceType,
       },
     });
@@ -249,18 +256,25 @@ export class ObservabilityService {
   }
 
   recordRpcAuthorizationDecision(input: RpcAuthorizationTelemetryInput): void {
+    const authCtx = input.authContext;
     const traceContext =
       input.request.traceContext ??
       createTraceContext({
-        correlationId: input.authContext.correlationId,
-        requestId: input.authContext.requestId ?? input.authContext.correlationId,
         operationName: input.metadata.observability.operationName,
         sourceSystem: "apps/api",
-        actorId: input.authContext.actorId,
-        actorType: authActorTypeToTelemetryActorType(input.authContext.actorType),
-        ...(input.authContext.organizationId === undefined
-          ? {}
-          : { tenantId: input.authContext.organizationId }),
+        ...(authCtx?.correlationId !== undefined
+          ? {
+              correlationId: authCtx.correlationId,
+              requestId: authCtx.requestId ?? authCtx.correlationId,
+            }
+          : {}),
+        ...(authCtx !== undefined
+          ? {
+              actorId: authCtx.actorId,
+              actorType: authActorTypeToTelemetryActorType(authCtx.actorType),
+              ...(authCtx.organizationId === undefined ? {} : { tenantId: authCtx.organizationId }),
+            }
+          : {}),
       });
     const audit = createAuditRecord({
       serviceName: this.serviceName,
@@ -275,9 +289,9 @@ export class ObservabilityService {
         "authorization.allowed": input.decision.allowed,
         "authorization.failed_attributes": [...input.decision.failedAttributes],
         "authorization.missing_permissions": [...input.decision.missingPermissions],
-        "authorization.required_permissions": [...(input.requirement.permissions ?? [])],
-        "authorization.permission_mode": input.requirement.permissionMode ?? "all",
-        "auth.actor_type": input.authContext.actorType,
+        "authorization.required_permissions": [...(input.requirement?.permissions ?? [])],
+        "authorization.permission_mode": input.requirement?.permissionMode ?? "all",
+        "auth.actor_type": input.authContext?.actorType ?? "anonymous",
         "rpc.audit": input.metadata.audit,
         "rpc.auth": input.metadata.auth,
         "rpc.kind": input.metadata.kind,
@@ -295,8 +309,8 @@ export class ObservabilityService {
       value: 1,
       attributes: {
         "authorization.allowed": input.decision.allowed,
-        "authorization.permission_mode": input.requirement.permissionMode ?? "all",
-        "auth.actor_type": input.authContext.actorType,
+        "authorization.permission_mode": input.requirement?.permissionMode ?? "all",
+        "auth.actor_type": input.authContext?.actorType ?? "anonymous",
         "rpc.audit": input.metadata.audit,
         "rpc.auth": input.metadata.auth,
         "rpc.kind": input.metadata.kind,

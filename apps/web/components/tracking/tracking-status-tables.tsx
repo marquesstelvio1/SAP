@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@saptm/ui";
 import type { ColumnDef } from "@tanstack/react-table";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
@@ -100,8 +101,8 @@ export function TrackingStatusTables({ overview, pagination }: TrackingStatusTab
     {
       header: "Rota",
       cell: ({ row }) => (
-        <span className="text-muted-foreground">
-          {row.original.originName} -&gt; {row.original.destinationName}
+        <span className="inline-flex items-center gap-1 text-muted-foreground">
+          {row.original.originName} <ArrowRight className="size-3" /> {row.original.destinationName}
         </span>
       ),
     },
@@ -117,8 +118,8 @@ export function TrackingStatusTables({ overview, pagination }: TrackingStatusTab
       header: "Ultimo evento",
       cell: ({ row }) => (
         <span className="text-muted-foreground">
-          {row.original.lastEventType ?? "Sem evento"} &middot;{" "}
-          {row.original.lastKnownLocation ?? "Local nao informado"}
+          {row.original.lastEventType ?? "Sem evento"} —{" "}
+          {row.original.lastKnownLocation ?? "Local não informado"}
         </span>
       ),
     },

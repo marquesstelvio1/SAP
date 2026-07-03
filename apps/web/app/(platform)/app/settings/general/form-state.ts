@@ -7,5 +7,5 @@ export type GeneralSettingsFormState = {
 
 export const initialGeneralSettingsFormState: GeneralSettingsFormState = {
   status: "idle",
-  message: "Altere o nome ou slug da organizacao. As alteracoes sao auditaveis.",
+  message: "Altere o nome ou slug da organização. As alterações sao auditaveis.",
 };

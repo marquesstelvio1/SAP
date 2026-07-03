@@ -28,5 +28,6 @@ function SelectNative({
     />
   );
 }
+SelectNative.displayName = "SelectNative";
 
 export { SelectNative };

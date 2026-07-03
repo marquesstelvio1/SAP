@@ -1,6 +1,7 @@
 import type { PlatformPermission } from "@saptm/auth";
-import { AccessState, ErrorCard } from "@saptm/ui";
+import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { PlanningOrdersSection } from "../../../../components/planning/planning-orders-section";
 import { PlanningOverviewHeader } from "../../../../components/planning/planning-overview-header";
 import { TransportOrderCancelForm } from "../../../../components/planning/transport-order-cancel-form";
@@ -27,7 +28,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Planeamento",
   description:
-    "Confirmacao, dispatch e replaneamento de ordens de transporte ferroviario e logistico.",
+    "Confirmação, dispatch e replaneamento de ordens de transporte ferroviário e logístico.",
 };
 
 const readPlanningPermission: PlatformPermission = "planning.order.read";
@@ -52,7 +53,7 @@ export default async function PlanningOverviewPage() {
     return (
       <AccessState
         badgeLabel="Planeamento"
-        description="O utilizador autenticado nao tem acesso ao modulo de planeamento."
+        description="O utilizador autenticado não tem acesso ao modulo de planeamento."
         role="alert"
         title="Planeamento bloqueado"
         variant="blocked"
@@ -65,15 +66,30 @@ export default async function PlanningOverviewPage() {
     result = await getPlanningOverview(10);
   } catch {
     return (
-      <ErrorCard
-        message="Não foi possível carregar os dados de planeamento. Tente novamente."
+      <AccessState
+        badgeLabel="Planeamento"
+        description="Não foi possível carregar os dados de planeamento. Tente novamente."
+        role="alert"
         title="Erro ao carregar planeamento"
+        variant="error"
       />
     );
   }
 
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (result.status !== "ok") {
-    return <ErrorCard message={result.message} title="Planeamento indisponivel" />;
+    return (
+      <AccessState
+        badgeLabel="Planeamento"
+        description={result.message}
+        role="alert"
+        title="Planeamento indisponível"
+        variant="error"
+      />
+    );
   }
 
   const { overview } = result;

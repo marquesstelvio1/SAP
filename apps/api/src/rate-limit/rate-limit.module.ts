@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { type ExecutionContext, Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { seconds, ThrottlerModule } from "@nestjs/throttler";
 import type { Redis } from "ioredis";
@@ -28,7 +28,7 @@ import { TenantThrottlerGuard } from "./tenant-throttler.guard.js";
           {
             name: "user",
             ttl: seconds(60),
-            limit: 300,
+            limit: 600,
             getTracker: (req) => {
               const authContext = getAuthContextFromRequest(req);
               if (authContext?.userId) {
@@ -41,7 +41,11 @@ import { TenantThrottlerGuard } from "./tenant-throttler.guard.js";
           },
         ],
         ...(redis !== null ? { storage: new RedisThrottlerStorage(redis) } : {}),
-        skipIf: (_ctx) => {
+        skipIf: (ctx: ExecutionContext) => {
+          const req = ctx.switchToHttp().getRequest();
+          if (req?.headers?.["x-internal-request"] === "true") {
+            return true;
+          }
           const env = process.env.NODE_ENV;
           return env === "development" || env === "test";
         },

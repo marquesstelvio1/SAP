@@ -13,7 +13,9 @@ import {
   TableHeader,
   TableRow,
 } from "@saptm/ui";
+import { ArrowRight } from "lucide-react";
 import { eventTypeLabels, workflowStateLabels } from "../../app/(platform)/app/tracking/logic";
+import { formatDateTime } from "../../lib/format";
 
 export type TrackingEventsSectionProps = {
   analytics: {
@@ -31,7 +33,7 @@ export function TrackingEventsSection({ analytics }: TrackingEventsSectionProps)
         <CardHeader>
           <CardTitle>Eventos por janela</CardTitle>
           <CardDescription>
-            Frequencia de eventos operacionais no periodo analisado.
+            Frequência de eventos operacionais no período analisado.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -40,7 +42,7 @@ export function TrackingEventsSection({ analytics }: TrackingEventsSectionProps)
               <TableRow>
                 <TableHead>Evento</TableHead>
                 <TableHead>Volume</TableHead>
-                <TableHead>Ultima ocorrencia</TableHead>
+                <TableHead>Última ocorrência</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -53,7 +55,9 @@ export function TrackingEventsSection({ analytics }: TrackingEventsSectionProps)
                     <Badge variant={item.count > 0 ? "secondary" : "outline"}>{item.count}</Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {item.latestOccurredAt ?? "Sem ocorrencia"}
+                    {item.latestOccurredAt
+                      ? formatDateTime(item.latestOccurredAt)
+                      : "Sem ocorrência"}
                   </TableCell>
                 </TableRow>
               ))}
@@ -64,9 +68,9 @@ export function TrackingEventsSection({ analytics }: TrackingEventsSectionProps)
 
       <Card>
         <CardHeader>
-          <CardTitle>Workflow de excecoes</CardTitle>
+          <CardTitle>Workflow de exceções</CardTitle>
           <CardDescription>
-            Estados extraidos dos eventos de excecao e release para suporte a auditoria.
+            Estados extraidos dos eventos de exceção e release para suporte a auditoria.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-1">
@@ -83,7 +87,12 @@ export function TrackingEventsSection({ analytics }: TrackingEventsSectionProps)
           />
           <ContextRow
             label="Janela"
-            value={`${analytics.window.startedAt} → ${analytics.window.endedAt}`}
+            value={
+              <span className="inline-flex items-center gap-1">
+                {formatDateTime(analytics.window.startedAt)} <ArrowRight className="size-3" />{" "}
+                {formatDateTime(analytics.window.endedAt)}
+              </span>
+            }
           />
         </CardContent>
       </Card>

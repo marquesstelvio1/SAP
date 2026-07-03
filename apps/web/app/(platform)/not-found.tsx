@@ -11,9 +11,9 @@ export default function NotFoundPage() {
             <span className="font-bold text-2xl text-muted-foreground">404</span>
           </div>
           <div className="flex flex-col gap-2">
-            <CardTitle className="text-2xl">Pagina nao encontrada</CardTitle>
+            <CardTitle className="text-2xl">Pagina não encontrada</CardTitle>
             <CardDescription>
-              O recurso que procura nao existe ou foi movido. Verifique o URL ou volte ao inicio.
+              O recurso que procura não existe ou foi movido. Verifique o URL ou volte ao inicio.
             </CardDescription>
           </div>
         </CardHeader>

@@ -26,4 +26,6 @@ function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxP
   );
 }
 
+Checkbox.displayName = "Checkbox";
+
 export { Checkbox };

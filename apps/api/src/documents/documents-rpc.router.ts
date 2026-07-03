@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   getDocumentInputSchema,
@@ -10,22 +9,21 @@ import {
   listDocumentsOutputSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { DocumentsService } from "./documents.service.js";
 
 export type DocumentsRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreateDocumentsRpcRouterInput = {
   documentsService: Pick<DocumentsService, "listDocuments" | "getDocument">;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const documentsRpc = os.$context<DocumentsRpcContext>();
-
 export function createDocumentsRpcRouter(deps: CreateDocumentsRpcRouterInput) {
+  const documentsRpc = os.$context<DocumentsRpcContext>().use(deps.authMiddleware);
+
   return documentsRpc.router({
     documents: {
       list: documentsRpc
@@ -34,18 +32,8 @@ export function createDocumentsRpcRouter(deps: CreateDocumentsRpcRouterInput) {
         .input(listDocumentsInputSchema)
         .output(listDocumentsOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            listDocumentsMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("documents.organization_required");
-          }
-
           return deps.documentsService.listDocuments({
-            organizationId,
+            organizationId: context.organizationId,
             cargoId: input.cargoId,
             evidenceType: input.evidenceType,
             validationStatus: input.validationStatus,
@@ -59,18 +47,8 @@ export function createDocumentsRpcRouter(deps: CreateDocumentsRpcRouterInput) {
         .input(getDocumentInputSchema)
         .output(getDocumentOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            getDocumentMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("documents.organization_required");
-          }
-
           return deps.documentsService.getDocument({
-            organizationId,
+            organizationId: context.organizationId,
             documentId: input.documentId,
           });
         }),

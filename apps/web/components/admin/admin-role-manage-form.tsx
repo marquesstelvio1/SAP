@@ -87,7 +87,7 @@ export function AdminRoleManageForm({
         <Tabs defaultValue="create">
           <TabsList>
             <TabsTrigger value="create">Criar perfil</TabsTrigger>
-            <TabsTrigger value="permissions">Atualizar permissoes</TabsTrigger>
+            <TabsTrigger value="permissions">Atualizar permissões</TabsTrigger>
           </TabsList>
           <TabsContent value="create">
             <CreateRoleSection
@@ -167,7 +167,7 @@ function CreateRoleSection({
           />
         </Field>
         <Field data-disabled={isDisabled}>
-          <FieldLabel htmlFor="adminRoleCreatePermissions">Permissoes</FieldLabel>
+          <FieldLabel htmlFor="adminRoleCreatePermissions">Permissões</FieldLabel>
           <Textarea
             disabled={isDisabled}
             id="adminRoleCreatePermissions"
@@ -176,7 +176,7 @@ function CreateRoleSection({
             required
           />
           <FieldDescription>
-            Separe por virgula ou linha. Use o catalogo de permissoes como referencia.
+            Separe por virgula ou linha. Use o catalogo de permissões como referencia.
           </FieldDescription>
         </Field>
         <Field>
@@ -239,7 +239,7 @@ function PermissionsSection({
             required
           />
           <FieldDescription>
-            Informe o conjunto completo. A operacao e transacional e auditavel.
+            Informe o conjunto completo. A operação e transacional e auditável.
           </FieldDescription>
         </Field>
         <Field>
@@ -248,7 +248,7 @@ function PermissionsSection({
         </Field>
       </FieldGroup>
       <Button className="mt-4" disabled={isDisabled} type="submit">
-        {isPending ? "A atualizar..." : "Atualizar permissoes"}
+        {isPending ? "A atualizar..." : "Atualizar permissões"}
       </Button>
     </form>
   );

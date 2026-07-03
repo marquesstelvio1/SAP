@@ -51,7 +51,7 @@ export async function createIntegrationServiceAccountAction(
   if (!platformSession.viewer.permissions.includes(manageApiKeyPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui integration.api_key.manage para criar credenciais.",
+      message: "A sessão não possui integration.api_key.manage para criar credenciais.",
     };
   }
 
@@ -78,7 +78,7 @@ export async function createIntegrationServiceAccountAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de integracoes retornou resposta invalida para service account.",
+      message: "Contrato RPC de integrações retornou resposta inválida para service account.",
     };
   }
 
@@ -88,7 +88,7 @@ export async function createIntegrationServiceAccountAction(
     status: "success",
     message:
       parsedOutput.data.apiKey.plaintext === null
-        ? "Service account ja existia por idempotencia; segredo nao e reexibido."
+        ? "Service account já existia por idempotência; segredo não é reexibido."
         : "Service account criado com API key hash-only, audit trail e outbox.",
     serviceAccountId: parsedOutput.data.serviceAccount.id,
     apiKeyPrefix: parsedOutput.data.apiKey.prefix,
@@ -520,7 +520,7 @@ async function callIntegrationMutation(
   if (!response.ok) {
     return {
       status: "error",
-      message: `API de integracoes recusou a operacao: HTTP ${response.status}.`,
+      message: `API de integrações recusou a operação: HTTP ${response.status}.`,
     };
   }
 

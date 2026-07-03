@@ -29,7 +29,7 @@ export default async function TrackingOverviewPage(props: {
     return (
       <AccessState
         badgeLabel="Tracking"
-        description="O utilizador autenticado nao tem acesso ao modulo de tracking."
+        description="O utilizador autenticado não tem acesso ao modulo de tracking."
         role="alert"
         title="Tracking operacional bloqueado"
         variant="blocked"

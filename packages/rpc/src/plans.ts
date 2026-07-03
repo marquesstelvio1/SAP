@@ -67,7 +67,8 @@ export const listPlansMetadata = createRpcOperationMetadata({
   name: "billing.plans.list",
   kind: "query",
   auth: "session",
-  permissions: ["tenant.manage"],
+  // SECURITY: Plan listing is a catalog — any authenticated user can view it.
+  permissions: [],
   permissionMode: "all",
   organizationRequired: false,
   audit: "standard",
@@ -80,7 +81,9 @@ export const getPlanMetadata = createRpcOperationMetadata({
   name: "billing.plans.get",
   kind: "query",
   auth: "session",
-  permissions: ["tenant.manage"],
+  // SECURITY: Getting plan details should not require tenant.manage —
+  // any authenticated user should be able to see plan details.
+  permissions: [],
   permissionMode: "all",
   organizationRequired: true,
   audit: "standard",

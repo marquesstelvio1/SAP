@@ -55,10 +55,10 @@ const actionByStatus = {
     label: "Resolver atraso",
     variant: "warning" as const,
     description:
-      "O transporte esta atrasado. Abra ou resolva uma excecao para regularizar o status.",
+      "O transporte esta atrasado. Abra ou resolva uma exceção para regularizar o status.",
   },
   exception: {
-    label: "Resolver excecao",
+    label: "Resolver exceção",
     variant: "destructive" as const,
     description: "Exceção operacional ativa. Resolva o problema para retomar o fluxo normal.",
   },
@@ -164,7 +164,7 @@ export function TrackingNextActionCard(props: TrackingNextActionCardProps) {
         ) : (
           <Button className="w-full" disabled>
             {props.canManageExceptions || props.canResolveExceptions
-              ? "Sem permissoes suficientes"
+              ? "Sem permissões suficientes"
               : nextAction.label}
           </Button>
         )}

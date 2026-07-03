@@ -71,7 +71,7 @@ export function TransportOrderDispatchForm({
           <CardTitle>Despachar transport order</CardTitle>
           <CardDescription className="leading-6">
             Entrega a ordem confirmada para execução operacional, exigindo referência única,
-            responsavel, instrucoes e registo de auditoria.
+            responsável, instruções e registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -141,7 +141,7 @@ export function TransportOrderDispatchForm({
                 disabled={isDisabled}
                 id="dispatchInstructions"
                 name="dispatchInstructions"
-                placeholder="Ex.: Entregar ordem ao terminal ferroviario e confirmar janela de carregamento."
+                placeholder="Ex.: Entregar ordem ao terminal ferroviário e confirmar janela de carregamento."
                 required
               />
             </Field>

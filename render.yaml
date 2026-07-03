@@ -5,6 +5,7 @@ services:
     dockerfilePath: ./apps/api/Dockerfile
     dockerContext: .
     branch: main
+    region: frankfurt
     envVars:
       - key: NODE_ENV
         value: production
@@ -45,7 +46,7 @@ services:
         value: info
       - key: OTEL_SERVICE_NAME
         value: saptm-api
-    healthCheckPath: /health/live
+    healthCheckPath: /health/startup
     autoDeploy: true
 
   - type: web
@@ -54,6 +55,7 @@ services:
     dockerfilePath: ./apps/web/Dockerfile
     dockerContext: .
     branch: main
+    region: frankfurt
     envVars:
       - key: NODE_ENV
         value: production
@@ -85,11 +87,12 @@ services:
         value: info
       - key: OTEL_SERVICE_NAME
         value: saptm-web
-    healthCheckPath: /api/health
+    healthCheckPath: /
     autoDeploy: true
 
   - type: keyvalue
     name: saptm-redis
+    region: frankfurt
     ipAllowList:
       - source: 0.0.0.0/0
         description: internal
@@ -97,5 +100,6 @@ services:
 
 databases:
   - name: saptm-postgres
+    region: frankfurt
     plan: basic-256mb
     postgresMajorVersion: "16"

@@ -61,7 +61,7 @@ export function TeamsTable({
     },
     {
       id: "actions",
-      header: "Acoes",
+      header: "Ações",
       cell: ({ row }) => {
         const team = row.original;
         const detail = teamDetails[team.id];

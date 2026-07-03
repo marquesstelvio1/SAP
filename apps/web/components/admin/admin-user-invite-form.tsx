@@ -86,7 +86,7 @@ export function AdminUserInviteForm({
                 disabled={isDisabled}
                 id="adminInviteName"
                 name="name"
-                placeholder="Ex.: Operador Ferro-Portuario"
+                placeholder="Ex.: Operador Ferro-Portuário"
                 required
               />
             </Field>
@@ -124,8 +124,8 @@ export function AdminUserInviteForm({
                 <FieldLabel htmlFor="adminInviteAcceptUrl">Link de aceite</FieldLabel>
                 <Input id="adminInviteAcceptUrl" readOnly value={state.invitationAcceptUrl} />
                 <FieldDescription>
-                  Válido até {state.invitationExpiresAt ?? "validade nao informada"}. Em dev, o
-                  mesmo link tambem segue nas notificacoes.
+                  Válido até {state.invitationExpiresAt ?? "validade não informada"}. Em dev, o
+                  mesmo link tambem segue nas notificações.
                 </FieldDescription>
               </Field>
             ) : null}

@@ -67,7 +67,7 @@ export function IntegrationTelematicsGpsPositionForm({
         <div className="flex flex-col gap-2">
           <CardTitle>Processar posicao Telematics/GPS</CardTitle>
           <CardDescription className="leading-6">
-            Converte posicoes, geofences e alertas de telemetria em eventos de tracking. A operacao
+            Converte posições, geofences e alertas de telemetria em eventos de tracking. A operação
             processamento de posicao GPS com registo de evento.
           </CardDescription>
         </div>
@@ -266,7 +266,7 @@ export function IntegrationTelematicsGpsPositionForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma conta de servico com permissoes de tracking."
+              ? "Crie uma conta de servico com permissões de tracking."
               : "Adapter telemetrico local sem chamada externa."}
           </span>
         </CardFooter>

@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Logger,
 } from "@nestjs/common";
+import { ORPCError } from "@orpc/server";
 import type { TraceContext } from "@saptm/observability";
 import {
   createRpcErrorEnvelope,
@@ -13,21 +14,26 @@ import {
   mapHttpStatusToRpcErrorCode,
   type RpcErrorCode,
 } from "@saptm/rpc";
+import { ZodError } from "zod";
 
-type PrismaClientError = {
+type PrismaClientKnownRequestError = {
   code: string;
   meta?: Record<string, unknown>;
   message?: string;
 };
 
-function isPrismaError(error: unknown): error is PrismaClientError {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    typeof (error as PrismaClientError).code === "string" &&
-    (error as PrismaClientError).code.startsWith("P")
-  );
+function isPrismaClientKnownRequestError(error: unknown): error is PrismaClientKnownRequestError {
+  if (typeof error !== "object" || error === null) {
+    return false;
+  }
+
+  const candidate = error as Record<string, unknown>;
+
+  if (typeof candidate.code !== "string") {
+    return false;
+  }
+
+  return candidate.code.startsWith("P");
 }
 
 function mapPrismaCodeToErrorCode(prismaCode: string): RpcErrorCode {
@@ -37,6 +43,18 @@ function mapPrismaCodeToErrorCode(prismaCode: string): RpcErrorCode {
       return "CONFLICT";
     case "P2025":
       return "NOT_FOUND";
+    case "P1000":
+    case "P1001":
+    case "P1002":
+    case "P1003":
+    case "P1008":
+      return "DEPENDENCY_FAILURE";
+    case "P2010":
+    case "P2011":
+    case "P2012":
+    case "P2015":
+    case "P2016":
+      return "VALIDATION_ERROR";
     default:
       return "INTERNAL_ERROR";
   }
@@ -46,7 +64,13 @@ function getTraceContext(host: ArgumentsHost): TraceContext | undefined {
   try {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<Record<string, unknown>>();
-    return request.traceContext as TraceContext | undefined;
+    const traceContext = request.traceContext;
+
+    if (traceContext !== undefined && typeof traceContext === "object" && traceContext !== null) {
+      return traceContext as TraceContext;
+    }
+
+    return undefined;
   } catch {
     return undefined;
   }
@@ -57,18 +81,37 @@ export class RpcExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(RpcExceptionFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost): void {
+    try {
+      this.handleException(exception, host);
+    } catch (sendError) {
+      this.logger.error(
+        "Failed to send RPC error response",
+        sendError instanceof Error ? sendError.stack : undefined,
+      );
+    }
+  }
+
+  private handleException(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const response: Record<string, unknown> = ctx.getResponse();
+    const response = ctx.getResponse<Record<string, unknown>>();
     const traceContext = getTraceContext(host);
     const traceId = traceContext?.traceId;
     const requestId = traceContext?.requestId;
 
-    if (isPrismaError(exception)) {
+    // Check if headers are already sent to avoid double-send crash
+    const res = response as { headersSent?: boolean };
+    if (res.headersSent === true) {
+      this.logger.warn("RPC exception after headers sent — skipping response");
+      return;
+    }
+
+    // Handle Prisma client known request errors
+    if (isPrismaClientKnownRequestError(exception)) {
       const prismaCode = exception.code;
       const errorCode = mapPrismaCodeToErrorCode(prismaCode);
       const httpStatus = getHttpStatusFromRpcErrorCode(errorCode);
 
-      this.logger.warn(`Prisma error [${prismaCode}]: ${exception.message}`);
+      this.logger.warn(`Prisma error [${prismaCode}]: ${exception.message ?? "Database error"}`);
 
       const envelope = createRpcErrorEnvelope({
         code: errorCode,
@@ -76,16 +119,50 @@ export class RpcExceptionFilter implements ExceptionFilter {
           errorCode === "INTERNAL_ERROR"
             ? "A database error occurred."
             : (exception.message ?? "A database error occurred."),
-        ...(traceId ? { traceId } : {}),
-        ...(requestId ? { requestId } : {}),
+        ...(traceId !== undefined ? { traceId } : {}),
+        ...(requestId !== undefined ? { requestId } : {}),
       });
 
-      (response as { status: (code: number) => { json: (data: unknown) => void } })
-        .status(httpStatus)
-        .json({ json: envelope });
+      sendJsonResponse(response, httpStatus, envelope);
       return;
     }
 
+    // Handle Zod validation errors
+    if (exception instanceof ZodError) {
+      this.logger.warn(`Zod validation error: ${exception.message}`);
+
+      const envelope = createRpcErrorEnvelope({
+        code: "VALIDATION_ERROR",
+        message: "The request payload failed schema validation.",
+        details: exception.issues,
+        ...(traceId !== undefined ? { traceId } : {}),
+        ...(requestId !== undefined ? { requestId } : {}),
+      });
+
+      sendJsonResponse(response, HttpStatus.BAD_REQUEST, envelope);
+      return;
+    }
+
+    // Handle oRPC errors (can occur before NestJS HTTP layer)
+    if (exception instanceof ORPCError) {
+      const status = exception.status ?? HttpStatus.INTERNAL_SERVER_ERROR;
+      const errorCode = exception.code as RpcErrorCode;
+      const httpStatus = getHttpStatusFromRpcErrorCode(errorCode) ?? status;
+
+      this.logger.warn(`oRPC error [${errorCode}]: ${exception.message}`);
+
+      const envelope = createRpcErrorEnvelope({
+        code: errorCode,
+        message: exception.message,
+        ...(traceId !== undefined ? { traceId } : {}),
+        ...(requestId !== undefined ? { requestId } : {}),
+      });
+
+      sendJsonResponse(response, httpStatus, envelope);
+      return;
+    }
+
+    // Handle NestJS HTTP exceptions
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const errorCode = mapHttpStatusToRpcErrorCode(status);
@@ -107,14 +184,12 @@ export class RpcExceptionFilter implements ExceptionFilter {
       const envelope = createRpcErrorEnvelope({
         code: errorCode,
         message,
-        ...(traceId ? { traceId } : {}),
-        ...(requestId ? { requestId } : {}),
-        ...(details ? { details } : {}),
+        ...(traceId !== undefined ? { traceId } : {}),
+        ...(requestId !== undefined ? { requestId } : {}),
+        ...(details !== undefined ? { details } : {}),
       });
 
-      (response as { status: (code: number) => { json: (data: unknown) => void } })
-        .status(status)
-        .json({ json: envelope });
+      sendJsonResponse(response, status, envelope);
       return;
     }
 
@@ -126,12 +201,27 @@ export class RpcExceptionFilter implements ExceptionFilter {
     const envelope = createRpcErrorEnvelope({
       code: "INTERNAL_ERROR",
       message: "An unexpected internal error occurred.",
-      ...(traceId ? { traceId } : {}),
-      ...(requestId ? { requestId } : {}),
+      ...(traceId !== undefined ? { traceId } : {}),
+      ...(requestId !== undefined ? { requestId } : {}),
     });
 
-    (response as { status: (code: number) => { json: (data: unknown) => void } })
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ json: envelope });
+    sendJsonResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, envelope);
   }
+}
+
+function sendJsonResponse(
+  response: Record<string, unknown>,
+  status: number,
+  data: Record<string, unknown>,
+): void {
+  const res = response as {
+    status: (code: number) => { json: (body: Record<string, unknown>) => void };
+    headersSent?: boolean;
+  };
+
+  if (res.headersSent) {
+    return;
+  }
+
+  res.status(status).json(data);
 }

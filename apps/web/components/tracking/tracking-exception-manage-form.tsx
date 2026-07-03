@@ -182,7 +182,7 @@ export function TrackingExceptionManageForm({
               </Field>
 
               <Field data-disabled={!canManageExceptions}>
-                <FieldLabel htmlFor="expectedResolutionAt">Previsao de resolucao</FieldLabel>
+                <FieldLabel htmlFor="expectedResolutionAt">Previsão de resolução</FieldLabel>
                 <Input
                   defaultValue={defaultExpectedResolutionAt}
                   disabled={isDisabled}
@@ -205,7 +205,7 @@ export function TrackingExceptionManageForm({
               </Field>
 
               <Field data-disabled={!canManageExceptions}>
-                <FieldLabel htmlFor="ownerTeam">Equipa responsavel</FieldLabel>
+                <FieldLabel htmlFor="ownerTeam">Equipa responsável</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="ownerTeam"
@@ -216,7 +216,7 @@ export function TrackingExceptionManageForm({
             </div>
 
             <Field data-disabled={!canManageExceptions}>
-              <FieldLabel htmlFor="summary">Resumo da excecao</FieldLabel>
+              <FieldLabel htmlFor="summary">Resumo da exceção</FieldLabel>
               <Input
                 disabled={isDisabled}
                 id="summary"
@@ -227,12 +227,12 @@ export function TrackingExceptionManageForm({
             </Field>
 
             <Field data-disabled={!canManageExceptions}>
-              <FieldLabel htmlFor="recoveryPlan">Plano de recuperacao</FieldLabel>
+              <FieldLabel htmlFor="recoveryPlan">Plano de recuperação</FieldLabel>
               <Textarea
                 disabled={isDisabled}
                 id="recoveryPlan"
                 name="recoveryPlan"
-                placeholder="Defina responsavel, proxima acao, prazo e criterio de encerramento."
+                placeholder="Defina responsável, proxima acao, prazo e criterio de encerramento."
                 required
               />
             </Field>
@@ -247,7 +247,7 @@ export function TrackingExceptionManageForm({
 
             <div className="grid gap-4 md:grid-cols-2">
               <Field data-disabled={!canManageExceptions}>
-                <FieldLabel htmlFor="operatorName">Operador responsavel</FieldLabel>
+                <FieldLabel htmlFor="operatorName">Operador responsável</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="operatorName"
@@ -288,7 +288,7 @@ export function TrackingExceptionManageForm({
               </Field>
 
               <Field data-disabled={!canManageExceptions}>
-                <FieldLabel htmlFor="approvalStatus">Estado de aprovacao</FieldLabel>
+                <FieldLabel htmlFor="approvalStatus">Estado de aprovação</FieldLabel>
                 <SelectNative
                   defaultValue="pending_review"
                   disabled={isDisabled}
@@ -318,7 +318,7 @@ export function TrackingExceptionManageForm({
 
             <div className="grid gap-4 md:grid-cols-2">
               <Field data-disabled={!canManageExceptions}>
-                <FieldLabel htmlFor="approvalReference">Referencia da aprovacao</FieldLabel>
+                <FieldLabel htmlFor="approvalReference">Referencia da aprovação</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="approvalReference"

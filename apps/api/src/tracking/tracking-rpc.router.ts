@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   exceptionOverviewInputSchema,
@@ -29,13 +28,12 @@ import {
 } from "@saptm/rpc";
 
 import type { OverviewService } from "../overview/overview.service.js";
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { TrackingService } from "./tracking.service.js";
 
 export type TrackingRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreateTrackingRpcRouterInput = {
   trackingService: Pick<
@@ -49,12 +47,12 @@ export type CreateTrackingRpcRouterInput = {
     | "resolveException"
   >;
   overviewService: Pick<OverviewService, "getExceptionOverview">;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const trackingRpc = os.$context<TrackingRpcContext>();
-
 export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
+  const trackingRpc = os.$context<TrackingRpcContext>().use(deps.authMiddleware);
+
   return trackingRpc.router({
     tracking: {
       overview: trackingRpc
@@ -63,18 +61,8 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
         .input(trackingOverviewInputSchema)
         .output(trackingOverviewOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            trackingOverviewMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("tracking.organization_required");
-          }
-
           return deps.trackingService.getOverview({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
             offset: input.offset,
             ...(input.teamId === undefined ? {} : { teamId: input.teamId }),
@@ -86,18 +74,8 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
         .input(exceptionOverviewInputSchema)
         .output(exceptionOverviewOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            exceptionOverviewMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("tracking.organization_required");
-          }
-
           return deps.overviewService.getExceptionOverview({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
             offset: input.offset,
           });
@@ -108,18 +86,8 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
         .input(trackingAnalyticsInputSchema)
         .output(trackingAnalyticsOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            trackingAnalyticsMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("tracking.organization_required");
-          }
-
           return deps.trackingService.getAnalytics({
-            organizationId,
+            organizationId: context.organizationId,
             lookbackDays: input.lookbackDays,
           });
         }),
@@ -129,18 +97,8 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
         .input(trackingAdvisoryInputSchema)
         .output(trackingAdvisoryOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            trackingAdvisoryMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("tracking.organization_required");
-          }
-
           return deps.trackingService.getAdvisory({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
           });
         }),
@@ -150,35 +108,21 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
         .input(trackingEventRecordInputSchema)
         .output(trackingEventRecordOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            trackingEventRecordMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("tracking.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.trackingService.recordEvent({
             shipmentId: input.shipmentId,
             eventType: input.eventType,
             occurredAt: input.occurredAt,
             sourceSystem: input.sourceSystem,
             idempotencyKey: input.idempotencyKey,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
             ...(input.locationName === undefined ? {} : { locationName: input.locationName }),
             ...(input.notes === undefined ? {} : { notes: input.notes }),
             ...(input.payload === undefined ? {} : { payload: input.payload }),
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       shipmentDetail: trackingRpc
@@ -187,18 +131,8 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
         .input(trackingShipmentDetailInputSchema)
         .output(trackingShipmentDetailOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            trackingShipmentDetailMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("tracking.organization_required");
-          }
-
           return deps.trackingService.getShipmentDetail({
-            organizationId,
+            organizationId: context.organizationId,
             shipmentId: input.shipmentId,
             eventLimit: input.eventLimit,
           });
@@ -209,20 +143,6 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
         .input(trackingExceptionManageInputSchema)
         .output(trackingExceptionManageOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            trackingExceptionManageMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("tracking.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.trackingService.manageException({
             shipmentId: input.shipmentId,
             category: input.category,
@@ -237,18 +157,18 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
               approvalReference: input.evidence.approvalReference ?? null,
               approverName: input.evidence.approverName ?? null,
             },
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
             ...(input.ownerTeam === undefined ? {} : { ownerTeam: input.ownerTeam }),
             ...(input.expectedResolutionAt === undefined
               ? {}
               : { expectedResolutionAt: input.expectedResolutionAt }),
             ...(input.locationName === undefined ? {} : { locationName: input.locationName }),
             ...(input.payload === undefined ? {} : { payload: input.payload }),
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       exceptionResolution: trackingRpc
@@ -257,20 +177,6 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
         .input(trackingExceptionResolveInputSchema)
         .output(trackingExceptionResolveOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            trackingExceptionResolveMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("tracking.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.trackingService.resolveException({
             shipmentId: input.shipmentId,
             occurredAt: input.occurredAt,
@@ -280,15 +186,15 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
             nextStatus: input.nextStatus,
             evidence: input.evidence,
             sourceSystem: input.sourceSystem,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
             ...(input.ownerTeam === undefined ? {} : { ownerTeam: input.ownerTeam }),
             ...(input.locationName === undefined ? {} : { locationName: input.locationName }),
             ...(input.payload === undefined ? {} : { payload: input.payload }),
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
     },
@@ -296,20 +202,3 @@ export function createTrackingRpcRouter(deps: CreateTrackingRpcRouterInput) {
 }
 
 export type TrackingRpcRouter = ReturnType<typeof createTrackingRpcRouter>;
-
-function readRequestHeader(
-  request: IncomingMessage & RpcRequestWithAuthContext,
-  name: string,
-): string | undefined {
-  const value = request.headers[name] ?? request.headers[name.toLowerCase()];
-
-  if (Array.isArray(value)) {
-    return value.at(0);
-  }
-
-  return value;
-}
-
-function readRequestIp(request: IncomingMessage & RpcRequestWithAuthContext): string | undefined {
-  return readRequestHeader(request, "x-forwarded-for")?.split(",").at(0)?.trim();
-}

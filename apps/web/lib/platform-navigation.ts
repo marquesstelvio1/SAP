@@ -262,6 +262,13 @@ export const platformNavigation: readonly PlatformNavigationGroup[] = [
         description: "Exportar dados pessoais ou solicitar eliminação da conta.",
         status: "available",
       },
+      {
+        label: "Faturação",
+        href: "/app/billing",
+        description: "Subscrição, planos e faturas da organização.",
+        status: "available",
+        requiredPermissions: ["billing.read"],
+      },
     ],
   },
   {
@@ -348,6 +355,13 @@ export const platformNavigation: readonly PlatformNavigationGroup[] = [
         description: "Base do audit trail para operações críticas.",
         status: "available",
         requiredPermissions: ["audit.read"],
+      },
+      {
+        label: "Autenticação",
+        href: "/app/admin/sso",
+        description: "SSO/SAML e autenticação única da organização.",
+        status: "available",
+        requiredPermissions: ["tenant.manage"],
       },
     ],
   },

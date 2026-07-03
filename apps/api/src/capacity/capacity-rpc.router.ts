@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   capacityAdvisoryDecisionAnalyticsInputSchema,
@@ -28,13 +27,12 @@ import {
   capacitySlotReserveOutputSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { CapacityService } from "./capacity.service.js";
 
 export type CapacityRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreateCapacityRpcRouterInput = {
   capacityService: Pick<
@@ -48,12 +46,12 @@ export type CreateCapacityRpcRouterInput = {
     | "registerResource"
     | "reserveSlot"
   >;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const capacityRpc = os.$context<CapacityRpcContext>();
-
 export function createCapacityRpcRouter(deps: CreateCapacityRpcRouterInput) {
+  const capacityRpc = os.$context<CapacityRpcContext>().use(deps.authMiddleware);
+
   return capacityRpc.router({
     capacity: {
       overview: capacityRpc
@@ -62,18 +60,8 @@ export function createCapacityRpcRouter(deps: CreateCapacityRpcRouterInput) {
         .input(capacityOverviewInputSchema)
         .output(capacityOverviewOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            capacityOverviewMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("capacity.organization_required");
-          }
-
           return deps.capacityService.getOverview({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
           });
         }),
@@ -83,18 +71,8 @@ export function createCapacityRpcRouter(deps: CreateCapacityRpcRouterInput) {
         .input(capacityAdvisoryInputSchema)
         .output(capacityAdvisoryOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            capacityAdvisoryMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("capacity.organization_required");
-          }
-
           return deps.capacityService.getAdvisory({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
           });
         }),
@@ -104,18 +82,8 @@ export function createCapacityRpcRouter(deps: CreateCapacityRpcRouterInput) {
         .input(capacityAdvisoryDecisionAnalyticsInputSchema)
         .output(capacityAdvisoryDecisionAnalyticsOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            capacityAdvisoryDecisionAnalyticsMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("capacity.organization_required");
-          }
-
           return deps.capacityService.getAdvisoryDecisionAnalytics({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
             windowDays: input.windowDays,
           });
@@ -126,28 +94,14 @@ export function createCapacityRpcRouter(deps: CreateCapacityRpcRouterInput) {
         .input(capacityResourceRegisterInputSchema)
         .output(capacityResourceRegisterOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            capacityResourceRegisterMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("capacity.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.capacityService.registerResource({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       openSlot: capacityRpc
@@ -156,28 +110,14 @@ export function createCapacityRpcRouter(deps: CreateCapacityRpcRouterInput) {
         .input(capacitySlotOpenInputSchema)
         .output(capacitySlotOpenOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            capacitySlotOpenMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("capacity.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.capacityService.openSlot({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       reserveSlot: capacityRpc
@@ -186,28 +126,14 @@ export function createCapacityRpcRouter(deps: CreateCapacityRpcRouterInput) {
         .input(capacitySlotReserveInputSchema)
         .output(capacitySlotReserveOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            capacitySlotReserveMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("capacity.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.capacityService.reserveSlot({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       cancelSlotReservation: capacityRpc
@@ -216,28 +142,14 @@ export function createCapacityRpcRouter(deps: CreateCapacityRpcRouterInput) {
         .input(capacitySlotCancelInputSchema)
         .output(capacitySlotCancelOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            capacitySlotCancelMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("capacity.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.capacityService.cancelSlotReservation({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       recordAdvisoryDecision: capacityRpc
@@ -246,28 +158,14 @@ export function createCapacityRpcRouter(deps: CreateCapacityRpcRouterInput) {
         .input(capacityAdvisoryDecisionRecordInputSchema)
         .output(capacityAdvisoryDecisionRecordOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            capacityAdvisoryDecisionRecordMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("capacity.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.capacityService.recordAdvisoryDecision({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
     },
@@ -275,20 +173,3 @@ export function createCapacityRpcRouter(deps: CreateCapacityRpcRouterInput) {
 }
 
 export type CapacityRpcRouter = ReturnType<typeof createCapacityRpcRouter>;
-
-function readRequestHeader(
-  request: IncomingMessage & RpcRequestWithAuthContext,
-  name: string,
-): string | undefined {
-  const value = request.headers[name] ?? request.headers[name.toLowerCase()];
-
-  if (Array.isArray(value)) {
-    return value.at(0);
-  }
-
-  return value;
-}
-
-function readRequestIp(request: IncomingMessage & RpcRequestWithAuthContext): string | undefined {
-  return readRequestHeader(request, "x-forwarded-for")?.split(",").at(0)?.trim();
-}

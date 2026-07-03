@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, Popover, PopoverContent, PopoverTrigger } from "@saptm/ui";
+import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
 import type { UserOrganization } from "../../lib/org-actions";
@@ -103,18 +104,11 @@ export function OrganizationSwitcher() {
           <span className="min-w-0 flex-1 truncate text-sm font-medium">
             {activeOrganization?.name ?? "Selecionar"}
           </span>
-          <svg
+          <ChevronDownIcon
             aria-hidden="true"
             className="size-3 shrink-0 text-sidebar-foreground/50 transition-transform data-[open=true]:rotate-180"
             data-open={open || undefined}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <title>Alternar organização</title>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
+          />
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-64 p-1" side="right" sideOffset={8}>
@@ -143,17 +137,7 @@ export function OrganizationSwitcher() {
                   <div className="truncate text-muted-foreground text-xs">{org.slug}</div>
                 </div>
                 {isActive && (
-                  <svg
-                    aria-hidden="true"
-                    className="size-4 shrink-0 text-primary"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <title>Ativa</title>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
+                  <CheckIcon aria-hidden="true" className="size-4 shrink-0 text-primary" />
                 )}
               </button>
             );

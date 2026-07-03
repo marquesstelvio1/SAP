@@ -38,4 +38,8 @@ function AvatarFallback({
   );
 }
 
+Avatar.displayName = "Avatar";
+AvatarImage.displayName = "AvatarImage";
+AvatarFallback.displayName = "AvatarFallback";
+
 export { Avatar, AvatarFallback, AvatarImage };

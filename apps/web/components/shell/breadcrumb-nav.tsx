@@ -19,7 +19,7 @@ export function BreadcrumbNav() {
   const items = buildBreadcrumbs(pathname);
 
   if (items.length <= 1) {
-    return <span className="text-muted-foreground text-xs">UI/Auth/App Shell Foundation</span>;
+    return null;
   }
 
   return (

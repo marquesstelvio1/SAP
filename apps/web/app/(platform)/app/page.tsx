@@ -1,28 +1,19 @@
 import type { PlatformPermission } from "@saptm/auth";
-import {
-  AccessState,
-  Badge,
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  MetricTile,
-} from "@saptm/ui";
+import { AccessState, Badge, Button } from "@saptm/ui";
 import type { Metadata, Route } from "next";
 import nextDynamic from "next/dynamic";
 import Link from "next/link";
 import { Suspense } from "react";
 import { requirePlatformSession } from "../../../lib/auth-session";
-import { resolvePlatformNavigation } from "../../../lib/platform-navigation";
 
 const OperationsSnapshot = nextDynamic(() =>
   import("./operations-snapshot").then((mod) => mod.OperationsSnapshot),
 );
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: "Painel de operações",
   description:
     "Vista geral das operações de carga, tracking, planeamento e capacidade da plataforma SAPTM.",
 };
@@ -34,80 +25,61 @@ export default async function PlatformAppPage() {
   const viewerPermissions = platformSession.viewer.permissions;
   const canReadTracking = viewerPermissions.includes(readTrackingPermission);
 
-  const moduleCount = [
-    "cargo.read",
-    "tracking.shipment.read",
-    "planning.order.read",
-    "capacity.read",
-    "tariff.read",
-  ].filter((p) => viewerPermissions.includes(p as PlatformPermission)).length;
-
-  const resolvedNav = resolvePlatformNavigation(viewerPermissions);
-  const operationalItems = resolvedNav.find((g) => g.label === "Operações")?.items ?? [];
-
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <section className="grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
-        <Card>
-          <CardHeader className="gap-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="success">Operacional</Badge>
-              {canReadTracking ? (
-                <Badge variant="info">Tracking activo</Badge>
-              ) : (
-                <Badge variant="outline">Tracking indisponível</Badge>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <CardTitle as="h1" className="text-2xl">
-                Dashboard
-              </CardTitle>
-              <CardDescription className="max-w-3xl leading-6">
-                Vista geral das operações de carga, tracking e planeamento.
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent className="grid gap-3 md:grid-cols-4">
-            <MetricTile label="Módulos activos" value={`${moduleCount}/5`} />
-            <MetricTile
-              label="Tracking"
-              value={canReadTracking ? "Autorizado" : "Indisponível"}
-              badge={canReadTracking ? "OK" : "Indisponível"}
-              variant={canReadTracking ? "success" : "warning"}
-            />
-            <MetricTile label="Plataforma" value="SAPTM" badge="Online" variant="success" />
-            <MetricTile label="Organizacao" value="Ativa" badge="Online" variant="success" />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Modulos operacionais</CardTitle>
-            <CardDescription>Acesso rápido às principais funcionalidades.</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3 text-sm">
-            {operationalItems.map((item) => (
-              <div className="flex justify-between" key={item.href}>
-                <span className="text-muted-foreground">{item.label}</span>
-                {item.allowed ? (
-                  <Button asChild size="sm" variant="outline">
-                    <Link aria-label={`Abrir ${item.label}`} href={item.href as Route}>
-                      Abrir
-                    </Link>
-                  </Button>
-                ) : (
-                  <Badge variant="outline">Indisponível</Badge>
-                )}
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+      <section className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="success">Operacional</Badge>
+          {canReadTracking ? (
+            <Badge variant="info">Tracking activo</Badge>
+          ) : (
+            <Badge variant="outline">Tracking indisponível</Badge>
+          )}
+        </div>
+        <div className="flex flex-col gap-1">
+          <h1 className="font-semibold text-3xl tracking-heading">Painel de operações</h1>
+          <p className="max-w-3xl text-muted-foreground">
+            Resumo das operações de carga, tracking e planeamento.
+          </p>
+        </div>
       </section>
+
+      <div className="flex flex-wrap items-center gap-3">
+        {[
+          { label: "Cargas", href: "/app/cargo", permission: "cargo.read" as PlatformPermission },
+          {
+            label: "Tracking",
+            href: "/app/tracking",
+            permission: "tracking.shipment.read" as PlatformPermission,
+          },
+          {
+            label: "Capacidade",
+            href: "/app/capacity",
+            permission: "capacity.read" as PlatformPermission,
+          },
+          {
+            label: "Planeamento",
+            href: "/app/planning",
+            permission: "planning.order.read" as PlatformPermission,
+          },
+          {
+            label: "Tarifas",
+            href: "/app/tariffs",
+            permission: "tariff.read" as PlatformPermission,
+          },
+        ].map((item) =>
+          viewerPermissions.includes(item.permission) ? (
+            <Button key={item.href} asChild size="sm" variant="outline">
+              <Link href={item.href as Route}>{item.label}</Link>
+            </Button>
+          ) : null,
+        )}
+      </div>
 
       <Suspense
         fallback={
           <AccessState
-            badgeLabel="Resumo Operacional"
+            badgeLabel="Resumo operacional"
             description="A carregar dados de tracking operacional..."
             title="A carregar resumo operacional"
           />

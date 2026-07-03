@@ -236,6 +236,11 @@ export const trackingAdvisoryInputSchema = z
     limit: 5,
   });
 
+export const trackingTeamSummarySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
 export const trackingRecentShipmentSchema = z.object({
   id: z.string(),
   referenceCode: z.string(),
@@ -246,6 +251,8 @@ export const trackingRecentShipmentSchema = z.object({
   transportMode: z.enum(trackingTransportModes),
   status: z.enum(trackingShipmentStatuses),
   priority: z.number().int(),
+  teamId: z.string().nullable().optional(),
+  team: trackingTeamSummarySchema.nullable().optional(),
   estimatedArrivalAt: z.string().nullable(),
   lastEventAt: z.string().nullable(),
   lastEventType: z.enum(trackingEventTypes).nullable(),
@@ -414,6 +421,8 @@ export const trackingShipmentDetailOutputSchema = z.object({
     transportMode: z.enum(trackingTransportModes),
     status: z.enum(trackingShipmentStatuses),
     priority: z.number().int(),
+    teamId: z.string().nullable().optional(),
+    team: trackingTeamSummarySchema.nullable().optional(),
     plannedDepartureAt: z.string().nullable(),
     estimatedArrivalAt: z.string().nullable(),
     actualArrivalAt: z.string().nullable(),

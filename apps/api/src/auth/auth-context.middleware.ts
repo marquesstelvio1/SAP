@@ -1,4 +1,4 @@
-import { Inject, Injectable, type NestMiddleware } from "@nestjs/common";
+import { Inject, Injectable, type NestMiddleware, UnauthorizedException } from "@nestjs/common";
 
 import type { RequestWithAuthContext } from "./auth-context.js";
 import { AuthContextService } from "./auth-context.service.js";
@@ -33,6 +33,17 @@ export class AuthContextMiddleware implements NestMiddleware {
         headers: filterSensitiveHeaders(request.headers),
       });
       request.authResolutionError = error;
+
+      // Propagate auth failures as 401 so consumers can handle them.
+      // This avoids silent failures where downstream code gets confusing errors.
+      // Skip for RPC paths and auth paths (they have their own error handling).
+      if (
+        request.url !== undefined &&
+        !request.url.startsWith("/rpc") &&
+        !request.url.startsWith("/api/")
+      ) {
+        throw new UnauthorizedException("Sessao invalida ou expirada.");
+      }
     }
 
     next();

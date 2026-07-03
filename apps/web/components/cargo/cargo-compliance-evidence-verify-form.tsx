@@ -67,14 +67,14 @@ export function CargoComplianceEvidenceVerifyForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canVerifyComplianceEvidence ? "success" : "warning"}>
-            {canVerifyComplianceEvidence ? "Verificacao autorizada" : "Indisponível"}
+            {canVerifyComplianceEvidence ? "Verificação autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Verificar conformidade</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Verificar evidencia de compliance</CardTitle>
           <CardDescription className="leading-6">
-            Aprova ou rejeita evidencia pendente. A aprovacao bloqueia documentos expirados e
+            Aprova ou rejeita evidencia pendente. A aprovação bloqueia documentos expirados e
             qualquer revisao gera registo de auditoria.
           </CardDescription>
         </div>
@@ -99,7 +99,7 @@ export function CargoComplianceEvidenceVerifyForm({
                 </FieldDescription>
               </Field>
               <Field data-disabled={!canVerifyComplianceEvidence}>
-                <FieldLabel htmlFor="reviewStatus">Decisao</FieldLabel>
+                <FieldLabel htmlFor="reviewStatus">Decisão</FieldLabel>
                 <SelectNative
                   defaultValue="approved"
                   disabled={isDisabled}
@@ -167,7 +167,7 @@ export function CargoComplianceEvidenceVerifyForm({
                 disabled={isDisabled}
                 id="rejectionReason"
                 name="rejectionReason"
-                placeholder="Obrigatorio apenas quando a decisao for rejeitar."
+                placeholder="Obrigatorio apenas quando a decisão for rejeitar."
                 rows={3}
               />
             </Field>
@@ -198,8 +198,8 @@ export function CargoComplianceEvidenceVerifyForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canVerifyComplianceEvidence
-              ? "Revisao cria decisao final com auditoria."
-              : "Requer verificacao de evidencias."}
+              ? "Revisao cria decisão final com auditoria."
+              : "Requer verificação de evidencias."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A verificar..." : "Verificar evidencia"}

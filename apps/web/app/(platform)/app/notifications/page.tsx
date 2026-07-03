@@ -8,6 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  EmptyState,
   Field,
   FieldGroup,
   FieldLabel,
@@ -21,14 +22,19 @@ import {
   TableHeader,
   TableRow,
 } from "@saptm/ui";
-import type { Route } from "next";
+import type { Metadata, Route } from "next";
 import Link from "next/link";
-
+import { redirect } from "next/navigation";
 import { formatDateTime, formatNullableDateTime } from "@/lib/format";
 import { NotificationMarkReadForm } from "../../../../components/notification/notification-mark-read-form";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import { getNotificationInbox } from "../../../../lib/notifications";
 import { markNotificationReadFormAction } from "./actions";
+
+export const metadata: Metadata = {
+  title: "Notificações",
+  description: "Inbox operacional de eventos processados e notificações do sistema.",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -52,8 +58,8 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
   if (!canReadNotifications) {
     return (
       <AccessState
-        badgeLabel="Notificacoes"
-        description="O utilizador autenticado nao tem acesso a inbox de notificacoes."
+        badgeLabel="Notificações"
+        description="O utilizador autenticado não tem acesso a inbox de notificações."
         role="alert"
         title="Inbox bloqueada"
         variant="blocked"
@@ -71,22 +77,26 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
   } catch {
     return (
       <AccessState
-        badgeLabel="Notificacoes"
-        description="API nao respondeu dentro do tempo limite."
+        badgeLabel="Notificações"
+        description="API não respondeu dentro do tempo limite."
         role="alert"
-        title="Inbox indisponivel"
+        title="Inbox indisponível"
         variant="error"
       />
     );
   }
 
+  if (inboxResult.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (inboxResult.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Notificacoes"
+        badgeLabel="Notificações"
         description={inboxResult.message}
         role="alert"
-        title="Inbox indisponivel"
+        title="Inbox indisponível"
         variant="error"
       />
     );
@@ -95,10 +105,10 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
   const inbox = inboxResult.inbox;
 
   return (
-    <main className="flex flex-col gap-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="secondary">Processador de eventos</Badge>
+          <Badge variant="secondary">Notificações</Badge>
           <Badge variant={inbox.totals.unread > 0 ? "warning" : "success"}>
             {inbox.totals.unread > 0 ? `${inbox.totals.unread} por ler` : "Sem pendencias"}
           </Badge>
@@ -106,8 +116,8 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <div className="max-w-3xl">
           <h1 className="font-semibold text-3xl tracking-heading">Inbox operacional</h1>
           <p className="mt-2 text-muted-foreground">
-            Notificacoes operacionais geradas pelo sistema. Cada item e filtravel, auditavel e pode
-            ser reconhecido por utilizadores autorizados.
+            Notificações operacionais geradas pelo sistema. Cada item é filtrável e pode ser
+            reconhecido por utilizadores autorizados.
           </p>
         </div>
       </section>
@@ -123,13 +133,13 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <CardHeader>
           <CardTitle>Filtros de inbox</CardTitle>
           <CardDescription>
-            Use filtros leves para validar o processamento de eventos sem abrir dominios de negocio.
+            Filtre notificações por estado e limite de visualização.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="flex flex-col gap-4 md:flex-row md:items-end">
             <fieldset className="contents">
-              <legend className="sr-only">Filtrar notificacoes</legend>
+              <legend className="sr-only">Filtrar notificações</legend>
               <FieldGroup className="md:max-w-xs">
                 <Field>
                   <FieldLabel htmlFor="notificationStatus">Estado</FieldLabel>
@@ -174,22 +184,19 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         </CardHeader>
         <CardContent>
           {inbox.notifications.length === 0 ? (
-            <div
-              className="rounded-lg border border-dashed bg-muted/20 p-6 text-muted-foreground text-sm"
-              role="status"
-            >
-              Nenhuma notificacao encontrada para os filtros atuais. Execute o worker apos gerar
-              eventos operacionais para popular esta inbox.
-            </div>
+            <EmptyState
+              title="Sem notificações"
+              description="Nenhuma notificação encontrada para os filtros atuais."
+            />
           ) : (
             <Table aria-label="Eventos processados">
               <TableHeader>
                 <TableRow>
-                  <TableHead>Notificacao</TableHead>
+                  <TableHead>Notificação</TableHead>
                   <TableHead>Evento</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead>Criada</TableHead>
-                  <TableHead>Acao</TableHead>
+                  <TableHead>Ação</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -204,12 +211,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <span>{notification.eventType}</span>
-                        <span className="text-muted-foreground text-xs">
-                          {notification.aggregateType} - {notification.aggregateId}
-                        </span>
-                      </div>
+                      <span>{notification.eventType}</span>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-2">
@@ -243,7 +245,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
           )}
         </CardContent>
       </Card>
-    </main>
+    </div>
   );
 }
 

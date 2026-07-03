@@ -82,14 +82,14 @@ export function AdminUserRoleManageForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canAssignRole ? "success" : "warning"}>
-            {canAssignRole ? "Atribuicao autorizada" : "Indisponivel"}
+            {canAssignRole ? "Atribuicao autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Perfis de utilizador</Badge>
         </div>
         <div className="flex flex-col gap-2">
           <CardTitle>Gerir perfis do utilizador</CardTitle>
           <CardDescription className="leading-6">
-            Atribua ou revogue perfis de membros da organizacao.
+            Atribua ou revogue perfis de membros da organização.
           </CardDescription>
         </div>
       </CardHeader>

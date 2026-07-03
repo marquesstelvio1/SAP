@@ -4,7 +4,7 @@ export const statusLabels = {
   planned: "Planeado",
   in_transit: "Em transito",
   delayed: "Atrasado",
-  exception: "Excecao",
+  exception: "Exceção",
   arrived: "Chegou",
   completed: "Concluido",
   cancelled: "Cancelado",
@@ -22,7 +22,7 @@ export const eventTypeLabels = {
   departed: "Partiu",
   arrived: "Chegou",
   delayed: "Atrasado",
-  exception: "Excecao",
+  exception: "Exceção",
   location_updated: "Localizacao",
   handover_completed: "Handover",
   customs_hold: "Retencao aduaneira",
@@ -30,7 +30,7 @@ export const eventTypeLabels = {
 } as const;
 
 export const workflowStateLabels = {
-  exception_opened: "Excecao aberta",
+  exception_opened: "Exceção aberta",
   pending_review: "Em revisao",
   approved_for_resolution: "Aprovado",
   closed: "Fechado",

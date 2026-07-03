@@ -118,7 +118,7 @@ export function AdminInvitationLifecycleForm({
                 <FieldLabel htmlFor={`${title}-accept-url`}>Link de aceite</FieldLabel>
                 <Textarea id={`${title}-accept-url`} readOnly value={state.invitationAcceptUrl} />
                 <FieldDescription>
-                  Valido ate {state.invitationExpiresAt ?? "validade nao informada"}.
+                  Valido até {state.invitationExpiresAt ?? "validade não informada"}.
                 </FieldDescription>
               </Field>
             ) : null}

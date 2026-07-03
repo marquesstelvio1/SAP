@@ -181,7 +181,7 @@ export type IntegrationEventGroupByArgs<ExtArgs extends runtime.Types.Extensions
 
 export type IntegrationEventGroupByOutputType = {
   id: string
-  organizationId: string
+  organizationId: string | null
   serviceAccountId: string | null
   sourceSystem: string
   externalId: string
@@ -216,7 +216,7 @@ export type IntegrationEventWhereInput = {
   OR?: Prisma.IntegrationEventWhereInput[]
   NOT?: Prisma.IntegrationEventWhereInput | Prisma.IntegrationEventWhereInput[]
   id?: Prisma.StringFilter<"IntegrationEvent"> | string
-  organizationId?: Prisma.StringFilter<"IntegrationEvent"> | string
+  organizationId?: Prisma.StringNullableFilter<"IntegrationEvent"> | string | null
   serviceAccountId?: Prisma.StringNullableFilter<"IntegrationEvent"> | string | null
   sourceSystem?: Prisma.StringFilter<"IntegrationEvent"> | string
   externalId?: Prisma.StringFilter<"IntegrationEvent"> | string
@@ -226,13 +226,13 @@ export type IntegrationEventWhereInput = {
   processedAt?: Prisma.DateTimeNullableFilter<"IntegrationEvent"> | Date | string | null
   deletedAt?: Prisma.DateTimeNullableFilter<"IntegrationEvent"> | Date | string | null
   deletedBy?: Prisma.StringNullableFilter<"IntegrationEvent"> | string | null
-  organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   serviceAccount?: Prisma.XOR<Prisma.ServiceAccountNullableScalarRelationFilter, Prisma.ServiceAccountWhereInput> | null
 }
 
 export type IntegrationEventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  organizationId?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceSystem?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
@@ -252,7 +252,7 @@ export type IntegrationEventWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.IntegrationEventWhereInput | Prisma.IntegrationEventWhereInput[]
   OR?: Prisma.IntegrationEventWhereInput[]
   NOT?: Prisma.IntegrationEventWhereInput | Prisma.IntegrationEventWhereInput[]
-  organizationId?: Prisma.StringFilter<"IntegrationEvent"> | string
+  organizationId?: Prisma.StringNullableFilter<"IntegrationEvent"> | string | null
   serviceAccountId?: Prisma.StringNullableFilter<"IntegrationEvent"> | string | null
   sourceSystem?: Prisma.StringFilter<"IntegrationEvent"> | string
   externalId?: Prisma.StringFilter<"IntegrationEvent"> | string
@@ -262,13 +262,13 @@ export type IntegrationEventWhereUniqueInput = Prisma.AtLeast<{
   processedAt?: Prisma.DateTimeNullableFilter<"IntegrationEvent"> | Date | string | null
   deletedAt?: Prisma.DateTimeNullableFilter<"IntegrationEvent"> | Date | string | null
   deletedBy?: Prisma.StringNullableFilter<"IntegrationEvent"> | string | null
-  organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   serviceAccount?: Prisma.XOR<Prisma.ServiceAccountNullableScalarRelationFilter, Prisma.ServiceAccountWhereInput> | null
 }, "id" | "organizationId_sourceSystem_externalId">
 
 export type IntegrationEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  organizationId?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceSystem?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
@@ -288,7 +288,7 @@ export type IntegrationEventScalarWhereWithAggregatesInput = {
   OR?: Prisma.IntegrationEventScalarWhereWithAggregatesInput[]
   NOT?: Prisma.IntegrationEventScalarWhereWithAggregatesInput | Prisma.IntegrationEventScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"IntegrationEvent"> | string
-  organizationId?: Prisma.StringWithAggregatesFilter<"IntegrationEvent"> | string
+  organizationId?: Prisma.StringNullableWithAggregatesFilter<"IntegrationEvent"> | string | null
   serviceAccountId?: Prisma.StringNullableWithAggregatesFilter<"IntegrationEvent"> | string | null
   sourceSystem?: Prisma.StringWithAggregatesFilter<"IntegrationEvent"> | string
   externalId?: Prisma.StringWithAggregatesFilter<"IntegrationEvent"> | string
@@ -310,13 +310,13 @@ export type IntegrationEventCreateInput = {
   processedAt?: Date | string | null
   deletedAt?: Date | string | null
   deletedBy?: string | null
-  organization: Prisma.OrganizationCreateNestedOneWithoutIntegrationEventsInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutIntegrationEventsInput
   serviceAccount?: Prisma.ServiceAccountCreateNestedOneWithoutIntegrationEventsInput
 }
 
 export type IntegrationEventUncheckedCreateInput = {
   id?: string
-  organizationId: string
+  organizationId?: string | null
   serviceAccountId?: string | null
   sourceSystem: string
   externalId: string
@@ -338,13 +338,13 @@ export type IntegrationEventUpdateInput = {
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  organization?: Prisma.OrganizationUpdateOneRequiredWithoutIntegrationEventsNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutIntegrationEventsNestedInput
   serviceAccount?: Prisma.ServiceAccountUpdateOneWithoutIntegrationEventsNestedInput
 }
 
 export type IntegrationEventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceSystem?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -358,7 +358,7 @@ export type IntegrationEventUncheckedUpdateInput = {
 
 export type IntegrationEventCreateManyInput = {
   id?: string
-  organizationId: string
+  organizationId?: string | null
   serviceAccountId?: string | null
   sourceSystem: string
   externalId: string
@@ -384,7 +384,7 @@ export type IntegrationEventUpdateManyMutationInput = {
 
 export type IntegrationEventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceSystem?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -593,7 +593,7 @@ export type IntegrationEventScalarWhereInput = {
   OR?: Prisma.IntegrationEventScalarWhereInput[]
   NOT?: Prisma.IntegrationEventScalarWhereInput | Prisma.IntegrationEventScalarWhereInput[]
   id?: Prisma.StringFilter<"IntegrationEvent"> | string
-  organizationId?: Prisma.StringFilter<"IntegrationEvent"> | string
+  organizationId?: Prisma.StringNullableFilter<"IntegrationEvent"> | string | null
   serviceAccountId?: Prisma.StringNullableFilter<"IntegrationEvent"> | string | null
   sourceSystem?: Prisma.StringFilter<"IntegrationEvent"> | string
   externalId?: Prisma.StringFilter<"IntegrationEvent"> | string
@@ -615,12 +615,12 @@ export type IntegrationEventCreateWithoutServiceAccountInput = {
   processedAt?: Date | string | null
   deletedAt?: Date | string | null
   deletedBy?: string | null
-  organization: Prisma.OrganizationCreateNestedOneWithoutIntegrationEventsInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutIntegrationEventsInput
 }
 
 export type IntegrationEventUncheckedCreateWithoutServiceAccountInput = {
   id?: string
-  organizationId: string
+  organizationId?: string | null
   sourceSystem: string
   externalId: string
   eventType: string
@@ -711,7 +711,7 @@ export type IntegrationEventUncheckedUpdateManyWithoutOrganizationInput = {
 
 export type IntegrationEventCreateManyServiceAccountInput = {
   id?: string
-  organizationId: string
+  organizationId?: string | null
   sourceSystem: string
   externalId: string
   eventType: string
@@ -732,12 +732,12 @@ export type IntegrationEventUpdateWithoutServiceAccountInput = {
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  organization?: Prisma.OrganizationUpdateOneRequiredWithoutIntegrationEventsNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutIntegrationEventsNestedInput
 }
 
 export type IntegrationEventUncheckedUpdateWithoutServiceAccountInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceSystem?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -750,7 +750,7 @@ export type IntegrationEventUncheckedUpdateWithoutServiceAccountInput = {
 
 export type IntegrationEventUncheckedUpdateManyWithoutServiceAccountInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceSystem?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
   eventType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -775,7 +775,7 @@ export type IntegrationEventSelect<ExtArgs extends runtime.Types.Extensions.Inte
   processedAt?: boolean
   deletedAt?: boolean
   deletedBy?: boolean
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.IntegrationEvent$organizationArgs<ExtArgs>
   serviceAccount?: boolean | Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs>
 }, ExtArgs["result"]["integrationEvent"]>
 
@@ -791,7 +791,7 @@ export type IntegrationEventSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   processedAt?: boolean
   deletedAt?: boolean
   deletedBy?: boolean
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.IntegrationEvent$organizationArgs<ExtArgs>
   serviceAccount?: boolean | Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs>
 }, ExtArgs["result"]["integrationEvent"]>
 
@@ -807,7 +807,7 @@ export type IntegrationEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   processedAt?: boolean
   deletedAt?: boolean
   deletedBy?: boolean
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.IntegrationEvent$organizationArgs<ExtArgs>
   serviceAccount?: boolean | Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs>
 }, ExtArgs["result"]["integrationEvent"]>
 
@@ -827,27 +827,27 @@ export type IntegrationEventSelectScalar = {
 
 export type IntegrationEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "serviceAccountId" | "sourceSystem" | "externalId" | "eventType" | "payload" | "receivedAt" | "processedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["integrationEvent"]>
 export type IntegrationEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.IntegrationEvent$organizationArgs<ExtArgs>
   serviceAccount?: boolean | Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs>
 }
 export type IntegrationEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.IntegrationEvent$organizationArgs<ExtArgs>
   serviceAccount?: boolean | Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs>
 }
 export type IntegrationEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  organization?: boolean | Prisma.IntegrationEvent$organizationArgs<ExtArgs>
   serviceAccount?: boolean | Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs>
 }
 
 export type $IntegrationEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "IntegrationEvent"
   objects: {
-    organization: Prisma.$OrganizationPayload<ExtArgs>
+    organization: Prisma.$OrganizationPayload<ExtArgs> | null
     serviceAccount: Prisma.$ServiceAccountPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    organizationId: string
+    organizationId: string | null
     serviceAccountId: string | null
     sourceSystem: string
     externalId: string
@@ -1251,7 +1251,7 @@ readonly fields: IntegrationEventFieldRefs;
  */
 export interface Prisma__IntegrationEventClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  organization<T extends Prisma.IntegrationEvent$organizationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.IntegrationEvent$organizationArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   serviceAccount<T extends Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.IntegrationEvent$serviceAccountArgs<ExtArgs>>): Prisma.Prisma__ServiceAccountClient<runtime.Types.Result.GetResult<Prisma.$ServiceAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1691,6 +1691,25 @@ export type IntegrationEventDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many IntegrationEvents to delete.
    */
   limit?: number
+}
+
+/**
+ * IntegrationEvent.organization
+ */
+export type IntegrationEvent$organizationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Organization
+   */
+  select?: Prisma.OrganizationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Organization
+   */
+  omit?: Prisma.OrganizationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizationInclude<ExtArgs> | null
+  where?: Prisma.OrganizationWhereInput
 }
 
 /**

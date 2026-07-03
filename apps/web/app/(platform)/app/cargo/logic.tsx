@@ -65,7 +65,7 @@ export function computeNextCargoAction(cargo: {
   }
   if (cargo.status === "held") {
     return {
-      label: "Resolver excecao",
+      label: "Resolver exceção",
       href: "/app/cargo#cargo-delivery-exception" as Route,
       blocked: false,
       blockedReason: null,

@@ -19,10 +19,12 @@ export class PrismaCargoRepository implements CargoRepository {
   private readonly database: SaptmPrismaClient = getPrismaClient();
 
   private mapCargo(raw: Record<string, unknown>): CargoRecord {
+    const teamRaw = raw.team as Record<string, unknown> | null | undefined;
     return {
       id: raw.id as string,
       organizationId: raw.organizationId as string,
       teamId: (raw.teamId as string) ?? null,
+      team: teamRaw ? { id: teamRaw.id as string, name: teamRaw.name as string } : null,
       cargoReference: raw.cargoReference as string,
       externalReference: (raw.externalReference as string) ?? null,
       cargoDescription: raw.cargoDescription as string,
@@ -80,6 +82,11 @@ export class PrismaCargoRepository implements CargoRepository {
   async findById(organizationId: string, id: string): Promise<CargoRecord | null> {
     const raw = await this.database.cargo.findFirst({
       where: { id, organizationId },
+      include: {
+        team: {
+          select: { id: true, name: true },
+        },
+      },
     });
     return raw ? this.mapCargo(raw as unknown as Record<string, unknown>) : null;
   }
@@ -87,6 +94,11 @@ export class PrismaCargoRepository implements CargoRepository {
   async findByIdempotencyKey(organizationId: string, key: string): Promise<CargoRecord | null> {
     const raw = await this.database.cargo.findFirst({
       where: { organizationId, registrationIdempotencyKey: key },
+      include: {
+        team: {
+          select: { id: true, name: true },
+        },
+      },
     });
     return raw ? this.mapCargo(raw as unknown as Record<string, unknown>) : null;
   }
@@ -97,6 +109,9 @@ export class PrismaCargoRepository implements CargoRepository {
   ): Promise<CargoRecord | null> {
     const raw = await this.database.cargo.findFirst({
       where: { organizationId, releaseIdempotencyKey: key },
+      include: {
+        team: { select: { id: true, name: true } },
+      },
     });
     return raw ? this.mapCargo(raw as unknown as Record<string, unknown>) : null;
   }
@@ -107,6 +122,9 @@ export class PrismaCargoRepository implements CargoRepository {
   ): Promise<CargoRecord | null> {
     const raw = await this.database.cargo.findFirst({
       where: { organizationId, transportPlanIdempotencyKey: key },
+      include: {
+        team: { select: { id: true, name: true } },
+      },
     });
     return raw ? this.mapCargo(raw as unknown as Record<string, unknown>) : null;
   }
@@ -117,6 +135,9 @@ export class PrismaCargoRepository implements CargoRepository {
   ): Promise<CargoRecord | null> {
     const raw = await this.database.cargo.findFirst({
       where: { organizationId, departureIdempotencyKey: key },
+      include: {
+        team: { select: { id: true, name: true } },
+      },
     });
     return raw ? this.mapCargo(raw as unknown as Record<string, unknown>) : null;
   }
@@ -127,6 +148,9 @@ export class PrismaCargoRepository implements CargoRepository {
   ): Promise<CargoRecord | null> {
     const raw = await this.database.cargo.findFirst({
       where: { organizationId, arrivalIdempotencyKey: key },
+      include: {
+        team: { select: { id: true, name: true } },
+      },
     });
     return raw ? this.mapCargo(raw as unknown as Record<string, unknown>) : null;
   }
@@ -137,6 +161,9 @@ export class PrismaCargoRepository implements CargoRepository {
   ): Promise<CargoRecord | null> {
     const raw = await this.database.cargo.findFirst({
       where: { organizationId, deliveryIdempotencyKey: key },
+      include: {
+        team: { select: { id: true, name: true } },
+      },
     });
     return raw ? this.mapCargo(raw as unknown as Record<string, unknown>) : null;
   }
@@ -477,6 +504,11 @@ export class PrismaCargoRepository implements CargoRepository {
           orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
           skip: offset,
           take: limit,
+          include: {
+            team: {
+              select: { id: true, name: true },
+            },
+          },
         }),
       ]);
 

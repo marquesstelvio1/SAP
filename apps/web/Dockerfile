@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM node:22-alpine AS base
+FROM node:24-alpine AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -51,7 +51,7 @@ RUN prisma_package="$(find /app/node_modules/.pnpm -path '*/node_modules/@prisma
   cp -R /tmp/prisma-client/. "$prisma_client/"
 RUN pnpm --filter @saptm/web... build
 
-FROM node:22-alpine AS runner
+FROM node:24-alpine AS runner
 
 ENV NODE_ENV="production"
 ENV HOSTNAME="0.0.0.0"
@@ -65,6 +65,6 @@ COPY --from=builder /app/apps/web/public ./apps/web/public
 
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD node -e "const port=process.env.PORT||3000; fetch('http://127.0.0.1:'+port+'/api/health').then((response)=>process.exit(response.ok?0:1)).catch(()=>process.exit(1))"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 CMD node -e "const port=process.env.PORT||3000; fetch('http://127.0.0.1:'+port+'/api/health').then((response)=>process.exit(response.ok?0:1)).catch(()=>process.exit(1))"
 
 CMD ["node", "apps/web/server.js"]

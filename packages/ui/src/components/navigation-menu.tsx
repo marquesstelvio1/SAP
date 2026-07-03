@@ -140,6 +140,15 @@ function NavigationMenuIndicator({
   );
 }
 
+NavigationMenu.displayName = "NavigationMenu";
+NavigationMenuList.displayName = "NavigationMenuList";
+NavigationMenuItem.displayName = "NavigationMenuItem";
+NavigationMenuTrigger.displayName = "NavigationMenuTrigger";
+NavigationMenuLink.displayName = "NavigationMenuLink";
+NavigationMenuViewport.displayName = "NavigationMenuViewport";
+NavigationMenuContent.displayName = "NavigationMenuContent";
+NavigationMenuIndicator.displayName = "NavigationMenuIndicator";
+
 export {
   NavigationMenu,
   NavigationMenuContent,

@@ -3,7 +3,7 @@ import { Skeleton } from "@saptm/ui";
 export default function Loading() {
   return (
     <main className="min-h-screen bg-sidebar text-sidebar-foreground">
-      <div className="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
+      <div className="grid min-h-screen lg:grid-layout-auth">
         <section className="relative hidden overflow-hidden border-sidebar-border border-r p-10 lg:flex lg:flex-col lg:justify-between">
           <div className="relative flex items-center gap-3">
             <Skeleton className="size-11 rounded-xl" />

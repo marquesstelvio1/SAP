@@ -1,5 +1,5 @@
 export { AccessState } from "./access-state.js";
-export { Alert, AlertDescription, AlertTitle } from "./alert.js";
+export { Alert, AlertDescription, AlertTitle, alertVariants } from "./alert.js";
 export {
   AlertDialog,
   AlertDialogAction,
@@ -88,19 +88,7 @@ export {
   DialogTitle,
   DialogTrigger,
 } from "./dialog.js";
-export {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerPortal,
-  DrawerTitle,
-  DrawerTrigger,
-  drawerVariants,
-} from "./drawer.js";
+
 export {
   DropdownMenu,
   DropdownMenuCheckboxItem,

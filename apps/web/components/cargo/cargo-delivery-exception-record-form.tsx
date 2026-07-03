@@ -62,14 +62,14 @@ export function CargoDeliveryExceptionRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordDeliveryException ? "success" : "warning"}>
-            {canRecordDeliveryException ? "Excecao autorizada" : "Indisponível"}
+            {canRecordDeliveryException ? "Exceção autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Registar exceção</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Registar excecao de entrega</CardTitle>
+          <CardTitle>Registar exceção de entrega</CardTitle>
           <CardDescription className="leading-6">
-            Quando a entrega nao esta sound, abre excecao, move cargo para held e tracking para
+            Quando a entrega não esta sound, abre exceção, move cargo para held e tracking para
             exception antes de qualquer handover final.
           </CardDescription>
         </div>
@@ -196,7 +196,7 @@ export function CargoDeliveryExceptionRecordForm({
               ) : (
                 <FieldDescription>
                   {state.status === "success"
-                    ? `${state.message} Excecao: ${state.exceptionId ?? state.eventId ?? "sem-ref"}`
+                    ? `${state.message} Exceção: ${state.exceptionId ?? state.eventId ?? "sem-ref"}`
                     : state.message}
                 </FieldDescription>
               )}
@@ -206,11 +206,11 @@ export function CargoDeliveryExceptionRecordForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canRecordDeliveryException
-              ? "Cria excecao de entrega com registo de auditoria."
-              : "Requer registo de excecao."}
+              ? "Cria exceção de entrega com registo de auditoria."
+              : "Requer registo de exceção."}
           </span>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A registar..." : "Registar excecao"}
+            {isPending ? "A registar..." : "Registar exceção"}
           </Button>
         </CardFooter>
       </form>

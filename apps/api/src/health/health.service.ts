@@ -55,7 +55,12 @@ export class HealthService {
   }
 
   async getReadiness(): Promise<RuntimeHealthReport> {
-    const checks = [this.checkEnvironment(), await this.checkDatabase(), await this.checkRedis()];
+    const checks = [
+      this.checkEnvironment(),
+      await this.checkDatabase(),
+      await this.checkRedis(),
+      await this.checkRbac(),
+    ];
 
     return createHealthReport(checks);
   }
@@ -145,6 +150,44 @@ export class HealthService {
         critical: false,
         startedAt,
         message: `Redis connection is not available (cache degraded): ${message}`,
+      });
+    }
+  }
+
+  private async checkRbac(): Promise<RuntimeHealthCheck> {
+    const startedAt = Date.now();
+
+    try {
+      const prisma = getPrismaClient();
+      const [permissionCount, roleCount] = await Promise.all([
+        prisma.permission.count() as Promise<number>,
+        prisma.role.count() as Promise<number>,
+      ]);
+      const seeded = permissionCount > 0 && roleCount > 0;
+
+      return createHealthCheck({
+        name: "rbac",
+        status: seeded ? "ok" : "degraded",
+        critical: false,
+        startedAt,
+        message: seeded
+          ? "RBAC permissions and roles are seeded."
+          : "RBAC is not seeded — permissions and roles missing.",
+        details: {
+          seeded,
+          permissions: permissionCount,
+          roles: roleCount,
+        },
+      });
+    } catch (e) {
+      const message = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+      healthLogger.error("Health check RBAC error.", { attributes: { message } });
+      return createHealthCheck({
+        name: "rbac",
+        status: "degraded",
+        critical: false,
+        startedAt,
+        message: `RBAC check failed: ${message}`,
       });
     }
   }

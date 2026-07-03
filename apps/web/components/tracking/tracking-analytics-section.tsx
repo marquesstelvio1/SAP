@@ -78,16 +78,16 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
             />
             <CardTitle>Agregados de risco e SLA</CardTitle>
             <CardDescription>
-              Leitura operacional para tracking, atraso, excecao, prioridade e risco de ETA.
+              Leitura operacional para tracking, atraso, exceção, prioridade e risco de ETA.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3 md:grid-cols-3">
             <MetricTile
-              label="Taxa atraso"
+              label="Taxa de atraso"
               value={`${analytics.kpis.delayRatePercent.toFixed(1)}%`}
             />
             <MetricTile
-              label="Taxa excecao"
+              label="Taxa de exceção"
               value={`${analytics.kpis.exceptionRatePercent.toFixed(1)}%`}
             />
             <MetricTile label="Eventos" value={analytics.kpis.eventsInWindow.toString()} />
@@ -102,20 +102,20 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
 
         <Card>
           <CardHeader>
-            <CardTitle>Distribuicao por modal</CardTitle>
+            <CardTitle>Distribuição por modal</CardTitle>
             <CardDescription>
-              Volume ativo, atrasado e em excecao por ferrovia, porto, rodovia e multimodal.
+              Volume ativo, atrasado e em exceção por ferrovia, porto, rodovia e multimodal.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table aria-label="Distribuicao por modal">
+            <Table aria-label="Distribuição por modal">
               <TableHeader>
                 <TableRow>
                   <TableHead>Modal</TableHead>
                   <TableHead>Total</TableHead>
                   <TableHead>Ativas</TableHead>
                   <TableHead>Atrasos</TableHead>
-                  <TableHead>Excecoes</TableHead>
+                  <TableHead>Exceções</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -149,20 +149,20 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
           <CardHeader>
             <BadgeGroup
               items={[
-                { label: "IA advisory", variant: "warning" },
-                { label: "Sem automacao direta", variant: "outline" },
+                { label: "Recomendações operacionais", variant: "warning" },
+                { label: "Sem automação direta", variant: "outline" },
               ]}
             />
-            <CardTitle>Recomendacoes operacionais assistidas</CardTitle>
+            <CardTitle>Recomendações operacionais assistidas</CardTitle>
             <CardDescription>
-              Recomenda risco, recuperacao e prioridade com regras locais. Qualquer mudanca exige
+              Recomenda risco, recuperação e prioridade com regras locais. Qualquer mudança exige
               fluxo humano aprovado.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             {advisory.recommendations.length === 0 ? (
               <div className="rounded-xl border bg-muted/30 p-4 text-muted-foreground text-sm">
-                Sem recomendacoes operacionais para a janela atual.
+                Sem recomendações operacionais para a janela atual.
               </div>
             ) : (
               advisory.recommendations.map((recommendation) => (
@@ -175,7 +175,7 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
                       {advisoryTypeLabels[recommendation.type as keyof typeof advisoryTypeLabels]}
                     </Badge>
                     <Badge variant="secondary">
-                      {(recommendation.confidenceScore * 100).toFixed(0)}% confianca
+                      {(recommendation.confidenceScore * 100).toFixed(0)}% confiança
                     </Badge>
                   </div>
                   <div className="flex flex-col gap-1">
@@ -196,7 +196,7 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
                             recommendation.shipment.transportMode as keyof typeof modeLabels
                           ]
                         }{" "}
-                        &middot; {recommendation.shipment.status}
+                        — {recommendation.shipment.status}
                       </span>
                     </div>
                   )}
@@ -208,20 +208,20 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
 
         <Card>
           <CardHeader>
-            <CardTitle>Politica de automacao</CardTitle>
+            <CardTitle>Política de automação</CardTitle>
             <CardDescription>
-              A IA local e consultiva; eventos, excecoes e releases continuam protegidos por
-              permissoes, idempotencia, registo de auditoria e aprovacao.
+              A IA local e consultiva; eventos, exceções e releases continuam protegidos por
+              permissões, idempotência, registo de auditoria e aprovação.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-1">
             <ContextRow
-              label="Automacao"
+              label="Automação"
               value={advisory.policy.automationAllowed ? "Permitida" : "Bloqueada"}
             />
             <ContextRow
-              label="Aprovacao humana"
-              value={advisory.policy.humanApprovalRequired ? "Obrigatoria" : "Nao exigida"}
+              label="Aprovação humana"
+              value={advisory.policy.humanApprovalRequired ? "Obrigatória" : "Não exigida"}
             />
             <ContextRow label="Fonte" value={advisory.policy.source} />
           </CardContent>

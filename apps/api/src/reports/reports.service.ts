@@ -1,10 +1,5 @@
-import { Inject, Injectable, Optional } from "@nestjs/common";
-import {
-  type DatabaseActorType,
-  getPrismaClient,
-  type PrismaTx,
-  type SaptmPrismaClient,
-} from "@saptm/database";
+import { Inject, Injectable } from "@nestjs/common";
+import type { PrismaTx } from "@saptm/database";
 import type { ReportExportDomain, ReportExportFormat, ReportExportOutput } from "@saptm/rpc";
 
 import { REPORTS_REPOSITORY, type ReportsRepository } from "./domain/reports.repository.js";
@@ -15,7 +10,7 @@ export type ExportOperationalReportInput = {
   format: ReportExportFormat;
   limit: number;
   actorId: string;
-  actorType: DatabaseActorType;
+  actorType: string;
   correlationId: string;
   userAgent?: string | undefined;
   ipAddress?: string | undefined;
@@ -27,23 +22,26 @@ type ReportRow = {
   status: string;
 };
 
+const EXPORT_QUERY_TIMEOUT_MS = 10_000;
+
 @Injectable()
 export class ReportsService {
   constructor(
     @Inject(REPORTS_REPOSITORY)
     private readonly reportsRepository: ReportsRepository,
-    @Optional()
-    private readonly database?: SaptmPrismaClient,
   ) {}
-
-  private getDatabase(): SaptmPrismaClient {
-    return this.database ?? getPrismaClient();
-  }
 
   async exportOperationalReport(input: ExportOperationalReportInput): Promise<ReportExportOutput> {
     const generatedAt = new Date();
     const domainConfig = this.getDomainConfig(input.domain);
-    const records = await domainConfig.query(input.organizationId, input.limit);
+
+    const records = await Promise.race([
+      domainConfig.query(input.organizationId, input.limit),
+      new Promise<ReportRow[]>((_, reject) =>
+        setTimeout(() => reject(new Error("Export query timeout")), EXPORT_QUERY_TIMEOUT_MS),
+      ),
+    ]);
+
     const sections: ReportExportOutput["sections"] = [
       { name: domainConfig.sectionName, rowCount: records.length },
     ];
@@ -53,7 +51,7 @@ export class ReportsService {
     const content = ["section,primaryId,reference,status", ...csvRows].join("\n");
     const subjectId = `report_${input.domain}_${generatedAt.getTime()}`;
 
-    await this.getDatabase().$transaction(async (tx: PrismaTx) => {
+    await this.reportsRepository.transaction(async (tx: PrismaTx) => {
       await this.reportsRepository.createAuditRecord(tx, {
         organizationId: input.organizationId,
         actorType: input.actorType,

@@ -7,5 +7,5 @@ export type AcceptInvitationFormState = {
 
 export const initialAcceptInvitationFormState: AcceptInvitationFormState = {
   status: "idle",
-  message: "Defina a password corporativa para ativar o seu acesso a organizacao.",
+  message: "Defina a password corporativa para ativar o seu acesso a organização.",
 };

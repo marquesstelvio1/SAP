@@ -9,6 +9,7 @@ export {
   getUserOrganizations,
   type ResolvedUserAuthorization,
   resolveDefaultUserAuthorization,
+  resolveOrganizationAuthorization,
   verifyUserOrganizationAccess,
 } from "./user-authorization.js";
 

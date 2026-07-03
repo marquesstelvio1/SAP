@@ -1,6 +1,7 @@
 import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { CapacityAdvisoryAnalytics } from "../../../../components/capacity/capacity-advisory-analytics";
 import { CapacityAdvisoryDecisionForm } from "../../../../components/capacity/capacity-advisory-decision-form";
 import { CapacityAdvisoryPanel } from "../../../../components/capacity/capacity-advisory-panel";
@@ -57,7 +58,7 @@ export default async function CapacityOverviewPage() {
     return (
       <AccessState
         badgeLabel="Capacidade"
-        description="O utilizador autenticado nao tem acesso ao modulo de capacidade."
+        description="O utilizador autenticado não tem acesso ao modulo de capacidade."
         role="alert"
         title="Capacidade operacional bloqueada"
         variant="blocked"
@@ -88,16 +89,24 @@ export default async function CapacityOverviewPage() {
     );
   }
 
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (result.status !== "ok") {
     return (
       <AccessState
         badgeLabel="Capacidade"
         description={result.message}
         role="alert"
-        title="Capacidade operacional indisponivel"
+        title="Capacidade operacional indisponível"
         variant="error"
       />
     );
+  }
+
+  if (advisoryResult.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
   }
 
   if (advisoryResult.status !== "ok") {
@@ -106,19 +115,23 @@ export default async function CapacityOverviewPage() {
         badgeLabel="Advisory de capacidade"
         description={advisoryResult.message}
         role="alert"
-        title="Advisory de capacidade indisponivel"
+        title="Advisory de capacidade indisponível"
         variant="error"
       />
     );
   }
 
+  if (advisoryDecisionAnalyticsResult.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (advisoryDecisionAnalyticsResult.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Analytics de decisoes"
+        badgeLabel="Analytics de decisões"
         description={advisoryDecisionAnalyticsResult.message}
         role="alert"
-        title="Analytics de decisoes de advisory indisponivel"
+        title="Analytics de decisões de advisory indisponível"
         variant="error"
       />
     );
@@ -162,7 +175,7 @@ export default async function CapacityOverviewPage() {
         />
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+      <section className="grid gap-4 xl:grid-layout-main">
         <div className="flex flex-col gap-4">
           <CapacityPreCheck
             slots={overview.upcomingSlots.map((slot) => ({

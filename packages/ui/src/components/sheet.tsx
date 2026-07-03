@@ -130,6 +130,17 @@ function SheetDescription({
   );
 }
 
+Sheet.displayName = "Sheet";
+SheetTrigger.displayName = "SheetTrigger";
+SheetClose.displayName = "SheetClose";
+SheetPortal.displayName = "SheetPortal";
+SheetOverlay.displayName = "SheetOverlay";
+SheetContent.displayName = "SheetContent";
+SheetHeader.displayName = "SheetHeader";
+SheetFooter.displayName = "SheetFooter";
+SheetTitle.displayName = "SheetTitle";
+SheetDescription.displayName = "SheetDescription";
+
 export {
   Sheet,
   SheetClose,

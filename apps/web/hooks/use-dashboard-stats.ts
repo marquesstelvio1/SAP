@@ -1,5 +1,6 @@
 "use client";
 
+import { RpcError } from "../lib/rpc-client";
 import { getTrackingOverview } from "../lib/tracking-overview";
 import { useRpcQuery } from "./use-rpc";
 
@@ -18,7 +19,7 @@ export function useDashboardStats() {
     queryFn: async () => {
       const result = await getTrackingOverview();
       if (result.status !== "ok") {
-        throw new Error(result.message);
+        throw new RpcError(result.status, result.message);
       }
       const overview = result.overview;
       return {

@@ -33,4 +33,6 @@ function Toaster({ ...props }: ToasterProps) {
 
 const toast: typeof sonnerToast = sonnerToast;
 
+Toaster.displayName = "Toaster";
+
 export { Toaster, toast };

@@ -53,7 +53,7 @@ export async function inviteAdminUserAction(
   if (!platformSession.viewer.permissions.includes(inviteUserPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui identity.user.invite para convidar utilizadores.",
+      message: "A sessão não possui identity.user.invite para convidar utilizadores.",
     };
   }
 
@@ -77,7 +77,7 @@ export async function inviteAdminUserAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC administrativo retornou resposta invalida para convite.",
+      message: "Contrato RPC administrativo retornou resposta inválida para convite.",
     };
   }
 
@@ -109,7 +109,7 @@ export async function assignAdminRoleAction(
   if (!platformSession.viewer.permissions.includes(assignRolePermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui identity.role.assign para atribuir roles.",
+      message: "A sessão não possui identity.role.assign para atribuir roles.",
     };
   }
 
@@ -133,7 +133,7 @@ export async function assignAdminRoleAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC administrativo retornou resposta invalida para atribuicao de role.",
+      message: "Contrato RPC administrativo retornou resposta inválida para atribuição de role.",
     };
   }
 
@@ -141,7 +141,7 @@ export async function assignAdminRoleAction(
 
   return {
     status: "success",
-    message: "Perfil atribuído com validação operacional e auditoria.",
+    message: "Perfil atribuído com válidação operacional e auditoria.",
     membershipId: parsedOutput.data.membershipId,
     roleId: parsedOutput.data.roleId,
     roleKey: parsedOutput.data.assignedRole.key,
@@ -291,7 +291,7 @@ export async function revokeAdminRoleAction(
 
   return {
     status: "success",
-    message: "Perfil revogado com validações de segurança.",
+    message: "Perfil revogado com válidações de segurança.",
     membershipId: parsedOutput.data.membershipId,
     roleId: parsedOutput.data.roleId,
     roleKey: parsedOutput.data.revokedRole.key,
@@ -358,7 +358,7 @@ export async function resendAdminInvitationAction(
   if (!platformSession.viewer.permissions.includes(inviteUserPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui identity.user.invite para reenviar convites.",
+      message: "A sessão não possui identity.user.invite para reenviar convites.",
     };
   }
 
@@ -370,7 +370,7 @@ export async function resendAdminInvitationAction(
 
   const result = await callAdminMutation("/rpc/admin/resendInvitation", parsedInput.input);
 
-  return parseAdminInvitationLifecycleResult(result, "Convite reenviado via outbox auditavel.");
+  return parseAdminInvitationLifecycleResult(result, "Convite reenviado via outbox auditável.");
 }
 
 export async function cancelAdminInvitationAction(
@@ -382,7 +382,7 @@ export async function cancelAdminInvitationAction(
   if (!platformSession.viewer.permissions.includes(inviteUserPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui identity.user.invite para cancelar convites.",
+      message: "A sessão não possui identity.user.invite para cancelar convites.",
     };
   }
 
@@ -426,14 +426,14 @@ async function callAdminMutation(path: string, input: unknown): Promise<AdminMut
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a operacao por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou a operação por sessão, organização ou permissão insuficiente.",
     };
   }
 
   if (!response.ok) {
     return {
       status: "error",
-      message: `API administrativa recusou a operacao: HTTP ${response.status}.`,
+      message: `API administrativa recusou a operação: HTTP ${response.status}.`,
     };
   }
 
@@ -680,7 +680,7 @@ function parseAdminRoleMutationResult(
     if (!parsedDeleteOutput.success) {
       return {
         status: "error",
-        message: "Contrato RPC administrativo retornou resposta invalida para role.",
+        message: "Contrato RPC administrativo retornou resposta inválida para role.",
       };
     }
   }
@@ -700,7 +700,7 @@ function parseAdminRoleMutationResult(
 
   return {
     status: "error",
-    message: "Contrato RPC administrativo retornou resposta invalida para role.",
+    message: "Contrato RPC administrativo retornou resposta inválida para role.",
   };
 }
 
@@ -720,7 +720,7 @@ function parseAdminInvitationLifecycleResult(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC administrativo retornou resposta invalida para convite.",
+      message: "Contrato RPC administrativo retornou resposta inválida para convite.",
     };
   }
 

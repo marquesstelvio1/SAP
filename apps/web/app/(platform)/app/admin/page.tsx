@@ -1,9 +1,10 @@
 import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
-
+import { redirect } from "next/navigation";
 import { AdminMembershipStatusForm } from "../../../../components/admin/admin-membership-status-form";
 import { AdminOverviewHeader } from "../../../../components/admin/admin-overview-header";
+import { AdminPageClient } from "../../../../components/admin/admin-page-client";
 import { AdminRoleAssignForm } from "../../../../components/admin/admin-role-assign-form";
 import { AdminRoleCreateForm } from "../../../../components/admin/admin-role-create-form";
 import { AdminRoleDeleteForm } from "../../../../components/admin/admin-role-delete-form";
@@ -98,6 +99,10 @@ export default async function AdminIdentityPage(props: {
     );
   }
 
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (result.status !== "ok") {
     return (
       <AccessState
@@ -113,78 +118,88 @@ export default async function AdminIdentityPage(props: {
   const options = prepareAdminOptions(overview);
 
   return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <AdminOverviewHeader totals={overview.totals} organization={overview.organization} />
-      <section className="grid gap-4 xl:grid-cols-2">
-        <AdminUserInviteForm
-          action={inviteAdminUserAction}
-          canInviteUser={canInviteUser}
-          initialState={initialAdminUserInviteFormState}
-          roles={options.roleInviteOptions}
-        />
-        <AdminRoleAssignForm
-          action={assignAdminRoleAction}
-          canAssignRole={canAssignRole}
-          initialState={initialAdminRoleAssignFormState}
-          members={options.memberOptions}
-          roles={options.roleAssignOptions}
-        />
-      </section>
-      <section className="grid gap-4 xl:grid-cols-3">
-        <AdminRoleCreateForm
-          action={createAdminRoleAction}
-          canManageRoles={canManageRoles}
-          initialState={initialAdminRoleCreateFormState}
-          permissions={options.permissionOptions}
-        />
-        <AdminRolePermissionsForm
-          action={updateAdminRolePermissionsAction}
-          canManageRoles={canManageRoles}
-          initialState={initialAdminRolePermissionsFormState}
-          roles={options.roleManagementOptions}
-        />
-        <AdminRoleDeleteForm
-          action={deleteAdminRoleAction}
-          canManageRoles={canManageRoles}
-          initialState={initialAdminRoleDeleteFormState}
-          roles={options.roleManagementOptions}
-        />
-      </section>
-      <section className="grid gap-4 xl:grid-cols-2">
-        <AdminRoleRevokeForm
-          action={revokeAdminRoleAction}
-          canAssignRole={canAssignRole}
-          initialState={initialAdminRoleRevokeFormState}
-          members={options.memberRoleOptions}
-        />
-        <AdminMembershipStatusForm
-          action={updateAdminMembershipStatusAction}
-          canManageMemberships={canManageMemberships}
-          initialState={initialAdminMembershipStatusFormState}
-          members={options.memberLifecycleOptions}
-        />
-      </section>
-      <AdminUsersTable
-        canInviteUser={canInviteUser}
-        onCancelInvitation={cancelInvitationAction}
-        onResendInvitation={resendInvitationAction}
-        users={overview.users}
-        pagination={{
-          totalCount: overview.pagination.totalCount,
-          limit,
-          offset,
-          totalPages: Math.ceil(overview.pagination.totalCount / limit),
-          currentPage: Math.floor(offset / limit) + 1,
-        }}
-      />
-      <AdminRolesTables roles={overview.roles} permissions={overview.permissions} />
-      <section className="grid gap-4">
+    <AdminPageClient
+      overviewHeader={
+        <AdminOverviewHeader totals={overview.totals} organization={overview.organization} />
+      }
+      usersChildren={
+        <>
+          <div className="grid gap-4 xl:grid-cols-2">
+            <AdminUserInviteForm
+              action={inviteAdminUserAction}
+              canInviteUser={canInviteUser}
+              initialState={initialAdminUserInviteFormState}
+              roles={options.roleInviteOptions}
+            />
+            <AdminRoleAssignForm
+              action={assignAdminRoleAction}
+              canAssignRole={canAssignRole}
+              initialState={initialAdminRoleAssignFormState}
+              members={options.memberOptions}
+              roles={options.roleAssignOptions}
+            />
+          </div>
+          <div className="grid gap-4 xl:grid-cols-2">
+            <AdminRoleRevokeForm
+              action={revokeAdminRoleAction}
+              canAssignRole={canAssignRole}
+              initialState={initialAdminRoleRevokeFormState}
+              members={options.memberRoleOptions}
+            />
+            <AdminMembershipStatusForm
+              action={updateAdminMembershipStatusAction}
+              canManageMemberships={canManageMemberships}
+              initialState={initialAdminMembershipStatusFormState}
+              members={options.memberLifecycleOptions}
+            />
+          </div>
+          <AdminUsersTable
+            canInviteUser={canInviteUser}
+            onCancelInvitation={cancelInvitationAction}
+            onResendInvitation={resendInvitationAction}
+            users={overview.users}
+            pagination={{
+              totalCount: overview.pagination.totalCount,
+              limit,
+              offset,
+              totalPages: Math.ceil(overview.pagination.totalCount / limit),
+              currentPage: Math.floor(offset / limit) + 1,
+            }}
+          />
+        </>
+      }
+      rolesChildren={
+        <>
+          <div className="grid gap-4 xl:grid-cols-3">
+            <AdminRoleCreateForm
+              action={createAdminRoleAction}
+              canManageRoles={canManageRoles}
+              initialState={initialAdminRoleCreateFormState}
+              permissions={options.permissionOptions}
+            />
+            <AdminRolePermissionsForm
+              action={updateAdminRolePermissionsAction}
+              canManageRoles={canManageRoles}
+              initialState={initialAdminRolePermissionsFormState}
+              roles={options.roleManagementOptions}
+            />
+            <AdminRoleDeleteForm
+              action={deleteAdminRoleAction}
+              canManageRoles={canManageRoles}
+              initialState={initialAdminRoleDeleteFormState}
+              roles={options.roleManagementOptions}
+            />
+          </div>
+          <AdminRolesTables roles={overview.roles} permissions={overview.permissions} />
+        </>
+      }
+      capacityChildren={
         <CapacityResourceRegisterForm
           action={registerCapacityResourceAction}
           canManageCapacity={canRegisterResource}
           initialState={initialCapacityResourceRegisterFormState}
         />
-      </section>
-    </div>
+      }
+    />
   );
 }

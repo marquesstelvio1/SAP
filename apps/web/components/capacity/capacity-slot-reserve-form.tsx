@@ -79,8 +79,8 @@ export function CapacitySlotReserveForm({
         <div className="flex flex-col gap-2">
           <CardTitle>Reservar slot para carga</CardTitle>
           <CardDescription className="leading-6">
-            Reserva unidades de capacidade para carga elegivel. O backend bloqueia overbooking, slot
-            fechado, janela invalida e duplicidades.
+            Reserva unidades de capacidade para carga elegível. O backend bloqueia overbooking, slot
+            fechado, janela inválida e duplicidades.
           </CardDescription>
         </div>
       </CardHeader>

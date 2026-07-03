@@ -39,7 +39,7 @@ const evidenceTypeOptions = [
   { value: "hazardous_goods_declaration", label: "Declaracao carga perigosa" },
   { value: "packing_list", label: "Packing list" },
   { value: "insurance_certificate", label: "Certificado de seguro" },
-  { value: "release_authorization", label: "Autorizacao de liberacao" },
+  { value: "release_authorization", label: "Autorização de liberação" },
   { value: "other", label: "Outra evidencia" },
 ] as const;
 

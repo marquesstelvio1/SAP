@@ -67,7 +67,7 @@ export function CargoTransportArriveForm({
         <div className="flex flex-col gap-2">
           <CardTitle>Confirmar chegada operacional</CardTitle>
           <CardDescription className="leading-6">
-            Confirma a chegada apenas quando a carga ja esta em transporte e o tracking esta em
+            Confirma a chegada apenas quando a carga já esta em transporte e o tracking esta em
             curso.
           </CardDescription>
         </div>
@@ -116,7 +116,7 @@ export function CargoTransportArriveForm({
                 />
               </Field>
               <Field data-disabled={!canArriveTransport}>
-                <FieldLabel htmlFor="arrivalOperatorName">Operador responsavel</FieldLabel>
+                <FieldLabel htmlFor="arrivalOperatorName">Operador responsável</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="arrivalOperatorName"

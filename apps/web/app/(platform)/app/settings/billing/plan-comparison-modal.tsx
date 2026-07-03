@@ -37,7 +37,7 @@ const defaultPlans: Plan[] = [
   {
     id: "pro",
     name: "Pro",
-    description: "Para operacoes profissionais",
+    description: "Para operações profissionais",
     price: 9900,
     features: [
       "Cargas ilimitadas",
@@ -58,8 +58,8 @@ const defaultPlans: Plan[] = [
       "Utilizadores ilimitados",
       "SLA garantido",
       "Gerente de conta dedicado",
-      "On-premise disponivel",
-      "Integracoes personalizadas",
+      "On-premise disponível",
+      "Integrações personalizadas",
     ],
   },
 ];
@@ -81,7 +81,7 @@ export function PlanComparisonModal({
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>Planos</DialogTitle>
-          <DialogDescription>Escolha o plano ideal para a sua operacao</DialogDescription>
+          <DialogDescription>Escolha o plano ideal para a sua operação</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 sm:grid-cols-3">
           {plans.map((plan) => (

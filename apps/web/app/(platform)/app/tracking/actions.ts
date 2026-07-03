@@ -40,7 +40,7 @@ export async function recordTrackingEventAction(
   if (!platformSession.viewer.permissions.includes(recordTrackingPermission)) {
     return {
       status: "error",
-      message: "A sessao nao tem autorizacao para registar eventos.",
+      message: "A sessão não tem autorização para registar eventos.",
     };
   }
 
@@ -68,7 +68,7 @@ export async function recordTrackingEventAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "Operacao recusada por sessao, organizacao ou autorizacao insuficiente.",
+      message: "Operação recusada por sessão, organização ou autorização insuficiente.",
     };
   }
 
@@ -85,7 +85,7 @@ export async function recordTrackingEventAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de tracking retornou resposta invalida para o evento.",
+      message: "Contrato RPC de tracking retornou resposta inválida para o evento.",
     };
   }
 
@@ -94,7 +94,7 @@ export async function recordTrackingEventAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Evento ja tinha sido registado; resposta idempotente reaproveitada."
+      ? "Evento já tinha sido registado; resposta idempotente reaproveitada."
       : "Evento operacional registado com auditoria.",
     eventId: parsedOutput.data.event.id,
     idempotencyKey: parsedOutput.data.event.idempotencyKey,
@@ -112,7 +112,7 @@ export async function manageTrackingExceptionAction(
   if (!platformSession.viewer.permissions.includes(manageTrackingExceptionPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui tracking.exception.manage para gerir excecoes.",
+      message: "A sessão não possui tracking.exception.manage para gerir exceções.",
     };
   }
 
@@ -140,14 +140,14 @@ export async function manageTrackingExceptionAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a excecao por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou a exceção por sessão, organização ou permissão insuficiente.",
     };
   }
 
   if (!response.ok) {
     return {
       status: "error",
-      message: `API de tracking recusou a excecao: HTTP ${response.status}.`,
+      message: `API de tracking recusou a exceção: HTTP ${response.status}.`,
     };
   }
 
@@ -157,7 +157,7 @@ export async function manageTrackingExceptionAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de tracking retornou resposta invalida para a excecao.",
+      message: "Contrato RPC de tracking retornou resposta inválida para a exceção.",
     };
   }
 
@@ -167,8 +167,8 @@ export async function manageTrackingExceptionAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Excecao ja tinha sido gerida; resposta idempotente reaproveitada."
-      : "Excecao operacional gerida com audit trail, outbox e status atualizado.",
+      ? "Exceção já tinha sido gerida; resposta idempotente reaproveitada."
+      : "Exceção operacional gerida com audit trail, outbox e status atualizado.",
     eventId: parsedOutput.data.event.id,
     idempotencyKey: parsedOutput.data.event.idempotencyKey,
     currentStatus: parsedOutput.data.shipment.currentStatus,
@@ -189,7 +189,7 @@ export async function resolveTrackingExceptionAction(
   if (!platformSession.viewer.permissions.includes(resolveTrackingExceptionPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui tracking.exception.resolve para resolver excecoes.",
+      message: "A sessão não possui tracking.exception.resolve para resolver exceções.",
     };
   }
 
@@ -217,21 +217,21 @@ export async function resolveTrackingExceptionAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a resolucao por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou a resolução por sessão, organização ou permissão insuficiente.",
     };
   }
 
   if (response.status === 400) {
     return {
       status: "error",
-      message: "API recusou a resolucao: a carga precisa estar atrasada ou em excecao.",
+      message: "API recusou a resolução: a carga precisa estar atrasada ou em exceção.",
     };
   }
 
   if (!response.ok) {
     return {
       status: "error",
-      message: `API de tracking recusou a resolucao: HTTP ${response.status}.`,
+      message: `API de tracking recusou a resolução: HTTP ${response.status}.`,
     };
   }
 
@@ -241,7 +241,7 @@ export async function resolveTrackingExceptionAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de tracking retornou resposta invalida para a resolucao.",
+      message: "Contrato RPC de tracking retornou resposta inválida para a resolução.",
     };
   }
 
@@ -251,8 +251,8 @@ export async function resolveTrackingExceptionAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Resolucao ja tinha sido registada; resposta idempotente reaproveitada."
-      : "Excecao operacional resolvida com release event, audit trail e outbox.",
+      ? "Resolução já tinha sido registada; resposta idempotente reaproveitada."
+      : "Exceção operacional resolvida com release event, audit trail e outbox.",
     eventId: parsedOutput.data.event.id,
     idempotencyKey: parsedOutput.data.event.idempotencyKey,
     currentStatus: parsedOutput.data.shipment.currentStatus,
@@ -280,7 +280,7 @@ function parseTrackingEventFormData(formData: FormData): ParseTrackingEventFormD
   if (occurredAt === null) {
     return {
       status: "error",
-      message: "Informe uma data/hora valida para o evento operacional.",
+      message: "Informe uma data/hora válida para o evento operacional.",
     };
   }
 
@@ -302,7 +302,7 @@ function parseTrackingEventFormData(formData: FormData): ParseTrackingEventFormD
   if (!input.success) {
     return {
       status: "error",
-      message: input.error.issues.at(0)?.message ?? "Dados do evento operacional invalidos.",
+      message: input.error.issues.at(0)?.message ?? "Dados do evento operacional inválidos.",
     };
   }
 
@@ -334,14 +334,14 @@ function parseTrackingExceptionFormData(formData: FormData): ParseTrackingExcept
   if (occurredAt === null) {
     return {
       status: "error",
-      message: "Informe uma data/hora valida para a excecao operacional.",
+      message: "Informe uma data/hora válida para a exceção operacional.",
     };
   }
 
   if (expectedResolutionAt === null) {
     return {
       status: "error",
-      message: "Informe uma previsao de resolucao valida ou deixe o campo vazio.",
+      message: "Informe uma previsão de resolução válida ou deixe o campo vazio.",
     };
   }
 
@@ -368,7 +368,7 @@ function parseTrackingExceptionFormData(formData: FormData): ParseTrackingExcept
   if (!input.success) {
     return {
       status: "error",
-      message: input.error.issues.at(0)?.message ?? "Dados da excecao operacional invalidos.",
+      message: input.error.issues.at(0)?.message ?? "Dados da exceção operacional inválidos.",
     };
   }
 
@@ -397,7 +397,7 @@ function parseTrackingExceptionResolutionFormData(
   if (occurredAt === null) {
     return {
       status: "error",
-      message: "Informe uma data/hora valida para a resolucao operacional.",
+      message: "Informe uma data/hora válida para a resolução operacional.",
     };
   }
 
@@ -422,7 +422,7 @@ function parseTrackingExceptionResolutionFormData(
   if (!input.success) {
     return {
       status: "error",
-      message: input.error.issues.at(0)?.message ?? "Dados da resolucao operacional invalidos.",
+      message: input.error.issues.at(0)?.message ?? "Dados da resolução operacional inválidos.",
     };
   }
 

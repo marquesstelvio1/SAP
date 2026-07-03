@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   dispatchOverviewInputSchema,
@@ -23,13 +22,12 @@ import {
 } from "@saptm/rpc";
 
 import type { OverviewService } from "../overview/overview.service.js";
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { PlanningService } from "./planning.service.js";
 
 export type PlanningRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreatePlanningRpcRouterInput = {
   planningService: Pick<
@@ -41,12 +39,12 @@ export type CreatePlanningRpcRouterInput = {
     | "rescheduleTransportOrder"
   >;
   overviewService: Pick<OverviewService, "getDispatchOverview">;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const planningRpc = os.$context<PlanningRpcContext>();
-
 export function createPlanningRpcRouter(deps: CreatePlanningRpcRouterInput) {
+  const planningRpc = os.$context<PlanningRpcContext>().use(deps.authMiddleware);
+
   return planningRpc.router({
     planning: {
       overview: planningRpc
@@ -55,18 +53,8 @@ export function createPlanningRpcRouter(deps: CreatePlanningRpcRouterInput) {
         .input(planningOverviewInputSchema)
         .output(planningOverviewOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            planningOverviewMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("planning.organization_required");
-          }
-
           return deps.planningService.getOverview({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
           });
         }),
@@ -76,18 +64,8 @@ export function createPlanningRpcRouter(deps: CreatePlanningRpcRouterInput) {
         .input(dispatchOverviewInputSchema)
         .output(dispatchOverviewOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            dispatchOverviewMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("planning.organization_required");
-          }
-
           return deps.overviewService.getDispatchOverview({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
             offset: input.offset,
           });
@@ -98,28 +76,14 @@ export function createPlanningRpcRouter(deps: CreatePlanningRpcRouterInput) {
         .input(transportOrderConfirmInputSchema)
         .output(transportOrderConfirmOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            transportOrderConfirmMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("planning.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.planningService.confirmTransportOrder({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       cancelTransportOrder: planningRpc
@@ -128,28 +92,14 @@ export function createPlanningRpcRouter(deps: CreatePlanningRpcRouterInput) {
         .input(transportOrderCancelInputSchema)
         .output(transportOrderCancelOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            transportOrderCancelMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("planning.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.planningService.cancelTransportOrder({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       rescheduleTransportOrder: planningRpc
@@ -158,28 +108,14 @@ export function createPlanningRpcRouter(deps: CreatePlanningRpcRouterInput) {
         .input(transportOrderRescheduleInputSchema)
         .output(transportOrderRescheduleOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            transportOrderRescheduleMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("planning.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.planningService.rescheduleTransportOrder({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       dispatchTransportOrder: planningRpc
@@ -188,28 +124,14 @@ export function createPlanningRpcRouter(deps: CreatePlanningRpcRouterInput) {
         .input(transportOrderDispatchInputSchema)
         .output(transportOrderDispatchOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            transportOrderDispatchMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("planning.organization_required");
-          }
-
-          const userAgent = readRequestHeader(context.request, "user-agent");
-          const ipAddress = readRequestIp(context.request);
-
           return deps.planningService.dispatchTransportOrder({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...(userAgent === undefined ? {} : { userAgent }),
-            ...(ipAddress === undefined ? {} : { ipAddress }),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
     },
@@ -217,20 +139,3 @@ export function createPlanningRpcRouter(deps: CreatePlanningRpcRouterInput) {
 }
 
 export type PlanningRpcRouter = ReturnType<typeof createPlanningRpcRouter>;
-
-function readRequestHeader(
-  request: IncomingMessage & RpcRequestWithAuthContext,
-  name: string,
-): string | undefined {
-  const value = request.headers[name] ?? request.headers[name.toLowerCase()];
-
-  if (Array.isArray(value)) {
-    return value.at(0);
-  }
-
-  return value;
-}
-
-function readRequestIp(request: IncomingMessage & RpcRequestWithAuthContext): string | undefined {
-  return readRequestHeader(request, "x-forwarded-for")?.split(",").at(0)?.trim();
-}

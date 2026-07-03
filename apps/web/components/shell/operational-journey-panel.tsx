@@ -42,7 +42,7 @@ export function OperationalJourneyPanel({
         <div className="flex flex-col gap-2">
           <CardTitle className="text-lg">{cargo.cargoReference}</CardTitle>
           <CardDescription className="leading-6">
-            Estado atual e proximas acoes validas por modulo.
+            Estado atual e proximas ações validas por modulo.
           </CardDescription>
         </div>
       </CardHeader>
@@ -78,7 +78,7 @@ export function OperationalJourneyPanel({
               </Link>
             ) : (
               <span className="mt-2 block text-muted-foreground text-xs">
-                Nenhuma acao disponivel neste estado.
+                Nenhuma acao disponível neste estado.
               </span>
             )}
           </div>

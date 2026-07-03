@@ -32,7 +32,7 @@ export async function createTeamAction(
   if (!platformSession.viewer.permissions.includes("tenant.manage")) {
     return {
       status: "error",
-      message: "A sessao nao possui tenant.manage para criar equipas.",
+      message: "A sessão não possui tenant.manage para criar equipas.",
     };
   }
 
@@ -80,7 +80,7 @@ export async function addTeamMemberAction(
   if (!platformSession.viewer.permissions.includes("tenant.manage")) {
     return {
       status: "error",
-      message: "A sessao nao possui tenant.manage para gerir membros.",
+      message: "A sessão não possui tenant.manage para gerir membros.",
     };
   }
 
@@ -128,7 +128,7 @@ export async function removeTeamMemberAction(
   if (!platformSession.viewer.permissions.includes("tenant.manage")) {
     return {
       status: "error",
-      message: "A sessao nao possui tenant.manage para remover membros.",
+      message: "A sessão não possui tenant.manage para remover membros.",
     };
   }
 
@@ -175,7 +175,7 @@ export async function updateTeamMemberRoleAction(
   if (!platformSession.viewer.permissions.includes("tenant.manage")) {
     return {
       status: "error",
-      message: "A sessao nao possui tenant.manage para alterar papeis.",
+      message: "A sessão não possui tenant.manage para alterar papeis.",
     };
   }
 
@@ -243,14 +243,14 @@ async function callTeamMutation(path: string, input: unknown): Promise<TeamMutat
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a operacao por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou a operação por sessão, organização ou permissão insuficiente.",
     };
   }
 
   if (!response.ok) {
     return {
       status: "error",
-      message: `API recusou a operacao: HTTP ${response.status}.`,
+      message: `API recusou a operação: HTTP ${response.status}.`,
     };
   }
 

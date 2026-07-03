@@ -1,15 +1,21 @@
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@saptm/ui";
+import type { Metadata } from "next";
 import { AccountDeletionForm } from "../../../../../components/privacy/account-deletion-form";
 import { DataExportForm } from "../../../../../components/privacy/data-export-form";
 import { requirePlatformSession } from "../../../../../lib/auth-session";
 
 export const dynamic = "force-dynamic";
 
+export const metadata: Metadata = {
+  title: "Privacidade",
+  description: "Gestão de dados pessoais, exportação e eliminação de conta conforme RGPD.",
+};
+
 export default async function PrivacyPage() {
   const platformSession = await requirePlatformSession("/app/settings/privacy");
 
   return (
-    <main className="flex flex-col gap-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline">RGPD</Badge>
@@ -54,6 +60,6 @@ export default async function PrivacyPage() {
           </CardContent>
         </Card>
       </section>
-    </main>
+    </div>
   );
 }

@@ -3,6 +3,9 @@ import type { Redis } from "ioredis";
 
 import { REDIS_CLIENT } from "./cache.constants.js";
 
+const FALLBACK_CLEANUP_INTERVAL_MS = 60_000;
+const FALLBACK_MAX_ENTRIES = 5_000;
+
 interface CacheEntry {
   value: unknown;
   expiresAt: number;
@@ -36,6 +39,8 @@ export class CacheService {
     } else {
       this.logger.warn("No Redis configured, using in-memory cache (single-instance only)");
     }
+
+    setInterval(() => this.pruneFallback(), FALLBACK_CLEANUP_INTERVAL_MS).unref();
   }
 
   get isConnected(): boolean {
@@ -111,5 +116,21 @@ export class CacheService {
       value,
       expiresAt: Date.now() + (ttl ?? 60_000),
     });
+  }
+
+  private pruneFallback(): void {
+    const now = Date.now();
+    for (const [key, entry] of this.fallback) {
+      if (now >= entry.expiresAt) {
+        this.fallback.delete(key);
+      }
+    }
+    if (this.fallback.size > FALLBACK_MAX_ENTRIES) {
+      const sorted = [...this.fallback.entries()].sort((a, b) => a[1].expiresAt - b[1].expiresAt);
+      const toDelete = sorted.slice(0, sorted.length - FALLBACK_MAX_ENTRIES);
+      for (const [key] of toDelete) {
+        this.fallback.delete(key);
+      }
+    }
   }
 }

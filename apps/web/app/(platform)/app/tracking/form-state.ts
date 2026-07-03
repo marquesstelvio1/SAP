@@ -23,7 +23,7 @@ export type TrackingExceptionManageFormState = {
 
 export const initialTrackingExceptionManageFormState: TrackingExceptionManageFormState = {
   status: "idle",
-  message: "Preencha a excecao operacional para acionar notificacao e plano de recuperacao.",
+  message: "Preencha a exceção operacional para acionar notificacao e plano de recuperação.",
 };
 
 export type TrackingExceptionResolveFormState = {
@@ -39,5 +39,5 @@ export type TrackingExceptionResolveFormState = {
 
 export const initialTrackingExceptionResolveFormState: TrackingExceptionResolveFormState = {
   status: "idle",
-  message: "Preencha a resolucao para libertar uma carga de atraso ou excecao operacional.",
+  message: "Preencha a resolução para libertar uma carga de atraso ou exceção operacional.",
 };

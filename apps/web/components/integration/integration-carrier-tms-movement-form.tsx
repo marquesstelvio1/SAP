@@ -67,7 +67,7 @@ export function IntegrationCarrierTmsMovementForm({
         <div className="flex flex-col gap-2">
           <CardTitle>Processar movimento Carrier TMS</CardTitle>
           <CardDescription className="leading-6">
-            Converte movimentos rodoviarios locais em eventos de tracking. A operacao valida service
+            Converte movimentos rodoviários locais em eventos de tracking. A operação válida service
             movimento Carrier TMS com registo de evento.
           </CardDescription>
         </div>
@@ -228,8 +228,8 @@ export function IntegrationCarrierTmsMovementForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma conta de servico com permissoes de tracking."
-              : "Adapter rodoviario local sem chamada externa."}
+              ? "Crie uma conta de servico com permissões de tracking."
+              : "Adapter rodoviário local sem chamada externa."}
           </span>
         </CardFooter>
       </form>

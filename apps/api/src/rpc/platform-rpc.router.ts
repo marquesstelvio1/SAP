@@ -52,6 +52,8 @@ import {
   createWebhooksRpcRouter,
   type WebhooksRpcContext,
 } from "../webhooks/webhooks-rpc.router.js";
+import { type AuthEnrichedContext, createRpcAuthMiddleware } from "./rpc-auth.middleware.js";
+import type { RpcContextService } from "./rpc-context.service.js";
 
 export type PlatformRpcContext = AdminRpcContext &
   AuditRpcContext &
@@ -71,27 +73,30 @@ export type PlatformRpcContext = AdminRpcContext &
   TeamsRpcContext &
   TrackingRpcContext &
   WebhooksRpcContext &
-  PrivacyRpcContext;
+  PrivacyRpcContext &
+  AuthEnrichedContext;
 
-export type CreatePlatformRpcRouterInput = Parameters<typeof createAdminRpcRouter>[0] &
-  Parameters<typeof createAuditRpcRouter>[0] &
-  Parameters<typeof createBillingRpcRouter>[0] &
-  Parameters<typeof createCargoRpcRouter>[0] &
-  Parameters<typeof createCapacityRpcRouter>[0] &
-  Parameters<typeof createDocumentsRpcRouter>[0] &
-  Parameters<typeof createIntegrationsRpcRouter>[0] &
-  Parameters<typeof createNotificationsRpcRouter>[0] &
-  Parameters<typeof createOrganizationsRpcRouter>[0] &
-  Parameters<typeof createPlansRpcRouter>[0] &
-  Parameters<typeof createPlanningRpcRouter>[0] &
-  Parameters<typeof createReportsRpcRouter>[0] &
-  Parameters<typeof createSettingsRpcRouter>[0] &
-  Parameters<typeof createSsoRpcRouter>[0] &
-  Parameters<typeof createTariffRpcRouter>[0] &
-  Parameters<typeof createTrackingRpcRouter>[0] &
-  Parameters<typeof createTeamsRpcRouter>[0] &
-  Parameters<typeof createWebhooksRpcRouter>[0] &
-  Parameters<typeof createPrivacyRpcRouter>[0] & {
+type OmitAuth<T> = Omit<T, "authMiddleware">;
+
+export type CreatePlatformRpcRouterInput = OmitAuth<Parameters<typeof createAdminRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createAuditRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createBillingRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createCargoRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createCapacityRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createDocumentsRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createIntegrationsRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createNotificationsRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createOrganizationsRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createPlansRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createPlanningRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createReportsRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createSettingsRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createSsoRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createTariffRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createTrackingRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createTeamsRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createWebhooksRpcRouter>[0]> &
+  OmitAuth<Parameters<typeof createPrivacyRpcRouter>[0]> & {
     overviewService: Pick<
       OverviewService,
       | "getComplianceOverview"
@@ -99,29 +104,33 @@ export type CreatePlatformRpcRouterInput = Parameters<typeof createAdminRpcRoute
       | "getDispatchOverview"
       | "getExceptionOverview"
     >;
+    rpcContextService: RpcContextService;
   };
 
 export function createPlatformRpcRouter(input: CreatePlatformRpcRouterInput) {
+  const authMiddleware = createRpcAuthMiddleware(input.rpcContextService);
   const platformRpc = os.$context<PlatformRpcContext>();
-  const adminRpcRouter = createAdminRpcRouter(input);
-  const auditRpcRouter = createAuditRpcRouter(input);
-  const billingRpcRouter = createBillingRpcRouter(input);
-  const plansRpcRouter = createPlansRpcRouter(input);
-  const capacityRpcRouter = createCapacityRpcRouter(input);
-  const cargoRpcRouter = createCargoRpcRouter(input);
-  const documentsRpcRouter = createDocumentsRpcRouter(input);
-  const integrationsRpcRouter = createIntegrationsRpcRouter(input);
-  const notificationsRpcRouter = createNotificationsRpcRouter(input);
-  const organizationsRpcRouter = createOrganizationsRpcRouter(input);
-  const planningRpcRouter = createPlanningRpcRouter(input);
-  const reportsRpcRouter = createReportsRpcRouter(input);
-  const settingsRpcRouter = createSettingsRpcRouter(input);
-  const tariffRpcRouter = createTariffRpcRouter(input);
-  const trackingRpcRouter = createTrackingRpcRouter(input);
-  const ssoRpcRouter = createSsoRpcRouter(input);
-  const teamsRpcRouter = createTeamsRpcRouter(input);
-  const webhooksRpcRouter = createWebhooksRpcRouter(input);
-  const privacyRpcRouter = createPrivacyRpcRouter(input);
+  const routerInput = { ...input, authMiddleware };
+
+  const adminRpcRouter = createAdminRpcRouter(routerInput);
+  const auditRpcRouter = createAuditRpcRouter(routerInput);
+  const billingRpcRouter = createBillingRpcRouter(routerInput);
+  const plansRpcRouter = createPlansRpcRouter(routerInput);
+  const capacityRpcRouter = createCapacityRpcRouter(routerInput);
+  const cargoRpcRouter = createCargoRpcRouter(routerInput);
+  const documentsRpcRouter = createDocumentsRpcRouter(routerInput);
+  const integrationsRpcRouter = createIntegrationsRpcRouter(routerInput);
+  const notificationsRpcRouter = createNotificationsRpcRouter(routerInput);
+  const organizationsRpcRouter = createOrganizationsRpcRouter(routerInput);
+  const planningRpcRouter = createPlanningRpcRouter(routerInput);
+  const reportsRpcRouter = createReportsRpcRouter(routerInput);
+  const settingsRpcRouter = createSettingsRpcRouter(routerInput);
+  const tariffRpcRouter = createTariffRpcRouter(routerInput);
+  const ssoRpcRouter = createSsoRpcRouter(routerInput);
+  const teamsRpcRouter = createTeamsRpcRouter(routerInput);
+  const trackingRpcRouter = createTrackingRpcRouter(routerInput);
+  const webhooksRpcRouter = createWebhooksRpcRouter(routerInput);
+  const privacyRpcRouter = createPrivacyRpcRouter(routerInput);
 
   return platformRpc.router({
     system: {

@@ -18,7 +18,7 @@ export async function updateBrandingSettingsAction(
   if (!platformSession.viewer.permissions.includes(manageTenantPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui tenant.manage para alterar branding da organizacao.",
+      message: "A sessão não possui tenant.manage para alterar branding da organização.",
     };
   }
 
@@ -29,7 +29,7 @@ export async function updateBrandingSettingsAction(
     if (!hexRegex.test(primaryColor.trim())) {
       return {
         status: "error",
-        message: "Cor primaria deve ser um valor hex valido (ex: #FF6600).",
+        message: "Cor primaria deve ser um valor hex válido (ex: #FF6600).",
       };
     }
   }
@@ -58,14 +58,14 @@ export async function updateBrandingSettingsAction(
     if (response.status === 401 || response.status === 403) {
       return {
         status: "error",
-        message: "API recusou a operacao por sessao, organizacao ou permissao insuficiente.",
+        message: "API recusou a operação por sessão, organização ou permissão insuficiente.",
       };
     }
 
     if (!response.ok) {
       return {
         status: "error",
-        message: `API recusou a operacao: HTTP ${response.status}.`,
+        message: `API recusou a operação: HTTP ${response.status}.`,
       };
     }
 
@@ -78,7 +78,7 @@ export async function updateBrandingSettingsAction(
   } catch {
     return {
       status: "error",
-      message: "Nao foi possivel atualizar o branding neste momento.",
+      message: "Não foi possivel atualizar o branding neste momento.",
     };
   }
 }

@@ -46,9 +46,9 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
 
   return (
     <main className="min-h-screen bg-sidebar text-sidebar-foreground" id="main-content">
-      <div className="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
+      <div className="grid min-h-screen lg:grid-layout-auth">
         <section className="relative hidden overflow-hidden border-sidebar-border border-r p-10 lg:flex lg:flex-col lg:justify-between">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,var(--sidebar-accent)/0.26,transparent_32%),radial-gradient(circle_at_80%_10%,var(--sidebar-primary)/0.18,transparent_28%)]" />
+          <div className="absolute inset-0 bg-auth-gradient-light dark:bg-auth-gradient-dark" />
           <div className="relative flex items-center gap-3">
             <div className="flex size-11 items-center justify-center rounded-xl bg-sidebar-primary font-semibold text-sidebar-primary-foreground">
               ST

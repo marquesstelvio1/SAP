@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   settingsMutationOutputSchema,
@@ -9,22 +8,21 @@ import {
   settingsOverviewOutputSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { SettingsService } from "./settings.service.js";
 
 export type SettingsRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreateSettingsRpcRouterInput = {
   settingsService: Pick<SettingsService, "getSettings" | "updateSettings">;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const settingsRpc = os.$context<SettingsRpcContext>();
-
 export function createSettingsRpcRouter(deps: CreateSettingsRpcRouterInput) {
+  const settingsRpc = os.$context<SettingsRpcContext>().use(deps.authMiddleware);
+
   return settingsRpc.router({
     settings: {
       overview: settingsRpc
@@ -32,18 +30,8 @@ export function createSettingsRpcRouter(deps: CreateSettingsRpcRouterInput) {
         .route({ method: "GET", path: "/settings/overview" })
         .output(settingsOverviewOutputSchema)
         .handler(async ({ context }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            settingsOverviewMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("settings.organization_required");
-          }
-
           return deps.settingsService.getSettings({
-            organizationId,
+            organizationId: context.organizationId,
           });
         }),
       update: settingsRpc
@@ -52,23 +40,12 @@ export function createSettingsRpcRouter(deps: CreateSettingsRpcRouterInput) {
         .input(settingsOrganizationUpdateInputSchema)
         .output(settingsMutationOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            settingsOrganizationUpdateMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("settings.organization_required");
-          }
-
           return deps.settingsService.updateSettings({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
           });
         }),
     },

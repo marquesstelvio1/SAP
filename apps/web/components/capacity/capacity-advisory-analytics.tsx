@@ -32,17 +32,17 @@ export function CapacityAdvisoryAnalytics({ analytics }: CapacityAdvisoryAnalyti
           <BadgeGroup
             items={[
               { label: "Analytics", variant: "info" },
-              { label: "Decisoes de advisory", variant: "outline" },
+              { label: "Decisões de advisory", variant: "outline" },
             ]}
           />
-          <CardTitle>Analytics de decisoes de advisory</CardTitle>
+          <CardTitle>Analytics de decisões de advisory</CardTitle>
           <CardDescription>
-            Mede aprovacao/rejeicao de recomendacoes gravadas por humanos. Este bloco e apenas
-            consultivo e nao executa abertura, reserva ou cancelamento de capacidade.
+            Mede aprovação/rejeicao de recomendações gravadas por humanos. Este bloco e apenas
+            consultivo e não executa abertura, reserva ou cancelamento de capacidade.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-4">
-          <MetricTile label="Decisoes" value={analytics.totals.decisions.toString()} />
+          <MetricTile label="Decisões" value={analytics.totals.decisions.toString()} />
           <MetricTile label="Aprovadas" value={analytics.totals.approved.toString()} />
           <MetricTile label="Rejeitadas" value={analytics.totals.rejected.toString()} />
           <MetricTile
@@ -55,12 +55,12 @@ export function CapacityAdvisoryAnalytics({ analytics }: CapacityAdvisoryAnalyti
       <Card>
         <CardHeader>
           <CardTitle>Janela de analise</CardTitle>
-          <CardDescription>Periodo considerado para as decisoes de advisory.</CardDescription>
+          <CardDescription>Periodo considerado para as decisões de advisory.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 text-sm md:grid-cols-2">
           <ContextRow label="Janela" value={`${analytics.window.windowDays} dias`} />
           <ContextRow
-            label="Com aprovacao"
+            label="Com aprovação"
             value={analytics.totals.decisionsWithApprovalReference.toString()}
           />
         </CardContent>

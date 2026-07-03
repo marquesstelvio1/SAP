@@ -3,6 +3,12 @@ import { NextResponse } from "next/server";
 
 import { extractClientIp, rateLimiter } from "@/lib/rate-limiter";
 
+/**
+ * Maximum CSP report body size in bytes (200 KB).
+ * CSP reports can include script samples which increase payload size.
+ */
+const MAX_BODY_SIZE = 1024 * 200;
+
 type CspReport = {
   "csp-report"?: {
     "document-uri": string;
@@ -71,6 +77,13 @@ export async function POST(request: NextRequest) {
     if (!isAllowedOrigin) {
       return NextResponse.json({ error: "Origin not allowed" }, { status: 403 });
     }
+  }
+
+  // ── Body size limit ───────────────────────────────────────────────────
+  // CSP reports with large script-sample values could exceed acceptable size.
+  const contentLength = request.headers.get("content-length");
+  if (contentLength !== null && Number.parseInt(contentLength, 10) > MAX_BODY_SIZE) {
+    return NextResponse.json({ error: "Payload too large" }, { status: 413 });
   }
 
   // ── Body parsing ──────────────────────────────────────────────────────

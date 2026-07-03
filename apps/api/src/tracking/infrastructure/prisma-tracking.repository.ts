@@ -31,6 +31,9 @@ export class PrismaTrackingRepository implements TrackingRepository {
       where: { id, organizationId },
       include: {
         _count: { select: { events: true } },
+        team: {
+          select: { id: true, name: true },
+        },
         events: {
           orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }],
           take: eventLimit,
@@ -132,6 +135,9 @@ export class PrismaTrackingRepository implements TrackingRepository {
           orderBy: { occurredAt: "desc" },
           take: 1,
           select: { eventType: true, occurredAt: true, locationName: true },
+        },
+        team: {
+          select: { id: true, name: true },
         },
       },
     });

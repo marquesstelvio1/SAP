@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, Skeleton } from "@saptm/ui";
 export default function Loading() {
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
+      <section className="grid gap-4 xl:grid-layout-main">
         <Card>
           <CardHeader className="gap-4">
             <div className="flex flex-wrap gap-2">

@@ -35,7 +35,7 @@ export type CargoRegisterFormProps = {
 };
 
 const inspectionOutcomeOptions = [
-  { value: "not_required", label: "Nao requerido" },
+  { value: "not_required", label: "Não requerido" },
   { value: "passed", label: "Inspecao aprovada" },
 ] as const;
 
@@ -43,7 +43,7 @@ const releaseReasonOptions = [
   { value: "customs_cleared", label: "Alfandega liberada" },
   { value: "inspection_passed", label: "Inspecao aprovada" },
   { value: "compliance_ok", label: "Compliance OK" },
-  { value: "expedited_release", label: "Liberacao expedita" },
+  { value: "expedited_release", label: "Liberação expedita" },
   { value: "other", label: "Outra justificativa" },
 ] as const;
 
@@ -62,7 +62,7 @@ const customsStatusOptions = [
   { value: "pending", label: "Pendente" },
   { value: "cleared", label: "Liberada" },
   { value: "held", label: "Retida" },
-  { value: "not_required", label: "Nao requerido" },
+  { value: "not_required", label: "Não requerido" },
 ] as const;
 
 const conditionStatusOptions = [
@@ -322,7 +322,7 @@ export function CargoRegisterForm({
                 />
                 <div className="flex flex-col gap-1">
                   <FieldLabel htmlFor="requiresInspection">Requer inspeção</FieldLabel>
-                  <FieldDescription>Bloqueia movimento ate validacao operacional.</FieldDescription>
+                  <FieldDescription>Bloqueia movimento até validação operacional.</FieldDescription>
                 </div>
               </Field>
               <Field data-disabled={!canRegisterCargo}>
@@ -385,7 +385,7 @@ export function CargoRegisterForm({
                     </SelectNative>
                   </Field>
                   <Field data-disabled={!canRegisterCargo}>
-                    <FieldLabel htmlFor="releaseReference">Referencia de liberacao</FieldLabel>
+                    <FieldLabel htmlFor="releaseReference">Referencia de liberação</FieldLabel>
                     <Input
                       disabled={releaseDisabled}
                       id="releaseReference"
@@ -419,7 +419,7 @@ export function CargoRegisterForm({
                 <FieldDescription>
                   {state.status === "success"
                     ? `${state.message} Ref.: ${state.cargoReference ?? "sem-ref"} · Bloqueio: ${
-                        state.movementBlocked ? "sim" : "nao"
+                        state.movementBlocked ? "sim" : "não"
                       }${state.releaseStatus === "released" ? " · Liberta: sim" : ""}`
                     : state.message}
                 </FieldDescription>
@@ -431,7 +431,7 @@ export function CargoRegisterForm({
           <span className="text-muted-foreground text-xs">
             {canRegisterCargo
               ? releaseImmediately
-                ? "Registo com libertacao cria auditoria em ambos os passos."
+                ? "Registo com libertação cria auditoria em ambos os passos."
                 : "Registo cria registo de auditoria."
               : "Requer registo de cargas."}
           </span>

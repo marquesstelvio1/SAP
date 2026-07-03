@@ -25,4 +25,6 @@ function Progress({
   );
 }
 
+Progress.displayName = "Progress";
+
 export { Progress };

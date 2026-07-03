@@ -62,14 +62,14 @@ export function CargoDeliveryExceptionResolveForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canResolveDeliveryException ? "success" : "warning"}>
-            {canResolveDeliveryException ? "Resolucao autorizada" : "Indisponível"}
+            {canResolveDeliveryException ? "Resolução autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Resolver exceção</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Resolver excecao de entrega</CardTitle>
+          <CardTitle>Resolver exceção de entrega</CardTitle>
           <CardDescription className="leading-6">
-            Fecha a excecao apos inspeccao ou claim, restaura cargo para in_transport e tracking
+            Fecha a exceção apos inspeccao ou claim, restaura cargo para in_transport e tracking
             para arrived, permitindo a entrega final.
           </CardDescription>
         </div>
@@ -86,11 +86,11 @@ export function CargoDeliveryExceptionResolveForm({
                   disabled={isDisabled}
                   id="deliveryExceptionId"
                   name="exceptionId"
-                  placeholder="ID da excecao aberta"
+                  placeholder="ID da exceção aberta"
                   required
                 />
                 <FieldDescription>
-                  Requer excecao aberta, cargo held e tracking exception.
+                  Requer exceção aberta, cargo held e tracking exception.
                 </FieldDescription>
               </Field>
               <Field data-disabled={!canResolveDeliveryException}>
@@ -108,7 +108,7 @@ export function CargoDeliveryExceptionResolveForm({
 
             <div className="grid gap-4 md:grid-cols-2">
               <Field data-disabled={!canResolveDeliveryException}>
-                <FieldLabel htmlFor="deliveryExceptionResolutionCode">Resolucao</FieldLabel>
+                <FieldLabel htmlFor="deliveryExceptionResolutionCode">Resolução</FieldLabel>
                 <SelectNative
                   defaultValue="inspection_passed"
                   disabled={isDisabled}
@@ -136,7 +136,7 @@ export function CargoDeliveryExceptionResolveForm({
 
             <Field data-disabled={!canResolveDeliveryException}>
               <FieldLabel htmlFor="deliveryExceptionResolutionReference">
-                Referencia de resolucao
+                Referencia de resolução
               </FieldLabel>
               <Input
                 disabled={isDisabled}
@@ -153,7 +153,7 @@ export function CargoDeliveryExceptionResolveForm({
                 disabled={isDisabled}
                 id="deliveryExceptionResolutionSummary"
                 name="resolutionSummary"
-                placeholder="Explique a decisao, evidencia e criterio de liberacao"
+                placeholder="Explique a decisão, evidencia e criterio de liberação"
                 required
               />
             </Field>
@@ -181,10 +181,10 @@ export function CargoDeliveryExceptionResolveForm({
           <span className="text-muted-foreground text-xs">
             {canResolveDeliveryException
               ? "Restaura cargo e tracking para permitir cargo.delivery.complete."
-              : "Requer resolucao de excecao."}
+              : "Requer resolução de exceção."}
           </span>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A resolver..." : "Resolver excecao"}
+            {isPending ? "A resolver..." : "Resolver exceção"}
           </Button>
         </CardFooter>
       </form>

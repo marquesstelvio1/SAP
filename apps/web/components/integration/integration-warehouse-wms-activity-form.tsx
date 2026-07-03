@@ -67,7 +67,7 @@ export function IntegrationWarehouseWmsActivityForm({
         <div className="flex flex-col gap-2">
           <CardTitle>Processar atividade Warehouse/WMS</CardTitle>
           <CardDescription className="leading-6">
-            Converte atividades de armazem, doca e yard em eventos de tracking. A operacao valida
+            Converte atividades de armazém, doca e yard em eventos de tracking. A operação válida
             processamento de atividade WMS com registo de evento.
           </CardDescription>
         </div>
@@ -260,7 +260,7 @@ export function IntegrationWarehouseWmsActivityForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma conta de servico com permissoes de tracking."
+              ? "Crie uma conta de servico com permissões de tracking."
               : "Adapter WMS local sem chamada externa."}
           </span>
         </CardFooter>

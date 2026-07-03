@@ -7,7 +7,7 @@ import * as React from "react";
 import { cn } from "../lib/utils.js";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover.js";
 
-const densityHeightMap = {
+const comboboxDensityHeight = {
   comfortable: "h-[var(--density-comfortable-control-height)]",
   compact: "h-[var(--density-compact-control-height)]",
   operational: "h-[var(--density-operational-control-height)]",
@@ -66,7 +66,7 @@ function Combobox({
           data-slot="combobox-trigger"
           className={cn(
             "flex w-full min-w-0 items-center justify-between gap-2 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-panel outline-none transition-[color,box-shadow] duration-[var(--motion-duration-fast)] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20",
-            densityHeightMap[density],
+            comboboxDensityHeight[density],
             !selectedItem && "text-muted-foreground",
             className,
           )}
@@ -135,7 +135,7 @@ function ComboboxInput({
         data-slot="combobox-input"
         placeholder={placeholder}
         className={cn(
-          "flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-[var(--density-compact-control-height)] w-full rounded-md bg-transparent py-2 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
           className,
         )}
         {...props}

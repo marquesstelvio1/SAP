@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
   DataTable,
+  EmptyState,
   MetricTile,
 } from "@saptm/ui";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -132,13 +133,12 @@ export function BillingPageContent({
   }, [portalState, router]);
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <div>
         <h2 className="font-semibold text-lg tracking-heading">Faturação</h2>
         <p className="text-muted-foreground text-sm">Subscrição, planos e faturas da organização</p>
       </div>
 
-      {/* Current plan card */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -196,7 +196,6 @@ export function BillingPageContent({
         </CardContent>
       </Card>
 
-      {/* Usage metering */}
       <div>
         <h3 className="mb-3 font-semibold text-base tracking-heading">Uso</h3>
         {usage.length > 0 ? (
@@ -217,33 +216,24 @@ export function BillingPageContent({
               })}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center gap-3 rounded-lg border py-12 text-center">
-            <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-              <CreditCardIcon className="size-6" />
-            </div>
-            <p className="font-semibold text-base tracking-heading">Sem dados de uso</p>
-            <p className="max-w-sm text-muted-foreground text-sm">
-              As metricas de uso aparecerão aqui quando disponiveis.
-            </p>
-          </div>
+          <EmptyState
+            icon={<CreditCardIcon />}
+            title="Sem dados de uso"
+            description="As métricas de uso aparecerão aqui quando disponíveis."
+          />
         )}
       </div>
 
-      {/* Recent invoices */}
       <div>
         <h3 className="mb-3 font-semibold text-base tracking-heading">Faturas</h3>
         {recentInvoices.length > 0 ? (
           <DataTable columns={invoiceColumns} data={recentInvoices} pageSize={5} />
         ) : (
-          <div className="flex flex-col items-center justify-center gap-3 rounded-lg border py-12 text-center">
-            <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-              <CreditCardIcon className="size-6" />
-            </div>
-            <p className="font-semibold text-base tracking-heading">Sem faturas</p>
-            <p className="max-w-sm text-muted-foreground text-sm">
-              As faturas aparecerão aqui apos a primeira cobranca.
-            </p>
-          </div>
+          <EmptyState
+            icon={<CreditCardIcon />}
+            title="Sem faturas"
+            description="As faturas aparecerão aqui após a primeira cobrança."
+          />
         )}
       </div>
     </div>

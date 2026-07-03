@@ -11,17 +11,17 @@ const AUTH_RATE_LIMITS: Record<string, { windowMs: number; max: number; message:
   "sign-in/email": {
     windowMs: 60_000,
     max: 5,
-    message: "Muitas tentativas de inicio de sessao. Tente novamente mais tarde.",
+    message: "Muitas tentativas de inicio de sessão. Tente novamente mais tarde.",
   },
   "two-factor/verify": {
     windowMs: 60_000,
     max: 3,
-    message: "Muitas tentativas de verificacao de dois fatores. Tente novamente mais tarde.",
+    message: "Muitas tentativas de verificação de dois fatores. Tente novamente mais tarde.",
   },
   "two-factor/setup": {
     windowMs: 60_000,
     max: 3,
-    message: "Muitas tentativas de configuracao de dois fatores. Tente novamente mais tarde.",
+    message: "Muitas tentativas de configuração de dois fatores. Tente novamente mais tarde.",
   },
 };
 

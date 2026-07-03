@@ -22,7 +22,7 @@ export function DataExportForm({ viewerEmail }: DataExportFormProps) {
   });
 
   async function handleExport() {
-    setFeedback({ status: "loading", message: "A processar exportacao..." });
+    setFeedback({ status: "loading", message: "A processar exportação..." });
 
     const result = await rpcPost(
       "/rpc/privacy/export",

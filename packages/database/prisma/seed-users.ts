@@ -51,11 +51,17 @@ const PROFILES: Profile[] = [
 try {
   console.log("A iniciar seed de utilizadores...");
 
-  const organization = await database.organization.findUniqueOrThrow({
+  const organization = await database.organization.upsert({
     where: { slug: ORG_SLUG },
+    update: {},
+    create: {
+      name: process.env.SAPTM_LOCAL_ORGANIZATION_NAME ?? "SAPTM Local",
+      slug: ORG_SLUG,
+      status: "active",
+    },
   });
 
-  console.log(`Organização encontrada: ${organization.name} (${organization.slug})`);
+  console.log(`Organização: ${organization.name} (${organization.slug})`);
 
   // 1. Seed permissions
   console.log("A semear permissões...");

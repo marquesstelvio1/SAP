@@ -111,12 +111,12 @@ export function CargoTransportDepartForm({
                   disabled={isDisabled}
                   id="departureLocationName"
                   name="departureLocationName"
-                  placeholder="Patio ferroviario / cais / terminal"
+                  placeholder="Patio ferroviário / cais / terminal"
                   required
                 />
               </Field>
               <Field data-disabled={!canDepartTransport}>
-                <FieldLabel htmlFor="operatorName">Operador responsavel</FieldLabel>
+                <FieldLabel htmlFor="operatorName">Operador responsável</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="operatorName"

@@ -54,6 +54,8 @@ Event schemas are documented alongside their source domain:
 
 All current events are at eventVersion 1. No migration needed.
 
+> **Nota de actualização (2026-07-03):** O `eventVersion: number` está correctamente implementado na interface `DomainEvent` em `packages/database/src/domain-events.ts`. No entanto, o registry de eventos em `packages/rpc/src/events/` **não existe**. Este ADR regista a decisão mas a implementação do registry está pendente. Ver ADR-0013 e ADR-0014 para o uso actual de eventos com versionamento.
+
 ## Consequences
 
 ### Positive

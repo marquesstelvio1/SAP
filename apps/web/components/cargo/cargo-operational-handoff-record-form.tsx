@@ -63,7 +63,7 @@ export function CargoOperationalHandoffRecordForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canRecordOperationalHandoff ? "success" : "warning"}>
-            {canRecordOperationalHandoff ? "Transferencia autorizada" : "Indisponível"}
+            {canRecordOperationalHandoff ? "Transferência autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Registar transferência</Badge>
         </div>
@@ -120,8 +120,8 @@ export function CargoOperationalHandoffRecordForm({
                   <option value="port_to_rail">Porto para ferrovia</option>
                   <option value="terminal_to_carrier">Terminal para transportador</option>
                   <option value="carrier_to_terminal">Transportador para terminal</option>
-                  <option value="yard_transfer">Transferencia de patio</option>
-                  <option value="customs_to_operations">Alfandega para operacoes</option>
+                  <option value="yard_transfer">Transferência de patio</option>
+                  <option value="customs_to_operations">Alfandega para operações</option>
                   <option value="other">Outro</option>
                 </SelectNative>
               </Field>
@@ -147,7 +147,7 @@ export function CargoOperationalHandoffRecordForm({
                   disabled={isDisabled}
                   id="fromCustodyOwnerName"
                   name="fromCustodyOwnerName"
-                  placeholder="Operador ferroviario"
+                  placeholder="Operador ferroviário"
                   required
                 />
               </Field>
@@ -157,7 +157,7 @@ export function CargoOperationalHandoffRecordForm({
                   disabled={isDisabled}
                   id="toCustodyOwnerName"
                   name="toCustodyOwnerName"
-                  placeholder="Operador portuario"
+                  placeholder="Operador portuário"
                   required
                 />
               </Field>
@@ -180,7 +180,7 @@ export function CargoOperationalHandoffRecordForm({
                   disabled={isDisabled}
                   id="handoffOperatorName"
                   name="operatorName"
-                  placeholder="Operador responsavel"
+                  placeholder="Operador responsável"
                   required
                 />
               </Field>
@@ -213,10 +213,10 @@ export function CargoOperationalHandoffRecordForm({
                 disabled={isDisabled}
                 id="handoffNotes"
                 name="handoffNotes"
-                placeholder="Observacoes de gate, patio, ferrovia, porto ou terminal"
+                placeholder="Observações de gate, patio, ferrovia, porto ou terminal"
               />
               <FieldDescription>
-                Condicao P7 aceita apenas sound; excecoes usam fluxo proprio.
+                Condicao P7 aceita apenas sound; exceções usam fluxo proprio.
               </FieldDescription>
             </Field>
 

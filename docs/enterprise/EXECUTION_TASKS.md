@@ -108,7 +108,7 @@ pnpm dlx shadcn@latest add checkbox radio-group switch avatar tooltip dropdown-m
 ### [Backend Agent] Implement EventBus abstraction
 
 **Files:**
-- `packages/database/src/event-bus.ts` — `DomainEvent` interface, `EventBus` interface
+- `packages/database/src/domain-events.ts` — `DomainEvent` interface, `EventBus` interface
 - `packages/database/src/outbox-event-bus.ts` — `OutboxEventBus` implementation
 - `apps/api/src/*/` — Replace `prisma.outboxEvent.create()` with `eventBus.publish()`
 

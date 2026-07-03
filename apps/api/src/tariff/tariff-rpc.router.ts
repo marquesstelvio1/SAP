@@ -1,5 +1,4 @@
 import type { IncomingMessage } from "node:http";
-import { ForbiddenException } from "@nestjs/common";
 import { os } from "@orpc/server";
 import {
   tariffOverviewInputSchema,
@@ -19,25 +18,24 @@ import {
   tariffRateRuleAddOutputSchema,
 } from "@saptm/rpc";
 
-import type { RpcRequestWithAuthContext } from "../rpc/rpc-context.js";
-import type { RpcContextService } from "../rpc/rpc-context.service.js";
+import type { AuthEnrichedContext, RpcAuthMiddleware } from "../rpc/rpc-auth.middleware.js";
 import type { TariffService } from "./tariff.service.js";
 
 export type TariffRpcContext = {
-  request: IncomingMessage & RpcRequestWithAuthContext;
-};
+  request: IncomingMessage;
+} & AuthEnrichedContext;
 
 export type CreateTariffRpcRouterInput = {
   tariffService: Pick<
     TariffService,
     "addRateRule" | "approveQuote" | "calculateQuote" | "getOverview" | "registerRateCard"
   >;
-  rpcContextService: Pick<RpcContextService, "authorizeRequest">;
+  authMiddleware: RpcAuthMiddleware;
 };
 
-const tariffRpc = os.$context<TariffRpcContext>();
-
 export function createTariffRpcRouter(deps: CreateTariffRpcRouterInput) {
+  const tariffRpc = os.$context<TariffRpcContext>().use(deps.authMiddleware);
+
   return tariffRpc.router({
     tariff: {
       overview: tariffRpc
@@ -46,18 +44,8 @@ export function createTariffRpcRouter(deps: CreateTariffRpcRouterInput) {
         .input(tariffOverviewInputSchema)
         .output(tariffOverviewOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            tariffOverviewMetadata,
-          );
-          const organizationId = authorizedContext.authContext?.organizationId;
-
-          if (organizationId === undefined) {
-            throw new ForbiddenException("tariff.organization_required");
-          }
-
           return deps.tariffService.getOverview({
-            organizationId,
+            organizationId: context.organizationId,
             limit: input.limit,
           });
         }),
@@ -67,24 +55,14 @@ export function createTariffRpcRouter(deps: CreateTariffRpcRouterInput) {
         .input(tariffRateCardRegisterInputSchema)
         .output(tariffRateCardRegisterOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            tariffRateCardRegisterMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("tariff.organization_required");
-          }
-
           return deps.tariffService.registerRateCard({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...readRequestTelemetry(context.request),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       addRateRule: tariffRpc
@@ -93,24 +71,14 @@ export function createTariffRpcRouter(deps: CreateTariffRpcRouterInput) {
         .input(tariffRateRuleAddInputSchema)
         .output(tariffRateRuleAddOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            tariffRateRuleAddMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("tariff.organization_required");
-          }
-
           return deps.tariffService.addRateRule({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...readRequestTelemetry(context.request),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       calculateQuote: tariffRpc
@@ -119,24 +87,14 @@ export function createTariffRpcRouter(deps: CreateTariffRpcRouterInput) {
         .input(tariffQuoteCalculateInputSchema)
         .output(tariffQuoteCalculateOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            tariffQuoteCalculateMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("tariff.organization_required");
-          }
-
           return deps.tariffService.calculateQuote({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...readRequestTelemetry(context.request),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
       approveQuote: tariffRpc
@@ -145,24 +103,14 @@ export function createTariffRpcRouter(deps: CreateTariffRpcRouterInput) {
         .input(tariffQuoteApproveInputSchema)
         .output(tariffQuoteApproveOutputSchema)
         .handler(async ({ context, input }) => {
-          const authorizedContext = await deps.rpcContextService.authorizeRequest(
-            context.request,
-            tariffQuoteApproveMetadata,
-          );
-          const authContext = authorizedContext.authContext;
-          const organizationId = authContext?.organizationId;
-
-          if (authContext === undefined || organizationId === undefined) {
-            throw new ForbiddenException("tariff.organization_required");
-          }
-
           return deps.tariffService.approveQuote({
             ...input,
-            organizationId,
-            actorId: authContext.actorId,
-            actorType: authContext.actorType,
-            correlationId: authContext.correlationId,
-            ...readRequestTelemetry(context.request),
+            organizationId: context.organizationId,
+            actorId: context.actorId,
+            actorType: context.actorType,
+            correlationId: context.correlationId,
+            ...(context.userAgent === undefined ? {} : { userAgent: context.userAgent }),
+            ...(context.ipAddress === undefined ? {} : { ipAddress: context.ipAddress }),
           });
         }),
     },
@@ -170,29 +118,3 @@ export function createTariffRpcRouter(deps: CreateTariffRpcRouterInput) {
 }
 
 export type TariffRpcRouter = ReturnType<typeof createTariffRpcRouter>;
-
-function readRequestTelemetry(request: IncomingMessage & RpcRequestWithAuthContext): {
-  ipAddress?: string;
-  userAgent?: string;
-} {
-  const userAgent = readRequestHeader(request, "user-agent");
-  const ipAddress = readRequestHeader(request, "x-forwarded-for")?.split(",").at(0)?.trim();
-
-  return {
-    ...(userAgent === undefined ? {} : { userAgent }),
-    ...(ipAddress === undefined ? {} : { ipAddress }),
-  };
-}
-
-function readRequestHeader(
-  request: IncomingMessage & RpcRequestWithAuthContext,
-  name: string,
-): string | undefined {
-  const value = request.headers[name] ?? request.headers[name.toLowerCase()];
-
-  if (Array.isArray(value)) {
-    return value.at(0);
-  }
-
-  return value;
-}

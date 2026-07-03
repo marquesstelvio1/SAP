@@ -1,3 +1,4 @@
+import { Logger } from "@nestjs/common";
 import type { ThrottlerStorage } from "@nestjs/throttler";
 import type { Redis } from "ioredis";
 
@@ -8,10 +9,34 @@ type ThrottlerStorageRecord = {
   timeToBlockExpire: number;
 };
 
+const logger = new Logger("RedisThrottlerStorage");
+
 export class RedisThrottlerStorage implements ThrottlerStorage {
   constructor(private readonly redis: Redis) {}
 
   async increment(
+    key: string,
+    ttl: number,
+    limit: number,
+    blockDuration: number,
+    throttlerName: string,
+  ): Promise<ThrottlerStorageRecord> {
+    try {
+      return await this.doIncrement(key, ttl, limit, blockDuration, throttlerName);
+    } catch (error) {
+      logger.warn(
+        `Redis throttler error, allowing request: ${error instanceof Error ? error.message : String(error)}`,
+      );
+      return {
+        totalHits: 0,
+        timeToExpire: 0,
+        isBlocked: false,
+        timeToBlockExpire: 0,
+      };
+    }
+  }
+
+  private async doIncrement(
     key: string,
     ttl: number,
     limit: number,
