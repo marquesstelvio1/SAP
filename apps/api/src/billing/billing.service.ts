@@ -8,6 +8,7 @@ import { getServerEnv } from "@saptm/config";
 import type { DomainEvent } from "@saptm/database";
 import Stripe from "stripe";
 
+// biome-ignore lint/style/useImportType: NestJS DI needs runtime class reference
 import { EventBusService } from "../event-bus/event-bus.service.js";
 import type { BillingRepository } from "./domain/billing.repository.js";
 import { BILLING_REPOSITORY } from "./domain/billing.repository.js";

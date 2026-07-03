@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
 
@@ -41,5 +42,16 @@ export default async function SsoConfigPage() {
 
   // Tentar carregar configuração SSO
   // O backend pode ou não ter o endpoint implementado
-  return <SsoConfigClient />;
+  // Suspense boundary allows loading.tsx to show while RPC call is in-flight
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-16">
+          <div className="size-6 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
+        </div>
+      }
+    >
+      <SsoConfigClient />
+    </Suspense>
+  );
 }

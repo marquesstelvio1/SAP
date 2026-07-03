@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 import { createRpcOperationMetadata } from "./metadata.js";
 
 const privacyIdempotencyKeySchema = z.string().trim().min(12).max(128);

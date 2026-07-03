@@ -7,6 +7,19 @@ import { PlatformRpcProvider } from "./platform-rpc.provider.js";
 import type { PlatformRpcContext } from "./platform-rpc.router.js";
 import type { RpcRequestWithAuthContext } from "./rpc-context.js";
 
+/**
+ * Creates a platform RPC context from a raw Node.js IncomingMessage.
+ * The request may optionally carry auth context set by upstream NestJS middleware.
+ */
+function createPlatformContext(request: IncomingMessage): PlatformRpcContext {
+  // The auth middleware (if configured) attaches authContext to the request object.
+  // We widen the type here since IncomingMessage and RpcRequestWithAuthContext
+  // have overlapping optional properties with slightly different signatures.
+  return {
+    request: request as IncomingMessage & RpcRequestWithAuthContext,
+  };
+}
+
 function castNestHttpExceptionToOrpcError(error: HttpException): ORPCError<RpcErrorCode, unknown> {
   const httpStatus = error.getStatus();
   const code = mapHttpStatusToRpcErrorCode(httpStatus);
@@ -54,9 +67,7 @@ export class RpcHttpMiddleware implements NestMiddleware {
       for (const prefix of prefixes) {
         const result = await this.handler.handle(request, response, {
           prefix,
-          context: {
-            request: request as IncomingMessage & RpcRequestWithAuthContext,
-          },
+          context: createPlatformContext(request),
         });
 
         if (result.matched) {

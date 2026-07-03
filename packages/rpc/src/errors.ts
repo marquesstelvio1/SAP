@@ -5,6 +5,9 @@ export const rpcErrorCodes = [
   "CONFLICT",
   "NOT_FOUND",
   "RATE_LIMITED",
+  "PAYLOAD_TOO_LARGE",
+  "TIMEOUT",
+  "DEPENDENCY_FAILURE",
   "INTEGRATION_ERROR",
   "INTERNAL_ERROR",
 ] as const;
@@ -63,6 +66,25 @@ export const rpcErrorCatalog = {
     message: "The operation exceeded an applicable rate limit.",
     retryable: true,
   },
+  PAYLOAD_TOO_LARGE: {
+    code: "PAYLOAD_TOO_LARGE",
+    statusCode: 413,
+    message: "The request payload exceeds the maximum allowed size.",
+    retryable: false,
+  },
+  TIMEOUT: {
+    code: "TIMEOUT",
+    statusCode: 504,
+    message: "The operation timed out.",
+    retryable: true,
+  },
+  DEPENDENCY_FAILURE: {
+    code: "DEPENDENCY_FAILURE",
+    statusCode: 424,
+    message:
+      "The operation depends on a downstream resource that is unavailable or in an invalid state.",
+    retryable: true,
+  },
   INTEGRATION_ERROR: {
     code: "INTEGRATION_ERROR",
     statusCode: 502,
@@ -94,12 +116,16 @@ const httpStatusToRpcErrorCodeMap: Record<number, RpcErrorCode> = {
   401: "UNAUTHENTICATED",
   403: "FORBIDDEN",
   404: "NOT_FOUND",
+  408: "TIMEOUT",
   409: "CONFLICT",
+  413: "PAYLOAD_TOO_LARGE",
   422: "VALIDATION_ERROR",
+  424: "DEPENDENCY_FAILURE",
   429: "RATE_LIMITED",
   500: "INTERNAL_ERROR",
   502: "INTEGRATION_ERROR",
   503: "INTERNAL_ERROR",
+  504: "TIMEOUT",
 };
 
 export function mapHttpStatusToRpcErrorCode(status: number): RpcErrorCode {

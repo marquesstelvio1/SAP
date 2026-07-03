@@ -36,7 +36,7 @@ function isStaticAsset(pathname: string): boolean {
 }
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX = 30;
+const RATE_LIMIT_MAX = 200;
 
 type IpEntry = {
   count: number;

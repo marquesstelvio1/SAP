@@ -10,13 +10,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@saptm/ui";
+import dynamic from "next/dynamic";
 import { CreditCardIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import { PlanBadge } from "../../../../../components/billing/plan-badge";
 import { PlanCard, type Plan as PlanCardType } from "../../../../../components/billing/plan-card";
 import { createPortalSessionAction } from "../../../../../lib/billing-actions";
-import { PlanComparisonModal } from "../../settings/billing/plan-comparison-modal";
+
+const PlanComparisonModal = dynamic(
+  () => import("../../settings/billing/plan-comparison-modal").then((m) => ({ default: m.PlanComparisonModal })),
+  { ssr: false },
+);
 
 const subscriptionBadge: Record<
   string,
