@@ -5,8 +5,10 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { getServerEnv } from "@saptm/config";
+import type { DomainEvent } from "@saptm/database";
 import Stripe from "stripe";
 
+import { EventBusService } from "../event-bus/event-bus.service.js";
 import type { BillingRepository } from "./domain/billing.repository.js";
 import { BILLING_REPOSITORY } from "./domain/billing.repository.js";
 
@@ -24,6 +26,7 @@ export class BillingService {
   constructor(
     @Inject(BILLING_REPOSITORY)
     private readonly billingRepo: BillingRepository,
+    private readonly eventBus: EventBusService,
   ) {}
 
   private getStripe(): Stripe {
@@ -274,10 +277,11 @@ export class BillingService {
         if (subscriptionId) {
           const rawSub = await this.getStripe().subscriptions.retrieve(subscriptionId);
           const sub = rawSub as unknown as SubscriptionWithPeriod;
+          const newPlan = this.resolvePlanFromPrice(sub.items.data[0]?.price.id);
           await this.billingRepo.upsertSubscription(orgId, {
             stripeCustomerId: session.customer as string,
             stripeSubscriptionId: subscriptionId,
-            plan: this.resolvePlanFromPrice(sub.items.data[0]?.price.id),
+            plan: newPlan,
             status: sub.status,
             currentPeriodStart: sub.current_period_start
               ? new Date(sub.current_period_start * 1000)
@@ -288,6 +292,8 @@ export class BillingService {
             cancelAtPeriodEnd: sub.cancel_at_period_end,
             trialEndsAt: sub.trial_end ? new Date(sub.trial_end * 1000) : null,
           });
+
+          this.emitSubscriptionEvent("billing.subscription.created", orgId, newPlan);
         }
         break;
       }
@@ -374,8 +380,14 @@ export class BillingService {
           const status =
             event.type === "customer.subscription.deleted" ? "canceled" : subEvent.status;
 
+          // SECURITY: Preserve existing stripeCustomerId — do NOT set to null
+          // on subscription updates. Nullifying it would orphan the Stripe customer
+          // record and break billing portal session creation.
+          const existingSubscription =
+            await this.billingRepo.findSubscription(subOrgId);
+
           await this.billingRepo.upsertSubscription(subOrgId, {
-            stripeCustomerId: null,
+            stripeCustomerId: existingSubscription?.stripeCustomerId ?? subEvent.customer as string | null,
             stripeSubscriptionId: subEvent.id,
             plan,
             status,
@@ -388,10 +400,37 @@ export class BillingService {
             cancelAtPeriodEnd: subEvent.cancel_at_period_end,
             trialEndsAt: subEvent.trial_end ? new Date(subEvent.trial_end * 1000) : null,
           });
+
+          const subEventType =
+            event.type === "customer.subscription.deleted"
+              ? "billing.subscription.deleted"
+              : "billing.subscription.updated";
+          this.emitSubscriptionEvent(subEventType, subOrgId, plan);
         }
         break;
       }
     }
+  }
+
+  private emitSubscriptionEvent(
+    eventType: string,
+    organizationId: string,
+    plan: string,
+  ): void {
+    const event: DomainEvent = {
+      id: crypto.randomUUID(),
+      eventType,
+      aggregateType: "subscription",
+      aggregateId: organizationId,
+      organizationId,
+      actorId: "stripe-webhook",
+      actorType: "integration",
+      payload: { plan, eventType },
+      metadata: { source: "stripe-webhook" },
+      correlationId: crypto.randomUUID(),
+      occurredAt: new Date(),
+    };
+    this.eventBus.emit(event);
   }
 
   private resolvePlanFromPrice(priceId?: string): string {
@@ -400,6 +439,13 @@ export class BillingService {
     if (priceId === env.STRIPE_PRICE_FREE) return "free";
     if (priceId === env.STRIPE_PRICE_PRO) return "pro";
     if (priceId === env.STRIPE_PRICE_ENTERPRISE) return "enterprise";
-    return "pro";
+    // SECURITY: Unknown price IDs must NOT escalate to a paid tier.
+    // If Stripe sends a price ID that doesn't match any configured env var,
+    // default to "free" instead of "pro" to prevent privilege escalation.
+    console.warn(
+      `[BILLING] Unknown price ID "${priceId}" — defaulting to "free" plan. ` +
+        `Check STRIPE_PRICE_* environment variables.`,
+    );
+    return "free";
   }
 }

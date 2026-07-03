@@ -8,7 +8,6 @@ import {
   Badge,
   DataTable,
   EmptyState,
-  ErrorCard,
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -19,6 +18,7 @@ import {
 import type { ColumnDef } from "@tanstack/react-table";
 import { ExternalLinkIcon } from "lucide-react";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { requirePlatformSession } from "../../../../../lib/auth-session";
 import { rpcGet } from "../../../../../lib/rpc-server";
 
@@ -122,7 +122,13 @@ export default async function BillingInvoicesPage(props: {
   const parsed = billingInvoicesListInputSchema.safeParse({ offset, limit });
   if (!parsed.success) {
     return (
-      <ErrorCard title="Parâmetros inválidos" message="Os parâmetros de paginação são inválidos." />
+      <AccessState
+        badgeLabel="Faturas"
+        description="Os parâmetros de paginação são inválidos."
+        role="alert"
+        title="Parâmetros inválidos"
+        variant="error"
+      />
     );
   }
 
@@ -135,15 +141,30 @@ export default async function BillingInvoicesPage(props: {
     );
   } catch {
     return (
-      <ErrorCard
+      <AccessState
+        badgeLabel="Faturas"
+        description="API não respondeu dentro do tempo limite."
+        role="alert"
         title="Faturas indisponíveis"
-        message="API não respondeu dentro do tempo limite."
+        variant="error"
       />
     );
   }
 
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (result.status !== "ok") {
-    return <ErrorCard title="Faturas indisponíveis" message={result.message} />;
+    return (
+      <AccessState
+        badgeLabel="Faturas"
+        description={result.message}
+        role="alert"
+        title="Faturas indisponíveis"
+        variant="error"
+      />
+    );
   }
 
   const { invoices, pagination } = result.data;

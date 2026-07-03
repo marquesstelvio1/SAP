@@ -1,6 +1,7 @@
 import type { PlatformPermission } from "@saptm/auth";
-import { AccessState, ErrorCard } from "@saptm/ui";
+import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { PlanningOrdersSection } from "../../../../components/planning/planning-orders-section";
 import { PlanningOverviewHeader } from "../../../../components/planning/planning-overview-header";
 import { TransportOrderCancelForm } from "../../../../components/planning/transport-order-cancel-form";
@@ -65,15 +66,30 @@ export default async function PlanningOverviewPage() {
     result = await getPlanningOverview(10);
   } catch {
     return (
-      <ErrorCard
-        message="Não foi possível carregar os dados de planeamento. Tente novamente."
+      <AccessState
+        badgeLabel="Planeamento"
+        description="Não foi possível carregar os dados de planeamento. Tente novamente."
+        role="alert"
         title="Erro ao carregar planeamento"
+        variant="error"
       />
     );
   }
 
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (result.status !== "ok") {
-    return <ErrorCard message={result.message} title="Planeamento indisponível" />;
+    return (
+      <AccessState
+        badgeLabel="Planeamento"
+        description={result.message}
+        role="alert"
+        title="Planeamento indisponível"
+        variant="error"
+      />
+    );
   }
 
   const { overview } = result;

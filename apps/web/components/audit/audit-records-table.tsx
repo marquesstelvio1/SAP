@@ -134,10 +134,7 @@ export function AuditRecordsTable({
                     <div className="flex flex-col gap-3 rounded-lg border bg-muted/35 p-3">
                       <ContextRow label="Motivo" value={record.reason ?? "Sem motivo"} />
                       <ContextRow label="IP" value={record.ipAddress ?? "Não registado"} />
-                      <ContextRow
-                        label="Navegador"
-                        value={record.userAgent ?? "Não registado"}
-                      />
+                      <ContextRow label="Navegador" value={record.userAgent ?? "Não registado"} />
                       <JsonBlock label="Antes" value={record.before} />
                       <JsonBlock label="Depois" value={record.after} />
                     </div>

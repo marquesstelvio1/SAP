@@ -1,7 +1,7 @@
 import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
-
+import { redirect } from "next/navigation";
 import { AdminMembershipStatusForm } from "../../../../components/admin/admin-membership-status-form";
 import { AdminOverviewHeader } from "../../../../components/admin/admin-overview-header";
 import { AdminPageClient } from "../../../../components/admin/admin-page-client";
@@ -97,6 +97,10 @@ export default async function AdminIdentityPage(props: {
         variant="error"
       />
     );
+  }
+
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
   }
 
   if (result.status !== "ok") {

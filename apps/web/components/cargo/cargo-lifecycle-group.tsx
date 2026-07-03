@@ -1,4 +1,6 @@
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@saptm/ui";
+import { cn } from "@saptm/ui/lib/utils";
+import { CheckIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 type CargoStatus =
@@ -51,8 +53,6 @@ export type CargoLifecycleGroupProps = {
   children: ReactNode;
 };
 
-const STAGE_ORDER: LifecycleStage[] = ["pre-transport", "in-transit", "delivery", "completed"];
-
 export function CargoLifecycleGroup({
   stage,
   title,
@@ -63,8 +63,8 @@ export function CargoLifecycleGroup({
   return (
     <section>
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <Badge variant={resolveStageBadgeVariant(stage)} className="uppercase tracking-[0.12em]">
-          Fase {STAGE_ORDER.indexOf(stage) + 1}: {title}
+        <Badge variant={resolveStageBadgeVariant(stage)} className="uppercase tracking-heading">
+          {title}
         </Badge>
         {badge !== undefined ? <Badge variant="outline">{badge}</Badge> : null}
       </div>
@@ -87,13 +87,13 @@ export function LifecycleProgressIndicator({
     <Card>
       <CardHeader className="gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="info">Ciclo de vida P0</Badge>
+          <Badge variant="info">Ciclo de vida</Badge>
           <Badge variant="outline">Progresso operacional</Badge>
         </div>
         <div className="flex flex-col gap-1">
           <CardTitle className="text-lg">Estado do ciclo de vida</CardTitle>
           <CardDescription className="text-sm leading-6">
-            Progresso das cargas atraves das etapas: Registo → Compliance → Liberação → Planeamento
+            Progresso das cargas através das etapas: Registo → Compliance → Liberação → Planeamento
             → Partida → Chegada → Entrega
           </CardDescription>
         </div>
@@ -108,30 +108,33 @@ export function LifecycleProgressIndicator({
             return (
               <div className="flex items-center gap-1" key={step.key}>
                 <div
-                  className={`flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs ${
+                  className={cn(
+                    "flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs",
                     isComplete
                       ? isCurrent
                         ? "bg-primary/15 text-primary font-medium"
                         : "bg-success/15 text-success"
-                      : "bg-muted text-muted-foreground"
-                  }`}
+                      : "bg-muted text-muted-foreground",
+                  )}
                 >
                   <span
-                    className={`flex size-4 items-center justify-center rounded-full text-[0.6rem] font-bold ${
+                    className={cn(
+                      "flex size-4 items-center justify-center rounded-full text-[10px] font-bold",
                       isComplete
                         ? "bg-success text-success-foreground"
-                        : "bg-muted-foreground/20 text-muted-foreground"
-                    }`}
+                        : "bg-muted-foreground/20 text-muted-foreground",
+                    )}
                   >
-                    {isComplete ? "✓" : index + 1}
+                    {isComplete ? <CheckIcon className="size-3" /> : index + 1}
                   </span>
                   <span className="whitespace-nowrap">{step.label}</span>
                 </div>
                 {isLast ? null : (
                   <div
-                    className={`h-px w-3 ${
-                      index < currentIndex ? "bg-success/40" : "bg-muted-foreground/20"
-                    }`}
+                    className={cn(
+                      "h-px w-3",
+                      index < currentIndex ? "bg-success/40" : "bg-muted-foreground/20",
+                    )}
                   />
                 )}
               </div>

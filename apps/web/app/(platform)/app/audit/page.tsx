@@ -22,13 +22,18 @@ import {
   MetricTile,
   SelectNative,
 } from "@saptm/ui";
-import type { Route } from "next";
+import type { Metadata, Route } from "next";
 import Link from "next/link";
-
+import { redirect } from "next/navigation";
 import { formatDateTime } from "@/lib/format";
+import { AuditRecordsTable } from "../../../../components/audit/audit-records-table";
 import { searchAuditRecords } from "../../../../lib/audit-records";
 import { requirePlatformSession } from "../../../../lib/auth-session";
-import { AuditRecordsTable } from "../../../../components/audit/audit-records-table";
+
+export const metadata: Metadata = {
+  title: "Auditoria",
+  description: "Registo de eventos auditados, pesquisa e exportação de logs operacionais.",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -92,6 +97,10 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
         variant="error"
       />
     );
+  }
+
+  if (auditResult.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
   }
 
   if (auditResult.status !== "ok") {
@@ -418,5 +427,3 @@ function toDatetimeLocalValue(value: string | undefined): string {
 
   return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
 }
-
-

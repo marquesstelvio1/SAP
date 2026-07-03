@@ -1,5 +1,6 @@
 "use client";
 
+import { RpcError } from "../lib/rpc-client";
 import { getTrackingAnalytics } from "../lib/tracking-analytics";
 import { useRpcQuery } from "./use-rpc";
 
@@ -9,7 +10,7 @@ export function useTrackingAnalytics(lookbackDays = 30) {
     queryFn: async () => {
       const result = await getTrackingAnalytics(lookbackDays);
       if (result.status !== "ok") {
-        throw new Error(result.message);
+        throw new RpcError(result.status, result.message);
       }
       return result.analytics;
     },

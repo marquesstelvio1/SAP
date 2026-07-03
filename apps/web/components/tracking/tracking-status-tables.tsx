@@ -1,5 +1,7 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
+
 import {
   Badge,
   Card,
@@ -100,8 +102,8 @@ export function TrackingStatusTables({ overview, pagination }: TrackingStatusTab
     {
       header: "Rota",
       cell: ({ row }) => (
-        <span className="text-muted-foreground">
-          {row.original.originName} -&gt; {row.original.destinationName}
+        <span className="inline-flex items-center gap-1 text-muted-foreground">
+          {row.original.originName} <ArrowRight className="size-3" /> {row.original.destinationName}
         </span>
       ),
     },
@@ -117,7 +119,7 @@ export function TrackingStatusTables({ overview, pagination }: TrackingStatusTab
       header: "Ultimo evento",
       cell: ({ row }) => (
         <span className="text-muted-foreground">
-          {row.original.lastEventType ?? "Sem evento"} &middot;{" "}
+          {row.original.lastEventType ?? "Sem evento"} —{" "}
           {row.original.lastKnownLocation ?? "Local não informado"}
         </span>
       ),

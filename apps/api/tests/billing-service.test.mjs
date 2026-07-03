@@ -1,9 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { NotFoundException } from "@nestjs/common";
-
-import { PlansService } from "../dist/billing/plans/plans.service.js";
 import { BillingService } from "../dist/billing/billing.service.js";
+import { PlansService } from "../dist/billing/plans/plans.service.js";
 import { assertRejectsWithMessage } from "./test-utils.mjs";
 
 // ──────────────────────────────────────────────
@@ -13,7 +11,7 @@ import { assertRejectsWithMessage } from "./test-utils.mjs";
 describe("PlansService", () => {
   describe("getPlanBySlug", () => {
     it("returns plan for valid slug", async () => {
-      const { service, repository } = createPlansService();
+      const { service } = createPlansService();
 
       const plan = await service.getPlanBySlug("pro");
 
@@ -31,7 +29,7 @@ describe("PlansService", () => {
     });
 
     it("throws NotFoundException for invalid slug", async () => {
-      const { service, repository } = createPlansService();
+      const { service } = createPlansService();
 
       await assertRejectsWithMessage(
         () => service.getPlanBySlug("nonexistent"),
@@ -43,10 +41,7 @@ describe("PlansService", () => {
       const { service, repository } = createPlansService();
       repository.findBySlug = async () => null;
 
-      await assertRejectsWithMessage(
-        () => service.getPlanBySlug("free"),
-        "plans.nao_encontrado",
-      );
+      await assertRejectsWithMessage(() => service.getPlanBySlug("free"), "plans.nao_encontrado");
     });
   });
 
@@ -366,6 +361,11 @@ function createBillingService() {
   const repository = createMockBillingRepository();
   const service = Object.create(BillingService.prototype);
   service.billingRepo = repository;
+  service.metricDisplayLabels = {
+    members: { displayLabel: "Membros", unit: "/mês" },
+    cargo_shipments: { displayLabel: "Cargas", unit: "/mês" },
+    tracking_events: { displayLabel: "Eventos de tracking", unit: "/mês" },
+  };
   // Prevent Stripe initialization in unit tests
   service.stripe = null;
   // Override getStripe to throw if called (we mock all methods that use it)

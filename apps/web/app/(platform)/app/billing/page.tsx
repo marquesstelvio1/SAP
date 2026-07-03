@@ -1,5 +1,6 @@
-import { AccessState, Card, CardContent, ErrorCard, MetricTile } from "@saptm/ui";
+import { AccessState, Card, CardContent, MetricTile } from "@saptm/ui";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { UsageMeter } from "../../../../components/billing/usage-meter";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import { getBillingOverview } from "../../../../lib/billing";
@@ -42,12 +43,30 @@ export default async function BillingOverviewPage() {
     result = await getBillingOverview();
   } catch {
     return (
-      <ErrorCard title="Dados indisponíveis" message="API não respondeu dentro do tempo limite." />
+      <AccessState
+        badgeLabel="Faturação"
+        description="API não respondeu dentro do tempo limite."
+        role="alert"
+        title="Dados indisponíveis"
+        variant="error"
+      />
     );
   }
 
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (result.status !== "ok") {
-    return <ErrorCard title="Dados indisponíveis" message={result.message} />;
+    return (
+      <AccessState
+        badgeLabel="Faturação"
+        description={result.message}
+        role="alert"
+        title="Dados indisponíveis"
+        variant="error"
+      />
+    );
   }
 
   const { subscription, usage, recentInvoices } = result;

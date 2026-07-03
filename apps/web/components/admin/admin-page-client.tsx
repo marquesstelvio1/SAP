@@ -11,7 +11,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@saptm/ui";
-import { UsersIcon, KeyIcon, CpuIcon } from "lucide-react";
+import { CpuIcon, KeyIcon, UsersIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function AdminPageClient({
@@ -70,9 +70,7 @@ export function AdminPageClient({
           <Card>
             <CardHeader>
               <CardTitle>Capacidade</CardTitle>
-              <CardDescription>
-                Registe recursos de capacidade para a organização.
-              </CardDescription>
+              <CardDescription>Registe recursos de capacidade para a organização.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">{capacityChildren}</CardContent>
           </Card>

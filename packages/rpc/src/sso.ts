@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   sharedAuditSchema,
+  sharedIdempotencyKeySchema,
   sharedIdempotencyResultSchema,
   sharedOutboxSchema,
 } from "./foundation.js";
@@ -38,7 +39,8 @@ export const updateSsoConfigInputSchema = z.object({
   jitProvisioning: z.boolean().optional(),
   jitDefaultRoleId: z.string().optional(),
   active: z.boolean().optional(),
-  idempotencyKey: z.string().trim().min(12).max(128),
+  // SECURITY: Use canonical shared schema for consistency with all other mutations
+  idempotencyKey: sharedIdempotencyKeySchema,
 });
 
 export const updateSsoConfigOutputSchema = z.object({
@@ -102,7 +104,9 @@ export const testSsoConfigMetadata = createRpcOperationMetadata({
   permissionMode: "all",
   organizationRequired: true,
   audit: "standard",
-  idempotency: "none",
+  // SECURITY: Testing SSO sends requests to the IdP. Idempotency prevents
+  // duplicate test requests on retry.
+  idempotency: "recommended",
   criticality: "low",
   signals: ["log", "metric", "span"],
 });

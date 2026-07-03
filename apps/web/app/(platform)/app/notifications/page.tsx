@@ -21,14 +21,19 @@ import {
   TableHeader,
   TableRow,
 } from "@saptm/ui";
-import type { Route } from "next";
+import type { Metadata, Route } from "next";
 import Link from "next/link";
-
+import { redirect } from "next/navigation";
 import { formatDateTime, formatNullableDateTime } from "@/lib/format";
 import { NotificationMarkReadForm } from "../../../../components/notification/notification-mark-read-form";
 import { requirePlatformSession } from "../../../../lib/auth-session";
 import { getNotificationInbox } from "../../../../lib/notifications";
 import { markNotificationReadFormAction } from "./actions";
+
+export const metadata: Metadata = {
+  title: "Notificações",
+  description: "Inbox operacional de eventos processados e notificações do sistema.",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -80,6 +85,10 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
     );
   }
 
+  if (inboxResult.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (inboxResult.status !== "ok") {
     return (
       <AccessState
@@ -98,7 +107,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="secondary">Processador de eventos</Badge>
+          <Badge variant="secondary">Notificações</Badge>
           <Badge variant={inbox.totals.unread > 0 ? "warning" : "success"}>
             {inbox.totals.unread > 0 ? `${inbox.totals.unread} por ler` : "Sem pendencias"}
           </Badge>
@@ -106,7 +115,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <div className="max-w-3xl">
           <h1 className="font-semibold text-3xl tracking-heading">Inbox operacional</h1>
           <p className="mt-2 text-muted-foreground">
-            Notificações operacionais geradas pelo sistema. Cada item e filtrável, auditável e pode
+            Notificações operacionais geradas pelo sistema. Cada item é filtrável e pode
             ser reconhecido por utilizadores autorizados.
           </p>
         </div>
@@ -123,7 +132,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <CardHeader>
           <CardTitle>Filtros de inbox</CardTitle>
           <CardDescription>
-            Use filtros leves para validar o processamento de eventos sem abrir dominios de negocio.
+            Filtre notificações por estado e limite de visualização.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -178,18 +187,17 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
               className="rounded-lg border border-dashed bg-muted/20 p-6 text-muted-foreground text-sm"
               role="status"
             >
-              Nenhuma notificacao encontrada para os filtros atuais. Execute o worker apos gerar
-              eventos operacionais para popular esta inbox.
+              Nenhuma notificação encontrada para os filtros atuais.
             </div>
           ) : (
             <Table aria-label="Eventos processados">
               <TableHeader>
                 <TableRow>
-                  <TableHead>Notificacao</TableHead>
+                  <TableHead>Notificação</TableHead>
                   <TableHead>Evento</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead>Criada</TableHead>
-                  <TableHead>Acao</TableHead>
+                  <TableHead>Ação</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -204,12 +212,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <span>{notification.eventType}</span>
-                        <span className="text-muted-foreground text-xs">
-                          {notification.aggregateType} - {notification.aggregateId}
-                        </span>
-                      </div>
+                      <span>{notification.eventType}</span>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-2">

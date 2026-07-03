@@ -3,9 +3,12 @@ import { ShieldBan } from "lucide-react";
 
 import { cn } from "../lib/utils.js";
 import { Badge } from "./badge.js";
+import { Button } from "./button.js";
 import { Card } from "./card.js";
 
 export type AccessStateProps = {
+  actionHref?: string;
+  actionLabel?: string;
   badgeLabel?: string;
   className?: string;
   description?: string;
@@ -19,7 +22,15 @@ export type AccessStateProps = {
   variant?: "blocked" | "empty" | "error";
 };
 
+const defaultActionByVariant = {
+  error: { label: "Contactar suporte", href: "mailto:suporte@saptm.pt" },
+  blocked: { label: "Gerir acessos", href: "/app/admin" },
+  empty: { label: "", href: undefined as string | undefined },
+} as const;
+
 export function AccessState({
+  actionHref,
+  actionLabel,
   badgeLabel,
   className,
   description,
@@ -42,6 +53,9 @@ export function AccessState({
       </div>
     );
   }
+
+  const resolvedActionHref = actionHref ?? defaultActionByVariant[variant]?.href;
+  const resolvedActionLabel = actionLabel ?? defaultActionByVariant[variant]?.label;
 
   return (
     <Card
@@ -69,6 +83,20 @@ export function AccessState({
         {title && <h3 className="text-lg font-semibold">{title}</h3>}
         {(description ?? message) && (
           <p className="text-muted-foreground mt-1 text-sm">{description ?? message}</p>
+        )}
+        {resolvedActionHref && (
+          <div className="mt-4">
+            <Button asChild variant="outline">
+              <a
+                href={resolvedActionHref}
+                {...(resolvedActionHref.startsWith("mailto:")
+                  ? {}
+                  : { "aria-label": resolvedActionLabel })}
+              >
+                {resolvedActionLabel}
+              </a>
+            </Button>
+          </div>
         )}
       </div>
     </Card>

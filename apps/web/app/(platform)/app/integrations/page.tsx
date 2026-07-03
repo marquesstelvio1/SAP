@@ -1,6 +1,7 @@
 import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { IntegrationCarrierTmsMovementForm } from "../../../../components/integration/integration-carrier-tms-movement-form";
 import { IntegrationCustomsErpStatusForm } from "../../../../components/integration/integration-customs-erp-status-form";
 import { IntegrationEventRecordForm } from "../../../../components/integration/integration-event-record-form";
@@ -97,6 +98,10 @@ export default async function IntegrationsPage() {
         variant="error"
       />
     );
+  }
+
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
   }
 
   if (result.status !== "ok") {

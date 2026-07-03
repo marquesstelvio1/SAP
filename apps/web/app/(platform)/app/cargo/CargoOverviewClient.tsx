@@ -2,8 +2,8 @@
 
 import { AccessState, EmptyState } from "@saptm/ui";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { Suspense } from "react";
-
 import { LifecycleProgressIndicator } from "../../../../components/cargo/cargo-lifecycle-group";
 import { CargoOverviewHeader } from "../../../../components/cargo/cargo-overview-header";
 import {
@@ -11,6 +11,7 @@ import {
   CargoStatusTable,
 } from "../../../../components/cargo/cargo-status-tables";
 import { useCargoOverview } from "../../../../hooks/use-cargo-overview";
+import { RpcError } from "../../../../lib/rpc-client";
 
 const CargoLifecycleSections = dynamic(
   () =>
@@ -49,6 +50,7 @@ export function CargoOverviewClient({
   canRecordComplianceEvidence: boolean;
   canVerifyComplianceEvidence: boolean;
 }) {
+  const router = useRouter();
   const cargoQuery = useCargoOverview({ offset, limit });
 
   if (cargoQuery.isLoading) {
@@ -63,6 +65,24 @@ export function CargoOverviewClient({
   }
 
   if (cargoQuery.isError) {
+    const error = cargoQuery.error;
+
+    if (error instanceof RpcError && error.status === "unauthorized") {
+      router.push("/sign-in?reason=session_expired");
+      return null;
+    }
+
+    if (error instanceof RpcError && error.status === "forbidden") {
+      return (
+        <AccessState
+          badgeLabel="Gestão de Cargas"
+          description="Sessão sem permissão para ler gestão de cargas."
+          title="Gestão de cargas bloqueada"
+          variant="blocked"
+        />
+      );
+    }
+
     return (
       <AccessState
         badgeLabel="Gestão de Cargas"

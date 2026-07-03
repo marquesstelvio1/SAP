@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@saptm/ui";
 import type { ColumnDef } from "@tanstack/react-table";
+import { ArrowRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import {
@@ -131,8 +132,8 @@ export function CargoRecentTable({
     {
       header: "Rota",
       cell: ({ row }) => (
-        <span className="text-muted-foreground">
-          {row.original.originName} &rarr; {row.original.destinationName}
+        <span className="inline-flex items-center gap-1 text-muted-foreground">
+          {row.original.originName} <ArrowRight className="size-3" /> {row.original.destinationName}
         </span>
       ),
     },

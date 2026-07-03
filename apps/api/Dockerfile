@@ -87,6 +87,10 @@ RUN printf '#!/bin/sh\n\
 echo "[migrate] Applying database migrations..."\n\
 cd /app/packages/database && npx prisma migrate deploy --schema=prisma/schema.prisma || echo "[migrate] WARNING: migration failed, continuing anyway"\n\
 \n\
+echo "[seed] Running RBAC bootstrap..."\n\
+cd /app/packages/database && node dist/prisma/seed-rbac.js || echo "[seed] WARNING: RBAC seed failed"\n\
+echo "[seed] Done."\n\
+\n\
 if [ "${RUN_DB_SEED}" = "true" ]; then\n\
   echo "[seed] Running database seed..."\n\
   npx tsx prisma/seed-users.ts 2>/dev/null || echo "[seed] WARNING: users seed skipped (not critical)"\n\

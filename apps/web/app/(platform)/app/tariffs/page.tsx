@@ -1,6 +1,7 @@
 import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 import { TariffOverviewHeader } from "../../../../components/tariff/tariff-overview-header";
 import { TariffQuoteApproveForm } from "../../../../components/tariff/tariff-quote-approve-form";
@@ -24,10 +25,12 @@ import {
   initialTariffRateRuleAddFormState,
 } from "./form-state";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
-  title: "Tarifario",
+  title: "Tarifário",
   description:
-    "Rate cards, regras tarifarias, cotações e aprovação financeira para operações logísticas.",
+    "Rate cards, regras tarifárias, cotações e aprovação financeira para operações logísticas.",
 };
 
 const readTariffPermission: PlatformPermission = "tariff.read";
@@ -45,10 +48,10 @@ export default async function TariffOverviewPage() {
   if (!viewerPermissions.includes(readTariffPermission)) {
     return (
       <AccessState
-        badgeLabel="Tarifario"
-        description="O utilizador autenticado não tem acesso ao modulo tarifario."
+        badgeLabel="Tarifário"
+        description="O utilizador autenticado não tem acesso ao módulo tarifário."
         role="alert"
-        title="Tarifario bloqueado"
+        title="Tarifário bloqueado"
         variant="blocked"
       />
     );
@@ -60,22 +63,26 @@ export default async function TariffOverviewPage() {
   } catch {
     return (
       <AccessState
-        badgeLabel="Tarifario"
+        badgeLabel="Tarifário"
         description="Não foi possível carregar os dados tarifários. Tente novamente."
         role="alert"
-        title="Erro ao carregar tarifario"
+        title="Erro ao carregar tarifário"
         variant="error"
       />
     );
   }
 
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (result.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Tarifario"
+        badgeLabel="Tarifário"
         description={result.message}
         role="alert"
-        title="Tarifario indisponível"
+        title="Tarifário indisponível"
         variant="error"
       />
     );

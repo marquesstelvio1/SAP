@@ -1,6 +1,7 @@
 import type { PlatformPermission } from "@saptm/auth";
 import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { CapacityAdvisoryAnalytics } from "../../../../components/capacity/capacity-advisory-analytics";
 import { CapacityAdvisoryDecisionForm } from "../../../../components/capacity/capacity-advisory-decision-form";
 import { CapacityAdvisoryPanel } from "../../../../components/capacity/capacity-advisory-panel";
@@ -88,6 +89,10 @@ export default async function CapacityOverviewPage() {
     );
   }
 
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (result.status !== "ok") {
     return (
       <AccessState
@@ -100,6 +105,10 @@ export default async function CapacityOverviewPage() {
     );
   }
 
+  if (advisoryResult.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (advisoryResult.status !== "ok") {
     return (
       <AccessState
@@ -110,6 +119,10 @@ export default async function CapacityOverviewPage() {
         variant="error"
       />
     );
+  }
+
+  if (advisoryDecisionAnalyticsResult.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
   }
 
   if (advisoryDecisionAnalyticsResult.status !== "ok") {

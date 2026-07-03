@@ -1,5 +1,6 @@
-import { AccessState, ErrorCard } from "@saptm/ui";
+import { AccessState } from "@saptm/ui";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 import { requirePlatformSession } from "../../../../../lib/auth-session";
 import { getBillingOverview, getPlans } from "../../../../../lib/billing";
@@ -45,16 +46,42 @@ export default async function SubscriptionManagementPage() {
     [overviewResult, plansResult] = await Promise.all([getBillingOverview(), getPlans()]);
   } catch {
     return (
-      <ErrorCard title="Dados indisponíveis" message="API não respondeu dentro do tempo limite." />
+      <AccessState
+        badgeLabel="Subscrição"
+        description="API não respondeu dentro do tempo limite."
+        role="alert"
+        title="Dados indisponíveis"
+        variant="error"
+      />
     );
   }
 
+  if (overviewResult.status === "unauthorized" || plansResult.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
+  }
+
   if (overviewResult.status !== "ok") {
-    return <ErrorCard title="Subscrição indisponível" message={overviewResult.message} />;
+    return (
+      <AccessState
+        badgeLabel="Subscrição"
+        description={overviewResult.message}
+        role="alert"
+        title="Subscrição indisponível"
+        variant="error"
+      />
+    );
   }
 
   if (plansResult.status !== "ok") {
-    return <ErrorCard title="Planos indisponíveis" message={plansResult.message} />;
+    return (
+      <AccessState
+        badgeLabel="Planos"
+        description={plansResult.message}
+        role="alert"
+        title="Planos indisponíveis"
+        variant="error"
+      />
+    );
   }
 
   return (

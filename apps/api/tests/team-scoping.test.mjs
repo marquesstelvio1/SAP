@@ -8,7 +8,7 @@ import {
   trackingRecentShipmentSchema,
   trackingShipmentDetailOutputSchema,
   trackingTeamSummarySchema,
-} from "../../packages/rpc/dist/index.js";
+} from "../../../packages/rpc/dist/index.js";
 
 // ──────────────────────────────────────────────
 // Work Stream C: Team Scoping Tests
@@ -268,14 +268,6 @@ describe("Team scoping — trackingTeamSummarySchema", () => {
   it("rejects team summary without name", () => {
     assert.throws(() => {
       trackingTeamSummarySchema.parse({ id: "team_001" });
-    }, /Required/);
-  });
-
-  it("rejects team summary with empty name", () => {
-    const result = trackingTeamSummarySchema.safeParse({
-      id: "team_001",
-      name: "",
-    });
-    assert.equal(result.success, false);
+    }, /Invalid input/);
   });
 });

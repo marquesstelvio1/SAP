@@ -3,6 +3,24 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
+const ORG_COOKIE = "saptm_active_org";
+const ORG_HEADER = "x-saptm-org-id";
+
+/**
+ * Parse a cookie string for a specific cookie value.
+ * Handles both standard and URL-encoded values.
+ */
+function parseCookie(cookieString: string, name: string): string | undefined {
+  const match = cookieString.match(
+    new RegExp(`(?:^|;\\s*)${escapeRegExp(name)}=([^;]+)`),
+  );
+  return match ? decodeURIComponent(match[1] ?? "") : undefined;
+}
+
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname.replace("/api/rpc", "/rpc");
   const search = request.nextUrl.search;
@@ -10,7 +28,8 @@ async function proxy(request: NextRequest) {
 
   const headers: Record<string, string> = {
     "x-internal-request": "true",
-    "x-forwarded-for": request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "",
+    "x-forwarded-for":
+      request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "",
     "x-real-ip": request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-for") ?? "",
     "user-agent": request.headers.get("user-agent") ?? "",
   };
@@ -18,6 +37,12 @@ async function proxy(request: NextRequest) {
   const cookie = request.headers.get("cookie");
   if (cookie) {
     headers.cookie = cookie;
+
+    // Extract org preference from cookie and forward as header
+    const activeOrg = parseCookie(cookie, ORG_COOKIE);
+    if (activeOrg) {
+      headers[ORG_HEADER] = activeOrg;
+    }
   }
 
   const contentType = request.headers.get("content-type");

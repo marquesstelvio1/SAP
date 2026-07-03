@@ -7,8 +7,19 @@ import type { contracts } from "@saptm/rpc/contracts";
 // ── Existing RPC helpers (rpcGet, rpcPost) ──────────────────────────
 
 const INTERNAL_REQUEST_HEADER = "x-internal-request" as const;
+const ORG_HEADER = "x-saptm-org-id" as const;
 
 export type RpcStatus = "unauthorized" | "forbidden" | "not_found" | "unavailable" | "invalid";
+
+export class RpcError extends Error {
+  constructor(
+    public status: RpcStatus,
+    message: string,
+  ) {
+    super(message);
+    this.name = "RpcError";
+  }
+}
 
 export type RpcSuccess<T> = { status: "ok"; data: T };
 
@@ -29,6 +40,7 @@ const RPC_TIMEOUT_MS = 15_000;
 type RpcQueryOptions = {
   searchParams?: Record<string, string | number | undefined>;
   cookie?: string;
+  orgId?: string;
 };
 
 function isServerSide(): boolean {
@@ -62,6 +74,10 @@ export async function rpcGet<T>(
 
   if (options.cookie) {
     headers.cookie = options.cookie;
+  }
+
+  if (options.orgId) {
+    headers[ORG_HEADER] = options.orgId;
   }
 
   let response: Response;
@@ -112,6 +128,10 @@ export async function rpcPost<T>(
 
   if (options.cookie) {
     headers.cookie = options.cookie;
+  }
+
+  if (options.orgId) {
+    headers[ORG_HEADER] = options.orgId;
   }
 
   let response: Response;

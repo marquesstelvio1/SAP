@@ -1,9 +1,16 @@
 import { AccessState } from "@saptm/ui";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { requirePlatformSession } from "../../../../../lib/auth-session";
 import { getBillingOverview } from "../../../../../lib/billing";
 import { BillingPageContent } from "./billing-page-content";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Faturação",
+  description: "Detalhes de faturação e métodos de pagamento da organização.",
+};
 
 export default async function BillingSettingsPage() {
   const platformSession = await requirePlatformSession("/app/settings/billing");
@@ -34,6 +41,10 @@ export default async function BillingSettingsPage() {
         variant="error"
       />
     );
+  }
+
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
   }
 
   if (result.status !== "ok") {

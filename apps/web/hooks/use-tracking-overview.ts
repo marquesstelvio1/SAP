@@ -1,5 +1,6 @@
 "use client";
 
+import { RpcError } from "../lib/rpc-client";
 import { getTrackingOverview } from "../lib/tracking-overview";
 import { useRpcQuery } from "./use-rpc";
 
@@ -12,7 +13,7 @@ export function useTrackingOverview(options?: { offset?: number; limit?: number 
     queryFn: async () => {
       const result = await getTrackingOverview({ offset, limit });
       if (result.status !== "ok") {
-        throw new Error(result.message);
+        throw new RpcError(result.status, result.message);
       }
       return result.overview;
     },

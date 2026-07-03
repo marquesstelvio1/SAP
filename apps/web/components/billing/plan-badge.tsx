@@ -1,6 +1,13 @@
 import { Badge } from "@saptm/ui";
 
-type BadgeVariant = "default" | "destructive" | "info" | "outline" | "secondary" | "success" | "warning";
+type BadgeVariant =
+  | "default"
+  | "destructive"
+  | "info"
+  | "outline"
+  | "secondary"
+  | "success"
+  | "warning";
 
 export type PlanBadgeProps = {
   plan: string;

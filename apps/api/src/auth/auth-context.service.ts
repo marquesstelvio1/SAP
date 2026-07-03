@@ -12,6 +12,8 @@ import { BetterAuthSessionService } from "./better-auth-session.service.js";
 import { ServiceAccountAuthService } from "./service-account-auth.service.js";
 import { UserAuthorizationService } from "./user-authorization.service.js";
 
+const ORG_HEADER = "x-saptm-org-id" as const;
+
 @Injectable()
 export class AuthContextService {
   constructor(
@@ -48,9 +50,34 @@ export class AuthContextService {
       return this.attachContext(request, authContext);
     }
 
-    const authorization = await this.userAuthorization.resolveDefaultUserAuthorization(
-      authContext.userId,
-    );
+    // Check for org context switching via x-saptm-org-id header
+    const orgHeader = readHeader(request.headers, ORG_HEADER);
+
+    let organizationIdHint: string | undefined;
+
+    if (orgHeader) {
+      const hasAccess = await this.userAuthorization.verifyUserOrganizationAccess(
+        authContext.userId,
+        orgHeader,
+      );
+
+      if (hasAccess) {
+        organizationIdHint = orgHeader;
+      } else {
+        console.warn(
+          `[AUTH] User ${authContext.userId} attempted to switch to org ${orgHeader} ` +
+            `but has no active membership — falling back to default. ` +
+            `correlationId=${request.traceContext?.correlationId}`,
+        );
+      }
+    }
+
+    const authorization = organizationIdHint
+      ? await this.userAuthorization.resolveOrganizationAuthorization(
+          authContext.userId,
+          organizationIdHint,
+        )
+      : await this.userAuthorization.resolveDefaultUserAuthorization(authContext.userId);
 
     if (authorization.permissions.length === 0) {
       console.warn(

@@ -1324,6 +1324,8 @@ model Plan {
 
   subscriptions Subscription[]
 
+  @@index([slug, isPublic, sortOrder])
+  @@index([active, isPublic, deletedAt])
   @@map("plans")
 }
 
@@ -1347,6 +1349,8 @@ model Subscription {
   deletedBy            String?
 
   @@index([stripeSubscriptionId])
+  @@index([plan])
+  @@index([organizationId, plan])
   @@map("subscriptions")
 }
 
@@ -1385,6 +1389,8 @@ model UsageRecord {
   deletedBy      String?
 
   @@unique([organizationId, metric])
+  @@index([periodEnd])
+  @@index([organizationId, metric, periodEnd])
   @@map("usage_records")
 }
 

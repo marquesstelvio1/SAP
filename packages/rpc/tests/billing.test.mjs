@@ -93,13 +93,34 @@ test("billing plans schema validates plan catalog contract", () => {
 test("plan schema validates individual plan structure", () => {
   const plan = planSchema.parse({
     id: "enterprise",
+    slug: "enterprise",
     name: "Enterprise",
     description: "Para grandes operadores logisticos",
     price: 0,
-    features: ["Utilizadores ilimitados", "Gerente de conta dedicado"],
+    currency: "EUR",
+    interval: "month",
+    features: [
+      { key: "unlimited_users", label: "Utilizadores ilimitados", included: true },
+      { key: "dedicated_manager", label: "Gerente de conta dedicado", included: true },
+    ],
+    limits: {
+      maxMembers: 100,
+      maxCargos: 5000,
+      maxTrackingEvents: 50000,
+      maxApiCalls: 10000,
+      maxTeams: 10,
+      hasSso: true,
+      hasApi: true,
+      hasWebhooks: true,
+      hasReports: true,
+      hasAuditLog: true,
+    },
+    isPublic: true,
+    sortOrder: 10,
   });
 
   assert.equal(plan.id, "enterprise");
+  assert.equal(plan.slug, "enterprise");
   assert.ok(plan.features.length >= 2);
 });
 
@@ -289,9 +310,21 @@ test("billing usage metadata and schema", () => {
 
   const usage = billingUsageOutputSchema.parse({
     metrics: [
-      { metric: "members", current: 5, limit: 25, remaining: 20 },
-      { metric: "cargo_shipments", current: 100, limit: 1000, remaining: 900 },
-      { metric: "tracking_events", current: 50, limit: 500, remaining: 450 },
+      { metric: "members", current: 5, limit: 25, remaining: 20, displayLabel: "Membros" },
+      {
+        metric: "cargo_shipments",
+        current: 100,
+        limit: 1000,
+        remaining: 900,
+        displayLabel: "Cargas",
+      },
+      {
+        metric: "tracking_events",
+        current: 50,
+        limit: 500,
+        remaining: 450,
+        displayLabel: "Eventos",
+      },
     ],
   });
 
@@ -302,7 +335,7 @@ test("billing usage metadata and schema", () => {
 
 test("usage schema is alias for billing usage output", () => {
   const u = usageSchema.parse({
-    metrics: [{ metric: "members", current: 1, limit: 10, remaining: 9 }],
+    metrics: [{ metric: "members", current: 1, limit: 10, remaining: 9, displayLabel: "Membros" }],
   });
 
   assert.equal(u.metrics[0].metric, "members");

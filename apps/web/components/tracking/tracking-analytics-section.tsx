@@ -83,11 +83,11 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
           </CardHeader>
           <CardContent className="grid gap-3 md:grid-cols-3">
             <MetricTile
-              label="Taxa atraso"
+              label="Taxa de atraso"
               value={`${analytics.kpis.delayRatePercent.toFixed(1)}%`}
             />
             <MetricTile
-              label="Taxa exceção"
+              label="Taxa de exceção"
               value={`${analytics.kpis.exceptionRatePercent.toFixed(1)}%`}
             />
             <MetricTile label="Eventos" value={analytics.kpis.eventsInWindow.toString()} />
@@ -115,7 +115,7 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
                   <TableHead>Total</TableHead>
                   <TableHead>Ativas</TableHead>
                   <TableHead>Atrasos</TableHead>
-                  <TableHead>Excecoes</TableHead>
+                  <TableHead>Exceções</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -149,7 +149,7 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
           <CardHeader>
             <BadgeGroup
               items={[
-                { label: "IA advisory", variant: "warning" },
+                { label: "Recomendações operacionais", variant: "warning" },
                 { label: "Sem automação direta", variant: "outline" },
               ]}
             />
@@ -196,7 +196,7 @@ export function TrackingAnalyticsSection({ analytics, advisory }: TrackingAnalyt
                             recommendation.shipment.transportMode as keyof typeof modeLabels
                           ]
                         }{" "}
-                        &middot; {recommendation.shipment.status}
+                        — {recommendation.shipment.status}
                       </span>
                     </div>
                   )}

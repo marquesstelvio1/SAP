@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --color-scheme: light;
   --background: oklch(0.99 0.004 255);
@@ -52,16 +54,12 @@
   --tracking-uppercase: 0.14em;
 
   --space-0: 0px;
-  --space-0\.5: 0.125rem;
   --space-0_5: 0.125rem;
   --space-1: 0.25rem;
-  --space-1\.5: 0.375rem;
   --space-1_5: 0.375rem;
   --space-2: 0.5rem;
-  --space-2\.5: 0.625rem;
   --space-2_5: 0.625rem;
   --space-3: 0.75rem;
-  --space-3\.5: 0.875rem;
   --space-3_5: 0.875rem;
   --space-4: 1rem;
   --space-5: 1.25rem;
@@ -214,11 +212,38 @@
   --font-sans: var(--font-inter, Inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-ibm-plex-mono, "IBM Plex Mono"), "SFMono-Regular", Consolas, monospace;
   --font-numeric: var(--font-ibm-plex-mono, "IBM Plex Mono"), "SFMono-Regular", Consolas, monospace;
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
   --text-2xs: 0.65rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
   --radius-sm: calc(var(--radius) - 0.25rem);
   --radius-md: calc(var(--radius) - 0.125rem);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 0.25rem);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --spacing-0: var(--space-0);
+  --spacing-0_5: var(--space-0_5);
   --spacing-1: var(--space-1);
   --spacing-1_5: var(--space-1_5);
   --spacing-2: var(--space-2);
@@ -237,8 +262,6 @@
   --spacing-14: var(--space-14);
   --spacing-16: var(--space-16);
   --spacing-20: var(--space-20);
-  --spacing-0: var(--space-0);
-  --spacing-0_5: var(--space-0_5);
   --spacing-24: var(--space-24);
   --spacing-28: var(--space-28);
   --spacing-32: var(--space-32);
@@ -267,8 +290,6 @@
   --duration-fast: var(--motion-duration-fast);
   --duration-normal: var(--motion-duration-normal);
   --duration-slow: var(--motion-duration-slow);
-
-  /* Density tokens */
   --density-row-height: var(--density-row-height);
   --density-comfortable-control-height: var(--density-comfortable-control-height);
   --density-comfortable-row-height: var(--density-comfortable-row-height);
@@ -279,10 +300,6 @@
   --density-operational-control-height: var(--density-operational-control-height);
   --density-operational-row-height: var(--density-operational-row-height);
   --density-operational-panel-padding: var(--density-operational-panel-padding);
-
-  /* Additional radius for consistency */
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
 }
 
 * {

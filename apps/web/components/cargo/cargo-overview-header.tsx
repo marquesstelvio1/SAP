@@ -52,7 +52,7 @@ export function CargoOverviewHeader({ totals }: CargoOverviewHeaderProps) {
             label="Perigosas"
             value={totals.hazardousCargo.toString()}
             variant={totals.hazardousCargo > 0 ? "warning" : "default"}
-            {...(totals.hazardousCargo > 0 ? { badge: "Atencao" } : {})}
+            {...(totals.hazardousCargo > 0 ? { badge: "Atenção" } : {})}
           />
           <MetricTile
             label="Inspecao"

@@ -190,9 +190,7 @@ export class ObservabilityService {
           ? {
               actorId: authCtx.actorId,
               actorType: authActorTypeToTelemetryActorType(authCtx.actorType),
-              ...(authCtx.organizationId === undefined
-                ? {}
-                : { tenantId: authCtx.organizationId }),
+              ...(authCtx.organizationId === undefined ? {} : { tenantId: authCtx.organizationId }),
             }
           : {}),
       });
@@ -274,9 +272,7 @@ export class ObservabilityService {
           ? {
               actorId: authCtx.actorId,
               actorType: authActorTypeToTelemetryActorType(authCtx.actorType),
-              ...(authCtx.organizationId === undefined
-                ? {}
-                : { tenantId: authCtx.organizationId }),
+              ...(authCtx.organizationId === undefined ? {} : { tenantId: authCtx.organizationId }),
             }
           : {}),
       });

@@ -1,4 +1,6 @@
 import { AccessState } from "@saptm/ui";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { GeneralSettingsForm } from "../../../../../components/settings/general-settings-form";
 import { requirePlatformSession } from "../../../../../lib/auth-session";
 import { getSettingsOrganizationData } from "../../../../../lib/settings-data";
@@ -6,6 +8,11 @@ import { updateGeneralSettingsAction } from "./actions";
 import { initialGeneralSettingsFormState } from "./form-state";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Configurações gerais",
+  description: "Configurações base da organização.",
+};
 
 export default async function GeneralSettingsPage() {
   const platformSession = await requirePlatformSession("/app/settings/general");
@@ -36,6 +43,10 @@ export default async function GeneralSettingsPage() {
         variant="error"
       />
     );
+  }
+
+  if (result.status === "unauthorized") {
+    redirect("/sign-in?reason=session_expired");
   }
 
   if (result.status !== "ok") {

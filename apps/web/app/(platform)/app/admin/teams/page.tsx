@@ -1,6 +1,7 @@
 import type { TeamDetail } from "@saptm/rpc/teams";
 import { listTeamsInputSchema, listTeamsOutputSchema } from "@saptm/rpc/teams";
 import { AccessState, Button } from "@saptm/ui";
+import type { Metadata } from "next";
 import { PlusIcon } from "lucide-react";
 
 import { requirePlatformSession } from "../../../../../lib/auth-session";
@@ -16,6 +17,11 @@ import { CreateTeamDialog } from "./create-team-dialog";
 import { TeamsTable } from "./teams-table";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Equipas",
+  description: "Gestão de equipas, membros e permissões da organização.",
+};
 
 export default async function AdminTeamsPage(props: {
   searchParams?: Promise<{ offset?: string; limit?: string }>;

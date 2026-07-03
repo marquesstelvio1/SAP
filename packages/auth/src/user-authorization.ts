@@ -112,3 +112,47 @@ export async function verifyUserOrganizationAccess(
 
   return membership !== null;
 }
+
+export async function resolveOrganizationAuthorization(
+  userId: string,
+  organizationId: string,
+  database: UserAuthorizationClient = getPrismaClient(),
+): Promise<ResolvedUserAuthorization> {
+  const membership = await database.membership.findFirst({
+    where: {
+      userId,
+      organizationId,
+      status: "active",
+    },
+    include: {
+      roles: {
+        include: {
+          role: {
+            include: {
+              permissions: {
+                include: {
+                  permission: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!membership) {
+    return { permissions: [], organizationId };
+  }
+
+  return {
+    organizationId: membership.organizationId,
+    permissions: uniquePlatformPermissions(
+      filterPlatformPermissions(
+        membership.roles.flatMap((membershipRole) =>
+          membershipRole.role.permissions.map((rolePermission) => rolePermission.permission.key),
+        ),
+      ),
+    ),
+  };
+}

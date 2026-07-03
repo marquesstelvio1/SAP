@@ -79,15 +79,19 @@ export function AppSidebar({
   const activeOrganization =
     organizations.find((org) => org.id === activeOrganizationId) ?? organizations[0];
 
+  const fallbackOrg: TeamSwitcherOrganization = {
+    id: "",
+    name: "SAPTM",
+    slug: "saptm",
+    isActive: false,
+  };
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <TeamSwitcher
           organizations={organizations}
-          activeOrganization={
-            activeOrganization ??
-            organizations[0] ?? { id: "", name: "SAPTM", slug: "saptm", isActive: false }
-          }
+          activeOrganization={activeOrganization ?? fallbackOrg}
         />
       </SidebarHeader>
       <SidebarContent>

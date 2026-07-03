@@ -1,12 +1,16 @@
 import type { ReportExportDomain } from "@saptm/rpc";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, EmptyState } from "@saptm/ui";
-import { Box, Container, DollarSign, Gauge, Route } from "lucide-react";
-import type { Route as RouteType } from "next";
+import { AccessState, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@saptm/ui";
+import { ArrowRight, Box, Container, DollarSign, Gauge, Route } from "lucide-react";
+import type { Metadata, Route as RouteType } from "next";
 import Link from "next/link";
-
 import { requirePlatformSession } from "../../../../lib/auth-session";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Relatórios",
+  description: "Exportação de relatórios operacionais em CSV por domínio.",
+};
 
 const domainLabels: Record<ReportExportDomain, string> = {
   tracking: "Tracking / Expedições",
@@ -31,24 +35,26 @@ export default async function ReportsPage() {
 
   if (!hasExportPermission) {
     return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6">
         <div>
           <h1 className="font-semibold text-2xl tracking-heading">Relatórios operacionais</h1>
           <p className="mt-1 text-muted-foreground text-sm">Exportações CSV com auditoria.</p>
         </div>
-        <EmptyState
-          title="Exportação indisponível"
+        <AccessState
+          badgeLabel="Exportação"
           description="Contacte o gestor de operações para solicitar acesso à exportação de relatórios."
+          title="Exportação indisponível"
+          variant="blocked"
         />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <div>
-        <h1 className="font-semibold text-2xl tracking-heading">Relatórios operacionais</h1>
-        <p className="mt-1 text-muted-foreground text-sm">
+        <h1 className="font-semibold text-3xl tracking-heading">Relatórios operacionais</h1>
+        <p className="text-muted-foreground">
           Exportações CSV com auditoria e integrações.
         </p>
       </div>
@@ -68,11 +74,11 @@ export default async function ReportsPage() {
                     {domainLabels[domain]}
                   </CardTitle>
                   <CardDescription>
-                    Exportar CSV até 100 registos do domínio {domainLabels[domain]}.
+                    Exportar CSV até 100 registos do módulo.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <span className="font-medium text-primary text-sm">Exportar CSV &rarr;</span>
+                  <span className="inline-flex items-center gap-1 font-medium text-primary text-sm">Exportar CSV <ArrowRight className="size-3" /></span>
                 </CardContent>
               </Card>
             </Link>

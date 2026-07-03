@@ -1,9 +1,15 @@
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@saptm/ui";
+import type { Metadata } from "next";
 import { AccountDeletionForm } from "../../../../../components/privacy/account-deletion-form";
 import { DataExportForm } from "../../../../../components/privacy/data-export-form";
 import { requirePlatformSession } from "../../../../../lib/auth-session";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Privacidade",
+  description: "Gestão de dados pessoais, exportação e eliminação de conta conforme RGPD.",
+};
 
 export default async function PrivacyPage() {
   const platformSession = await requirePlatformSession("/app/settings/privacy");

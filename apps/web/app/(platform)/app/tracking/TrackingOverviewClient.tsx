@@ -12,11 +12,12 @@ import {
   EmptyState,
 } from "@saptm/ui";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { Suspense } from "react";
-
 import { TrackingEventRecordForm } from "../../../../components/tracking/tracking-event-record-form";
 import { TrackingOverviewHeader } from "../../../../components/tracking/tracking-overview-header";
 import { TrackingStatusTables } from "../../../../components/tracking/tracking-status-tables";
+import { RpcError } from "../../../../lib/rpc-client";
 
 const TrackingAnalyticsSection = dynamic(
   () =>
@@ -49,6 +50,7 @@ export function TrackingOverviewClient({
   limit: number;
   canRecordEvents: boolean;
 }) {
+  const router = useRouter();
   const overviewQuery = useTrackingOverview({ offset, limit });
   const analyticsQuery = useTrackingAnalytics();
   const advisoryQuery = useTrackingAdvisory();
@@ -64,6 +66,24 @@ export function TrackingOverviewClient({
   }
 
   if (overviewQuery.isError) {
+    const error = overviewQuery.error;
+
+    if (error instanceof RpcError && error.status === "unauthorized") {
+      router.push("/sign-in?reason=session_expired");
+      return null;
+    }
+
+    if (error instanceof RpcError && error.status === "forbidden") {
+      return (
+        <AccessState
+          badgeLabel="Tracking Operacional"
+          description="Sessão sem permissão para ler tracking operacional."
+          title="Tracking operacional bloqueado"
+          variant="blocked"
+        />
+      );
+    }
+
     return (
       <AccessState
         badgeLabel="Tracking Operacional"
@@ -76,6 +96,13 @@ export function TrackingOverviewClient({
   }
 
   if (analyticsQuery.isError) {
+    const error = analyticsQuery.error;
+
+    if (error instanceof RpcError && error.status === "unauthorized") {
+      router.push("/sign-in?reason=session_expired");
+      return null;
+    }
+
     return (
       <AccessState
         badgeLabel="Tracking Operacional"
@@ -88,6 +115,13 @@ export function TrackingOverviewClient({
   }
 
   if (advisoryQuery.isError) {
+    const error = advisoryQuery.error;
+
+    if (error instanceof RpcError && error.status === "unauthorized") {
+      router.push("/sign-in?reason=session_expired");
+      return null;
+    }
+
     return (
       <AccessState
         badgeLabel="Tracking Operacional"

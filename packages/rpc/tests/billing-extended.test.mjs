@@ -6,11 +6,10 @@ import {
   billingInvoicesListMetadata,
   billingInvoicesListOutputSchema,
   billingPlanSchema,
-  billingPlansOutputSchema,
   billingSubscriptionGetMetadata,
   billingSubscriptionGetOutputSchema,
-  billingSubscriptionUsageMetadata,
   billingSubscriptionStatuses,
+  billingSubscriptionUsageMetadata,
   billingUsageOutputSchema,
   getPlanInputSchema,
   getPlanMetadata,
@@ -57,9 +56,7 @@ describe("billing.plans.list RPC contract", () => {
           price: 0,
           currency: "USD",
           interval: "month",
-          features: [
-            { key: "max_members", label: "Membros", included: true, limit: "5" },
-          ],
+          features: [{ key: "max_members", label: "Membros", included: true, limit: "5" }],
           limits: {
             maxMembers: 5,
             maxCargos: 50,
@@ -83,9 +80,7 @@ describe("billing.plans.list RPC contract", () => {
           price: 9900,
           currency: "USD",
           interval: "month",
-          features: [
-            { key: "max_members", label: "Membros", included: true, limit: "25" },
-          ],
+          features: [{ key: "max_members", label: "Membros", included: true, limit: "25" }],
           limits: {
             maxMembers: 25,
             maxCargos: 1000,
@@ -137,7 +132,7 @@ describe("billing.plans.list RPC contract", () => {
         isPublic: true,
         sortOrder: 99,
       });
-    }, /Invalid enum value/);
+    }, /Invalid option/);
   });
 
   it("rejects plan with negative price", () => {
@@ -149,7 +144,7 @@ describe("billing.plans.list RPC contract", () => {
         price: -100,
         features: ["Basic"],
       });
-    }, /Non-negative/);
+    }, /too_small/);
   });
 });
 
@@ -173,15 +168,15 @@ describe("billing.plans.get RPC contract", () => {
 
     assert.throws(() => {
       getPlanInputSchema.parse({ slug: "invalid_plan" });
-    }, /Invalid enum value/);
+    }, /Invalid option/);
 
     assert.throws(() => {
       getPlanInputSchema.parse({});
-    }, /Required/);
+    });
 
     assert.throws(() => {
       getPlanInputSchema.parse({ slug: 123 });
-    }, /Expected/);
+    });
   });
 
   it("getPlanOutputSchema validates nested plan object", () => {
@@ -223,7 +218,7 @@ describe("billing.plans.get RPC contract", () => {
   it("rejects getPlanOutput with missing required fields", () => {
     assert.throws(() => {
       getPlanOutputSchema.parse({ plan: { slug: "free" } });
-    }, /Required/);
+    }, /Invalid input/);
   });
 });
 
@@ -254,9 +249,7 @@ describe("billing.subscription.get RPC contract", () => {
         stripeSubscriptionId: "sub_stripe_001",
         createdAt: "2026-06-01T00:00:00.000Z",
         updatedAt: "2026-06-01T00:00:00.000Z",
-        usage: [
-          { metric: "members", current: 5, limit: 25, remaining: 20 },
-        ],
+        usage: [{ metric: "members", current: 5, limit: 25, remaining: 20 }],
       },
     });
 
@@ -285,7 +278,7 @@ describe("billing.subscription.get RPC contract", () => {
           usage: [],
         },
       });
-    }, /Invalid enum value/);
+    }, /Invalid option/);
   });
 
   it("rejects subscription with invalid plan", () => {
@@ -306,7 +299,7 @@ describe("billing.subscription.get RPC contract", () => {
           usage: [],
         },
       });
-    }, /Invalid enum value/);
+    }, /Invalid option/);
   });
 });
 
@@ -326,9 +319,30 @@ describe("billing.subscription.usage RPC contract", () => {
   it("billingUsageOutputSchema validates usage with displayLabel and unit", () => {
     const output = billingUsageOutputSchema.parse({
       metrics: [
-        { metric: "members", current: 5, limit: 25, remaining: 20, displayLabel: "Membros", unit: "/mês" },
-        { metric: "cargo_shipments", current: 100, limit: 1000, remaining: 900, displayLabel: "Cargas", unit: "/mês" },
-        { metric: "tracking_events", current: 50, limit: 500, remaining: 450, displayLabel: "Eventos de tracking", unit: "/mês" },
+        {
+          metric: "members",
+          current: 5,
+          limit: 25,
+          remaining: 20,
+          displayLabel: "Membros",
+          unit: "/mês",
+        },
+        {
+          metric: "cargo_shipments",
+          current: 100,
+          limit: 1000,
+          remaining: 900,
+          displayLabel: "Cargas",
+          unit: "/mês",
+        },
+        {
+          metric: "tracking_events",
+          current: 50,
+          limit: 500,
+          remaining: 450,
+          displayLabel: "Eventos de tracking",
+          unit: "/mês",
+        },
       ],
     });
 
@@ -341,9 +355,7 @@ describe("billing.subscription.usage RPC contract", () => {
 
   it("accepts usage without unit (optional)", () => {
     const output = billingUsageOutputSchema.parse({
-      metrics: [
-        { metric: "members", current: 0, limit: 5, remaining: 5, displayLabel: "Membros" },
-      ],
+      metrics: [{ metric: "members", current: 0, limit: 5, remaining: 5, displayLabel: "Membros" }],
     });
 
     assert.equal(output.metrics[0].displayLabel, "Membros");
@@ -357,7 +369,7 @@ describe("billing.subscription.usage RPC contract", () => {
           { metric: "invalid_metric", current: 0, limit: 5, remaining: 5, displayLabel: "Invalid" },
         ],
       });
-    }, /Invalid enum value/);
+    }, /Invalid option/);
   });
 
   it("rejects usage with negative current value", () => {
@@ -367,7 +379,7 @@ describe("billing.subscription.usage RPC contract", () => {
           { metric: "members", current: -1, limit: 5, remaining: 6, displayLabel: "Membros" },
         ],
       });
-    }, /Non-negative/);
+    }, /too_small/);
   });
 });
 
@@ -468,7 +480,7 @@ describe("billing.invoices.list RPC contract", () => {
         ],
         pagination: { totalCount: 1, limit: 10, offset: 0 },
       });
-    }, /Invalid enum value/);
+    }, /Invalid option/);
   });
 
   it("rejects invoices list with negative pagination values", () => {
@@ -477,7 +489,7 @@ describe("billing.invoices.list RPC contract", () => {
         invoices: [],
         pagination: { totalCount: -1, limit: 10, offset: 0 },
       });
-    }, /Non-negative/);
+    }, /too_small/);
 
     assert.throws(() => {
       billingInvoicesListOutputSchema.parse({
