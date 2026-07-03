@@ -55,7 +55,7 @@ export async function registerTariffRateCardAction(
   if (!platformSession.viewer.permissions.includes(manageTariffPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui tariff.manage para registar rate cards.",
+      message: "A sessão não possui tariff.manage para registar rate cards.",
     };
   }
 
@@ -83,7 +83,7 @@ export async function registerTariffRateCardAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Rate card ja existia; resposta idempotente reaproveitada."
+      ? "Rate card já existia; resposta idempotente reaproveitada."
       : "Rate card registado com validade, moeda normalizada, audit trail e outbox.",
     rateCardId: result.output.rateCardId,
     rateCardCode: result.output.rateCard.rateCardCode,
@@ -101,7 +101,7 @@ export async function addTariffRateRuleAction(
   if (!platformSession.viewer.permissions.includes(manageTariffPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui tariff.manage para adicionar regras.",
+      message: "A sessão não possui tariff.manage para adicionar regras.",
     };
   }
 
@@ -129,8 +129,8 @@ export async function addTariffRateRuleAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Regra ja existia; resposta idempotente reaproveitada."
-      : "Regra tarifaria adicionada com base valida, audit trail e outbox.",
+      ? "Regra já existia; resposta idempotente reaproveitada."
+      : "Regra tarifaria adicionada com base válida, audit trail e outbox.",
     rateCardId: result.output.rateCardId,
     ruleId: result.output.ruleId,
     ruleCode: result.output.rule.ruleCode,
@@ -148,7 +148,7 @@ export async function calculateTariffQuoteAction(
   if (!platformSession.viewer.permissions.includes(calculateTariffPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui tariff.quote.calculate para calcular cotacoes.",
+      message: "A sessão não possui tariff.quote.calculate para calcular cotações.",
     };
   }
 
@@ -176,8 +176,8 @@ export async function calculateTariffQuoteAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Cotacao ja tinha sido calculada; resposta idempotente reaproveitada."
-      : "Cotacao calculada com rate card ativo, regras aplicaveis, audit trail e outbox.",
+      ? "Cotação já tinha sido calculada; resposta idempotente reaproveitada."
+      : "Cotação calculada com rate card ativo, regras aplicáveis, audit trail e outbox.",
     cargoId: result.output.cargoId,
     rateCardId: result.output.rateCardId,
     quoteId: result.output.quoteId,
@@ -200,7 +200,7 @@ export async function approveTariffQuoteAction(
   if (!platformSession.viewer.permissions.includes(approveTariffPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui tariff.quote.approve para aprovar cotacoes.",
+      message: "A sessão não possui tariff.quote.approve para aprovar cotações.",
     };
   }
 
@@ -228,8 +228,8 @@ export async function approveTariffQuoteAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Aprovacao ja tinha sido processada; resposta idempotente reaproveitada."
-      : "Cotacao aprovada com evidencia financeira, audit trail e outbox.",
+      ? "Aprovação já tinha sido processada; resposta idempotente reaproveitada."
+      : "Cotação aprovada com evidencia financeira, audit trail e outbox.",
     cargoId: result.output.cargoId,
     quoteId: result.output.quoteId,
     ...(result.output.quote.approvalReference === null
@@ -274,7 +274,7 @@ async function postTariffRpc<TOutput>(
   if (!response.ok) {
     return {
       status: "error",
-      message: `API de tarifas recusou a operacao: HTTP ${response.status}.`,
+      message: `API de tarifas recusou a operação: HTTP ${response.status}.`,
     };
   }
 
@@ -313,7 +313,7 @@ function parseTariffRateCardRegisterFormData(formData: FormData):
   if (!parsedInput.success) {
     return {
       status: "error",
-      message: "Dados invalidos para rate card: confirme codigo, moeda e janela de validade.",
+      message: "Dados inválidos para rate card: confirme codigo, moeda e janela de validade.",
     };
   }
 
@@ -349,7 +349,7 @@ function parseTariffRateRuleAddFormData(formData: FormData):
   if (!parsedInput.success) {
     return {
       status: "error",
-      message: "Dados invalidos para regra: confirme base, taxa, datas e rate card.",
+      message: "Dados inválidos para regra: confirme base, taxa, datas e rate card.",
     };
   }
 
@@ -378,7 +378,7 @@ function parseTariffQuoteCalculateFormData(formData: FormData):
   if (!parsedInput.success) {
     return {
       status: "error",
-      message: "Dados invalidos para cotacao: confirme carga, rate card, distancia e data.",
+      message: "Dados inválidos para cotação: confirme carga, rate card, distancia e data.",
     };
   }
 
@@ -405,7 +405,7 @@ function parseTariffQuoteApproveFormData(formData: FormData):
   if (!parsedInput.success) {
     return {
       status: "error",
-      message: "Dados invalidos para aprovacao: confirme cotacao, referencia e data.",
+      message: "Dados inválidos para aprovação: confirme cotação, referencia e data.",
     };
   }
 

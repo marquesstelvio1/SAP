@@ -57,7 +57,7 @@ export default async function CapacityOverviewPage() {
     return (
       <AccessState
         badgeLabel="Capacidade"
-        description="O utilizador autenticado nao tem acesso ao modulo de capacidade."
+        description="O utilizador autenticado não tem acesso ao modulo de capacidade."
         role="alert"
         title="Capacidade operacional bloqueada"
         variant="blocked"
@@ -94,7 +94,7 @@ export default async function CapacityOverviewPage() {
         badgeLabel="Capacidade"
         description={result.message}
         role="alert"
-        title="Capacidade operacional indisponivel"
+        title="Capacidade operacional indisponível"
         variant="error"
       />
     );
@@ -106,7 +106,7 @@ export default async function CapacityOverviewPage() {
         badgeLabel="Advisory de capacidade"
         description={advisoryResult.message}
         role="alert"
-        title="Advisory de capacidade indisponivel"
+        title="Advisory de capacidade indisponível"
         variant="error"
       />
     );
@@ -115,10 +115,10 @@ export default async function CapacityOverviewPage() {
   if (advisoryDecisionAnalyticsResult.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Analytics de decisoes"
+        badgeLabel="Analytics de decisões"
         description={advisoryDecisionAnalyticsResult.message}
         role="alert"
-        title="Analytics de decisoes de advisory indisponivel"
+        title="Analytics de decisões de advisory indisponível"
         variant="error"
       />
     );

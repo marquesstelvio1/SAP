@@ -96,14 +96,14 @@ export function TrackingExceptionResolveForm({
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canResolveExceptions && isResolutionAllowed ? "success" : "outline"}>
-            {canResolveExceptions && isResolutionAllowed ? "Resolucao autorizada" : "Indisponível"}
+            {canResolveExceptions && isResolutionAllowed ? "Resolução autorizada" : "Indisponível"}
           </Badge>
-          <Badge variant="outline">Resolucao</Badge>
+          <Badge variant="outline">Resolução</Badge>
         </div>
         <div className="flex flex-col gap-2">
-          <CardTitle>Resolver excecao operacional</CardTitle>
+          <CardTitle>Resolver exceção operacional</CardTitle>
           <CardDescription className="leading-6">
-            Fecha uma excecao ativa com registo de auditoria e recuperacao de status.
+            Fecha uma exceção ativa com registo de auditoria e recuperação de status.
           </CardDescription>
         </div>
       </CardHeader>
@@ -124,7 +124,7 @@ export function TrackingExceptionResolveForm({
 
             <div className="grid gap-4 md:grid-cols-2">
               <Field data-disabled={isDisabled}>
-                <FieldLabel htmlFor="resolutionCode">Codigo de resolucao</FieldLabel>
+                <FieldLabel htmlFor="resolutionCode">Codigo de resolução</FieldLabel>
                 <SelectNative
                   defaultValue="customs_released"
                   disabled={isDisabled}
@@ -141,7 +141,7 @@ export function TrackingExceptionResolveForm({
               </Field>
 
               <Field data-disabled={isDisabled}>
-                <FieldLabel htmlFor="nextStatus">Status apos resolucao</FieldLabel>
+                <FieldLabel htmlFor="nextStatus">Status apos resolução</FieldLabel>
                 <SelectNative
                   defaultValue="in_transit"
                   disabled={isDisabled}
@@ -172,7 +172,7 @@ export function TrackingExceptionResolveForm({
               </Field>
 
               <Field data-disabled={isDisabled}>
-                <FieldLabel htmlFor="resolveLocationName">Local de liberacao</FieldLabel>
+                <FieldLabel htmlFor="resolveLocationName">Local de liberação</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="resolveLocationName"
@@ -183,7 +183,7 @@ export function TrackingExceptionResolveForm({
             </div>
 
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="resolveOwnerTeam">Equipa responsavel</FieldLabel>
+              <FieldLabel htmlFor="resolveOwnerTeam">Equipa responsável</FieldLabel>
               <Input
                 disabled={isDisabled}
                 id="resolveOwnerTeam"
@@ -193,7 +193,7 @@ export function TrackingExceptionResolveForm({
             </Field>
 
             <Field data-disabled={isDisabled}>
-              <FieldLabel htmlFor="resolveSummary">Resumo da resolucao</FieldLabel>
+              <FieldLabel htmlFor="resolveSummary">Resumo da resolução</FieldLabel>
               <Textarea
                 disabled={isDisabled}
                 id="resolveSummary"
@@ -204,9 +204,9 @@ export function TrackingExceptionResolveForm({
             </Field>
 
             <Field data-disabled={isDisabled}>
-              <FieldLabel>Evidencia e aprovacao</FieldLabel>
+              <FieldLabel>Evidencia e aprovação</FieldLabel>
               <FieldDescription>
-                Resolver uma excecao exige evidencia operacional e aprovacao explicita antes do
+                Resolver uma exceção exige evidencia operacional e aprovação explícita antes do
                 status ser recuperado.
               </FieldDescription>
             </Field>
@@ -215,7 +215,7 @@ export function TrackingExceptionResolveForm({
 
             <div className="grid gap-4 md:grid-cols-2">
               <Field data-disabled={isDisabled}>
-                <FieldLabel htmlFor="resolveOperatorName">Operador responsavel</FieldLabel>
+                <FieldLabel htmlFor="resolveOperatorName">Operador responsável</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="resolveOperatorName"
@@ -256,7 +256,7 @@ export function TrackingExceptionResolveForm({
               </Field>
 
               <Field data-disabled={isDisabled}>
-                <FieldLabel htmlFor="resolveApprovalReference">Referencia da aprovacao</FieldLabel>
+                <FieldLabel htmlFor="resolveApprovalReference">Referencia da aprovação</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="resolveApprovalReference"
@@ -287,7 +287,7 @@ export function TrackingExceptionResolveForm({
                 placeholder="Ex.: Supervisor de Operações"
                 required
               />
-              <FieldDescription>Resolucao so aceita aprovacao aprovada.</FieldDescription>
+              <FieldDescription>Resolução so aceita aprovação aprovada.</FieldDescription>
             </Field>
 
             <div className="grid gap-4 md:grid-cols-2">
@@ -327,7 +327,7 @@ export function TrackingExceptionResolveForm({
             {resolveFooterMessage(canResolveExceptions, isResolutionAllowed)}
           </span>
           <Button disabled={isDisabled} type="submit">
-            {isPending ? "A resolver..." : "Resolver excecao"}
+            {isPending ? "A resolver..." : "Resolver exceção"}
           </Button>
         </CardFooter>
       </form>
@@ -337,12 +337,12 @@ export function TrackingExceptionResolveForm({
 
 function resolveFooterMessage(canResolveExceptions: boolean, isResolutionAllowed: boolean): string {
   if (!canResolveExceptions) {
-    return "Requer resolucao de excecoes.";
+    return "Requer resolução de exceções.";
   }
 
   if (!isResolutionAllowed) {
-    return "Requer status atrasado ou em excecao.";
+    return "Requer status atrasado ou em exceção.";
   }
 
-  return "Resolucao grava recuperacao de status com auditoria.";
+  return "Resolução grava recuperação de status com auditoria.";
 }

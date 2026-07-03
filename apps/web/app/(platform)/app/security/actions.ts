@@ -34,7 +34,7 @@ export async function revokeOtherSessionsAction(
   } catch {
     return {
       status: "error",
-      message: "Nao foi possivel revogar outras sessoes neste momento.",
+      message: "Não foi possivel revogar outras sessoes neste momento.",
     };
   }
 }

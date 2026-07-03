@@ -69,7 +69,7 @@ export function TrackingOverviewClient({
         badgeLabel="Tracking Operacional"
         description="Dados indisponiveis. Tente novamente mais tarde."
         role="alert"
-        title="Tracking operacional indisponivel"
+        title="Tracking operacional indisponível"
         variant="error"
       />
     );
@@ -81,7 +81,7 @@ export function TrackingOverviewClient({
         badgeLabel="Tracking Operacional"
         description="Dados indisponiveis. Tente novamente mais tarde."
         role="alert"
-        title="Analytics indisponivel"
+        title="Analytics indisponível"
         variant="error"
       />
     );
@@ -93,7 +93,7 @@ export function TrackingOverviewClient({
         badgeLabel="Tracking Operacional"
         description="Dados indisponiveis. Tente novamente mais tarde."
         role="alert"
-        title="Advisory indisponivel"
+        title="Advisory indisponível"
         variant="error"
       />
     );
@@ -181,7 +181,7 @@ export function TrackingOverviewClient({
             />
             <CardTitle>Registo de eventos</CardTitle>
             <CardDescription>
-              Registos manuais de eventos operacionais (partidas, chegadas, atrasos, excepcoes).
+              Registos manuais de eventos operacionais (partidas, chegadas, atrasos, exceções).
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-1">

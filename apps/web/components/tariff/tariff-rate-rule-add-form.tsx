@@ -210,7 +210,7 @@ export function TariffRateRuleAddForm({
                 />
               </Field>
               <Field data-disabled={!canManageTariffs}>
-                <FieldLabel htmlFor="effectiveUntil">Efetiva ate</FieldLabel>
+                <FieldLabel htmlFor="effectiveUntil">Efetiva até</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="effectiveUntil"

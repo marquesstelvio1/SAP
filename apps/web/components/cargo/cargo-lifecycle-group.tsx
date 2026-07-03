@@ -12,7 +12,7 @@ type CargoStatus =
 const LIFECYCLE_STEPS = [
   { key: "registration", label: "Registo" },
   { key: "compliance", label: "Compliance" },
-  { key: "release", label: "Liberacao" },
+  { key: "release", label: "Liberação" },
   { key: "planning", label: "Planeamento" },
   { key: "departure", label: "Partida" },
   { key: "arrival", label: "Chegada" },
@@ -93,7 +93,7 @@ export function LifecycleProgressIndicator({
         <div className="flex flex-col gap-1">
           <CardTitle className="text-lg">Estado do ciclo de vida</CardTitle>
           <CardDescription className="text-sm leading-6">
-            Progresso das cargas atraves das etapas: Registo → Compliance → Liberacao → Planeamento
+            Progresso das cargas atraves das etapas: Registo → Compliance → Liberação → Planeamento
             → Partida → Chegada → Entrega
           </CardDescription>
         </div>

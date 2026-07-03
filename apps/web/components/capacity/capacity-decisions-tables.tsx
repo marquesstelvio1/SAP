@@ -41,15 +41,15 @@ export function CapacityDecisionsTables({
     <section className="grid gap-4 xl:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>Decisoes por tipo</CardTitle>
-          <CardDescription>Distribuicao das decisoes humanas por recomendacao.</CardDescription>
+          <CardTitle>Decisões por tipo</CardTitle>
+          <CardDescription>Distribuição das decisões humanas por recomendacao.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table aria-label="Decisoes por tipo">
+          <Table aria-label="Decisões por tipo">
             <TableHeader>
               <TableRow>
                 <TableHead>Tipo</TableHead>
-                <TableHead>Decisoes</TableHead>
+                <TableHead>Decisões</TableHead>
                 <TableHead>Aprovadas</TableHead>
                 <TableHead>Taxa</TableHead>
               </TableRow>
@@ -58,7 +58,7 @@ export function CapacityDecisionsTables({
               {byRecommendationType.length === 0 ? (
                 <TableRow>
                   <TableCell className="text-muted-foreground" colSpan={4} role="status">
-                    Sem decisoes de advisory na janela atual.
+                    Sem decisões de advisory na janela atual.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -84,11 +84,11 @@ export function CapacityDecisionsTables({
 
       <Card>
         <CardHeader>
-          <CardTitle>Decisoes recentes</CardTitle>
-          <CardDescription>Ultimas decisoes gravadas com evidencia humana.</CardDescription>
+          <CardTitle>Decisões recentes</CardTitle>
+          <CardDescription>Ultimas decisões gravadas com evidencia humana.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table aria-label="Decisoes recentes">
+          <Table aria-label="Decisões recentes">
             <TableHeader>
               <TableRow>
                 <TableHead>Recomendacao</TableHead>
@@ -100,7 +100,7 @@ export function CapacityDecisionsTables({
               {recentDecisions.length === 0 ? (
                 <TableRow>
                   <TableCell className="text-muted-foreground" colSpan={3} role="status">
-                    Sem decisoes humanas registadas.
+                    Sem decisões humanas registadas.
                   </TableCell>
                 </TableRow>
               ) : (

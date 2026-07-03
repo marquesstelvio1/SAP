@@ -16,7 +16,7 @@ type FormToastProps = {
 
 export function FormToast({
   state,
-  successTitle = "Operacao concluida",
+  successTitle = "Operação concluida",
   errorTitle = "Erro",
 }: FormToastProps) {
   const prevStatus = useRef(state.status);

@@ -67,7 +67,7 @@ export function IntegrationRailTmsMovementForm({
         <div className="flex flex-col gap-2">
           <CardTitle>Processar movimento Rail TMS</CardTitle>
           <CardDescription className="leading-6">
-            Converte movimentos ferroviarios locais em eventos de tracking. A operacao valida
+            Converte movimentos ferroviários locais em eventos de tracking. A operação válida
             processamento de movimento Rail TMS com registo de evento.
           </CardDescription>
         </div>
@@ -220,8 +220,8 @@ export function IntegrationRailTmsMovementForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma conta de servico com permissoes de tracking."
-              : "Adapter ferroviario local sem chamada externa."}
+              ? "Crie uma conta de servico com permissões de tracking."
+              : "Adapter ferroviário local sem chamada externa."}
           </span>
         </CardFooter>
       </form>

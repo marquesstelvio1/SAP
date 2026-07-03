@@ -31,7 +31,7 @@ export default async function ReportsPage() {
 
   if (!hasExportPermission) {
     return (
-      <div className="space-y-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
         <div>
           <h1 className="font-semibold text-2xl tracking-heading">Relatórios operacionais</h1>
           <p className="mt-1 text-muted-foreground text-sm">Exportações CSV com auditoria.</p>

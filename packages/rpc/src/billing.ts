@@ -136,6 +136,8 @@ export const billingUsageOutputSchema = z.object({
       current: z.number().int().nonnegative(),
       limit: z.number().int().nonnegative(),
       remaining: z.number().int().nonnegative(),
+      displayLabel: z.string(),
+      unit: z.string().optional(),
     }),
   ),
 });

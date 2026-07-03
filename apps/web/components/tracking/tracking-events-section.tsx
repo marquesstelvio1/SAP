@@ -64,9 +64,9 @@ export function TrackingEventsSection({ analytics }: TrackingEventsSectionProps)
 
       <Card>
         <CardHeader>
-          <CardTitle>Workflow de excecoes</CardTitle>
+          <CardTitle>Workflow de exceções</CardTitle>
           <CardDescription>
-            Estados extraidos dos eventos de excecao e release para suporte a auditoria.
+            Estados extraidos dos eventos de exceção e release para suporte a auditoria.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-1">

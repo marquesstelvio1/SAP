@@ -44,20 +44,20 @@ export type TariffQuoteApproveFormState = {
 
 export const initialTariffRateCardRegisterFormState: TariffRateCardRegisterFormState = {
   status: "idle",
-  message: "Rate card ainda nao submetido.",
+  message: "Rate card ainda não submetido.",
 };
 
 export const initialTariffRateRuleAddFormState: TariffRateRuleAddFormState = {
   status: "idle",
-  message: "Regra tarifaria ainda nao submetida.",
+  message: "Regra tarifaria ainda não submetida.",
 };
 
 export const initialTariffQuoteCalculateFormState: TariffQuoteCalculateFormState = {
   status: "idle",
-  message: "Cotacao ainda nao calculada.",
+  message: "Cotação ainda não calculada.",
 };
 
 export const initialTariffQuoteApproveFormState: TariffQuoteApproveFormState = {
   status: "idle",
-  message: "Aprovacao ainda nao submetida.",
+  message: "Aprovação ainda não submetida.",
 };

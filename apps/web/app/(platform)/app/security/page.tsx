@@ -17,11 +17,11 @@ export default async function SecurityPage() {
   });
 
   return (
-    <main className="flex flex-col gap-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline">Autenticacao</Badge>
-          <Badge variant="success">Sessao autenticada</Badge>
+          <Badge variant="success">Sessão autenticada</Badge>
           <Badge variant={platformSession.viewer.emailVerified ? "success" : "warning"}>
             {platformSession.viewer.emailVerified ? "Email verificado" : "Email pendente"}
           </Badge>
@@ -29,8 +29,8 @@ export default async function SecurityPage() {
         <div className="max-w-3xl">
           <h1 className="font-semibold text-3xl tracking-heading">Seguranca da conta</h1>
           <p className="mt-2 text-muted-foreground">
-            Centro de seguranca do utilizador autenticado: sessao atual, revogacao de outras sessoes
-            e configuracao de MFA.
+            Centro de seguranca do utilizador autenticado: sessão atual, revogacao de outras sessoes
+            e configuração de MFA.
           </p>
         </div>
       </section>
@@ -60,6 +60,6 @@ export default async function SecurityPage() {
           initialEnabled={platformSession.viewer.twoFactorEnabled}
         />
       </section>
-    </main>
+    </div>
   );
 }

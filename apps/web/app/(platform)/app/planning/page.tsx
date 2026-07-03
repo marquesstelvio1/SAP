@@ -27,7 +27,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Planeamento",
   description:
-    "Confirmacao, dispatch e replaneamento de ordens de transporte ferroviario e logistico.",
+    "Confirmação, dispatch e replaneamento de ordens de transporte ferroviário e logístico.",
 };
 
 const readPlanningPermission: PlatformPermission = "planning.order.read";
@@ -52,7 +52,7 @@ export default async function PlanningOverviewPage() {
     return (
       <AccessState
         badgeLabel="Planeamento"
-        description="O utilizador autenticado nao tem acesso ao modulo de planeamento."
+        description="O utilizador autenticado não tem acesso ao modulo de planeamento."
         role="alert"
         title="Planeamento bloqueado"
         variant="blocked"
@@ -73,7 +73,7 @@ export default async function PlanningOverviewPage() {
   }
 
   if (result.status !== "ok") {
-    return <ErrorCard message={result.message} title="Planeamento indisponivel" />;
+    return <ErrorCard message={result.message} title="Planeamento indisponível" />;
   }
 
   const { overview } = result;

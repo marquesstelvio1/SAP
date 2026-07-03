@@ -48,10 +48,16 @@ export type TrackingEventType = (typeof trackingEventTypes)[number];
 export type TrackingShipmentStatus = (typeof trackingShipmentStatuses)[number];
 export type TrackingTransportMode = (typeof trackingTransportModes)[number];
 
+export type CargoTeamRef = {
+  id: string;
+  name: string;
+};
+
 export type CargoRecord = {
   id: string;
   organizationId: string;
   teamId: string | null;
+  team?: CargoTeamRef | null;
   cargoReference: string;
   externalReference: string | null;
   cargoDescription: string;
@@ -230,10 +236,14 @@ export type CargoOverviewRawData = {
 // ---- DTO mapping helper functions ----
 
 export function createCargoSummary(cargo: CargoRecord): CargoOverviewOutput["recentCargo"][number] {
+  const cargoTeam =
+    "team" in cargo ? (cargo as { team: { id: string; name: string } | null }).team : null;
+
   return {
     id: cargo.id,
     cargoReference: cargo.cargoReference,
     teamId: cargo.teamId,
+    team: cargoTeam !== null ? { id: cargoTeam.id, name: cargoTeam.name } : null,
     externalReference: cargo.externalReference,
     cargoDescription: cargo.cargoDescription,
     cargoType: cargo.cargoType,

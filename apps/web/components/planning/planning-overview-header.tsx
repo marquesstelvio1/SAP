@@ -65,7 +65,7 @@ export function PlanningOverviewHeader({
         <CardHeader>
           <Badge variant="secondary">Resumo</Badge>
           <CardTitle>Estado das ordens</CardTitle>
-          <CardDescription>Distribuicao e indicadores do planeamento.</CardDescription>
+          <CardDescription>Distribuição e indicadores do planeamento.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-1">
           <ContextRow label="Taxa de confirmação" value={confirmRate} />

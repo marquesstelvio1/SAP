@@ -35,11 +35,11 @@ export function CargoStatusTable({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Distribuicao por estado</CardTitle>
+        <CardTitle>Distribuição por estado</CardTitle>
         <CardDescription>Base para bloqueio, prontidao, transporte e entrega.</CardDescription>
       </CardHeader>
       <CardContent>
-        <Table aria-label="Distribuicao por estado">
+        <Table aria-label="Distribuição por estado">
           <TableHeader>
             <TableRow>
               <TableHead>Estado</TableHead>

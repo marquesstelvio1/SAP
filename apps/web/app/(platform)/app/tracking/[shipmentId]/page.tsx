@@ -72,7 +72,7 @@ export default async function TrackingShipmentDetailPage({
         </Button>
         <AccessState
           badgeLabel="Tracking"
-          description="O utilizador autenticado nao tem acesso ao detalhe de tracking."
+          description="O utilizador autenticado não tem acesso ao detalhe de tracking."
           role="alert"
           title="Detalhe de tracking bloqueado"
           variant="blocked"
@@ -278,17 +278,17 @@ export default async function TrackingShipmentDetailPage({
                   : "Resolução bloqueada"}
               </Badge>
             </div>
-            <CardTitle>Resolucao de excecoes</CardTitle>
+            <CardTitle>Resolução de exceções</CardTitle>
             <CardDescription>
-              Excecoes operacionais alteram o estado da remessa. A resolucao exige aprovacao e
+              Excecoes operacionais alteram o estado da remessa. A resolução exige aprovação e
               registo de auditoria.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3 text-sm md:grid-cols-2">
             <ContextRow label="Status atual" value={statusLabels[shipment.status]} />
-            <ContextRow label="Resolucao permitida" value={isResolutionAllowed ? "Sim" : "Nao"} />
+            <ContextRow label="Resolução permitida" value={isResolutionAllowed ? "Sim" : "Não"} />
             <ContextRow label="Evidencia" value="Operador + referencia + resumo" />
-            <ContextRow label="Aprovacao" value="Obrigatoria para resolver" />
+            <ContextRow label="Aprovação" value="Obrigatória para resolver" />
           </CardContent>
         </Card>
       </section>

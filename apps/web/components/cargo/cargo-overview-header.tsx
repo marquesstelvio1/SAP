@@ -32,7 +32,7 @@ export function CargoOverviewHeader({ totals }: CargoOverviewHeaderProps) {
           <BadgeGroup
             items={[
               { label: "Activo", variant: "success" },
-              { label: "Gestao de Cargas", variant: "outline" },
+              { label: "Gestão de Cargas", variant: "outline" },
             ]}
           />
           <div className="flex flex-col gap-2">
@@ -40,7 +40,7 @@ export function CargoOverviewHeader({ totals }: CargoOverviewHeaderProps) {
               Cargas
             </CardTitle>
             <CardDescription className="max-w-3xl leading-6">
-              Registo, liberacao, transporte e entrega de cargas ferroviarias e portuarias.
+              Registo, liberação, transporte e entrega de cargas ferroviárias e portuárias.
             </CardDescription>
           </div>
         </CardHeader>

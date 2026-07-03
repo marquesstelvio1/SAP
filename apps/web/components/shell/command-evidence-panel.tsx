@@ -45,7 +45,7 @@ export function CommandEvidencePanel({ evidence, title }: CommandEvidencePanelPr
           <CardTitle className="text-base">{title ?? "Comando processado com sucesso"}</CardTitle>
           <CardDescription className="text-xs leading-5">
             {evidence.idempotencyReplayed
-              ? "O comando ja tinha sido processado anteriormente. A resposta idempotente foi reaproveitada sem efeitos colaterais."
+              ? "O comando já tinha sido processado anteriormente. A resposta idempotente foi reaproveitada sem efeitos colaterais."
               : "O comando foi aceite com auditoria e regras de negocio aplicadas."}
           </CardDescription>
         </div>
@@ -59,7 +59,7 @@ export function CommandEvidencePanel({ evidence, title }: CommandEvidencePanelPr
             <EvidenceRow label="Acao" value={evidence.auditAction} />
             <EvidenceRow label="Tipo de sujeito" value={evidence.auditSubjectType} />
             <EvidenceRow label="ID do sujeito" value={evidence.auditSubjectId} />
-            <EvidenceRow label="Chave de idempotencia" value={evidence.idempotencyKey} />
+            <EvidenceRow label="Chave de idempotência" value={evidence.idempotencyKey} />
           </div>
         </div>
 

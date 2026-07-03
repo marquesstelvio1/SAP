@@ -76,7 +76,7 @@ export default async function PlatformAppPage() {
               variant={canReadTracking ? "success" : "warning"}
             />
             <MetricTile label="Plataforma" value="SAPTM" badge="Online" variant="success" />
-            <MetricTile label="Organizacao" value="Ativa" badge="Online" variant="success" />
+            <MetricTile label="Organização" value="Ativa" badge="Online" variant="success" />
           </CardContent>
         </Card>
 

@@ -31,7 +31,7 @@ export default async function AdminTeamsPage(props: {
     return (
       <AccessState
         badgeLabel="Equipas"
-        description="O utilizador autenticado nao tem acesso a gestao de equipas."
+        description="O utilizador autenticado não tem acesso a gestão de equipas."
         role="alert"
         title="Equipas bloqueadas"
         variant="blocked"
@@ -45,7 +45,7 @@ export default async function AdminTeamsPage(props: {
       searchParams: input,
     }).catch(() => ({
       status: "unavailable" as const,
-      message: "API nao respondeu dentro do tempo limite.",
+      message: "API não respondeu dentro do tempo limite.",
     })),
     getOrgUsers().catch(() => []),
   ]);
@@ -81,7 +81,7 @@ export default async function AdminTeamsPage(props: {
         <div>
           <h1 className="font-semibold text-2xl tracking-heading">Equipas</h1>
           <p className="text-muted-foreground text-sm">
-            Gerir equipas, membros e permissoes dentro da organizacao.
+            Gerir equipas, membros e permissões dentro da organização.
           </p>
         </div>
         <CreateTeamDialog action={createTeamAction} canCreate={canManageTeams}>

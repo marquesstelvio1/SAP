@@ -31,7 +31,7 @@ export default async function BrandingSettingsPage() {
     return (
       <AccessState
         badgeLabel="Marca"
-        description="API nao respondeu dentro do tempo limite."
+        description="API não respondeu dentro do tempo limite."
         role="alert"
         title="Dados indisponiveis"
         variant="error"

@@ -78,11 +78,11 @@ export function CapacityPreCheck({
       <CardHeader className="gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="info">Pré-verificação P1</Badge>
-          <Badge variant="outline">Verificacao ante reserva</Badge>
+          <Badge variant="outline">Verificação ante reserva</Badge>
           {hasOverbookingRisk ? <Badge variant="warning">Risco de sobre-reserva</Badge> : null}
         </div>
         <div className="flex flex-col gap-1">
-          <CardTitle className="text-lg">Verificacao de disponibilidade</CardTitle>
+          <CardTitle className="text-lg">Verificação de disponibilidade</CardTitle>
           <CardDescription className="text-sm leading-6">
             Antes de reservar, confira as unidades disponiveis por slot e a elegibilidade da carga.
           </CardDescription>
@@ -100,7 +100,7 @@ export function CapacityPreCheck({
                 variant={cargoEligibility.eligible ? "success" : "warning"}
                 className="text-[0.6rem]"
               >
-                {cargoEligibility.eligible ? "Elegivel" : "Inelegivel"}
+                {cargoEligibility.eligible ? "Elegível" : "Inelegível"}
               </Badge>
             </div>
             <div className="mt-2 flex flex-col gap-1">
@@ -126,7 +126,7 @@ export function CapacityPreCheck({
           </span>
           {slots.length === 0 ? (
             <div className="rounded-lg border bg-muted/10 p-3 text-muted-foreground text-xs">
-              Nenhum slot aberto disponivel.
+              Nenhum slot aberto disponível.
             </div>
           ) : (
             <div className="grid gap-2">

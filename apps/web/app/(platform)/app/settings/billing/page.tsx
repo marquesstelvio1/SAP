@@ -28,7 +28,7 @@ export default async function BillingSettingsPage() {
     return (
       <AccessState
         badgeLabel="Faturação"
-        description="API nao respondeu dentro do tempo limite."
+        description="API não respondeu dentro do tempo limite."
         role="alert"
         title="Dados indisponiveis"
         variant="error"

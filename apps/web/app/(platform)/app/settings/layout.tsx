@@ -10,7 +10,7 @@ export default async function SettingsLayout({ children }: { children: ReactNode
   const canManageTenant = platformSession.viewer.permissions.includes("tenant.manage");
 
   const orgData = canManageTenant ? await getSettingsOrganizationData() : undefined;
-  const orgName = orgData?.status === "ok" ? orgData.organization.name : "Organizacao";
+  const orgName = orgData?.status === "ok" ? orgData.organization.name : "Organização";
 
   return <SettingsShell organizationName={orgName}>{children}</SettingsShell>;
 }

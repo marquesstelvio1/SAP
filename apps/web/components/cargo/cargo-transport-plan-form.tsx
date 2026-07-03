@@ -155,7 +155,7 @@ export function CargoTransportPlanForm({
 
             <div className="grid gap-4 md:grid-cols-3">
               <Field data-disabled={!canPlanTransport}>
-                <FieldLabel htmlFor="operationsOwnerTeam">Equipa responsavel</FieldLabel>
+                <FieldLabel htmlFor="operationsOwnerTeam">Equipa responsável</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="operationsOwnerTeam"

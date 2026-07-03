@@ -45,7 +45,7 @@ export function TrackingOverviewHeader({ totals, generatedAt }: TrackingOverview
               Tracking
             </CardTitle>
             <CardDescription className="max-w-3xl leading-6">
-              Acompanhamento de movimentos ferroviarios, portuarios e logisticos em tempo real.
+              Acompanhamento de movimentos ferroviários, portuários e logísticos em tempo real.
             </CardDescription>
           </div>
         </CardHeader>

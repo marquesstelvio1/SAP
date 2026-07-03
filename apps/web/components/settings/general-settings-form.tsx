@@ -51,12 +51,12 @@ export function GeneralSettingsForm({
   const isDisabled = isPending || !canManageTenant;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline">Configurações</Badge>
           <Badge variant={canManageTenant ? "success" : "warning"}>
-            {canManageTenant ? "Gerir organizacao" : "Indisponível"}
+            {canManageTenant ? "Gerir organização" : "Indisponível"}
           </Badge>
           <Badge variant={organization.status === "active" ? "success" : "destructive"}>
             {organizationStatusLabels[
@@ -83,7 +83,7 @@ export function GeneralSettingsForm({
             <CardContent>
               <FieldGroup>
                 <Field>
-                  <FieldLabel htmlFor="org-name">Nome da organizacao</FieldLabel>
+                  <FieldLabel htmlFor="org-name">Nome da organização</FieldLabel>
                   <FieldContent>
                     <Input
                       defaultValue={organization.name}
@@ -138,7 +138,7 @@ export function GeneralSettingsForm({
         <Card>
           <CardHeader>
             <CardTitle>Resumo</CardTitle>
-            <CardDescription>Estado atual da organizacao.</CardDescription>
+            <CardDescription>Estado atual da organização.</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             <ContextRow label="ID" value={organization.id} />

@@ -10,6 +10,9 @@ async function proxy(request: NextRequest) {
 
   const headers: Record<string, string> = {
     "x-internal-request": "true",
+    "x-forwarded-for": request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "",
+    "x-real-ip": request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-for") ?? "",
+    "user-agent": request.headers.get("user-agent") ?? "",
   };
 
   const cookie = request.headers.get("cookie");

@@ -24,7 +24,7 @@ export async function acceptInvitationAction(
   if (password !== passwordConfirmation) {
     return {
       status: "error",
-      message: "A confirmacao da password nao coincide.",
+      message: "A confirmação da password não coincide.",
     };
   }
 
@@ -55,8 +55,8 @@ export async function acceptInvitationAction(
       status: "error",
       message:
         error instanceof Error && error.message.includes("password")
-          ? "A password nao cumpre a politica de seguranca."
-          : "Convite invalido, expirado, cancelado ou ja aceite.",
+          ? "A password não cumpre a politica de seguranca."
+          : "Convite invalido, expirado, cancelado ou já aceite.",
     };
   }
 }

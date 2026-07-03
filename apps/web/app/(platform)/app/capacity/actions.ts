@@ -60,7 +60,7 @@ export async function registerCapacityResourceAction(
   if (!platformSession.viewer.permissions.includes(manageCapacityPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui capacity.manage para registar recursos.",
+      message: "A sessão não possui capacity.manage para registar recursos.",
     };
   }
 
@@ -88,7 +88,7 @@ export async function registerCapacityResourceAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Recurso ja tinha sido registado; resposta idempotente reaproveitada."
+      ? "Recurso já tinha sido registado; resposta idempotente reaproveitada."
       : "Recurso registado com regras de capacidade, audit trail e outbox.",
     resourceId: result.output.resourceId,
     resourceCode: result.output.resource.resourceCode,
@@ -106,7 +106,7 @@ export async function openCapacitySlotAction(
   if (!platformSession.viewer.permissions.includes(manageCapacityPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui capacity.manage para abrir slots.",
+      message: "A sessão não possui capacity.manage para abrir slots.",
     };
   }
 
@@ -134,8 +134,8 @@ export async function openCapacitySlotAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Slot ja tinha sido aberto; resposta idempotente reaproveitada."
-      : "Slot aberto com janela valida, limite por recurso, audit trail e outbox.",
+      ? "Slot já tinha sido aberto; resposta idempotente reaproveitada."
+      : "Slot aberto com janela válida, limite por recurso, audit trail e outbox.",
     resourceId: result.output.resourceId,
     slotId: result.output.slotId,
     slotReference: result.output.slot.slotReference,
@@ -154,7 +154,7 @@ export async function reserveCapacitySlotAction(
   if (!platformSession.viewer.permissions.includes(reserveCapacityPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui capacity.slot.reserve para reservar capacidade.",
+      message: "A sessão não possui capacity.slot.reserve para reservar capacidade.",
     };
   }
 
@@ -182,7 +182,7 @@ export async function reserveCapacitySlotAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Reserva ja tinha sido processada; resposta idempotente reaproveitada."
+      ? "Reserva já tinha sido processada; resposta idempotente reaproveitada."
       : "Capacidade reservada sem overbooking, com audit trail e outbox.",
     cargoId: result.output.cargoId,
     slotId: result.output.slotId,
@@ -203,7 +203,7 @@ export async function cancelCapacitySlotReservationAction(
   if (!platformSession.viewer.permissions.includes(cancelCapacityPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui capacity.slot.cancel para cancelar reservas.",
+      message: "A sessão não possui capacity.slot.cancel para cancelar reservas.",
     };
   }
 
@@ -231,7 +231,7 @@ export async function cancelCapacitySlotReservationAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Cancelamento ja tinha sido processado; resposta idempotente reaproveitada."
+      ? "Cancelamento já tinha sido processado; resposta idempotente reaproveitada."
       : "Reserva cancelada e unidades libertadas com audit trail e outbox.",
     cargoId: result.output.cargoId,
     slotId: result.output.slotId,
@@ -253,7 +253,7 @@ export async function recordCapacityAdvisoryDecisionAction(
   if (!platformSession.viewer.permissions.includes(decideCapacityAdvisoryPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui capacity.advisory.decide para decidir recomendacoes.",
+      message: "A sessão não possui capacity.advisory.decide para decidir recomendações.",
     };
   }
 
@@ -281,8 +281,8 @@ export async function recordCapacityAdvisoryDecisionAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Decisao de advisory ja tinha sido registada; resposta idempotente reaproveitada."
-      : "Decisao humana registada com audit trail e outbox, sem executar automacao.",
+      ? "Decisão de advisory já tinha sido registada; resposta idempotente reaproveitada."
+      : "Decisão humana registada com audit trail e outbox, sem executar automação.",
     decisionId: result.output.decisionId,
     recommendationId: result.output.decision.recommendationId,
     decisionStatus: result.output.decision.decisionStatus,
@@ -328,7 +328,7 @@ async function postCapacityRpc<TOutput>(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou o comando por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou o comando por sessão, organização ou permissão insuficiente.",
     };
   }
 
@@ -350,7 +350,7 @@ async function postCapacityRpc<TOutput>(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de capacidade retornou resposta invalida.",
+      message: "Contrato RPC de capacidade retornou resposta inválida.",
     };
   }
 

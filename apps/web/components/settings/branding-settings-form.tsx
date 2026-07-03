@@ -44,12 +44,12 @@ export function BrandingSettingsForm({
   const isDisabled = isPending || !canManageTenant;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline">Marca</Badge>
           <Badge variant={canManageTenant ? "success" : "warning"}>
-            {canManageTenant ? "Gerir organizacao" : "Indisponível"}
+            {canManageTenant ? "Gerir organização" : "Indisponível"}
           </Badge>
         </div>
         <div className="max-w-3xl">
@@ -143,7 +143,7 @@ export function BrandingSettingsForm({
             <CardHeader>
               <CardTitle>Favicon</CardTitle>
               <CardDescription>
-                Envie uma imagem para o favicon da organizacao. Formatos aceites: ICO, PNG. Tamanho
+                Envie uma imagem para o favicon da organização. Formatos aceites: ICO, PNG. Tamanho
                 maximo: 1MB.
               </CardDescription>
             </CardHeader>
@@ -212,7 +212,7 @@ export function BrandingSettingsForm({
               </div>
             </div>
             <p className="text-muted-foreground text-xs">
-              A pre-visualizacao reflete as alteracoes na cor primaria.
+              A pré-visualização reflete as alterações na cor primaria.
             </p>
           </CardContent>
         </Card>

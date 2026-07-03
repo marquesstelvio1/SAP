@@ -37,7 +37,7 @@ export async function createCheckoutSessionAction(
   });
 
   if (!parsed.success) {
-    return { status: "invalid", message: "Dados de checkout invalidos." } as RpcFailure;
+    return { status: "invalid", message: "Dados de checkout inválidos." } as RpcFailure;
   }
 
   const result = await rpcPost(
@@ -69,7 +69,7 @@ export async function createPortalSessionAction(
   });
 
   if (!parsed.success) {
-    return { status: "invalid", message: "Dados de portal invalidos." } as RpcFailure;
+    return { status: "invalid", message: "Dados de portal inválidos." } as RpcFailure;
   }
 
   const result = await rpcPost(

@@ -5,5 +5,5 @@ export type BrandingSettingsFormState = {
 
 export const initialBrandingSettingsFormState: BrandingSettingsFormState = {
   status: "idle",
-  message: "Personalize o aspeto visual da organizacao: logotipo, cor primaria e favicon.",
+  message: "Personalize o aspeto visual da organização: logotipo, cor primaria e favicon.",
 };

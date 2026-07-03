@@ -64,10 +64,11 @@ export function createPlanningSessionLockedEvent(
 
 export function createPlanningAllocationProposedEvent(
   allocation: PlanningAllocation,
+  organizationId: string,
   correlationId: string,
 ): DomainEvent {
   return {
-    organizationId: "",
+    organizationId,
     eventType: "planning.allocation.proposed",
     aggregateType: "planning",
     aggregateId: allocation.id,
@@ -85,10 +86,11 @@ export function createPlanningAllocationProposedEvent(
 
 export function createPlanningAllocationConfirmedEvent(
   allocation: PlanningAllocation,
+  organizationId: string,
   correlationId: string,
 ): DomainEvent {
   return {
-    organizationId: "",
+    organizationId,
     eventType: "planning.allocation.confirmed",
     aggregateType: "planning",
     aggregateId: allocation.id,
@@ -104,10 +106,11 @@ export function createPlanningAllocationConfirmedEvent(
 
 export function createPlanningAllocationCancelledEvent(
   allocation: PlanningAllocation,
+  organizationId: string,
   correlationId: string,
 ): DomainEvent {
   return {
-    organizationId: "",
+    organizationId,
     eventType: "planning.allocation.cancelled",
     aggregateType: "planning",
     aggregateId: allocation.id,

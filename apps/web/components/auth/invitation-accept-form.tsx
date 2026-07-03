@@ -62,7 +62,7 @@ export function InvitationAcceptForm({ action, initialState, token }: Invitation
                 disabled={isPending || isSuccess}
                 id="acceptInvitationName"
                 name="name"
-                placeholder="Ex.: Operador Ferro-Portuario"
+                placeholder="Ex.: Operador Ferro-Portuário"
               />
             </Field>
             <Field data-disabled={isSuccess}>

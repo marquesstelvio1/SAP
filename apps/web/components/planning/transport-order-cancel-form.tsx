@@ -62,7 +62,7 @@ export function TransportOrderCancelForm({
           <CardTitle>Cancelar transport order</CardTitle>
           <CardDescription className="leading-6">
             Cancela somente ordens confirmadas antes da partida planeada, exigindo motivo
-            operacional, referencia unica e registo de auditoria.
+            operacional, referencia única e registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>

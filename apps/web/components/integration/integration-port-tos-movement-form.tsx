@@ -67,7 +67,7 @@ export function IntegrationPortTosMovementForm({
         <div className="flex flex-col gap-2">
           <CardTitle>Processar movimento Port TOS</CardTitle>
           <CardDescription className="leading-6">
-            Converte um movimento TOS local em evento operacional de tracking. A operacao valida
+            Converte um movimento TOS local em evento operacional de tracking. A operação válida
             processamento de movimento Port TOS com registo de evento.
           </CardDescription>
         </div>
@@ -191,7 +191,7 @@ export function IntegrationPortTosMovementForm({
           </Button>
           <span className="text-muted-foreground text-xs">
             {eligibleServiceAccounts.length === 0
-              ? "Crie uma conta de servico com permissoes de tracking."
+              ? "Crie uma conta de servico com permissões de tracking."
               : "Adapter local sem chamada externa."}
           </span>
         </CardFooter>

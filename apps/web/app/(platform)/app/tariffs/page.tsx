@@ -27,7 +27,7 @@ import {
 export const metadata: Metadata = {
   title: "Tarifario",
   description:
-    "Rate cards, regras tarifarias, cotacoes e aprovacao financeira para operacoes logisticas.",
+    "Rate cards, regras tarifarias, cotações e aprovação financeira para operações logísticas.",
 };
 
 const readTariffPermission: PlatformPermission = "tariff.read";
@@ -46,7 +46,7 @@ export default async function TariffOverviewPage() {
     return (
       <AccessState
         badgeLabel="Tarifario"
-        description="O utilizador autenticado nao tem acesso ao modulo tarifario."
+        description="O utilizador autenticado não tem acesso ao modulo tarifario."
         role="alert"
         title="Tarifario bloqueado"
         variant="blocked"
@@ -75,7 +75,7 @@ export default async function TariffOverviewPage() {
         badgeLabel="Tarifario"
         description={result.message}
         role="alert"
-        title="Tarifario indisponivel"
+        title="Tarifario indisponível"
         variant="error"
       />
     );
@@ -84,7 +84,7 @@ export default async function TariffOverviewPage() {
   const { overview } = result;
 
   return (
-    <main className="flex flex-col gap-6 max-w-7xl">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <TariffOverviewHeader totals={overview.totals} />
 
       <TariffTablesSection
@@ -119,6 +119,6 @@ export default async function TariffOverviewPage() {
       </section>
 
       <TariffRulesCard />
-    </main>
+    </div>
   );
 }

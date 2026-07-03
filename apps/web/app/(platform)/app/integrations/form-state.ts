@@ -10,7 +10,7 @@ export type IntegrationServiceAccountCreateFormState = {
 export const initialIntegrationServiceAccountCreateFormState: IntegrationServiceAccountCreateFormState =
   {
     status: "idle",
-    message: "Crie contas de servico com permissoes minimas e chave de API.",
+    message: "Crie contas de servico com permissões mínimas e chave de API.",
   };
 
 export type IntegrationEventRecordFormState = {
@@ -23,7 +23,7 @@ export type IntegrationEventRecordFormState = {
 
 export const initialIntegrationEventRecordFormState: IntegrationEventRecordFormState = {
   status: "idle",
-  message: "Registe eventos externos por sistema de origem e identificador unico.",
+  message: "Registe eventos externos por sistema de origem e identificador único.",
 };
 
 export type IntegrationPortTosMovementFormState = {
@@ -81,7 +81,7 @@ export type IntegrationTelematicsGpsPositionFormState = {
 export const initialIntegrationTelematicsGpsPositionFormState: IntegrationTelematicsGpsPositionFormState =
   {
     status: "idle",
-    message: "Processe posicoes Telematics/GPS locais em eventos de tracking.",
+    message: "Processe posições Telematics/GPS locais em eventos de tracking.",
   };
 
 export type IntegrationCustomsErpStatusFormState = {

@@ -35,15 +35,13 @@ export class RpcContextService {
     const decision = evaluateRpcAuthorization(authContext, metadata);
     const requirement = createRpcAuthorizationRequirement(metadata);
 
-    if (authContext !== undefined && requirement !== undefined) {
-      this.observability.recordRpcAuthorizationDecision({
-        request,
-        authContext,
-        decision,
-        requirement,
-        metadata,
-      });
-    }
+    this.observability.recordRpcAuthorizationDecision({
+      request,
+      ...(authContext === undefined ? {} : { authContext }),
+      decision,
+      ...(requirement === undefined ? {} : { requirement }),
+      metadata,
+    });
 
     if (!decision.allowed) {
       if (decision.reason === "rpc.authorization.unauthenticated") {

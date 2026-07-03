@@ -45,7 +45,7 @@ export function CapacityAdvisoryPanel({ recommendations, policy }: CapacityAdvis
           <BadgeGroup
             items={[
               { label: "Advisory de capacidade", variant: "warning" },
-              { label: "Sem automacao direta", variant: "outline" },
+              { label: "Sem automação direta", variant: "outline" },
             ]}
           />
           <CardTitle>Otimizacao assistida de capacidade</CardTitle>
@@ -110,7 +110,7 @@ export function CapacityAdvisoryPanel({ recommendations, policy }: CapacityAdvis
         </CardHeader>
         <CardContent className="flex flex-col gap-3 text-sm">
           <ContextRow
-            label="Automacao"
+            label="Automação"
             value={policy.automationAllowed ? "Permitida" : "Bloqueada"}
           />
           <ContextRow

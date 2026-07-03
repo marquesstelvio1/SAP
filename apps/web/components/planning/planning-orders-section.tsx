@@ -40,7 +40,7 @@ export type PlanningOrdersSectionProps = {
 
 const transportModeLabels = {
   rail: "Ferrovia",
-  road: "Rodoviario",
+  road: "Rodoviário",
   sea: "Maritimo",
   barge: "Barca",
   multimodal: "Multimodal",
@@ -157,7 +157,7 @@ export function PlanningOrdersSection({ recentOrders }: PlanningOrdersSectionPro
           <CardDescription>Condições aplicadas a cada operação no planeamento.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-1">
-          <ContextRow label="Confirmacao" value="Carga pronta, rota valida, janela operacional" />
+          <ContextRow label="Confirmação" value="Carga pronta, rota válida, janela operacional" />
           <ContextRow label="Dispatch" value="Ordem confirmada, sem dispatch previo" />
           <ContextRow label="Replaneamento" value="Ordem confirmada, sem dispatch" />
           <ContextRow label="Cancelamento" value="Ordem confirmada, sem dispatch" />

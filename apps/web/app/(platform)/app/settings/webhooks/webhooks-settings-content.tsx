@@ -84,17 +84,17 @@ export function WebhooksSettingsContent({ initialData }: WebhooksSettingsContent
     { value: "cargo.transport_departed", label: "Transporte Partiu" },
     { value: "cargo.transport_arrived", label: "Transporte Chegou" },
     { value: "cargo.delivery_completed", label: "Entrega Concluida" },
-    { value: "cargo.delivery_exception.recorded", label: "Excecao Registada" },
-    { value: "cargo.delivery_exception.resolved", label: "Excecao Resolvida" },
+    { value: "cargo.delivery_exception.recorded", label: "Exceção Registada" },
+    { value: "cargo.delivery_exception.resolved", label: "Exceção Resolvida" },
     { value: "tracking.event.recorded", label: "Evento de Tracking" },
-    { value: "tracking.exception.managed", label: "Excecao de Tracking" },
+    { value: "tracking.exception.managed", label: "Exceção de Tracking" },
     { value: "capacity.slot.opened", label: "Slot Aberto" },
     { value: "capacity.slot.reserved", label: "Slot Reservado" },
     { value: "planning.transport_order.confirmed", label: "Ordem Confirmada" },
     { value: "planning.transport_order.dispatched", label: "Ordem Despachada" },
     { value: "planning.transport_order.cancelled", label: "Ordem Cancelada" },
-    { value: "tariff.quote.calculated", label: "Cotacao Calculada" },
-    { value: "tariff.quote.approved", label: "Cotacao Aprovada" },
+    { value: "tariff.quote.calculated", label: "Cotação Calculada" },
+    { value: "tariff.quote.approved", label: "Cotação Aprovada" },
   ];
 
   const columns: ColumnDef<WebhookEndpointSummary>[] = [
@@ -151,7 +151,7 @@ export function WebhooksSettingsContent({ initialData }: WebhooksSettingsContent
     },
     {
       id: "actions",
-      header: "Acoes",
+      header: "Ações",
       cell: ({ row }) => {
         const webhook = row.original;
 
@@ -185,7 +185,7 @@ export function WebhooksSettingsContent({ initialData }: WebhooksSettingsContent
   const formId = useId();
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-semibold text-2xl tracking-heading">Notificações</h1>
@@ -213,7 +213,7 @@ export function WebhooksSettingsContent({ initialData }: WebhooksSettingsContent
                 <Input
                   id={`${formId}-name`}
                   name="name"
-                  placeholder="Ex: Notificacoes externas"
+                  placeholder="Ex: Notificações externas"
                   required
                   minLength={2}
                   maxLength={160}

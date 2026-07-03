@@ -23,7 +23,7 @@ export default async function AcceptInvitationPage({ searchParams }: AcceptInvit
         <Card className="w-full max-w-lg">
           <CardHeader className="gap-3">
             <Badge variant="warning">Token ausente</Badge>
-            <CardTitle>Convite indisponivel</CardTitle>
+            <CardTitle>Convite indisponível</CardTitle>
             <CardDescription>
               Abra o link completo recebido por convite. Se o link expirou, solicite reenvio ao
               administrador da organização.

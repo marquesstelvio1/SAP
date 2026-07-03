@@ -118,7 +118,7 @@ export function TrackingStatusTables({ overview, pagination }: TrackingStatusTab
       cell: ({ row }) => (
         <span className="text-muted-foreground">
           {row.original.lastEventType ?? "Sem evento"} &middot;{" "}
-          {row.original.lastKnownLocation ?? "Local nao informado"}
+          {row.original.lastKnownLocation ?? "Local não informado"}
         </span>
       ),
     },

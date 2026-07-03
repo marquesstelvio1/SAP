@@ -1,7 +1,11 @@
 import { z } from "zod";
 
 import { createRpcOperationMetadata } from "./metadata.js";
-import { trackingShipmentStatuses, trackingTransportModes } from "./tracking.js";
+import {
+  trackingShipmentStatuses,
+  trackingTeamSummarySchema,
+  trackingTransportModes,
+} from "./tracking.js";
 
 export const cargoStatuses = [
   "registered",
@@ -380,6 +384,7 @@ export const cargoSummarySchema = z.object({
   id: z.string(),
   cargoReference: z.string(),
   teamId: z.string().nullable().optional(),
+  team: trackingTeamSummarySchema.nullable().optional(),
   externalReference: z.string().nullable(),
   cargoDescription: z.string(),
   cargoType: z.enum(cargoTypes),

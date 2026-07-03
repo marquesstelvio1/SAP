@@ -145,6 +145,12 @@ export class BillingService {
     }));
   }
 
+  private readonly metricDisplayLabels: Record<string, { displayLabel: string; unit?: string }> = {
+    members: { displayLabel: "Membros", unit: "/mês" },
+    cargo_shipments: { displayLabel: "Cargas", unit: "/mês" },
+    tracking_events: { displayLabel: "Eventos de tracking", unit: "/mês" },
+  };
+
   async getUsage(organizationId: string) {
     const records = await this.billingRepo.findUsageRecords(organizationId);
 
@@ -155,11 +161,16 @@ export class BillingService {
     return {
       metrics: metricConfig.map(({ metric }) => {
         const record = records.find((r) => r.metric === metric);
+        const displayInfo = this.metricDisplayLabels[metric] ?? {
+          displayLabel: metric,
+        };
         return {
           metric,
           current: record?.current ?? 0,
           limit: record?.limit ?? 0,
           remaining: Math.max(0, (record?.limit ?? 0) - (record?.current ?? 0)),
+          displayLabel: displayInfo.displayLabel,
+          unit: displayInfo.unit,
         };
       }),
     };

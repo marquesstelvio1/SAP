@@ -121,7 +121,7 @@ export async function registerCargoAction(
   if (!platformSession.viewer.permissions.includes(registerCargoPermission)) {
     return {
       status: "error",
-      message: "A sessao nao tem autorizacao para registar cargas.",
+      message: "A sessão não tem autorização para registar cargas.",
     };
   }
 
@@ -138,7 +138,7 @@ export async function registerCargoAction(
   if (releaseImmediately && !hasReleasePermission) {
     return {
       status: "error",
-      message: "A sessao nao possui cargo.release para libertar cargas apos registo.",
+      message: "A sessão não possui cargo.release para libertar cargas apos registo.",
     };
   }
 
@@ -162,7 +162,7 @@ export async function registerCargoAction(
   if (registerResponse.status === 401 || registerResponse.status === 403) {
     return {
       status: "error",
-      message: "API recusou o registo por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou o registo por sessão, organização ou permissão insuficiente.",
     };
   }
 
@@ -179,7 +179,7 @@ export async function registerCargoAction(
   if (!parsedRegisterOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para o registo.",
+      message: "Contrato RPC de cargas retornou resposta inválida para o registo.",
     };
   }
 
@@ -196,7 +196,7 @@ export async function registerCargoAction(
       // Register succeeded but release parsing failed
       return {
         status: "success",
-        message: `Carga registada mas libertacao falhou: ${parsedRelease.message}`,
+        message: `Carga registada mas libertação falhou: ${parsedRelease.message}`,
         cargoId,
         cargoReference,
         idempotencyKey: parsedRegisterOutput.data.idempotency.key,
@@ -223,7 +223,7 @@ export async function registerCargoAction(
     if (releaseResponse.status === 401 || releaseResponse.status === 403) {
       return {
         status: "success",
-        message: "Carga registada mas API recusou a libertacao por permissoes.",
+        message: "Carga registada mas API recusou a libertação por permissões.",
         cargoId,
         cargoReference,
         idempotencyKey: parsedRegisterOutput.data.idempotency.key,
@@ -237,7 +237,7 @@ export async function registerCargoAction(
     if (!releaseResponse.ok) {
       return {
         status: "success",
-        message: `Carga registada mas API recusou a libertacao: HTTP ${releaseResponse.status}.`,
+        message: `Carga registada mas API recusou a libertação: HTTP ${releaseResponse.status}.`,
         cargoId,
         cargoReference,
         idempotencyKey: parsedRegisterOutput.data.idempotency.key,
@@ -254,7 +254,7 @@ export async function registerCargoAction(
     if (!parsedReleaseOutput.success) {
       return {
         status: "success",
-        message: "Carga registada mas resposta de libertacao invalida do RPC.",
+        message: "Carga registada mas resposta de libertação inválida do RPC.",
         cargoId,
         cargoReference,
         idempotencyKey: parsedRegisterOutput.data.idempotency.key,
@@ -270,7 +270,7 @@ export async function registerCargoAction(
     return {
       status: "success",
       message: parsedReleaseOutput.data.idempotency.replayed
-        ? "Carga registada e libertacao ja tinha sido processada (idempotente)."
+        ? "Carga registada e libertação já tinha sido processada (idempotente)."
         : "Carga registada e libertada com regras de negocio, audit trail e outbox.",
       cargoId,
       cargoReference,
@@ -287,7 +287,7 @@ export async function registerCargoAction(
   return {
     status: "success",
     message: parsedRegisterOutput.data.idempotency.replayed
-      ? "Carga ja tinha sido registada; resposta idempotente reaproveitada."
+      ? "Carga já tinha sido registada; resposta idempotente reaproveitada."
       : "Carga registada com regras de negocio, audit trail e outbox.",
     cargoId,
     cargoReference,
@@ -306,7 +306,7 @@ export async function releaseCargoAction(
   if (!platformSession.viewer.permissions.includes(releaseCargoPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui cargo.release para liberar cargas.",
+      message: "A sessão não possui cargo.release para liberar cargas.",
     };
   }
 
@@ -334,14 +334,14 @@ export async function releaseCargoAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a liberacao por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou a liberação por sessão, organização ou permissão insuficiente.",
     };
   }
 
   if (!response.ok) {
     return {
       status: "error",
-      message: `API de cargas recusou a liberacao: HTTP ${response.status}.`,
+      message: `API de cargas recusou a liberação: HTTP ${response.status}.`,
     };
   }
 
@@ -351,7 +351,7 @@ export async function releaseCargoAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para liberacao.",
+      message: "Contrato RPC de cargas retornou resposta inválida para liberação.",
     };
   }
 
@@ -360,7 +360,7 @@ export async function releaseCargoAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Liberacao ja tinha sido processada; resposta idempotente reaproveitada."
+      ? "Liberação já tinha sido processada; resposta idempotente reaproveitada."
       : "Carga liberada para transporte com regras de negocio, audit trail e outbox.",
     cargoId: parsedOutput.data.cargoId,
     cargoReference: parsedOutput.data.cargo.cargoReference,
@@ -379,7 +379,7 @@ export async function planCargoTransportAction(
   if (!platformSession.viewer.permissions.includes(planCargoTransportPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui cargo.transport.plan para criar tracking operacional.",
+      message: "A sessão não possui cargo.transport.plan para criar tracking operacional.",
     };
   }
 
@@ -407,7 +407,7 @@ export async function planCargoTransportAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou o plano por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou o plano por sessão, organização ou permissão insuficiente.",
     };
   }
 
@@ -424,7 +424,7 @@ export async function planCargoTransportAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para plano de transporte.",
+      message: "Contrato RPC de cargas retornou resposta inválida para plano de transporte.",
     };
   }
 
@@ -434,7 +434,7 @@ export async function planCargoTransportAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Plano de transporte ja tinha sido processado; resposta idempotente reaproveitada."
+      ? "Plano de transporte já tinha sido processado; resposta idempotente reaproveitada."
       : "Tracking operacional criado a partir da carga liberada com audit trail e outbox.",
     cargoId: parsedOutput.data.cargoId,
     cargoReference: parsedOutput.data.cargo.cargoReference,
@@ -457,7 +457,7 @@ export async function departCargoTransportAction(
   if (!platformSession.viewer.permissions.includes(departCargoTransportPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui cargo.transport.depart para iniciar partida.",
+      message: "A sessão não possui cargo.transport.depart para iniciar partida.",
     };
   }
 
@@ -485,7 +485,7 @@ export async function departCargoTransportAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a partida por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou a partida por sessão, organização ou permissão insuficiente.",
     };
   }
 
@@ -502,7 +502,7 @@ export async function departCargoTransportAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para partida.",
+      message: "Contrato RPC de cargas retornou resposta inválida para partida.",
     };
   }
 
@@ -512,7 +512,7 @@ export async function departCargoTransportAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Partida ja tinha sido processada; resposta idempotente reaproveitada."
+      ? "Partida já tinha sido processada; resposta idempotente reaproveitada."
       : "Carga partiu com compliance aprovado, tracking departed, audit trail e outbox.",
     cargoId: parsedOutput.data.cargoId,
     cargoReference: parsedOutput.data.cargo.cargoReference,
@@ -534,7 +534,7 @@ export async function arriveCargoTransportAction(
   if (!platformSession.viewer.permissions.includes(arriveCargoTransportPermission)) {
     return {
       status: "error",
-      message: "A sessao nao tem autorizacao para confirmar chegadas.",
+      message: "A sessão não tem autorização para confirmar chegadas.",
     };
   }
 
@@ -562,7 +562,7 @@ export async function arriveCargoTransportAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a chegada por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou a chegada por sessão, organização ou permissão insuficiente.",
     };
   }
 
@@ -579,7 +579,7 @@ export async function arriveCargoTransportAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para chegada.",
+      message: "Contrato RPC de cargas retornou resposta inválida para chegada.",
     };
   }
 
@@ -589,7 +589,7 @@ export async function arriveCargoTransportAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Chegada ja tinha sido processada; resposta idempotente reaproveitada."
+      ? "Chegada já tinha sido processada; resposta idempotente reaproveitada."
       : "Chegada confirmada com tracking arrived, audit trail e outbox.",
     cargoId: parsedOutput.data.cargoId,
     cargoReference: parsedOutput.data.cargo.cargoReference,
@@ -610,7 +610,7 @@ export async function completeCargoDeliveryAction(
   if (!platformSession.viewer.permissions.includes(completeCargoDeliveryPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui cargo.delivery.complete para concluir entrega.",
+      message: "A sessão não possui cargo.delivery.complete para concluir entrega.",
     };
   }
 
@@ -638,7 +638,7 @@ export async function completeCargoDeliveryAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a entrega por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou a entrega por sessão, organização ou permissão insuficiente.",
     };
   }
 
@@ -655,7 +655,7 @@ export async function completeCargoDeliveryAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para entrega.",
+      message: "Contrato RPC de cargas retornou resposta inválida para entrega.",
     };
   }
 
@@ -665,7 +665,7 @@ export async function completeCargoDeliveryAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Entrega ja tinha sido processada; resposta idempotente reaproveitada."
+      ? "Entrega já tinha sido processada; resposta idempotente reaproveitada."
       : "Entrega concluida com cargo delivered, tracking completed, audit trail e outbox.",
     cargoId: parsedOutput.data.cargoId,
     cargoReference: parsedOutput.data.cargo.cargoReference,
@@ -686,7 +686,7 @@ export async function recordCargoOperationalHandoffAction(
   if (!platformSession.viewer.permissions.includes(recordCargoOperationalHandoffPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui cargo.handoff.record para registar handoff operacional.",
+      message: "A sessão não possui cargo.handoff.record para registar handoff operacional.",
     };
   }
 
@@ -714,7 +714,7 @@ export async function recordCargoOperationalHandoffAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou o handoff por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou o handoff por sessão, organização ou permissão insuficiente.",
     };
   }
 
@@ -731,7 +731,7 @@ export async function recordCargoOperationalHandoffAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para handoff operacional.",
+      message: "Contrato RPC de cargas retornou resposta inválida para handoff operacional.",
     };
   }
 
@@ -741,8 +741,8 @@ export async function recordCargoOperationalHandoffAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Handoff ja tinha sido registado; resposta idempotente reaproveitada."
-      : "Handoff operacional registado com transferencia de custodia, tracking, audit e outbox.",
+      ? "Handoff já tinha sido registado; resposta idempotente reaproveitada."
+      : "Handoff operacional registado com transferência de custodia, tracking, audit e outbox.",
     cargoId: parsedOutput.data.cargoId,
     cargoReference: parsedOutput.data.cargo.cargoReference,
     handoffId: parsedOutput.data.handoffId,
@@ -764,7 +764,7 @@ export async function recordCargoDeliveryExceptionAction(
     return {
       status: "error",
       message:
-        "A sessao nao possui cargo.delivery.exception.record para registar excecao de entrega.",
+        "A sessão não possui cargo.delivery.exception.record para registar exceção de entrega.",
     };
   }
 
@@ -792,14 +792,14 @@ export async function recordCargoDeliveryExceptionAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a excecao por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou a exceção por sessão, organização ou permissão insuficiente.",
     };
   }
 
   if (!response.ok) {
     return {
       status: "error",
-      message: `API de cargas recusou a excecao de entrega: HTTP ${response.status}.`,
+      message: `API de cargas recusou a exceção de entrega: HTTP ${response.status}.`,
     };
   }
 
@@ -809,7 +809,7 @@ export async function recordCargoDeliveryExceptionAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para excecao de entrega.",
+      message: "Contrato RPC de cargas retornou resposta inválida para exceção de entrega.",
     };
   }
 
@@ -819,8 +819,8 @@ export async function recordCargoDeliveryExceptionAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Excecao ja tinha sido registada; resposta idempotente reaproveitada."
-      : "Excecao de entrega registada com cargo held, tracking exception, audit e outbox.",
+      ? "Exceção já tinha sido registada; resposta idempotente reaproveitada."
+      : "Exceção de entrega registada com cargo held, tracking exception, audit e outbox.",
     cargoId: parsedOutput.data.cargoId,
     exceptionId: parsedOutput.data.exceptionId,
     ...(parsedOutput.data.shipmentId ? { shipmentId: parsedOutput.data.shipmentId } : {}),
@@ -839,7 +839,7 @@ export async function recordCargoClaimSettlementAction(
   if (!platformSession.viewer.permissions.includes(recordCargoClaimSettlementPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui cargo.claim.settle para liquidar claims de carga.",
+      message: "A sessão não possui cargo.claim.settle para liquidar claims de carga.",
     };
   }
 
@@ -867,14 +867,14 @@ export async function recordCargoClaimSettlementAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou o settlement por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou o settlement por sessão, organização ou permissão insuficiente.",
     };
   }
 
   if (!response.ok) {
     return {
       status: "error",
-      message: `API de cargas recusou a liquidacao da claim: HTTP ${response.status}.`,
+      message: `API de cargas recusou a liquidação da claim: HTTP ${response.status}.`,
     };
   }
 
@@ -884,7 +884,7 @@ export async function recordCargoClaimSettlementAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para settlement de claim.",
+      message: "Contrato RPC de cargas retornou resposta inválida para settlement de claim.",
     };
   }
 
@@ -893,7 +893,7 @@ export async function recordCargoClaimSettlementAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Settlement da claim ja tinha sido registado; resposta idempotente reaproveitada."
+      ? "Settlement da claim já tinha sido registado; resposta idempotente reaproveitada."
       : "Settlement contabilistico registado com regras P8, audit trail e outbox.",
     cargoId: parsedOutput.data.cargoId,
     exceptionId: parsedOutput.data.exceptionId,
@@ -915,7 +915,7 @@ export async function resolveCargoDeliveryExceptionAction(
     return {
       status: "error",
       message:
-        "A sessao nao possui cargo.delivery.exception.resolve para resolver excecao de entrega.",
+        "A sessão não possui cargo.delivery.exception.resolve para resolver exceção de entrega.",
     };
   }
 
@@ -944,14 +944,14 @@ export async function resolveCargoDeliveryExceptionAction(
     return {
       status: "error",
       message:
-        "API recusou a resolucao da excecao por sessao, organizacao ou permissao insuficiente.",
+        "API recusou a resolução da exceção por sessão, organização ou permissão insuficiente.",
     };
   }
 
   if (!response.ok) {
     return {
       status: "error",
-      message: `API de cargas recusou a resolucao da excecao: HTTP ${response.status}.`,
+      message: `API de cargas recusou a resolução da exceção: HTTP ${response.status}.`,
     };
   }
 
@@ -961,7 +961,7 @@ export async function resolveCargoDeliveryExceptionAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para resolucao de excecao.",
+      message: "Contrato RPC de cargas retornou resposta inválida para resolução de exceção.",
     };
   }
 
@@ -971,8 +971,8 @@ export async function resolveCargoDeliveryExceptionAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Resolucao ja tinha sido processada; resposta idempotente reaproveitada."
-      : "Excecao resolvida; carga restaurada para entrega final com audit e outbox.",
+      ? "Resolução já tinha sido processada; resposta idempotente reaproveitada."
+      : "Exceção resolvida; carga restaurada para entrega final com audit e outbox.",
     cargoId: parsedOutput.data.cargoId,
     exceptionId: parsedOutput.data.exceptionId,
     ...(parsedOutput.data.shipmentId ? { shipmentId: parsedOutput.data.shipmentId } : {}),
@@ -991,7 +991,7 @@ export async function recordCargoComplianceEvidenceAction(
   if (!platformSession.viewer.permissions.includes(recordComplianceEvidencePermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui cargo.compliance.record para registar evidencias.",
+      message: "A sessão não possui cargo.compliance.record para registar evidencias.",
     };
   }
 
@@ -1019,7 +1019,7 @@ export async function recordCargoComplianceEvidenceAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a evidencia por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou a evidencia por sessão, organização ou permissão insuficiente.",
     };
   }
 
@@ -1036,7 +1036,7 @@ export async function recordCargoComplianceEvidenceAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para evidencia.",
+      message: "Contrato RPC de cargas retornou resposta inválida para evidencia.",
     };
   }
 
@@ -1045,7 +1045,7 @@ export async function recordCargoComplianceEvidenceAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Evidencia ja tinha sido registada; resposta idempotente reaproveitada."
+      ? "Evidencia já tinha sido registada; resposta idempotente reaproveitada."
       : "Evidencia registada para revisao com audit trail e outbox.",
     cargoId: parsedOutput.data.cargoId,
     evidenceId: parsedOutput.data.evidenceId,
@@ -1065,7 +1065,7 @@ export async function verifyCargoComplianceEvidenceAction(
   if (!platformSession.viewer.permissions.includes(verifyComplianceEvidencePermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui cargo.compliance.verify para verificar evidencias.",
+      message: "A sessão não possui cargo.compliance.verify para verificar evidencias.",
     };
   }
 
@@ -1093,14 +1093,14 @@ export async function verifyCargoComplianceEvidenceAction(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou a verificacao por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou a verificação por sessão, organização ou permissão insuficiente.",
     };
   }
 
   if (!response.ok) {
     return {
       status: "error",
-      message: `API de cargas recusou a verificacao: HTTP ${response.status}.`,
+      message: `API de cargas recusou a verificação: HTTP ${response.status}.`,
     };
   }
 
@@ -1110,7 +1110,7 @@ export async function verifyCargoComplianceEvidenceAction(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de cargas retornou resposta invalida para verificacao.",
+      message: "Contrato RPC de cargas retornou resposta inválida para verificação.",
     };
   }
 
@@ -1119,7 +1119,7 @@ export async function verifyCargoComplianceEvidenceAction(
   return {
     status: "success",
     message: parsedOutput.data.idempotency.replayed
-      ? "Verificacao ja tinha sido processada; resposta idempotente reaproveitada."
+      ? "Verificação já tinha sido processada; resposta idempotente reaproveitada."
       : "Evidencia verificada com regras de negocio, audit trail e outbox.",
     cargoId: parsedOutput.data.cargoId,
     evidenceId: parsedOutput.data.evidenceId,

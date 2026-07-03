@@ -32,7 +32,7 @@ export async function GET(request: Request): Promise<Response> {
   });
 
   if (!parsedInput.success) {
-    return new Response("Parametros de exportacao invalidos.", { status: 400 });
+    return new Response("Parâmetros de exportação inválidos.", { status: 400 });
   }
 
   const result = await exportOperationalReport(parsedInput.data);

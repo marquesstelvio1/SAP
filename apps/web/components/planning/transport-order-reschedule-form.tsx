@@ -34,7 +34,7 @@ export type TransportOrderRescheduleFormProps = {
 
 const transportModeOptions = [
   { value: "rail", label: "Ferrovia" },
-  { value: "road", label: "Rodoviario" },
+  { value: "road", label: "Rodoviário" },
   { value: "sea", label: "Maritimo" },
   { value: "barge", label: "Barca" },
   { value: "multimodal", label: "Multimodal" },
@@ -158,7 +158,7 @@ export function TransportOrderRescheduleForm({
                 disabled={isDisabled}
                 id="rescheduleRouteSummary"
                 name="routeSummary"
-                placeholder="Ex.: Patio ferroviario -> terminal portuario alternativo -> cliente final"
+                placeholder="Ex.: Patio ferroviário -> terminal portuário alternativo -> cliente final"
                 required
               />
             </Field>

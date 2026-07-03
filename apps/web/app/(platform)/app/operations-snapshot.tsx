@@ -134,7 +134,7 @@ export function OperationsSnapshot({ canReadTracking }: { canReadTracking: boole
         <StatusTile
           label="Ativas"
           value={overview.totals.activeShipments.toString()}
-          badge="Operacao"
+          badge="Operação"
           variant="success"
         />
         <StatusTile

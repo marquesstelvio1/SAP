@@ -34,11 +34,11 @@ export type CargoReleaseFormProps = {
 
 const customsStatusOptions = [
   { value: "cleared", label: "Liberada" },
-  { value: "not_required", label: "Nao requerido" },
+  { value: "not_required", label: "Não requerido" },
 ] as const;
 
 const inspectionOutcomeOptions = [
-  { value: "not_required", label: "Nao requerido" },
+  { value: "not_required", label: "Não requerido" },
   { value: "passed", label: "Inspecao aprovada" },
 ] as const;
 
@@ -59,7 +59,7 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={canReleaseCargo ? "success" : "warning"}>
-            {canReleaseCargo ? "Liberacao autorizada" : "Indisponível"}
+            {canReleaseCargo ? "Liberação autorizada" : "Indisponível"}
           </Badge>
           <Badge variant="outline">Libertar carga</Badge>
         </div>
@@ -67,7 +67,7 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
           <CardTitle>Liberar carga para transporte</CardTitle>
           <CardDescription className="leading-6">
             Aplica regras P1: estado liberavel, alfandega resolvida, inspecao aprovada quando
-            obrigatoria, compliance de carga perigosa e registo de auditoria.
+            obrigatória, compliance de carga perigosa e registo de auditoria.
           </CardDescription>
         </div>
       </CardHeader>
@@ -136,7 +136,7 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
                 </SelectNative>
               </Field>
               <Field data-disabled={!canReleaseCargo}>
-                <FieldLabel htmlFor="releaseReference">Referencia de liberacao</FieldLabel>
+                <FieldLabel htmlFor="releaseReference">Referencia de liberação</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="releaseReference"
@@ -183,8 +183,8 @@ export function CargoReleaseForm({ canReleaseCargo, initialState, action }: Carg
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canReleaseCargo
-              ? "Liberacao cria registo de auditoria."
-              : "Requer libertacao de cargas."}
+              ? "Liberação cria registo de auditoria."
+              : "Requer libertação de cargas."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A liberar..." : "Liberar carga"}

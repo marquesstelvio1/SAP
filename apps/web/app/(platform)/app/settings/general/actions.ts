@@ -19,7 +19,7 @@ export async function updateGeneralSettingsAction(
   if (!platformSession.viewer.permissions.includes(manageTenantPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui tenant.manage para alterar configuracoes da organizacao.",
+      message: "A sessão não possui tenant.manage para alterar configuracoes da organização.",
     };
   }
 
@@ -55,14 +55,14 @@ export async function updateGeneralSettingsAction(
     if (response.status === 401 || response.status === 403) {
       return {
         status: "error",
-        message: "API recusou a operacao por sessao, organizacao ou permissao insuficiente.",
+        message: "API recusou a operação por sessão, organização ou permissão insuficiente.",
       };
     }
 
     if (!response.ok) {
       return {
         status: "error",
-        message: `API recusou a operacao: HTTP ${response.status}.`,
+        message: `API recusou a operação: HTTP ${response.status}.`,
       };
     }
 
@@ -75,7 +75,7 @@ export async function updateGeneralSettingsAction(
   } catch {
     return {
       status: "error",
-      message: "Nao foi possivel atualizar as configuracoes neste momento.",
+      message: "Não foi possivel atualizar as configuracoes neste momento.",
     };
   }
 }

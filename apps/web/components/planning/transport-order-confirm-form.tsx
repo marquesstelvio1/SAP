@@ -35,7 +35,7 @@ export type TransportOrderConfirmFormProps = {
 
 const transportModeOptions = [
   { value: "rail", label: "Ferrovia" },
-  { value: "road", label: "Rodoviario" },
+  { value: "road", label: "Rodoviário" },
   { value: "sea", label: "Maritimo" },
   { value: "barge", label: "Barca" },
   { value: "multimodal", label: "Multimodal" },
@@ -79,8 +79,8 @@ export function TransportOrderConfirmForm({
         <div className="flex flex-col gap-2">
           <CardTitle>Confirmar transport order</CardTitle>
           <CardDescription className="leading-6">
-            Confirma a ordem de transporte depois de carga elegivel, rota distinta, horario valido,
-            responsavel, transportador e links opcionais de tracking/capacidade.
+            Confirma a ordem de transporte depois de carga elegível, rota distinta, horário válido,
+            responsável, transportador e links opcionais de tracking/capacidade.
           </CardDescription>
         </div>
       </CardHeader>
@@ -132,7 +132,7 @@ export function TransportOrderConfirmForm({
                 />
               </Field>
               <Field data-disabled={!canConfirmTransportOrder}>
-                <FieldLabel htmlFor="confirmationReference">Referencia de confirmacao</FieldLabel>
+                <FieldLabel htmlFor="confirmationReference">Referencia de confirmação</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="confirmationReference"
@@ -159,7 +159,7 @@ export function TransportOrderConfirmForm({
                 <Input disabled={isDisabled} id="carrierName" name="carrierName" required />
               </Field>
               <Field data-disabled={!canConfirmTransportOrder}>
-                <FieldLabel htmlFor="responsiblePlannerName">Planner responsavel</FieldLabel>
+                <FieldLabel htmlFor="responsiblePlannerName">Planner responsável</FieldLabel>
                 <Input
                   disabled={isDisabled}
                   id="responsiblePlannerName"
@@ -195,7 +195,7 @@ export function TransportOrderConfirmForm({
                 disabled={isDisabled}
                 id="routeSummary"
                 name="routeSummary"
-                placeholder="Ex.: Luanda rail yard -> terminal portuario -> cliente final"
+                placeholder="Ex.: Luanda rail yard -> terminal portuário -> cliente final"
                 required
               />
             </Field>
@@ -252,8 +252,8 @@ export function TransportOrderConfirmForm({
         <CardFooter className="justify-between">
           <span className="text-muted-foreground text-xs">
             {canConfirmTransportOrder
-              ? "Confirmacao gravada com registo de auditoria."
-              : "Requer confirmacao de transporte."}
+              ? "Confirmação gravada com registo de auditoria."
+              : "Requer confirmação de transporte."}
           </span>
           <Button disabled={isDisabled} type="submit">
             {isPending ? "A confirmar..." : "Confirmar transport order"}

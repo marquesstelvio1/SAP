@@ -52,8 +52,8 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
   if (!canReadNotifications) {
     return (
       <AccessState
-        badgeLabel="Notificacoes"
-        description="O utilizador autenticado nao tem acesso a inbox de notificacoes."
+        badgeLabel="Notificações"
+        description="O utilizador autenticado não tem acesso a inbox de notificações."
         role="alert"
         title="Inbox bloqueada"
         variant="blocked"
@@ -71,10 +71,10 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
   } catch {
     return (
       <AccessState
-        badgeLabel="Notificacoes"
-        description="API nao respondeu dentro do tempo limite."
+        badgeLabel="Notificações"
+        description="API não respondeu dentro do tempo limite."
         role="alert"
-        title="Inbox indisponivel"
+        title="Inbox indisponível"
         variant="error"
       />
     );
@@ -83,10 +83,10 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
   if (inboxResult.status !== "ok") {
     return (
       <AccessState
-        badgeLabel="Notificacoes"
+        badgeLabel="Notificações"
         description={inboxResult.message}
         role="alert"
-        title="Inbox indisponivel"
+        title="Inbox indisponível"
         variant="error"
       />
     );
@@ -95,7 +95,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
   const inbox = inboxResult.inbox;
 
   return (
-    <main className="flex flex-col gap-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary">Processador de eventos</Badge>
@@ -106,7 +106,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <div className="max-w-3xl">
           <h1 className="font-semibold text-3xl tracking-heading">Inbox operacional</h1>
           <p className="mt-2 text-muted-foreground">
-            Notificacoes operacionais geradas pelo sistema. Cada item e filtravel, auditavel e pode
+            Notificações operacionais geradas pelo sistema. Cada item e filtrável, auditável e pode
             ser reconhecido por utilizadores autorizados.
           </p>
         </div>
@@ -129,7 +129,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
         <CardContent>
           <form className="flex flex-col gap-4 md:flex-row md:items-end">
             <fieldset className="contents">
-              <legend className="sr-only">Filtrar notificacoes</legend>
+              <legend className="sr-only">Filtrar notificações</legend>
               <FieldGroup className="md:max-w-xs">
                 <Field>
                   <FieldLabel htmlFor="notificationStatus">Estado</FieldLabel>
@@ -243,7 +243,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
           )}
         </CardContent>
       </Card>
-    </main>
+    </div>
   );
 }
 

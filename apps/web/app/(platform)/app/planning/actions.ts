@@ -56,7 +56,7 @@ export async function confirmTransportOrderAction(
   if (!platformSession.viewer.permissions.includes(confirmPlanningPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui planning.order.confirm para confirmar transport orders.",
+      message: "A sessão não possui planning.order.confirm para confirmar transport orders.",
     };
   }
 
@@ -84,7 +84,7 @@ export async function confirmTransportOrderAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Transport order ja tinha sido confirmada; resposta idempotente reaproveitada."
+      ? "Transport order já tinha sido confirmada; resposta idempotente reaproveitada."
       : "Transport order confirmada com carga, rota, timing, audit trail e outbox.",
     orderId: result.output.orderId,
     orderReference: result.output.transportOrder.orderReference,
@@ -103,7 +103,7 @@ export async function cancelTransportOrderAction(
   if (!platformSession.viewer.permissions.includes(cancelPlanningPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui planning.order.cancel para cancelar transport orders.",
+      message: "A sessão não possui planning.order.cancel para cancelar transport orders.",
     };
   }
 
@@ -131,7 +131,7 @@ export async function cancelTransportOrderAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Transport order ja tinha sido cancelada; resposta idempotente reaproveitada."
+      ? "Transport order já tinha sido cancelada; resposta idempotente reaproveitada."
       : "Transport order cancelada com motivo, audit trail e outbox.",
     orderId: result.output.orderId,
     orderReference: result.output.transportOrder.orderReference,
@@ -150,7 +150,7 @@ export async function rescheduleTransportOrderAction(
   if (!platformSession.viewer.permissions.includes(reschedulePlanningPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui planning.order.reschedule para replanear transport orders.",
+      message: "A sessão não possui planning.order.reschedule para replanear transport orders.",
     };
   }
 
@@ -178,7 +178,7 @@ export async function rescheduleTransportOrderAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Transport order ja tinha sido replaneada; resposta idempotente reaproveitada."
+      ? "Transport order já tinha sido replaneada; resposta idempotente reaproveitada."
       : "Transport order replaneada com rota, janela, audit trail e outbox.",
     orderId: result.output.orderId,
     orderReference: result.output.transportOrder.orderReference,
@@ -199,7 +199,7 @@ export async function dispatchTransportOrderAction(
   if (!platformSession.viewer.permissions.includes(dispatchPlanningPermission)) {
     return {
       status: "error",
-      message: "A sessao nao possui planning.order.dispatch para despachar transport orders.",
+      message: "A sessão não possui planning.order.dispatch para despachar transport orders.",
     };
   }
 
@@ -227,8 +227,8 @@ export async function dispatchTransportOrderAction(
   return {
     status: "success",
     message: result.output.idempotency.replayed
-      ? "Transport order ja tinha sido despachada; resposta idempotente reaproveitada."
-      : "Transport order despachada com instrucoes, audit trail e outbox.",
+      ? "Transport order já tinha sido despachada; resposta idempotente reaproveitada."
+      : "Transport order despachada com instruções, audit trail e outbox.",
     orderId: result.output.orderId,
     orderReference: result.output.transportOrder.orderReference,
     cargoId: result.output.cargoId,
@@ -275,7 +275,7 @@ async function postPlanningRpc<TOutput>(
   if (response.status === 401 || response.status === 403) {
     return {
       status: "error",
-      message: "API recusou o comando por sessao, organizacao ou permissao insuficiente.",
+      message: "API recusou o comando por sessão, organização ou permissão insuficiente.",
     };
   }
 
@@ -297,7 +297,7 @@ async function postPlanningRpc<TOutput>(
   if (!parsedOutput.success) {
     return {
       status: "error",
-      message: "Contrato RPC de planeamento retornou resposta invalida.",
+      message: "Contrato RPC de planeamento retornou resposta inválida.",
     };
   }
 

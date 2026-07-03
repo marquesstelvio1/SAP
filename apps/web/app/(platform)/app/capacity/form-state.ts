@@ -42,7 +42,7 @@ export type CapacitySlotReserveFormState = {
 
 export const initialCapacitySlotReserveFormState: CapacitySlotReserveFormState = {
   status: "idle",
-  message: "Reserve unidades de slot para carga elegivel sem overbooking.",
+  message: "Reserve unidades de slot para carga elegível sem overbooking.",
 };
 
 export type CapacitySlotCancelFormState = {
@@ -58,7 +58,7 @@ export type CapacitySlotCancelFormState = {
 
 export const initialCapacitySlotCancelFormState: CapacitySlotCancelFormState = {
   status: "idle",
-  message: "Cancele reserva ativa para libertar capacidade com trilha auditavel.",
+  message: "Cancele reserva ativa para libertar capacidade com trilha auditável.",
 };
 
 export type CapacityAdvisoryDecisionFormState = {
@@ -73,5 +73,5 @@ export type CapacityAdvisoryDecisionFormState = {
 
 export const initialCapacityAdvisoryDecisionFormState: CapacityAdvisoryDecisionFormState = {
   status: "idle",
-  message: "Registe decisao humana sobre recomendacoes sem executar automacao.",
+  message: "Registe decisão humana sobre recomendações sem executar automação.",
 };

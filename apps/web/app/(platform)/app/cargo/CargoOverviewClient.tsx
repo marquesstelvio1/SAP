@@ -54,10 +54,10 @@ export function CargoOverviewClient({
   if (cargoQuery.isLoading) {
     return (
       <AccessState
-        badgeLabel="Gestao de Cargas"
+        badgeLabel="Gestão de Cargas"
         description="Aguarde enquanto os dados de cargas sao carregados."
         role="alert"
-        title="A carregar gestao de cargas"
+        title="A carregar gestão de cargas"
       />
     );
   }
@@ -65,10 +65,10 @@ export function CargoOverviewClient({
   if (cargoQuery.isError) {
     return (
       <AccessState
-        badgeLabel="Gestao de Cargas"
+        badgeLabel="Gestão de Cargas"
         description="Dados indisponiveis. Tente novamente mais tarde."
         role="alert"
-        title="Gestao de cargas indisponivel"
+        title="Gestão de cargas indisponível"
         variant="error"
       />
     );

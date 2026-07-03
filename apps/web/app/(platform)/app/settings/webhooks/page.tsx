@@ -32,7 +32,7 @@ export default async function WebhooksSettingsPage(props: {
     searchParams: { limit, offset },
   }).catch(() => ({
     status: "unavailable" as const,
-    message: "API nao respondeu dentro do tempo limite.",
+    message: "API não respondeu dentro do tempo limite.",
   }));
 
   if (result.status !== "ok") {

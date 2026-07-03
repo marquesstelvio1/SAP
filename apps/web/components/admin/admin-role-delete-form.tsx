@@ -92,7 +92,7 @@ export function AdminRoleDeleteForm({
             <FieldLabel htmlFor="adminRoleDeleteRole">Role custom</FieldLabel>
             <SelectNative disabled={isDisabled} id="adminRoleDeleteRole" name="roleId" required>
               {deletableRoles.length === 0 ? (
-                <option value="">Nenhuma role disponivel</option>
+                <option value="">Nenhuma role disponível</option>
               ) : (
                 deletableRoles.map((role) => (
                   <option key={role.id} value={role.id}>

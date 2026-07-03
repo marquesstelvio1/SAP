@@ -49,7 +49,7 @@ export function CreateTeamDialog({ action, canCreate, children }: CreateTeamDial
         <DialogHeader>
           <DialogTitle>Criar equipa</DialogTitle>
           <DialogDescription>
-            Cria uma nova equipa com slug unico dentro da organizacao.
+            Cria uma nova equipa com slug único dentro da organização.
           </DialogDescription>
         </DialogHeader>
         <form action={formAction} className="flex flex-col gap-4">
@@ -58,7 +58,7 @@ export function CreateTeamDialog({ action, canCreate, children }: CreateTeamDial
             <Input
               id={`${id}-name`}
               name="name"
-              placeholder="Ex: Operacoes Portuarias"
+              placeholder="Ex: Operações Portuarias"
               required
               minLength={2}
               maxLength={160}
@@ -69,7 +69,7 @@ export function CreateTeamDialog({ action, canCreate, children }: CreateTeamDial
             <Input
               id={`${id}-slug`}
               name="slug"
-              placeholder="Ex: operacoes-portuarias"
+              placeholder="Ex: operações-portuárias"
               required
               minLength={2}
               maxLength={120}

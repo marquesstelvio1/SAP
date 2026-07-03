@@ -58,7 +58,7 @@ export function TariffTablesSection({ activeRateCards, recentQuotes }: TariffTab
       <Card>
         <CardHeader>
           <CardTitle>Rate cards ativos</CardTitle>
-          <CardDescription>Tabelas tarifarias disponiveis para cotacao.</CardDescription>
+          <CardDescription>Tabelas tarifarias disponiveis para cotação.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table aria-label="Rate cards ativos">
@@ -107,14 +107,14 @@ export function TariffTablesSection({ activeRateCards, recentQuotes }: TariffTab
 
       <Card>
         <CardHeader>
-          <CardTitle>Cotacoes recentes</CardTitle>
-          <CardDescription>Historico auditavel de calculo e aprovacao financeira.</CardDescription>
+          <CardTitle>Cotações recentes</CardTitle>
+          <CardDescription>Historico auditável de calculo e aprovação financeira.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table aria-label="Cotacoes recentes">
+          <Table aria-label="Cotações recentes">
             <TableHeader>
               <TableRow>
-                <TableHead>Cotacao</TableHead>
+                <TableHead>Cotação</TableHead>
                 <TableHead>Carga</TableHead>
                 <TableHead>Imposto</TableHead>
                 <TableHead>Total</TableHead>
@@ -125,7 +125,7 @@ export function TariffTablesSection({ activeRateCards, recentQuotes }: TariffTab
               {recentQuotes.length === 0 ? (
                 <TableRow>
                   <TableCell className="text-muted-foreground" colSpan={5} role="status">
-                    Sem cotacoes registadas.
+                    Sem cotações registadas.
                   </TableCell>
                 </TableRow>
               ) : (
